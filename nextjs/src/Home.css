@@ -1,0 +1,234 @@
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&display=swap');
+
+body {
+  font-family: 'Jost', sans-serif;
+}
+
+.text-sm {
+  font-size: 14px;
+}
+
+/* PRODUCT CARD STYLES */
+.product-card-custom {
+  cursor: pointer;
+}
+
+.product-image-wrapper {
+  background-color: #f8f9fa; /* Light background for images if transparent */
+}
+
+.product-img {
+  aspect-ratio: 3/4;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+/* HOVER OVERLAY STYLES */
+.hover-overlay {
+  background-color: rgba(0, 0, 0, 0.03); /* Very light dark tint on hover */
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Jab card par hover karein, toh overlay dikhayein */
+.product-card-custom:hover .hover-overlay {
+  opacity: 1;
+}
+
+/* ICONS (Heart & Eye) */
+.action-icon-btn {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+  transition: all 0.2s ease;
+}
+
+.action-icon-btn:hover {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+/* SELECT OPTIONS BUTTON */
+.select-options-btn {
+  width: 100%;
+  background-color: #ffffff;
+  color: #000000;
+  border: none;
+  padding: 12px 0;
+  font-size: 15px;
+  font-weight: 500;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.select-options-btn:hover {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+/* TEXT STYLES BELOW IMAGE */
+.product-title {
+  font-size: 12px;
+  color: #333333;
+  letter-spacing: 0.5px;
+}
+
+.product-price {
+  font-size: 12px;
+  color: #DDA796; /* Peach/Coral color similar to your screenshot */
+  font-weight: 500;
+}
+
+/* ==========================================
+   BANNER / POSTER RESPONSIVE STYLES
+========================================== */
+
+.banner-poster-container {
+  overflow: hidden;
+  width: 100%;
+}
+
+.custom-banner-img {
+  object-fit: cover;
+  object-position: center; /* Image hamesha center se focus rahegi */
+  transition: all 0.3s ease;
+}
+
+/* Mobile Screens ke liye adjustment */
+@media (max-width: 768px) {
+  .custom-banner-img {
+    min-height: 250px; /* Mobile me image height kam nahi hogi, text katega nahi */
+    border-radius: 8px; /* Mobile par rounded corners thode chote */
+  }
+}
+
+/* Tablets ke liye adjustment */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .custom-banner-img {
+    min-height: 300px; 
+  }
+}
+
+/* Large Screens (Laptops/Desktops) ke liye */
+@media (min-width: 1025px) {
+  .custom-banner-img {
+    max-height: 430px; /* Desktop pe zyada badi na dikhe */
+  }
+}
+
+/* ==========================================
+   FAQ SECTION STYLES
+========================================== */
+
+.faq-section {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.faq-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 8px;
+}
+
+.faq-subtitle {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 40px;
+}
+
+.faq-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.faq-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.faq-question {
+  padding: 20px 24px;
+  background: white;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: #111;
+  transition: background-color 0.2s ease;
+}
+
+.faq-question:hover {
+  background: #f9fafb;
+}
+
+.faq-toggle {
+  font-size: 20px;
+  font-weight: bold;
+  color: #6b7280;
+  transition: transform 0.3s ease, color 0.2s ease;
+}
+
+.faq-item.active .faq-toggle {
+  transform: rotate(45deg);
+  color: #111;
+}
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  background: #f9fafb;
+}
+
+.faq-item.active .faq-answer {
+  max-height: 500px;
+}
+
+.faq-answer p {
+  margin: 0;
+  padding: 0 24px 24px 24px;
+  color: #4b5563;
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+/* Mobile FAQ Styles */
+@media (max-width: 768px) {
+  .faq-section {
+    padding: 0 15px;
+  }
+
+  .faq-title {
+    font-size: 24px;
+  }
+
+  .faq-subtitle {
+    font-size: 14px;
+    margin-bottom: 30px;
+  }
+
+  .faq-question {
+    padding: 16px 20px;
+    font-size: 15px;
+  }
+
+  .faq-answer p {
+    padding: 0 20px 20px 20px;
+    font-size: 14px;
+  }
+}

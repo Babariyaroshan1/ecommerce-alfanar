@@ -1,0 +1,318 @@
+/* Responsive Styles for Next.js Ecommerce App */
+/* Import this file in your layout.tsx or main CSS file */
+
+/* ===============================
+   GENERAL RESPONSIVE UTILITIES
+   =============================== */
+
+/* Hide elements on specific screen sizes */
+.d-none-mobile {
+  display: none !important;
+}
+
+.d-none-tablet {
+  display: block !important;
+}
+
+.d-none-desktop {
+  display: block !important;
+}
+
+@media (max-width: 575px) {
+  .d-none-mobile {
+    display: none !important;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 767px) {
+  .d-none-tablet {
+    display: none !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .d-none-desktop {
+    display: none !important;
+  }
+}
+
+/* ===============================
+   NAVIGATION RESPONSIVE
+   =============================== */
+
+@media (max-width: 991px) {
+  .navbar-collapse {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 1px solid #e0e0e0;
+    padding: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+
+  .navbar-toggler {
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+  }
+
+  .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280, 0, 0, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+  }
+
+  /* Mobile nav links are now always visible */
+  .d-lg-none .nav-left {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 767px) {
+  .nav-left {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .nav-link-custom {
+    padding: 8px 0;
+    font-size: 16px;
+    width: 100%;
+  }
+
+  .nav-right {
+    gap: 12px;
+  }
+
+  .brand-logo-text {
+    font-size: 20px;
+    letter-spacing: 2px;
+  }
+
+  .brand-logo-text-mobile {
+    font-size: 18px;
+    letter-spacing: 1.5px;
+  }
+}
+
+/* ===============================
+   PRODUCT GRID RESPONSIVE
+   =============================== */
+
+@media (max-width: 575px) {
+  .products-container .row {
+    --bs-gutter-x: 0.5rem;
+  }
+
+  .products-container .col-12 {
+    padding: 0.25rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .product-card {
+    margin-bottom: 15px;
+  }
+
+  .product-card__info {
+    padding: 1rem;
+  }
+
+  .product-card__title {
+    font-size: 1rem;
+  }
+
+  .product-card__subtitle {
+    font-size: 0.875rem;
+  }
+}
+
+/* ===============================
+   CART RESPONSIVE
+   =============================== */
+
+@media (max-width: 991px) {
+  .cart-container .grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .cart-summary {
+    order: -1;
+  }
+}
+
+@media (max-width: 767px) {
+  .cart-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cart-item img {
+    width: 100%;
+    height: 200px;
+    margin-bottom: 15px;
+  }
+
+  .cart-item-info {
+    width: 100%;
+  }
+}
+
+/* ===============================
+   CHECKOUT RESPONSIVE
+   =============================== */
+
+@media (max-width: 991px) {
+  .checkout-container .grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+}
+
+@media (max-width: 767px) {
+  .checkout-form {
+    padding: 20px;
+  }
+
+  .order-summary {
+    padding: 20px;
+  }
+}
+
+/* ===============================
+   FOOTER RESPONSIVE
+   =============================== */
+
+@media (max-width: 767px) {
+  .footer-main {
+    padding: 20px 15px;
+  }
+
+  .footer-wrapper {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .footer-left,
+  .footer-right {
+    width: 100%;
+  }
+
+  .newsletter-form {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .newsletter-input,
+  .subscribe-btn {
+    width: 100%;
+  }
+}
+
+/* ===============================
+   GENERAL MOBILE OPTIMIZATIONS
+   =============================== */
+
+@media (max-width: 767px) {
+  .container {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  h1 {
+    font-size: 1.75rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+  }
+
+  .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .form-control {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}
+
+/* ===============================
+   TABLET SPECIFIC STYLES
+   =============================== */
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .container {
+    max-width: 720px;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ===============================
+   DESKTOP SPECIFIC STYLES
+   =============================== */
+
+@media (min-width: 992px) {
+  .container {
+    max-width: 960px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1140px;
+  }
+}
+
+/* ===============================
+   ACCESSIBILITY & TOUCH DEVICES
+   =============================== */
+
+@media (hover: none) and (pointer: coarse) {
+  /* Touch device styles */
+  .product-card:hover {
+    transform: none;
+  }
+
+  .icon-btn:hover {
+    transform: none;
+  }
+
+  .nav-link-custom:hover {
+    color: inherit;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .product-card {
+    border: 2px solid;
+  }
+
+  .btn {
+    border: 2px solid;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .product-card,
+  .icon-btn,
+  .nav-link-custom,
+  .btn {
+    transition: none;
+  }
+
+  .product-card:hover {
+    transform: none;
+  }
+}

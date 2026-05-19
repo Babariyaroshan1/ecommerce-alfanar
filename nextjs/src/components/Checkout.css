@@ -1,0 +1,341 @@
+/* ================= WRAPPER ================= */
+.checkout-wrapper {
+  background: #f8fafc;
+  min-height: 100vh;
+  padding: 40px 20px;
+}
+
+.checkout-container {
+  max-width: 1100px;
+  margin: auto;
+}
+
+.checkout-title {
+  text-align: center;
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+
+/* ================= GRID ================= */
+.checkout-grid {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 25px;
+}
+
+@media (max-width: 768px) {
+  .checkout-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ================= CARD ================= */
+.card {
+  background: white;
+  padding: 25px;
+  border-radius: 14px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.card h2 {
+  margin-bottom: 15px;
+}
+
+/* ================= FORM ================= */
+.form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.form input {
+  width: calc(50% - 6px); 
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+.full-width {
+  width: 100% !important;
+}
+
+/* ================= SIDE-BY-SIDE INPUT ================= */
+.row {
+  display: flex;
+  gap: 10px;
+}
+
+.row input {
+  flex: 1;
+}
+
+/* ================= BUTTON ================= */
+.btnbuy {
+  width: 100%;
+  background: #16a34a;
+  color: white;
+  padding: 14px;
+  margin-top: 20px;
+  border-radius: 10px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+.btn:hover {
+  background: #15803d;
+}
+
+/* ================= ORDER SUMMARY ================= */
+.checkout-right .item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.summary {
+  margin-top: 15px;
+}
+
+.summary div {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.summary .total {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* ================= SAVED ADDRESSES ================= */
+.saved-addresses-section {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.saved-addresses-section .form-label {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.saved-addresses-section .form-control {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: white;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.saved-addresses-section .form-control:focus {
+  border-color: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+}
+
+/* ================= SELECTED ADDRESS PREVIEW ================= */
+.selected-address-preview {
+  background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+  border: 2px solid #16a34a;
+  border-radius: 10px;
+  margin: 20px 0;
+  padding: 15px;
+}
+
+.selected-address-preview h5 {
+  color: #15803d;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.selected-address-preview p {
+  color: #333;
+  margin-bottom: 5px;
+}
+
+/* ================= PAYMENT MODAL OVERLAY (NEW) ================= */
+.payment-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+}
+
+.payment-modal {
+  background: #f8fafc;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+}
+
+.payment-modal-header {
+  background: white;
+  padding: 18px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.payment-modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #1e293b;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #64748b;
+}
+
+.payment-options-container {
+  padding: 15px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pay-method-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pay-method-card:hover {
+  border-color: #16a34a;
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.1);
+}
+
+.pay-method-card.selected {
+  background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+  border-color: #16a34a;
+  border-width: 2px;
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.15);
+}
+
+.pay-method-title {
+  font-weight: 600;
+  color: #334155;
+  font-size: 15px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* UPI Apps Display */
+.upi-apps {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 5px;
+}
+
+.upi-app-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: #64748b;
+}
+
+.upi-app-icon .icon-box {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.gpay { color: #ea4335; border-color: #ea4335 !important; }
+.phonepe { color: #5f259f; border-color: #5f259f !important; }
+.paytm { color: #002970; border-color: #002970 !important; }
+
+/* UPI Input Section */
+.upi-input-section {
+  animation: slideDown 0.3s ease-out;
+}
+
+.upi-input-field {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: monospace;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.upi-input-field:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.upi-input-field.error {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mobile View for Modal (Bottom Sheet like image) */
+@media (max-width: 600px) {
+  .row {
+    flex-direction: column;
+  }
+  .form input {
+    width: 100%;
+  }
+  
+  .payment-modal {
+    position: absolute;
+    bottom: 0;
+    border-radius: 24px 24px 0 0;
+    max-width: 100%;
+    animation: slideUp 0.3s ease-out forwards;
+    padding-bottom: 20px; /* Safe area */
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+}

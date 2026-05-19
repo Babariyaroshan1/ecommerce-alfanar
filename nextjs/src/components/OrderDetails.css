@@ -1,0 +1,752 @@
+/* Global Wrapper */
+.od-wrapper {
+  background-color: #f1f3f6; /* Flipkart style grey background */
+  min-height: 100vh;
+  padding: 24px 16px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.od-container {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Reusable Cards */
+.od-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  border: 1px solid #e0e0e0;
+  padding: 20px;
+}
+
+h1, h2, h3 {
+  margin: 0;
+  color: #212121;
+}
+
+/* Header Section */
+.od-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.od-header h1 {
+  font-size: 24px;
+  margin-bottom: 4px;
+}
+
+.od-meta {
+  color: #878787;
+  font-size: 14px;
+  margin: 0;
+}
+
+.od-divider {
+  margin: 0 8px;
+  color: #e0e0e0;
+}
+
+/* Buttons */
+.od-btn {
+  padding: 10px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: 0.2s ease;
+}
+
+.od-btn-outline {
+  background: transparent;
+  border: 1px solid #d7d7d7;
+  color: #212121;
+}
+
+.od-btn-outline:hover {
+  background: #f8f8f8;
+}
+
+.od-btn-danger {
+  background: transparent;
+  border: 1px solid #ff6161;
+  color: #ff6161;
+}
+
+.od-btn-sm {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+/* Status & Timeline */
+.od-status-header h2 {
+  font-size: 20px;
+  color: #26a541; /* Success Green */
+  margin-bottom: 4px;
+}
+
+.od-status-header p {
+  color: #878787;
+  margin: 0 0 24px 0;
+  font-size: 14px;
+}
+
+/* ========================================================
+   FIXED PROGRESS BAR STYLES (Desktop Layout - Horizontal)
+   ======================================================== */
+.od-progress-container {
+  position: relative;
+  margin: 32px 0 16px 0; /* extra top margin for clean look */
+}
+
+.od-progress-bar {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  z-index: 2;
+}
+
+.od-progress-step {
+  display: flex;
+  flex-direction: column; /* Circles Top, Text Bottom */
+  align-items: center;
+  text-align: center;
+  flex: 1;
+  position: relative;
+  z-index: 2;
+}
+
+.od-progress-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: white;
+  border: 3px solid #e9ecef;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: bold;
+  color: #6c757d;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  margin-bottom: 12px;
+  z-index: 2;
+}
+
+.od-progress-line {
+  position: absolute;
+  top: 18px; /* Perfectly centers the line behind the 40px icon */
+  left: 12%;
+  right: 12%;
+  height: 4px;
+  z-index: 1;
+  background: linear-gradient(to right, #28a745 0%, #28a745 var(--progress), #e9ecef var(--progress), #e9ecef 100%);
+  border-radius: 2px;
+}
+
+.od-progress-step.completed .od-progress-icon {
+  background: #28a745;
+  border-color: #28a745;
+  color: white;
+  box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.2);
+}
+
+.od-progress-step.active .od-progress-icon {
+  background: #007bff;
+  border-color: #007bff;
+  color: white;
+  box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.2);
+  animation: od-pulse 2s infinite;
+}
+
+.od-progress-step.pending .od-progress-icon {
+  background: white;
+  border-color: #e9ecef;
+  color: #adb5bd;
+}
+
+.od-progress-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 140px;
+}
+
+.od-progress-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 4px;
+}
+
+.od-progress-step.completed .od-progress-title {
+  color: #28a745;
+}
+
+.od-progress-step.active .od-progress-title {
+  color: #007bff;
+}
+
+.od-progress-step.pending .od-progress-title {
+  color: #adb5bd;
+}
+
+.od-progress-desc {
+  font-size: 12px;
+  color: #6c757d;
+  line-height: 1.4;
+}
+
+.od-tracking-info {
+  font-size: 11px;
+  color: #007bff;
+  font-weight: 500;
+  margin-top: 6px;
+  background: #e7f3ff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+/* Special Status Styles */
+.od-status-special {
+  margin: 24px 0;
+}
+
+.od-status-cancelled,
+.od-status-return,
+.od-status-replacement,
+.od-status-refund {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 8px;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+}
+
+.od-status-cancelled {
+  background: #f8d7da;
+  border-color: #f5c6cb;
+}
+
+.od-status-return {
+  background: #fff3cd;
+  border-color: #ffeaa7;
+}
+
+.od-status-replacement {
+  background: #d1ecf1;
+  border-color: #bee5eb;
+}
+
+.od-status-refund {
+  background: #d4edda;
+  border-color: #c3e6cb;
+}
+
+.od-status-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.od-status-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 2px;
+}
+
+.od-status-desc {
+  font-size: 14px;
+  color: #6c757d;
+}
+
+@keyframes od-pulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7); }
+  70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(0, 123, 255, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 123, 255, 0); }
+}
+
+/* Order Items */
+.od-item {
+  display: flex;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.od-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.od-item-img {
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid #e0e0e0;
+}
+
+.od-item-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.od-item-info {
+  flex: 1;
+}
+
+.od-item-info h3 {
+  font-size: 16px;
+  font-weight: 400;
+  margin-bottom: 8px;
+  color: #212121;
+}
+
+.od-item-variants {
+  font-size: 13px;
+  color: #878787;
+  margin: 0 0 8px 0;
+}
+
+.od-item-variants span {
+  margin-right: 12px;
+}
+
+.od-item-price-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.od-item-price {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.od-item-qty {
+  font-size: 14px;
+  color: #878787;
+}
+
+.od-item-eligibility {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.od-eligibility-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.od-return-badge {
+  background-color: #e3f2fd;
+  color: #1976d2;
+  border: 1px solid #bbdefb;
+}
+
+.od-replace-badge {
+  background-color: #f3e5f5;
+  color: #7b1fa2;
+  border: 1px solid #ce93d8;
+}
+
+.od-no-eligibility-badge {
+  background-color: #ffebee;
+  color: #c62828;
+  border: 1px solid #ffcdd2;
+}
+
+/* Split Grid for Address and Payment */
+.od-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.od-address-card h3, .od-summary-card h3 {
+  font-size: 16px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.od-address-card p {
+  margin: 4px 0;
+  font-size: 14px;
+  color: #212121;
+}
+
+.od-phone {
+  margin-top: 12px !important;
+  font-weight: 500;
+}
+
+.od-summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: #212121;
+}
+
+.od-summary-total {
+  border-top: 1px dashed #e0e0e0;
+  padding-top: 12px;
+  margin-top: 12px;
+  font-size: 16px;
+}
+
+.od-payment-method {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+  font-size: 14px;
+}
+
+.od-payment-method p {
+  margin: 4px 0 0 0;
+  color: #878787;
+}
+
+/* Loading & Error States */
+.od-loading, .od-error {
+  text-align: center;
+  padding: 40px;
+  background: white;
+  border-radius: 8px;
+  color: #212121;
+}
+
+/* ========================================================
+   MOBILE RESPONSIVE DESIGN
+   ======================================================== */
+@media (max-width: 768px) {
+  .od-wrapper {
+    padding: 10px;
+    background-color: #ffffff; /* Seamless white background on mobile */
+  }
+
+  .od-card {
+    border: none;
+    box-shadow: none;
+    border-bottom: 8px solid #f1f3f6; /* Thick gray separators */
+    border-radius: 0;
+    padding: 16px 10px;
+  }
+  
+  .od-card:last-child {
+    border-bottom: none;
+  }
+
+  .od-header-left {
+    width: 100%;
+    margin-bottom: 12px;
+  }
+
+  .od-header-actions {
+    width: 100%;
+  }
+
+  .od-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Fixed Mobile Progress Timeline (Vertical Layout) */
+  .od-progress-container {
+    margin: 16px 0;
+    padding-left: 10px;
+  }
+
+  .od-progress-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+  }
+
+  .od-progress-step {
+    flex-direction: row; /* Icon Left, Text Right */
+    align-items: flex-start;
+    text-align: left;
+    width: 100%;
+  }
+
+  .od-progress-icon {
+    margin-bottom: 0;
+    margin-right: 16px;
+  }
+
+  .od-progress-content {
+    align-items: flex-start;
+    max-width: 100%;
+    padding-top: 4px;
+  }
+
+  .od-progress-line {
+    /* Converts horizontal line to vertical line for mobile */
+    top: 20px;
+    bottom: 20px;
+    left: 28px; /* centers the line behind the mobile vertical circles */
+    width: 4px;
+    height: auto;
+    right: auto;
+    background: linear-gradient(to bottom, #28a745 0%, #28a745 var(--progress), #e9ecef var(--progress), #e9ecef 100%);
+  }
+
+  .od-info-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  
+  .od-info-grid .od-card {
+     border-bottom: 8px solid #f1f3f6; 
+  }
+
+  .od-item {
+    flex-direction: row; /* Keep image on left for mobile */
+    align-items: flex-start;
+  }
+
+  .od-item-img {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .od-item-price-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}
+
+/* ========================================================
+   ORDER TRACKING MODAL (Simplified Amazon/Flipkart UI)
+   ======================================================== */
+
+.od-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.od-modal-content {
+  background: white;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.od-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.od-modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #212121;
+}
+
+.od-modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.od-modal-close:hover {
+  background-color: #f5f5f5;
+}
+
+.od-modal-body {
+  padding: 20px;
+}
+
+.od-tracking-status {
+  margin-bottom: 24px;
+}
+
+.od-tracking-status h4 {
+  margin: 0 0 8px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #212121;
+}
+
+.od-status-message {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+  line-height: 1.4;
+}
+
+/* Minimal Vertical Timeline (Replaces bulky progress bar) */
+.od-tracking-timeline {
+  position: relative;
+  margin-top: 20px;
+  padding-left: 12px;
+}
+
+.od-timeline-step {
+  position: relative;
+  padding-left: 36px;
+  padding-bottom: 28px;
+}
+
+/* Hide line for the last step */
+.od-timeline-step:last-child {
+  padding-bottom: 0;
+}
+.od-timeline-step:last-child .od-timeline-line {
+  display: none;
+}
+
+/* The Small Circular Dot */
+.od-timeline-dot {
+  position: absolute;
+  left: 0;
+  top: 4px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #d7d7d7;
+  z-index: 2;
+  transition: background-color 0.3s ease;
+}
+
+/* The Connecting Line */
+.od-timeline-line {
+  position: absolute;
+  left: 5px; /* exactly center of the 12px dot */
+  top: 16px;
+  bottom: -4px; /* stretch to next item */
+  width: 2px;
+  background-color: #d7d7d7;
+  z-index: 1;
+}
+
+/* Content Area inside step */
+.od-timeline-content {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Default pending (muted) text states */
+.od-timeline-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: #878787;
+  margin-bottom: 4px;
+  line-height: 1.2;
+}
+
+.od-timeline-desc {
+  font-size: 13px;
+  color: #878787;
+  line-height: 1.5;
+  margin-top: 4px;
+}
+
+.od-timeline-date {
+  font-size: 12px;
+  color: #878787;
+}
+
+/* -----------------------------
+   COMPLETED STATE 
+   ----------------------------- */
+.od-timeline-step.completed .od-timeline-dot {
+  background-color: #26a541; /* Green dot */
+}
+
+.od-timeline-step.completed .od-timeline-line {
+  background-color: #26a541; /* Green line connecting to next */
+}
+
+.od-timeline-step.completed .od-timeline-title {
+  color: #212121; /* Dark text */
+}
+
+/* -----------------------------
+   ACTIVE (CURRENT) STATE 
+   ----------------------------- */
+.od-timeline-step.active .od-timeline-dot {
+  background-color: #26a541; 
+  box-shadow: 0 0 0 4px rgba(38, 165, 65, 0.2); /* Soft highlight ring */
+}
+
+/* Active title should be Bold & Dark */
+.od-timeline-step.active .od-timeline-title {
+  color: #212121;
+  font-weight: 700; /* Bold active state */
+}
+
+/* Active description slightly darker for readability */
+.od-timeline-step.active .od-timeline-desc {
+  color: #666;
+}
+
+/* Mobile Modal Styles */
+@media (max-width: 768px) {
+  .od-modal-overlay {
+    padding: 10px;
+    align-items: flex-end; /* Snap to bottom on mobile like modern apps */
+  }
+
+  .od-modal-content {
+    max-height: 90vh;
+    border-radius: 12px 12px 0 0; /* rounded top edges */
+  }
+
+  .od-modal-header {
+    padding: 16px;
+  }
+
+  .od-modal-body {
+    padding: 16px;
+  }
+}

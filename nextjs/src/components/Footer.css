@@ -1,0 +1,588 @@
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.footer-container {
+  background-color: #f5f5f5;
+  color: #333;
+  margin-top: auto;
+  font-family: 'Jost', sans-serif;
+  width: 100%;
+}
+
+.footer-main {
+  width: 100%;
+  padding: 30px 20px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.footer-wrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.footer-section {
+  width: 100%;
+}
+
+.footer-left {
+  flex: 1;
+}
+
+.footer-right {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  width: 100%;
+}
+
+.newsletter-section {
+  width: 100%;
+}
+
+.footer-section-title {
+  font-size: 24px;
+  font-weight: 400;
+  color: #1a1a1a;
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+}
+
+.footer-section-desc {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.newsletter-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.newsletter-input {
+  padding: 12px 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: 'Jost', sans-serif;
+  font-size: 13px;
+  background-color: #fff;
+  color: #333;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.newsletter-input::placeholder {
+  color: #aaa;
+}
+
+.newsletter-input:focus {
+  outline: none;
+  border-color: #999;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+}
+
+.subscribe-btn {
+  padding: 10px 20px;
+  background-color: #6b6b6b;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-family: 'Jost', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.subscribe-btn:hover {
+  background-color: #555;
+}
+
+.subscribe-btn:active {
+  transform: scale(0.98);
+}
+
+.footer-column {
+  text-align: center;
+}
+
+.footer-column-title {
+  font-size: 10px;
+  font-weight: 700;
+  color: #1a1a1a;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  margin-bottom: 15px;
+  display: block;
+}
+
+.footer-column-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.footer-column-links li {
+  margin: 0;
+}
+
+.footer-column-links a {
+  color: #888;
+  text-decoration: none;
+  font-size: 12px;
+  transition: color 0.3s ease;
+  line-height: 1.4;
+}
+
+.footer-column-links a:hover {
+  color: #333;
+}
+
+.contact-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 15px;
+  align-items: center;
+}
+
+.contact-phone {
+  font-size: 12px;
+  color: #333;
+  font-weight: 500;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.contact-hours {
+  font-size: 11px;
+  color: #888;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.social-icons-footer {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.social-icons-footer a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background-color: #e8e8e8;
+  color: #333;
+  border-radius: 50%;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+.social-icons-footer a:hover {
+  background-color: #333;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.footer-bottom {
+  background-color: #f5f5f5;
+  padding: 15px 20px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.footer-bottom-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  text-align: center;
+}
+
+.copyright-text {
+  font-size: 11px;
+  color: #888;
+  margin: 0;
+}
+
+.orders-link {
+  font-size: 11px;
+  color: #888;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.orders-link:hover {
+  color: #333;
+}
+@media (max-width: 599px) {
+  .footer-main {
+    padding: 24px 16px;
+  }
+
+  .footer-wrapper {
+    gap: 24px;
+  }
+
+  .footer-section-title {
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
+
+  .footer-section-desc {
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+
+  .newsletter-form {
+    gap: 8px;
+  }
+
+  .newsletter-input {
+    padding: 11px 12px;
+    font-size: 12px;
+  }
+
+  .subscribe-btn {
+    padding: 10px 14px;
+    font-size: 12px;
+  }
+
+  .footer-right {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px 12px;
+    align-items: start;
+  }
+
+  .footer-column {
+    width: 100%;
+    text-align: center;
+  }
+
+  .footer-column-title {
+    font-size: 10px;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+  }
+
+  .footer-column-links {
+    gap: 8px;
+    align-items: center;
+  }
+
+  .footer-column-links a {
+    font-size: 11px;
+  }
+
+  /* CONTACT ko Explore ke niche left me rakho */
+  .footer-column:nth-child(3) {
+    grid-column: 1 / 2;
+    text-align: center;
+  }
+
+  .footer-column:nth-child(3) .contact-section {
+    align-items: center;
+    text-align: center;
+    gap: 7px;
+    margin-bottom: 0;
+  }
+
+  .contact-phone {
+    font-size: 11px;
+  }
+
+  .contact-hours {
+    font-size: 10px;
+    line-height: 1.4;
+  }
+
+  /* Social icons ko About ke niche right me rakho */
+  .footer-column:nth-child(3) .social-icons-footer {
+    position: absolute;
+    right: 35px;
+    margin-top: -62px;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .social-icons-footer a {
+    width: 30px;
+    height: 30px;
+    font-size: 13px;
+  }
+
+  .footer-bottom {
+    padding: 13px 16px;
+  }
+
+  .copyright-text,
+  .orders-link {
+    font-size: 10px;
+  }
+}
+/* TABLET */
+@media (min-width: 600px) {
+  .footer-main {
+    padding: 40px 30px;
+  }
+
+  .footer-section-title {
+    font-size: 26px;
+  }
+
+  .footer-section-desc {
+    font-size: 15px;
+    margin-bottom: 25px;
+  }
+
+  .newsletter-input,
+  .subscribe-btn {
+    font-size: 14px;
+    padding: 12px 16px;
+  }
+
+  .newsletter-form {
+    gap: 12px;
+  }
+
+  .footer-column-title {
+    font-size: 11px;
+    margin-bottom: 16px;
+  }
+
+  .footer-column-links {
+    gap: 12px;
+  }
+
+  .footer-column-links a {
+    font-size: 13px;
+  }
+
+  .contact-phone {
+    font-size: 13px;
+  }
+
+  .contact-hours {
+    font-size: 12px;
+  }
+
+  .social-icons-footer a {
+    width: 34px;
+    height: 34px;
+    font-size: 15px;
+  }
+
+  .footer-bottom {
+    padding: 18px 30px;
+  }
+
+  .footer-bottom-content {
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .copyright-text,
+  .orders-link {
+    font-size: 12px;
+  }
+}
+
+/* MEDIUM */
+@media (min-width: 768px) {
+  .footer-main {
+    padding: 50px 40px;
+  }
+
+  .footer-wrapper {
+    flex-direction: row;
+    gap: 60px;
+    align-items: flex-start;
+  }
+
+  .footer-left {
+    flex: 0 0 280px;
+  }
+
+  .footer-right {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    gap: 50px;
+  }
+
+  .footer-section {
+    text-align: left;
+  }
+
+  .footer-column {
+    text-align: left;
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .footer-section-title {
+    font-size: 28px;
+  }
+
+  .footer-column-title {
+    font-size: 12px;
+  }
+
+  .footer-column-links {
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .footer-column-links a {
+    font-size: 14px;
+  }
+
+  .contact-section {
+    align-items: flex-start;
+  }
+
+  .social-icons-footer {
+    justify-content: flex-start;
+  }
+
+  .newsletter-form {
+    max-width: 280px;
+  }
+
+  .subscribe-btn {
+    width: auto;
+    align-self: flex-start;
+  }
+
+  .footer-bottom-content {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+/* LARGE */
+@media (min-width: 992px) {
+  .footer-main {
+    padding: 60px 50px;
+  }
+
+  .footer-wrapper {
+    gap: 80px;
+  }
+
+  .footer-left {
+    flex: 0 0 350px;
+  }
+
+  .footer-right {
+    gap: 60px;
+  }
+
+  .footer-section-title {
+    font-size: 32px;
+    margin-bottom: 16px;
+  }
+
+  .footer-section-desc {
+    font-size: 15px;
+    margin-bottom: 30px;
+  }
+
+  .newsletter-input,
+  .subscribe-btn {
+    font-size: 14px;
+    padding: 12px 16px;
+  }
+
+  .footer-column-title {
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    margin-bottom: 20px;
+  }
+
+  .footer-column-links {
+    gap: 14px;
+  }
+
+  .footer-column-links a {
+    font-size: 14px;
+  }
+
+  .contact-section {
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .contact-phone {
+    font-size: 14px;
+  }
+
+  .contact-hours {
+    font-size: 13px;
+  }
+
+  .social-icons-footer {
+    gap: 16px;
+    margin-top: 15px;
+  }
+
+  .social-icons-footer a {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+  }
+
+  .footer-bottom {
+    padding: 20px 50px;
+  }
+
+  .copyright-text,
+  .orders-link {
+    font-size: 13px;
+  }
+}
+
+/* EXTRA LARGE */
+@media (min-width: 1200px) {
+  .footer-main {
+    padding: 40px 60px;
+  }
+
+  .footer-wrapper {
+    max-width: 1400px;
+    gap: 100px;
+  }
+
+  .footer-left {
+    flex: 0 0 380px;
+  }
+
+  .footer-right {
+    gap: 80px;
+  }
+}

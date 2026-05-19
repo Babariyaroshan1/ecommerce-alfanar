@@ -1,0 +1,48 @@
+.address-card {
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%);
+}
+
+.address-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+    transform: translateY(-2px);
+}
+
+.address-card.border-primary {
+    background: linear-gradient(135deg, #e7f3ff 0%, #ffffff 100%);
+}
+
+.address-card .card-title {
+    color: #333;
+    font-weight: 600;
+}
+
+.address-card .card-text {
+    line-height: 1.6;
+}
+
+.address-card .btn-outline-primary:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.address-card .btn-outline-secondary:hover {
+    background-color: #6c757d;
+    color: white;
+}
+
+.address-card .btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+.form-control:focus,
+.form-check-input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.alert {
+    border-radius: 8px;
+}
