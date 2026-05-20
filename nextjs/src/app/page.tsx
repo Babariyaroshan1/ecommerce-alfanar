@@ -23,6 +23,8 @@ const Home = () => {
   const [activeFaq, setActiveFaq] = useState(null);
   const [faqs, setFaqs] = useState([]);
   const [faqsLoading, setFaqsLoading] = useState(true);
+  const [bannerImageUrl, setBannerImageUrl] = useState('');
+  const [mobileBannerImageUrl, setMobileBannerImageUrl] = useState('');
 
   const toggleFaq = (index) => {
     setActiveFaq(activeFaq === index ? null : index);
@@ -43,7 +45,23 @@ const Home = () => {
       }
     };
 
+    const fetchSettings = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/settings`);
+        console.log('✅ Banner settings API response:', response.data);
+        const desktop = response.data.homeBannerImageUrl || response.data.bannerImageUrl || '';
+        const mobile = response.data.homeBannerMobileImageUrl || response.data.mobileBannerImageUrl || '';
+        console.log('📱 Desktop Banner URL:', desktop);
+        console.log('📱 Mobile Banner URL:', mobile);
+        setBannerImageUrl(desktop);
+        setMobileBannerImageUrl(mobile);
+      } catch (error) {
+        console.error('❌ Error fetching banner settings:', error);
+      }
+    };
+
     fetchFAQs();
+    fetchSettings();
   }, []);
 
   useEffect(() => {
@@ -65,14 +83,34 @@ const Home = () => {
       </div> */}
       
       {/* AL-FANAR POSTER / BANNER SECTION */}
-      <div className="banner-poster-container mb-5 text-center">
-        <img 
-          // Yahan apni AL-FANAR wali poster ki image URL daalein
-          src="/banner.png" 
-          alt="AL-FANAR Details Poster" 
-          className="img-fluid w-100 rounded shadow-sm custom-banner-img" 
-        />
-      </div>
+      {bannerImageUrl || mobileBannerImageUrl ? (
+        <div className="banner-poster-container mb-5 text-center">
+          <picture>
+            {mobileBannerImageUrl && (
+              <source
+                media="(max-width: 768px)"
+                srcSet={mobileBannerImageUrl}
+              />
+            )}
+            <img
+              src={bannerImageUrl || mobileBannerImageUrl}
+              alt="Homepage banner"
+              className="img-fluid w-100 rounded shadow-sm custom-banner-img"
+              onError={(e) => {
+                console.error('❌ Banner image failed to load:', e.target.src);
+                e.target.style.display = 'none';
+              }}
+              onLoad={() => {
+                console.log('✅ Banner image loaded successfully');
+              }}
+            />
+          </picture>
+        </div>
+      ) : (
+        <div className="banner-poster-container mb-5 text-center" style={{ backgroundColor: '#f0f0f0', padding: '40px', borderRadius: '8px' }}>
+          <p style={{ color: '#999', marginBottom: 0 }}>Banner not configured in admin settings yet</p>
+        </div>
+      )}
 
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
