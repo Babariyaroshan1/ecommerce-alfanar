@@ -1,0 +1,13 @@
+{
+  "monorepo": true,
+  "projects": {
+    "nextjs": {
+      "root": "nextjs",
+      "buildCommand": "npm run build",
+      "outputDirectory": ".next"
+    },
+    "backend": {
+      "root": "backend"
+    }
+  }
+}
