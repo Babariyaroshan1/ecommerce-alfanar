@@ -70,17 +70,18 @@ export default function BannerSettings() {
 
   const handleSave = async () => {
     if (!bannerUrl.trim()) {
-      setMessage('Desktop banner URL is required.');
+      setMessage('❌ Desktop banner URL is required.');
       return;
     }
 
-    // Warn if URL looks like a relative path that won't exist
-    if (bannerUrl.startsWith('/') && !bannerUrl.startsWith('https://') && !bannerUrl.startsWith('http://')) {
-      // Check if it's a simple relative path like /banner.png
-      if (!bannerUrl.includes('cloudinary') && !bannerUrl.includes('res.')) {
-        setMessage('⚠️ Warning: Relative paths like /banner.png must exist in the public folder. Use the upload button instead to auto-upload to Cloudinary.');
-        return;
-      }
+    // STRICT: Only allow Cloudinary URLs or full http/https URLs
+    // Block relative paths like /banner.png since they don't work on Vercel
+    const isCloudinary = bannerUrl.includes('cloudinary') || bannerUrl.includes('res.cloudinary');
+    const isFullUrl = bannerUrl.startsWith('http://') || bannerUrl.startsWith('https://');
+
+    if (!isCloudinary && !isFullUrl) {
+      setMessage('❌ Error: Only upload images using the button OR use full URLs (https://...). Relative paths like /banner.png do NOT work on Vercel/live server. Please use the Upload button.');
+      return;
     }
 
     setSaving(true);
