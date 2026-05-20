@@ -77,7 +77,8 @@ const upload = multer({
 // Middleware
 app.use(cors({
     origin: (origin, callback) => {
-        if (!origin || ALLOWED_ORIGINS.includes(origin)) {
+        // Agar origin ALLOWED_ORIGINS mein hai, YA origin .vercel.app se end hota hai, toh allow karo
+        if (!origin || ALLOWED_ORIGINS.includes(origin) || (origin && origin.endsWith('.vercel.app'))) {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));
