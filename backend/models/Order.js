@@ -45,7 +45,8 @@ const orderSchema = new mongoose.Schema({
         bankDetails: {
             accountHolder: String,
             accountNumber: String,
-            ifsc: String
+            ifsc: String,
+            bankName: String
         },
         reason: String,
         proofImages: [String],

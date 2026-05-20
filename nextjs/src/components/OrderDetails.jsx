@@ -34,7 +34,8 @@ export default function OrderDetails({ orderId }) {
   const [requestBankDetails, setRequestBankDetails] = useState({
     accountHolder: '',
     accountNumber: '',
-    ifsc: ''
+    ifsc: '',
+    bankName: ''
   });
   const[showTrackingModal, setShowTrackingModal] = useState(false);
 
@@ -73,6 +74,26 @@ export default function OrderDetails({ orderId }) {
       setLoading(false);
     }
   };
+
+  const getRefundStatusLabel = () => {
+    const requestStatus = order?.returnRequest?.status;
+    if (!order) return 'Pending';
+    if (order.orderStatus === 'refunded' || requestStatus === 'completed') return 'Refunded';
+    if (requestStatus === 'rejected') return 'Rejected';
+    if (requestStatus === 'cancelled') return 'Cancelled';
+    return 'Pending';
+  };
+
+  const getRefundStatusColor = (status) => {
+    if (status === 'Refunded') return '#26a541';
+    if (status === 'Pending') return '#ff9800';
+    if (status === 'Rejected') return '#ff6161';
+    if (status === 'Cancelled') return '#6c757d';
+    return '#333';
+  };
+
+  const refundStatusLabel = getRefundStatusLabel();
+  const refundStatusColor = getRefundStatusColor(refundStatusLabel);
 
   // LOGIC 2: Cancel Order
   const handleCancelOrder = async () => {
@@ -145,8 +166,8 @@ export default function OrderDetails({ orderId }) {
     };
 
     if (requestType === 'return' && order.paymentMethod === 'cod') {
-      if (!requestBankDetails.accountHolder || !requestBankDetails.accountNumber || !requestBankDetails.ifsc) {
-        alert('Please provide bank details for COD refund processing.');
+      if (!requestBankDetails.accountHolder || !requestBankDetails.accountNumber) {
+        alert('Please provide bank account holder and account number for COD refund processing.');
         return;
       }
       payload.bankDetails = requestBankDetails;
@@ -571,6 +592,16 @@ export default function OrderDetails({ orderId }) {
               {requestType === 'return' && order.paymentMethod === 'cod' && (
                 <div className="od-bank-details-grid" style={{marginTop: '12px'}}>
                   <div className="od-form-row" style={{marginBottom: '8px'}}>
+                    <label>Bank Name</label>
+                    <input
+                      type="text"
+                      value={requestBankDetails.bankName}
+                      onChange={(e) => setRequestBankDetails(prev => ({ ...prev, bankName: e.target.value }))}
+                      placeholder="e.g. State Bank of India"
+                      style={{width: '100%', padding: '8px', marginTop: '4px', border: '1px solid #ccc', borderRadius: '4px'}}
+                    />
+                  </div>
+                  <div className="od-form-row" style={{marginBottom: '8px'}}>
                     <label>Account Holder</label>
                     <input
                       type="text"
@@ -638,7 +669,7 @@ export default function OrderDetails({ orderId }) {
         </div>
 
         {/* Return & Refund Info */}
-        {(['returned', 'refunded', 'replacement-requested'].includes(order.orderStatus)) && (
+        {(order.returnRequest?.requestedAt || order.replacementRequest?.requestedAt || order.orderStatus === 'refunded') && (
           <div className="od-card od-refund-card">
              <h3>↩ Return & Replacement Details</h3>
              <div className="od-summary-row">
@@ -649,7 +680,7 @@ export default function OrderDetails({ orderId }) {
                <>
                  <div className="od-summary-row">
                    <span>Refund Status:</span>
-                   <strong style={{color: '#26a541'}}>{order.paymentStatus === 'paid' ? 'Refunded' : 'Pending'}</strong>
+                   <strong style={{color: refundStatusColor}}>{refundStatusLabel}</strong>
                  </div>
                  <div className="od-summary-row">
                    <span>Refund Amount:</span>
@@ -658,8 +689,16 @@ export default function OrderDetails({ orderId }) {
                  {order.returnRequest?.paymentMethod === 'cod' && order.returnRequest?.bankDetails && (
                    <>
                      <div className="od-summary-row">
+                       <span>Bank Name:</span>
+                       <strong>{order.returnRequest.bankDetails.bankName || 'N/A'}</strong>
+                     </div>
+                     <div className="od-summary-row">
                        <span>Refund Method:</span>
                        <strong>Bank Transfer</strong>
+                     </div>
+                     <div className="od-summary-row">
+                       <span>Account No:</span>
+                       <strong>{order.returnRequest.bankDetails.accountNumber}</strong>
                      </div>
                      <div className="od-summary-row">
                        <span>Beneficiary:</span>
