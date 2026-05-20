@@ -57,8 +57,9 @@ export default function BannerSettings() {
 
     try {
       const uploadedUrl = await uploadImageFile(file);
+      console.log('✅ Uploaded URL:', uploadedUrl);
       setUrl(uploadedUrl);
-      setMessage('Image uploaded successfully. Click Save Banner to persist it.');
+      setMessage(`✅ Image uploaded to Cloudinary. URL: ${uploadedUrl.substring(0, 50)}...`);
     } catch (error) {
       console.error('Upload error:', error);
       setMessage(error.response?.data?.message || 'Image upload failed.');
@@ -68,8 +69,21 @@ export default function BannerSettings() {
   };
 
   const handleSave = async () => {
+    if (!bannerUrl.trim()) {
+      setMessage('Desktop banner URL is required.');
+      return;
+    }
+
+    // Warn if URL looks like a relative path that won't exist
+    if (bannerUrl.startsWith('/') && !bannerUrl.startsWith('https://') && !bannerUrl.startsWith('http://')) {
+      // Check if it's a simple relative path like /banner.png
+      if (!bannerUrl.includes('cloudinary') && !bannerUrl.includes('res.')) {
+        setMessage('⚠️ Warning: Relative paths like /banner.png must exist in the public folder. Use the upload button instead to auto-upload to Cloudinary.');
+        return;
+      }
+    }
+
     setSaving(true);
-    setMessage('');
 
     try {
       await axios.put(
@@ -79,7 +93,7 @@ export default function BannerSettings() {
       );
       setSavedUrl(bannerUrl);
       setSavedMobileUrl(mobileBannerUrl);
-      setMessage('Banner settings updated successfully.');
+      setMessage('✅ Banner settings saved successfully.');
     } catch (error) {
       console.error('Error saving banner URL:', error);
       setMessage(error.response?.data?.message || 'Unable to save banner URL.');
@@ -88,12 +102,12 @@ export default function BannerSettings() {
     }
   };
 
+
   return (
     <div className="admin-settings-section">
       <h2>Homepage Banner Settings</h2>
       <p>
-        Update the homepage banner image URLs. Use a valid image URL or a public path like <code>/banner.png</code>.
-        The mobile banner will be used on smaller screens when provided.
+        Upload or set banner image URLs. <strong>Recommended:</strong> Use the upload buttons to directly upload to Cloudinary for guaranteed availability. Manual URLs must be fully accessible (http/https links or files in the public folder).
       </p>
 
       {loading ? (
@@ -198,8 +212,13 @@ export default function BannerSettings() {
 
           <div style={{ marginTop: '16px' }}>
             <p className="text-muted" style={{ fontSize: '0.95rem' }}>
-              Tip: If you use a direct image URL, make sure it is publicly accessible. For local static images, upload them to the <code>public</code> folder and use a path like <code>/banner.png</code>.
+              <strong>How to use:</strong>
             </p>
+            <ul style={{ fontSize: '0.95rem', color: '#6b7280', marginLeft: '16px' }}>
+              <li>✅ <strong>Best option:</strong> Use "Upload" buttons → Images go to Cloudinary (reliable & fast)</li>
+              <li>⚠️ Manual URL entry: Must be a full URL (https://example.com/banner.png) or file path in public folder (/banner.png)</li>
+              <li>❌ Don't use relative paths like "/banner.png" unless the file actually exists in your public directory</li>
+            </ul>
           </div>
         </>
       )}
