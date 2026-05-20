@@ -12,7 +12,8 @@ router.put('/currency', adminAuth, settingsController.updateCurrency);
 
 // Update shipping price (admin only)
 router.put('/shipping', adminAuth, settingsController.updateShipping);
-
+// Update homepage banner image (admin only)
+router.put('/banner', adminAuth, settingsController.updateHomepageBanner);
 // Update navbar currency visibility (admin only)
 router.put('/navbar-option', adminAuth, settingsController.updateNavbarCurrencyVisibility);
 router.put('/show-kwd-navbar', adminAuth, settingsController.updateNavbarCurrencyVisibility);

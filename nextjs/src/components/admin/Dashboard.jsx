@@ -10,6 +10,7 @@ import PermissionManagement from './PermissionManagement';
 import FAQManagement from './FAQManagement';
 import Analytics from './Analytics';
 import Coupons from './Coupons';
+import BannerSettings from './BannerSettings';
 import { useProductStore } from '../../store/productStore';
 import './Dashboard.css';
 
@@ -100,6 +101,7 @@ export default function Dashboard({ onLogout }) {
       { id: 'add-kids-product', label: 'Add Kids ', icon: 'fa-solid fa-child' },
       { id: 'faqs', label: 'FAQs', icon: 'fa-solid fa-question-circle' },
       { id: 'currency', label: 'Currency', icon: 'fa-solid fa-dollar-sign' },
+      { id: 'banner', label: 'Banner', icon: 'fa-solid fa-image' },
       { id: 'coupons', label: 'Coupons', icon: 'fa-solid fa-tags' },
       { id: 'permissions', label: 'Permissions', icon: 'fa-solid fa-shield-alt' }
     ] : []),
@@ -189,6 +191,7 @@ export default function Dashboard({ onLogout }) {
           {activeTab === 'add-kids-product' && <AddKidsProducts />}
           {activeTab === 'faqs' && <FAQManagement />}
           {activeTab === 'currency' && <CurrencyManagement />}
+          {activeTab === 'banner' && <BannerSettings />}
           {activeTab === 'coupons' && <Coupons />}
           {activeTab === 'permissions' && <PermissionManagement />}
         </main>

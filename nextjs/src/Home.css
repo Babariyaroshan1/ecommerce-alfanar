@@ -95,6 +95,8 @@ body {
 }
 
 .custom-banner-img {
+  width: 100%;
+  display: block;
   object-fit: cover;
   object-position: center; /* Image hamesha center se focus rahegi */
   transition: all 0.3s ease;
@@ -103,7 +105,8 @@ body {
 /* Mobile Screens ke liye adjustment */
 @media (max-width: 768px) {
   .custom-banner-img {
-    min-height: 250px; /* Mobile me image height kam nahi hogi, text katega nahi */
+    height: 290px;
+    width: 100%;
     border-radius: 8px; /* Mobile par rounded corners thode chote */
   }
 }

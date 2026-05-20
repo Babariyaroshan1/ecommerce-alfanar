@@ -161,6 +161,27 @@ const settingsController = {
         }
     },
 
+    // Update homepage banner image (admin only)
+    updateHomepageBanner: async (req, res) => {
+        try {
+            const { bannerImageUrl } = req.body;
+
+            if (!bannerImageUrl || typeof bannerImageUrl !== 'string') {
+                return res.status(400).json({ message: 'bannerImageUrl is required and must be a string' });
+            }
+
+            await Settings.findOneAndUpdate(
+                { key: 'homeBannerImageUrl' },
+                { value: bannerImageUrl, updatedBy: req.userId, updatedAt: new Date() },
+                { upsert: true }
+            );
+
+            res.json({ message: 'Homepage banner updated successfully' });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    },
+
     // Get all co-admins
     getCoadmins: async (req, res) => {
         try {
