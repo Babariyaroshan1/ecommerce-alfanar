@@ -235,44 +235,21 @@ export default function Navbar() {
               <Link href="/" className="nav-link-custom fw-semibold text-dark" onClick={closeMobileMenu}>
                 {t('Home')}
               </Link>
-            <Link className="nav-link-custom text-dark d-flex align-items-center gap-1 btn p-0 text-start" href="/products" onClick={closeMobileMenu}>
+            <Link className="nav-link-custom text-dark d-flex align-items-center gap-1 btn  text-start" href="/products" onClick={closeMobileMenu}>
                 {t('All Products')}
               </Link>
-                 <Link href="/kids" className="nav-link-custom text-dark p-0 " onClick={closeMobileMenu}>
+                 <Link href="/kids" className="nav-link-custom text-dark  " onClick={closeMobileMenu}>
                 Kids 
               </Link>
 
               {mounted && user && (
-                <Link href="/orders" className="nav-link-custom text-dark mobile-only-order p-0" onClick={closeMobileMenu}>
+                <Link href="/orders" className="nav-link-custom text-dark mobile-only-order " onClick={closeMobileMenu}>
                   {/* <OrdersIcon /> */}
                   {t('Orders')}
                 </Link>
               )}
 
-              {/* <div className="nav-item"> */}
-                {/* <button
-                  type="button"
-                  className="nav-link-custom text-dark d-flex align-items-center gap-1 btn p-0 text-start"
-                  onClick={handleProductToggle}
-                  aria-expanded={mobileProductsOpen}
-                >
-                  {t('Products')}
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="m6 9 6 6 6-6" />
-                  </svg>
-                </button>
-
-                <ul className={`mobile-submenu shadow-sm border-0${mobileProductsOpen ? ' open' : ''}`}>
-                  <li>
-                    <Link className="dropdown-item" href="/products" onClick={closeMobileMenu}>
-                      {t('All Products')}
-                    </Link>
-                  </li>
-                </ul> */}
-                {/* <Link className="nav-link-custom text-dark d-flex align-items-center gap-1 btn p-0 text-start" href="/products" onClick={closeMobileMenu}>
-                      {t('All Products')}
-                    </Link> */}
-              {/* </div> */}
+     
 
            
 
@@ -455,13 +432,6 @@ export default function Navbar() {
                       <Link className="dropdown-item d-flex align-items-center gap-2" href="/orders">
                         <OrdersIcon />
                         {t('Orders')}
-                      </Link>
-                    </li>
-
-                    <li>
-                      <Link className="dropdown-item d-flex align-items-center gap-2" href="/addresses">
-                        <AddressIcon />
-                        {t('Add Address')}
                       </Link>
                     </li>
 

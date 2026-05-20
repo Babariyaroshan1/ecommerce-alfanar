@@ -46,10 +46,7 @@ export default function Checkout() {
     );
   }
 
-  const[loading, setLoading] = useState(false);
-  const [addresses, setAddresses] = useState([]);
-  const [selectedAddressId, setSelectedAddressId] = useState(null);
-  const[showManualForm, setShowManualForm] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [locationLoading, setLocationLoading] = useState(false);
   const [locationError, setLocationError] = useState('');
@@ -75,7 +72,6 @@ export default function Checkout() {
 
   useEffect(() => {
     setMounted(true);
-    fetchSavedAddresses();
 
     const savedData = localStorage.getItem('registerFormData');
     let savedForm = {};
@@ -101,41 +97,6 @@ export default function Checkout() {
 
   }, [user, token]);
 
-  const fetchSavedAddresses = async () => {
-    try {
-      const res = await axios.get(`${API_URL}/addresses`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-
-      const list = res.data.addresses ||[];
-      setAddresses(list);
-
-      const defaultAddr = list.find(a => a.isDefault);
-      if (defaultAddr) {
-        setSelectedAddressId(defaultAddr._id);
-        populateFormFromAddress(defaultAddr);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const populateFormFromAddress = (address) => {
-    setFormData({
-      name: user?.name || '',
-      phone: address.phone || '',
-      houseNumber: address.houseNumber || '',
-      street: address.street || '',
-      city: address.city || '',
-      state: address.state || '',
-      pincode: address.pincode || '',
-      latitude: address.latitude || null,
-      longitude: address.longitude || null,
-      mapLink: address.mapLink || ''
-    });
-    setShowManualForm(false);
-  };
-
   const currencyDecimals = selectedCurrency === 'KWD' ? 3 : 2;
   const currencySymbol = selectedCurrency === 'INR' ? '₹' : selectedCurrency === 'KWD' ? 'KWD' : currencySettings?.symbol || '₹';
   const subtotal = cart.reduce((sum, item) => sum + parsePrice(typeof item.displayPrice === 'number' ? item.displayPrice : item.price) * item.quantity, 0);
@@ -151,39 +112,6 @@ export default function Checkout() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleAddressSelect = (e) => {
-    const value = e.target.value;
-
-    if (value === 'new') {
-      setSelectedAddressId(null);
-      setShowManualForm(true);
-
-      setFormData({
-        name: user?.name || '',
-        phone: '',
-        houseNumber: '',
-        street: '',
-        city: '',
-        state: '',
-        pincode: '',
-        latitude: null,
-        longitude: null,
-        mapLink: ''
-      });
-    } else {
-      const addr = addresses.find(a => a._id === value);
-      if (addr) {
-        setSelectedAddressId(value);
-        populateFormFromAddress(addr);
-      }
-    }
-  };
-
-  const handleChangeAddress = () => setShowManualForm(true);
-  const handleCancelChangeAddress = () => {
-    if (selectedAddressId) setShowManualForm(false);
   };
 
   // 🔥 NEW: Geolocation Handler
@@ -389,190 +317,113 @@ export default function Checkout() {
 
           {/* LEFT - ADDRESS */}
           <div className="card">
-            {user && addresses.length > 0 && (showManualForm || !selectedAddressId) && (
-              <div className="saved-addresses-section">
-                <label className="form-label">{t("Select Address")}</label>
-                <select 
-                  className="form-control" 
-                  onChange={handleAddressSelect} 
-                  value={selectedAddressId || ''}
-                >
-                  <option value="">Select Address</option>
-                  {addresses.map(a => (
-                    <option key={a._id} value={a._id}>
-                      {a.label} - {a.city}
-                    </option>
-                  ))}
-                  <option value="new">+ {t("Add New")}</option>
-                </select>
+            <form className="form" onSubmit={handleOpenPaymentModal}>
+              <div className="full-width">
+                <h2>{t("Shipping Address")}</h2>
               </div>
-            )}
 
-            {selectedAddressId && addresses.find(a => a._id === selectedAddressId) && (
-              <div className="selected-address-preview">
-                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'start'}}>
-                  <div style={{flex: 1}}>
-                    <h5>{t("Shipping To")}:</h5>
-                    <p><strong>{formData.name}</strong></p>
-                    <p>{formData.phone}</p>
-                    <p>{formData.houseNumber}, {formData.street}</p>
-                    <p>{formData.city}, {formData.state} {formData.pincode}</p>
-                  </div>
-                  <button 
-                    type="button"
-                    onClick={handleChangeAddress}
-                    style={{
-                      padding: '6px 12px',
-                      background: '#16a34a',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '6px',
-                      cursor: 'pointer',
-                      fontSize: '12px',
-                      whiteSpace: 'nowrap',
-                      marginLeft: '10px'
-                    }}
-                  >
-                    {t("Change")}
-                  </button>
-                </div>
-              </div>
-            )}
+              <input name="name" value={formData.name} onChange={handleChange} placeholder={t("Full Name")} required />
+              <input name="phone" value={formData.phone} onChange={handleChange} placeholder={t("Phone Number")} required />
 
-            {(showManualForm || !selectedAddressId) && (
-              <form className="form" onSubmit={handleOpenPaymentModal}>
-                <div className="full-width">
-                  <h2>{t("Shipping Address")}</h2>
+              <div style={{display: 'grid', gridTemplateColumns: '1.5fr 2fr', gap: '10px', width: '100%', alignItems: 'start'}}>
+                <div>
+                  <label style={{fontSize: '12px', color: '#666', fontWeight: '500', marginBottom: '4px', display: 'block'}}>House Number *</label>
+                  <input 
+                    name="houseNumber" 
+                    value={formData.houseNumber} 
+                    onChange={handleChange} 
+                    placeholder="Apt/House No." 
+                    required 
+                    style={{width: '100%', padding: '12px'}}
+                  />
                 </div>
-                
-                <input name="name" value={formData.name} onChange={handleChange} placeholder={t("Full Name")} required />
-                <input name="phone" value={formData.phone} onChange={handleChange} placeholder={t("Phone Number")} required />
-                
-                {/* 🔥 NEW: House Number + Location Row */}
-                <div style={{display: 'grid', gridTemplateColumns: '1.5fr 2fr', gap: '10px', width: '100%', alignItems: 'start'}}>
-                  <div>
-                    <label style={{fontSize: '12px', color: '#666', fontWeight: '500', marginBottom: '4px', display: 'block'}}>House Number *</label>
-                    <input 
-                      name="houseNumber" 
-                      value={formData.houseNumber} 
-                      onChange={handleChange} 
-                      placeholder="Apt/House No." 
-                      required 
-                      style={{width: '100%', padding: '12px'}}
-                    />
-                  </div>
-                  <div>
-                    <label style={{fontSize: '12px', color: '#666', fontWeight: '500', marginBottom: '4px', display: 'block'}}>
-                      {locationLoading ? 'Fetching Location...' : 'Current Location'}
-                    </label>
-                    <div style={{display: 'flex', gap: '8px', alignItems: 'center'}}>
-                      <div 
-                        style={{
-                          flex: 1, 
-                          padding: '12px',
-                          background: formData.mapLink ? '#dcfce7' : locationLoading ? '#fef3c7' : '#f3f4f6',
-                          border: '1px solid ' + (formData.mapLink ? '#86efac' : locationLoading ? '#fcd34d' : '#e5e7eb'),
-                          borderRadius: '6px',
-                          fontSize: '13px',
-                          color: formData.mapLink ? '#166534' : locationLoading ? '#92400e' : '#6b7280',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                          fontWeight: '500'
-                        }}
-                      >
-                        {locationLoading ? (
-                          <>
-                            <span style={{display: 'inline-block', animation: 'spin 1s linear infinite', fontSize: '16px'}}>⏳</span>
-                            Getting location...
-                          </>
-                        ) : formData.mapLink ? (
-                          <>
-                            <i className="fa-solid fa-check-circle" style={{color: '#22c55e'}}></i>
-                            Location Saved
-                          </>
-                        ) : (
-                          <>
-                            <i className="fa-solid fa-location-dot" style={{color: '#9ca3af'}}></i>
-                            Click button →
-                          </>
-                        )}
-                      </div>
-                      <button
-                        type="button"
-                        onClick={handleUseCurrentLocation}
-                        disabled={locationLoading}
-                        style={{
-                          padding: '12px 16px',
-                          background: formData.mapLink ? '#10b981' : '#3b82f6',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '6px',
-                          cursor: locationLoading ? 'not-allowed' : 'pointer',
-                          fontWeight: 'bold',
-                          fontSize: '13px',
-                          whiteSpace: 'nowrap',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                          opacity: locationLoading ? 0.7 : 1
-                        }}
-                      >
-                        <i className={`fa-solid ${locationLoading ? 'fa-spinner' : formData.mapLink ? 'fa-check' : 'fa-location-crosshairs'}`} 
-                           style={{display: 'inline-block', animation: locationLoading ? 'spin 1s linear infinite' : 'none'}}
-                        ></i>
-                        {locationLoading ? 'Wait...' : formData.mapLink ? 'Saved' : 'Get GPS'}
-                      </button>
+                <div>
+                  <label style={{fontSize: '12px', color: '#666', fontWeight: '500', marginBottom: '4px', display: 'block'}}>
+                    {locationLoading ? 'Fetching Location...' : 'Current Location'}
+                  </label>
+                  <div style={{display: 'flex', gap: '8px', alignItems: 'center'}}>
+                    <div 
+                      style={{
+                        flex: 1, 
+                        padding: '12px',
+                        background: formData.mapLink ? '#dcfce7' : locationLoading ? '#fef3c7' : '#f3f4f6',
+                        border: '1px solid ' + (formData.mapLink ? '#86efac' : locationLoading ? '#fcd34d' : '#e5e7eb'),
+                        borderRadius: '6px',
+                        fontSize: '13px',
+                        color: formData.mapLink ? '#166534' : locationLoading ? '#92400e' : '#6b7280',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        fontWeight: '500'
+                      }}
+                    >
+                      {locationLoading ? (
+                        <>
+                          <span style={{display: 'inline-block', animation: 'spin 1s linear infinite', fontSize: '16px'}}>⏳</span>
+                          Getting location...
+                        </>
+                      ) : formData.mapLink ? (
+                        <>
+                          <i className="fa-solid fa-check-circle" style={{color: '#22c55e'}}></i>
+                          Location Saved
+                        </>
+                      ) : (
+                        <>
+                          <i className="fa-solid fa-location-dot" style={{color: '#9ca3af'}}></i>
+                          Click button →
+                        </>
+                      )}
                     </div>
+                    <button
+                      type="button"
+                      onClick={handleUseCurrentLocation}
+                      disabled={locationLoading}
+                      style={{
+                        padding: '12px 16px',
+                        background: formData.mapLink ? '#10b981' : '#3b82f6',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '6px',
+                        cursor: locationLoading ? 'not-allowed' : 'pointer',
+                        fontWeight: 'bold',
+                        fontSize: '13px',
+                        whiteSpace: 'nowrap',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        opacity: locationLoading ? 0.7 : 1
+                      }}
+                    >
+                      <i className={`fa-solid ${locationLoading ? 'fa-spinner' : formData.mapLink ? 'fa-check' : 'fa-location-crosshairs'}`} 
+                         style={{display: 'inline-block', animation: locationLoading ? 'spin 1s linear infinite' : 'none'}}
+                      ></i>
+                      {locationLoading ? 'Wait...' : formData.mapLink ? 'Saved' : 'Get GPS'}
+                    </button>
                   </div>
                 </div>
-                
-                <style jsx>{`
-                  @keyframes spin {
-                    from { transform: rotate(0deg); }
-                    to { transform: rotate(360deg); }
-                  }
-                `}</style>
-                
-                {locationError && (
-                  <div style={{color: '#ef4444', fontSize: '12px', marginTop: '5px', width: '100%'}}>
-                    ⚠️ {locationError}
-                  </div>
-                )}
-                
-                <input name="street" className="full-width" value={formData.street} onChange={handleChange} placeholder={t("Street Address")} required />
-                <input name="city" value={formData.city} onChange={handleChange} placeholder={t("City")} required />
-                <input name="pincode" value={formData.pincode} onChange={handleChange} placeholder={t("Pincode")} required />
+              </div>
 
-                {selectedAddressId && (
-                  <div className="full-width" style={{display: 'flex', gap: '10px', marginTop: '15px', marginBottom: '15px'}}>
-                    <button type="button" onClick={handleCancelChangeAddress} style={{flex: 1, padding: '12px', background: '#e2e8f0', color: '#333', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold'}}>
-                      {t("Cancel")}
-                    </button>
-                    <button type="button" onClick={() => setShowManualForm(false)} style={{flex: 1, padding: '12px', background: '#16a34a', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold'}}>
-                      {t("Confirm Address")}
-                    </button>
-                  </div>
-                )}
+              <style jsx>{`
+                @keyframes spin {
+                  from { transform: rotate(0deg); }
+                  to { transform: rotate(360deg); }
+                }
+              `}</style>
 
-                {/* 🔥 New Buy Now Button triggers Modal */}
-                <button type="submit" className="btn btnbuy" disabled={loading}>
-                  {loading ? t('Processing...') : t('Buy Now')}
-                </button>
-              </form>
-            )}
+              {locationError && (
+                <div style={{color: '#ef4444', fontSize: '12px', marginTop: '5px', width: '100%'}}>
+                  ⚠️ {locationError}
+                </div>
+              )}
 
-            {/* If an address is already confirmed, show the Buy Now button outside the form */}
-            {!showManualForm && selectedAddressId && (
-               <button 
-                 type="button" 
-                 className="btn btnbuy" 
-                 disabled={loading}
-                 onClick={() => setShowPaymentModal(true)}
-               >
-                 {loading ? t('Processing...') : t('Buy Now')}
-               </button>
-            )}
+              <input name="street" className="full-width" value={formData.street} onChange={handleChange} placeholder={t("Street Address")} required />
+              <input name="city" value={formData.city} onChange={handleChange} placeholder={t("City")} required />
+              <input name="pincode" value={formData.pincode} onChange={handleChange} placeholder={t("Pincode")} required />
+
+              <button type="submit" className="btn btnbuy" disabled={loading}>
+                {loading ? t('Processing...') : t('Buy Now')}
+              </button>
+            </form>
           </div>
 
           {/* RIGHT - ORDER SUMMARY */}
