@@ -1,5 +1,4 @@
 {
-  "monorepo": true,
   "projects": {
     "nextjs": {
       "root": "nextjs",
