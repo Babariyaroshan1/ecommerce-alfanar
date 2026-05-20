@@ -7,6 +7,10 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
 
+// 🔥 CLOUDINARY IMPORTS ADDED HERE
+import { v2 as cloudinary } from 'cloudinary';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
+
 import authRoutes from './routes/auth.js';
 import productRoutes from './routes/products.js';
 import orderRoutes from './routes/orders.js';
@@ -25,8 +29,6 @@ const app = express();
 const BACKEND_URL = process.env.API_URL || 'http://localhost:5000';
 
 // Use environment variable list to configure allowed CORS origins for development and production.
-// In production, set ALLOWED_ORIGINS to a comma-separated list like:
-// https://alfanar.store,https://www.alfanar.store
 const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS
     ? process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim())
     : [
@@ -41,38 +43,6 @@ const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS
         'https://alfanar.store',
         'https://www.alfanar.store'
     ];
-
-// Create uploads directory if it doesn't exist
-const uploadDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-// Configure multer for file uploads
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, uploadDir);
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, uniqueSuffix + path.extname(file.originalname));
-    }
-});
-
-const fileFilter = (req, file, cb) => {
-    const allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-    if (allowedMimes.includes(file.mimetype)) {
-        cb(null, true);
-    } else {
-        cb(new Error('Only image files are allowed (jpeg, png, gif, webp)'));
-    }
-};
-
-const upload = multer({
-    storage,
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max
-    fileFilter
-});
 
 // Middleware
 app.use(cors({
@@ -92,27 +62,59 @@ app.use(cors({
 app.options('*', cors());
 app.use(express.json());
 
-// Static files - serve uploaded images
+// ==========================================================
+// 🔥 CLOUDINARY CONFIGURATION (REPLACED LOCAL DISK STORAGE)
+// ==========================================================
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'alfanar_products', // Cloudinary me is folder me image save hogi
+        allowed_formats: ['jpg', 'jpeg', 'png', 'webp', 'gif']
+    }
+});
+
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024 } // 5MB max
+});
+// ==========================================================
+
+
+// Static files - serve uploaded images (Rakh liya hai just in case purani images read karni ho)
+const uploadDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
 app.use('/uploads', express.static(uploadDir));
 
-// Upload route
+
+// ==========================================================
+// 🔥 UPLOAD ROUTE (UPDATED TO RETURN CLOUDINARY URL)
+// ==========================================================
 app.post('/api/upload', upload.single('file'), (req, res) => {
     try {
         if (!req.file) {
             return res.status(400).json({ message: 'No file uploaded' });
         }
 
-        const fileUrl = `${BACKEND_URL}/uploads/${req.file.filename}`;
+        // req.file.path ab Cloudinary ka direct secure URL dega
         res.json({
             success: true,
             message: 'File uploaded successfully',
-            url: fileUrl,
+            url: req.file.path, // Yeh seedha Cloudinary ka link hai
             filename: req.file.filename
         });
     } catch (error) {
         res.status(500).json({ message: 'Upload failed', error: error.message });
     }
 });
+
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI)
