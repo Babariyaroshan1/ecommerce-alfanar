@@ -95,6 +95,7 @@ const Home = () => {
             <img
               src={bannerImageUrl || mobileBannerImageUrl}
               alt="Homepage banner"
+              loading="lazy"
               className="img-fluid w-100 rounded shadow-sm custom-banner-img"
               onError={(e) => {
                 console.error('❌ Banner image failed to load:', e.target.src);

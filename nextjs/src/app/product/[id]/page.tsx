@@ -139,7 +139,7 @@ export default function ProductDetailPage() {
 
       try {
         const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'; // Set in nextjs/.env.local for development and in Vercel env for production
-        const response = await fetch(`${API_URL}/api/products/${id}`);
+        const response = await fetch(`${API_URL}/products/${id}`);
         if (!response.ok) throw new Error('Product not found');
         const data = await response.json();
         setProduct(data);

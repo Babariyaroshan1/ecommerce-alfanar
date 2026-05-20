@@ -414,6 +414,7 @@ export default function ProductCard({ product: initialProduct, directToProduct =
           <img
             src={cardImageSrc || normalizeDriveImageUrl(product.image) || 'https://via.placeholder.com/500x500'}
             alt={product.name}
+            loading="lazy"
             className="card-img-top card-img-base"
             onError={(e) => {
               const target = e.target;
