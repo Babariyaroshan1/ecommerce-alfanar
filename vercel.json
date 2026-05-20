@@ -1,5 +1,4 @@
 {
-  "projects": {
     "nextjs": {
       "root": "nextjs",
       "buildCommand": "npm run build",
@@ -8,5 +7,4 @@
     "backend": {
       "root": "backend"
     }
-  }
 }
