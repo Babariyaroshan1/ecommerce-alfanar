@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import Addresses from '@/components/Addresses.jsx';
+import Addresses from '@/components/Addresses';
 
 export const metadata: Metadata = {
     title: 'My Addresses | AL-FANAR',
