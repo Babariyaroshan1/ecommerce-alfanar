@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { Suspense } from 'react';
 import KidsProductsClient from '@/components/KidsProductsClient';
 
 export const metadata: Metadata = {
@@ -7,5 +8,9 @@ export const metadata: Metadata = {
 };
 
 export default function KidsPage() {
-  return <KidsProductsClient />;
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <KidsProductsClient />
+    </Suspense>
+  );
 }
