@@ -164,17 +164,35 @@ const settingsController = {
     // Update homepage banner image (admin only)
     updateHomepageBanner: async (req, res) => {
         try {
-            const { bannerImageUrl } = req.body;
+            const { bannerImageUrl, mobileBannerImageUrl } = req.body;
 
             if (!bannerImageUrl || typeof bannerImageUrl !== 'string') {
                 return res.status(400).json({ message: 'bannerImageUrl is required and must be a string' });
             }
 
-            await Settings.findOneAndUpdate(
-                { key: 'homeBannerImageUrl' },
-                { value: bannerImageUrl, updatedBy: req.userId, updatedAt: new Date() },
-                { upsert: true }
-            );
+            if (mobileBannerImageUrl !== undefined && typeof mobileBannerImageUrl !== 'string') {
+                return res.status(400).json({ message: 'mobileBannerImageUrl must be a string' });
+            }
+
+            const updates = [
+                Settings.findOneAndUpdate(
+                    { key: 'homeBannerImageUrl' },
+                    { value: bannerImageUrl, updatedBy: req.userId, updatedAt: new Date() },
+                    { upsert: true }
+                )
+            ];
+
+            if (mobileBannerImageUrl !== undefined) {
+                updates.push(
+                    Settings.findOneAndUpdate(
+                        { key: 'homeBannerMobileImageUrl' },
+                        { value: mobileBannerImageUrl, updatedBy: req.userId, updatedAt: new Date() },
+                        { upsert: true }
+                    )
+                );
+            }
+
+            await Promise.all(updates);
 
             res.json({ message: 'Homepage banner updated successfully' });
         } catch (error) {
