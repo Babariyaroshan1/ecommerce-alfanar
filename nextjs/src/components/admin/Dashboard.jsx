@@ -101,7 +101,7 @@ export default function Dashboard({ onLogout }) {
       { id: 'add-product', label: 'Add Product', icon: 'fa-solid fa-plus' },
       { id: 'add-kids-product', label: 'Add Kids ', icon: 'fa-solid fa-child' },
       { id: 'faqs', label: 'FAQs', icon: 'fa-solid fa-question-circle' },
-      { id: 'product-faqs', label: 'Product FAQs', icon: 'fa-solid fa-file-alt' },
+      { id: 'product-faqs', label: 'Product FAQs', icon: 'fa-solid fa-question-circle' },
       { id: 'currency', label: 'Currency', icon: 'fa-solid fa-dollar-sign' },
       { id: 'banner', label: 'Banner', icon: 'fa-solid fa-image' },
       { id: 'coupons', label: 'Coupons', icon: 'fa-solid fa-tags' },

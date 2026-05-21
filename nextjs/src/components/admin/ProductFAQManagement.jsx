@@ -38,7 +38,7 @@ export default function ProductFAQManagement() {
       const response = await axios.get(`${API_URL}/products`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setProducts(response.data);
+      setProducts(Array.isArray(response.data) ? response.data : response.data.products || []);
     } catch (error) {
       console.error('Error fetching products:', error);
       setMessage('❌ Failed to load products');
@@ -50,10 +50,11 @@ export default function ProductFAQManagement() {
       const response = await axios.get(`${API_URL}/product-faqs/${selectedProduct}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setFaqs(response.data);
+      setFaqs(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error('Error fetching product FAQs:', error);
       setMessage('❌ Failed to load FAQs');
+      setFaqs([]);
     }
   };
 
@@ -133,99 +134,110 @@ export default function ProductFAQManagement() {
   };
 
   return (
-    <div className="faq-management-container">
-      <h2 className="faq-title">Product FAQs Management</h2>
+    <div className="faq-management">
+      <div className="faq-header">
+        <h2>Product FAQ Management</h2>
+        {selectedProduct && (
+          <button onClick={() => setShowForm(!showForm)} className="add-faq-btn">
+            {showForm ? 'Cancel' : '+ Add New FAQ'}
+          </button>
+        )}
+      </div>
 
-      {message && <div className="faq-message">{message}</div>}
+      {message && (
+        <div className={`message ${message.includes('✅') ? 'success' : 'error'}`}>
+          {message}
+        </div>
+      )}
 
       <div className="faq-selector">
         <label>Select Product:</label>
         <select value={selectedProduct} onChange={(e) => setSelectedProduct(e.target.value)} className="faq-select">
           <option value="">-- Choose a Product --</option>
           {products.map((product) => (
-            <option key={product._id} value={product._id}>
+            <option key={product._id || product.id} value={product._id || product.id}>
               {product.name}
             </option>
           ))}
         </select>
       </div>
 
+      {selectedProduct && showForm && (
+        <div className="faq-form-container">
+          <form onSubmit={handleSubmit} className="faq-form">
+            <h3>{editingFaq ? 'Edit FAQ' : 'Add New FAQ'}</h3>
+
+            <div className="form-group">
+              <label>Question *</label>
+              <input
+                type="text"
+                value={formData.question}
+                onChange={(e) => setFormData({ ...formData, question: e.target.value })}
+                required
+                placeholder="Enter the FAQ question"
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Answer *</label>
+              <textarea
+                value={formData.answer}
+                onChange={(e) => setFormData({ ...formData, answer: e.target.value })}
+                required
+                placeholder="Enter the detailed answer"
+                rows="4"
+              />
+            </div>
+
+            <div className="form-actions">
+              <button type="submit" disabled={loading} className="save-btn">
+                {loading ? 'Saving...' : (editingFaq ? 'Update FAQ' : 'Create FAQ')}
+              </button>
+              <button type="button" onClick={resetForm} className="cancel-btn">
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
       {selectedProduct && (
-        <>
-          {!showForm ? (
-            <button onClick={() => setShowForm(true)} className="faq-btn faq-btn-add">
-              + Add FAQ
-            </button>
+        <div className="faq-list">
+          <div className="faq-list-header">
+            <h3>FAQs for Selected Product ({Array.isArray(faqs) ? faqs.length : 0})</h3>
+          </div>
+
+          {!Array.isArray(faqs) || faqs.length === 0 ? (
+            <div className="no-faqs">
+              <p>No FAQs found for this product yet.</p>
+            </div>
           ) : (
-            <form onSubmit={handleSubmit} className="faq-form">
-              <h3>{editingFaq ? 'Edit FAQ' : 'Add New FAQ'}</h3>
-              
-              <div className="form-group">
-                <label>Question *</label>
-                <input
-                  type="text"
-                  value={formData.question}
-                  onChange={(e) => setFormData({ ...formData, question: e.target.value })}
-                  placeholder="Enter question"
-                  required
-                  className="faq-input"
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Answer *</label>
-                <textarea
-                  value={formData.answer}
-                  onChange={(e) => setFormData({ ...formData, answer: e.target.value })}
-                  placeholder="Enter answer"
-                  required
-                  rows="5"
-                  className="faq-textarea"
-                />
-              </div>
-
-              <div className="form-actions">
-                <button type="submit" disabled={loading} className="faq-btn faq-btn-save">
-                  {loading ? 'Saving...' : 'Save FAQ'}
-                </button>
-                <button type="button" onClick={resetForm} className="faq-btn faq-btn-cancel">
-                  Cancel
-                </button>
-              </div>
-            </form>
-          )}
-
-          <div className="faq-list">
-            <h3>FAQs for Selected Product</h3>
-            {faqs.length === 0 ? (
-              <p className="faq-empty">No FAQs for this product yet.</p>
-            ) : (
-              faqs.map((faq, index) => (
-                <div key={faq._id} className="faq-item">
-                  <div className="faq-item-header">
-                    <span className="faq-number">Q{index + 1}:</span>
-                    <span className="faq-question">{faq.question}</span>
-                    <span className={`faq-status ${faq.isActive ? 'active' : 'inactive'}`}>
-                      {faq.isActive ? 'Active' : 'Inactive'}
-                    </span>
-                  </div>
-                  <div className="faq-item-answer">{faq.answer}</div>
-                  <div className="faq-item-actions">
-                    <button onClick={() => handleToggleStatus(faq._id, faq.isActive)} className="faq-btn faq-btn-toggle">
-                      {faq.isActive ? 'Disable' : 'Enable'}
-                    </button>
-                    <button onClick={() => handleEdit(faq)} className="faq-btn faq-btn-edit">
-                      Edit
-                    </button>
-                    <button onClick={() => handleDelete(faq._id)} className="faq-btn faq-btn-delete">
-                      Delete
-                    </button>
+            <div className="faq-items">
+              {faqs.map((faq, index) => (
+                <div key={faq._id || index} className="faq-item">
+                  <div className="faq-content">
+                    <h4 className="question">Q{index + 1}: {faq.question}</h4>
+                    <p className="answer">{faq.answer}</p>
+                    <div className="faq-actions">
+                      <button
+                        onClick={() => handleToggleStatus(faq._id, faq.isActive)}
+                        className="edit-btn"
+                      >
+                        {faq.isActive ? 'Disable' : 'Enable'}
+                      </button>
+                      <button onClick={() => handleEdit(faq)} className="edit-btn">
+                        Edit
+                      </button>
+                      <button onClick={() => handleDelete(faq._id)} className="delete-btn">
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 </div>
-              ))
-            )}
-          </div>
-        </>
+              ))}
+            </div>
+          )}
+        </div>
       )}
     </div>
   );
