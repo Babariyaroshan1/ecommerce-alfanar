@@ -1,11 +1,14 @@
 import ProductFAQ from '../models/ProductFAQ.js';
 
 const productFaqController = {
-  // Get FAQs for a specific product (public)
+  // Get active FAQs (public). If productId is provided, return only those for that product.
   getProductFAQs: async (req, res) => {
     try {
       const { productId } = req.params;
-      const faqs = await ProductFAQ.find({ productId, isActive: true })
+      const query = { isActive: true };
+      if (productId) query.productId = productId;
+
+      const faqs = await ProductFAQ.find(query)
         .sort({ sortOrder: 1, createdAt: -1 })
         .lean();
       res.json(faqs);
@@ -14,11 +17,14 @@ const productFaqController = {
     }
   },
 
-  // Get all FAQs for a product (admin)
+  // Get all product FAQs (admin). If productId is provided, filter by product.
   getAllProductFAQs: async (req, res) => {
     try {
       const { productId } = req.params;
-      const faqs = await ProductFAQ.find({ productId })
+      const query = {};
+      if (productId) query.productId = productId;
+
+      const faqs = await ProductFAQ.find(query)
         .sort({ sortOrder: 1, createdAt: -1 })
         .lean();
       res.json(faqs);
@@ -27,7 +33,7 @@ const productFaqController = {
     }
   },
 
-  // Create FAQ for product
+  // Create global or product-specific FAQ
   createProductFAQ: async (req, res) => {
     try {
       const { productId } = req.params;
@@ -38,7 +44,7 @@ const productFaqController = {
       }
 
       const faq = new ProductFAQ({
-        productId,
+        productId: productId || undefined,
         question,
         answer,
         sortOrder: sortOrder || 0

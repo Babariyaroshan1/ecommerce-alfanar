@@ -5,10 +5,12 @@ import { adminAuth } from '../middleware/auth.js';
 const router = express.Router();
 
 // Public routes
+router.get('/', productFaqController.getProductFAQs);
+router.get('/admin', adminAuth, productFaqController.getAllProductFAQs);
 router.get('/:productId', productFaqController.getProductFAQs);
 
 // Admin routes
-router.get('/:productId/admin', adminAuth, productFaqController.getAllProductFAQs);
+router.post('/', adminAuth, productFaqController.createProductFAQ);
 router.post('/:productId', adminAuth, productFaqController.createProductFAQ);
 router.put('/:id', adminAuth, productFaqController.updateProductFAQ);
 router.delete('/:id', adminAuth, productFaqController.deleteProductFAQ);

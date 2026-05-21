@@ -159,18 +159,18 @@ export default function ProductDetailPage() {
     if (product) {
       setSelectedColor(product.colors?.[0] || '');
       setSelectedSize(product.sizes?.[0] || '');
-      fetchProductFAQs(product._id || product.id);
+      fetchProductFAQs();
     }
   }, [product]);
 
-  const fetchProductFAQs = async (productId) => {
+  const fetchProductFAQs = async () => {
     try {
       setFaqsLoading(true);
       const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-      const response = await fetch(`${API_URL}/product-faqs/${productId}`);
+      const response = await fetch(`${API_URL}/product-faqs`);
       if (response.ok) {
         const data = await response.json();
-        setFaqs(data);
+        setFaqs(Array.isArray(data) ? data : []);
       } else {
         setFaqs([]);
       }

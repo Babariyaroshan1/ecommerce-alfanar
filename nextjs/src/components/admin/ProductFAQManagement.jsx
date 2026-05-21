@@ -7,8 +7,6 @@ import './FAQManagement.css';
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 export default function ProductFAQManagement() {
-  const [products, setProducts] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState('');
   const [faqs, setFaqs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -22,32 +20,12 @@ export default function ProductFAQManagement() {
   const token = typeof window !== 'undefined' ? localStorage.getItem('adminToken') : null;
 
   useEffect(() => {
-    fetchProducts();
+    fetchProductFAQs();
   }, []);
-
-  useEffect(() => {
-    if (selectedProduct) {
-      fetchProductFAQs();
-    } else {
-      setFaqs([]);
-    }
-  }, [selectedProduct]);
-
-  const fetchProducts = async () => {
-    try {
-      const response = await axios.get(`${API_URL}/products`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setProducts(Array.isArray(response.data) ? response.data : response.data.products || []);
-    } catch (error) {
-      console.error('Error fetching products:', error);
-      setMessage('❌ Failed to load products');
-    }
-  };
 
   const fetchProductFAQs = async () => {
     try {
-      const response = await axios.get(`${API_URL}/product-faqs/${selectedProduct}`, {
+      const response = await axios.get(`${API_URL}/product-faqs/admin`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setFaqs(Array.isArray(response.data) ? response.data : []);
@@ -69,7 +47,7 @@ export default function ProductFAQManagement() {
         });
         setMessage('✅ FAQ updated successfully');
       } else {
-        await axios.post(`${API_URL}/product-faqs/${selectedProduct}`, formData, {
+        await axios.post(`${API_URL}/product-faqs`, formData, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setMessage('✅ FAQ created successfully');
@@ -111,7 +89,7 @@ export default function ProductFAQManagement() {
     }
   };
 
-  const handleToggleStatus = async (id, currentStatus) => {
+  const handleToggleStatus = async (id) => {
     try {
       await axios.patch(`${API_URL}/product-faqs/${id}/toggle`, {}, {
         headers: { Authorization: `Bearer ${token}` }
@@ -137,11 +115,9 @@ export default function ProductFAQManagement() {
     <div className="faq-management">
       <div className="faq-header">
         <h2>Product FAQ Management</h2>
-        {selectedProduct && (
-          <button onClick={() => setShowForm(!showForm)} className="add-faq-btn">
-            {showForm ? 'Cancel' : '+ Add New FAQ'}
-          </button>
-        )}
+        <button onClick={() => setShowForm(!showForm)} className="add-faq-btn">
+          {showForm ? 'Cancel' : '+ Add New FAQ'}
+        </button>
       </div>
 
       {message && (
@@ -150,19 +126,7 @@ export default function ProductFAQManagement() {
         </div>
       )}
 
-      <div className="faq-selector">
-        <label>Select Product:</label>
-        <select value={selectedProduct} onChange={(e) => setSelectedProduct(e.target.value)} className="faq-select">
-          <option value="">-- Choose a Product --</option>
-          {products.map((product) => (
-            <option key={product._id || product.id} value={product._id || product.id}>
-              {product.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {selectedProduct && showForm && (
+      {showForm && (
         <div className="faq-form-container">
           <form onSubmit={handleSubmit} className="faq-form">
             <h3>{editingFaq ? 'Edit FAQ' : 'Add New FAQ'}</h3>
@@ -201,44 +165,39 @@ export default function ProductFAQManagement() {
         </div>
       )}
 
-      {selectedProduct && (
-        <div className="faq-list">
-          <div className="faq-list-header">
-            <h3>FAQs for Selected Product ({Array.isArray(faqs) ? faqs.length : 0})</h3>
-          </div>
+      <div className="faq-list">
+        <div className="faq-list-header">
+          <h3>All Product FAQs ({faqs.length})</h3>
+        </div>
 
-          {!Array.isArray(faqs) || faqs.length === 0 ? (
-            <div className="no-faqs">
-              <p>No FAQs found for this product yet.</p>
-            </div>
-          ) : (
-            <div className="faq-items">
-              {faqs.map((faq, index) => (
-                <div key={faq._id || index} className="faq-item">
-                  <div className="faq-content">
-                    <h4 className="question">Q{index + 1}: {faq.question}</h4>
-                    <p className="answer">{faq.answer}</p>
-                    <div className="faq-actions">
-                      <button
-                        onClick={() => handleToggleStatus(faq._id, faq.isActive)}
-                        className="edit-btn"
-                      >
-                        {faq.isActive ? 'Disable' : 'Enable'}
-                      </button>
-                      <button onClick={() => handleEdit(faq)} className="edit-btn">
-                        Edit
-                      </button>
-                      <button onClick={() => handleDelete(faq._id)} className="delete-btn">
-                        Delete
-                      </button>
-                    </div>
+        {faqs.length === 0 ? (
+          <div className="no-faqs">
+            <p>No product FAQs found. Add one to show the same FAQ list across all products.</p>
+          </div>
+        ) : (
+          <div className="faq-items">
+            {faqs.map((faq, index) => (
+              <div key={faq._id || index} className="faq-item">
+                <div className="faq-content">
+                  <h4 className="question">Q{index + 1}: {faq.question}</h4>
+                  <p className="answer">{faq.answer}</p>
+                  <div className="faq-actions">
+                    <button onClick={() => handleToggleStatus(faq._id)} className="edit-btn">
+                      {faq.isActive ? 'Disable' : 'Enable'}
+                    </button>
+                    <button onClick={() => handleEdit(faq)} className="edit-btn">
+                      Edit
+                    </button>
+                    <button onClick={() => handleDelete(faq._id)} className="delete-btn">
+                      Delete
+                    </button>
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
