@@ -388,7 +388,8 @@ export default function OrderDetails({ orderId }) {
           </div>
           <div className="od-header-actions">
             <button className="od-btn od-btn-outline" onClick={downloadInvoice} disabled={actionLoading}>
-              📄 Download Invoice
+              <i className="fas fa-file-pdf" style={{marginRight: '8px'}}></i>
+              Download Invoice
             </button>
           </div>
         </div>
@@ -641,20 +642,20 @@ export default function OrderDetails({ orderId }) {
             </div>
           )}
 
-          <div className="od-order-actions" style={{display: 'flex', flexWrap: 'wrap', gap: '12px', marginTop: '20px'}}>
+          <div className="od-order-actions" style={{display: 'flex', flexWrap: 'nowrap', gap: '12px', marginTop: '20px'}}>
              {canCancel && (
               <button className="od-btn od-btn-danger" onClick={handleCancelOrder} disabled={actionLoading}>
-                {actionLoading ? 'Cancelling...' : '✕ Cancel Order'}
+                {actionLoading ? 'Cancelling...' : <><i className="fas fa-ban" style={{marginRight: '8px'}}></i>Cancel Order</>}
               </button>
             )}
             {canReturn && (
               <button className="od-btn od-btn-warning" onClick={handleReturnOrder} disabled={actionLoading} style={{border: '1px solid #ff9800', color: '#ff9800', background: 'transparent'}}>
-                {actionLoading ? 'Processing...' : '↩ Return Order'}
+                {actionLoading ? 'Processing...' : <><i className="fas fa-undo" style={{marginRight: '8px'}}></i>Return Order</>}
               </button>
             )}
             {canReplace && (
               <button className="od-btn od-btn-secondary" onClick={handleReplaceOrder} disabled={actionLoading} style={{border: '1px solid #6c757d', color: '#6c757d', background: 'transparent'}}>
-                {actionLoading ? 'Processing...' : '🔁 Replace Order'}
+                {actionLoading ? 'Processing...' : <><i className="fas fa-sync-alt" style={{marginRight: '8px'}}></i>Replace Order</>}
               </button>
             )}
             {canReorder && (
