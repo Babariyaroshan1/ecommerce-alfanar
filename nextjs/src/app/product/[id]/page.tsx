@@ -1054,7 +1054,15 @@ export default function ProductDetailPage() {
           <div className="tss-review-list">
             {reviews.map((review) => (
               <div key={review._id} className="tss-review-card">
-                <div className="tss-review-stars">{'★'.repeat(review.rating) + '☆'.repeat(5 - review.rating)}</div>
+                <div className="tss-review-stars">
+                  {[...Array(5)].map((_, index) => (
+                    <i
+                      key={index}
+                      className={`fa-solid fa-star ${index < review.rating ? 'active' : 'inactive'}`}
+                      aria-hidden="true"
+                    />
+                  ))}
+                </div>
                 <div className="tss-review-meta">
                   <span className="tss-review-author">{review.userName || 'Customer'}</span>
                   <span className="tss-review-date">{new Date(review.createdAt).toLocaleDateString()}</span>
@@ -1105,7 +1113,9 @@ export default function ProductDetailPage() {
       {showReviewModal && (
         <div className="tss-review-modal" onClick={closeReviewModal}>
           <div className="tss-review-modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="tss-review-modal-close" onClick={closeReviewModal}>×</button>
+            <button className="tss-review-modal-close" onClick={closeReviewModal}>
+              <i className="fa-solid fa-xmark" aria-hidden="true" />
+            </button>
             <div className="tss-review-modal-header">
               <h3>Share your review</h3>
               <p>Rate this product and tell other shoppers what you loved.</p>
@@ -1131,7 +1141,7 @@ export default function ProductDetailPage() {
                       className={`tss-review-star ${reviewRating >= value ? 'active' : ''}`}
                       onClick={() => handleRatingSelect(value)}
                     >
-                      ★
+                      <i className="fa-solid fa-star" aria-hidden="true" />
                     </button>
                   ))}
                 </div>
@@ -1142,8 +1152,14 @@ export default function ProductDetailPage() {
               <form className="tss-review-step-panel" onSubmit={handleSubmitReview}>
                 <div className="tss-review-summary-row">
                   <div className="tss-review-stars-large">
-                    {'★'.repeat(reviewRating) + '☆'.repeat(5 - reviewRating)}
-                  </div>
+                  {[...Array(5)].map((_, index) => (
+                    <i
+                      key={index}
+                      className={`fa-solid fa-star ${index < reviewRating ? 'active' : 'inactive'}`}
+                      aria-hidden="true"
+                    />
+                  ))}
+                </div>
                   <span>{reviewRating} / 5</span>
                 </div>
 
