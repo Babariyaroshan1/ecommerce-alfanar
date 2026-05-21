@@ -6,6 +6,7 @@ import { useCartStore } from '@/store/cartStore';
 import { useFavoritesStore } from '@/store/favoritesStore';
 import { useProductStore } from '@/store/productStore';
 import { useToastStore } from '@/store/toastStore';
+import { useAuthStore } from '@/store/authStore';
 import Link from 'next/link';
 import './ProductidDetails.css'; // Nayi CSS file import kar rahe hain
 
@@ -87,6 +88,7 @@ export default function ProductDetailPage() {
   const { addToCart } = useCartStore();
   const { favorites, toggleFavorite } = useFavoritesStore();
   const { addToast } = useToastStore();
+  const { user, token } = useAuthStore();
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -99,6 +101,15 @@ export default function ProductDetailPage() {
   const [activeFaq, setActiveFaq] = useState(null);
   const [faqs, setFaqs] = useState([]);
   const [faqsLoading, setFaqsLoading] = useState(false);
+  const [reviews, setReviews] = useState([]);
+  const [reviewsLoading, setReviewsLoading] = useState(false);
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [reviewStep, setReviewStep] = useState(1);
+  const [reviewRating, setReviewRating] = useState(0);
+  const [reviewComment, setReviewComment] = useState('');
+  const [reviewImage, setReviewImage] = useState(null);
+  const [reviewImagePreview, setReviewImagePreview] = useState(null);
+  const [reviewSubmitting, setReviewSubmitting] = useState(false);
 
   // Image overlay state
   const [showImageOverlay, setShowImageOverlay] = useState(false);
@@ -160,6 +171,7 @@ export default function ProductDetailPage() {
       setSelectedColor(product.colors?.[0] || '');
       setSelectedSize(product.sizes?.[0] || '');
       fetchProductFAQs();
+      fetchProductReviews();
     }
   }, [product]);
 
@@ -179,6 +191,126 @@ export default function ProductDetailPage() {
       setFaqs([]);
     } finally {
       setFaqsLoading(false);
+    }
+  };
+
+  const fetchProductReviews = async () => {
+    try {
+      setReviewsLoading(true);
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+      const response = await fetch(`${API_URL}/reviews/product/${product._id}`);
+      if (response.ok) {
+        const data = await response.json();
+        setReviews(Array.isArray(data) ? data : []);
+      } else {
+        setReviews([]);
+      }
+    } catch (error) {
+      console.error('Error fetching product reviews:', error);
+      setReviews([]);
+    } finally {
+      setReviewsLoading(false);
+    }
+  };
+
+  const openReviewModal = () => {
+    if (!token) {
+      addToast('Please log in to write a review.', 'info', 4000);
+      router.push('/login');
+      return;
+    }
+    setReviewStep(1);
+    setReviewRating(0);
+    setReviewComment('');
+    setReviewImage(null);
+    setReviewImagePreview(null);
+    setShowReviewModal(true);
+  };
+
+  const closeReviewModal = () => {
+    setShowReviewModal(false);
+    setReviewStep(1);
+  };
+
+  const handleRatingSelect = (ratingValue) => {
+    setReviewRating(ratingValue);
+    setReviewStep(2);
+  };
+
+  const handleReviewImageChange = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    setReviewImage(file);
+    setReviewImagePreview(URL.createObjectURL(file));
+  };
+
+  const uploadReviewImage = async () => {
+    if (!reviewImage) return null;
+    try {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+      const formData = new FormData();
+      formData.append('file', reviewImage);
+      const response = await fetch(`${API_URL}/upload`, {
+        method: 'POST',
+        body: formData
+      });
+      if (!response.ok) return null;
+      const data = await response.json();
+      return data?.url || data?.secure_url || null;
+    } catch (error) {
+      console.error('Image upload failed:', error);
+      return null;
+    }
+  };
+
+  const handleSubmitReview = async (event) => {
+    event.preventDefault();
+
+    if (!reviewRating) {
+      addToast('Choose a star rating before submitting.', 'error', 3500);
+      return;
+    }
+
+    if (!reviewComment.trim()) {
+      addToast('Add a short review to help other shoppers.', 'error', 3500);
+      return;
+    }
+
+    setReviewSubmitting(true);
+    try {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+      const imageUrl = await uploadReviewImage();
+      const body = {
+        rating: reviewRating,
+        comment: reviewComment.trim(),
+        images: imageUrl ? [imageUrl] : [],
+        userName: user?.name || 'Customer',
+        userEmail: user?.email || ''
+      };
+
+      const response = await fetch(`${API_URL}/reviews/product/${product._id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(body)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        throw new Error(errorData?.message || 'Failed to submit review');
+      }
+
+      await response.json();
+      addToast('Review submitted successfully. Thank you!', 'success', 4000);
+      setShowReviewModal(false);
+      fetchProductReviews();
+    } catch (error) {
+      console.error('Error submitting review:', error);
+      addToast(error.message || 'Unable to submit your review.', 'error', 4000);
+    } finally {
+      setReviewSubmitting(false);
     }
   };
 
@@ -502,6 +634,11 @@ export default function ProductDetailPage() {
   };
 
   const relatedProducts = getRandomRelatedProducts();
+  const reviewCount = reviews.length;
+  const averageRating = reviewCount
+    ? reviews.reduce((sum, item) => sum + Number(item.rating || 0), 0) / reviewCount
+    : Number(product.rating || 0);
+  const displayRating = averageRating ? averageRating.toFixed(1) : '0.0';
 
   return (
     <div className="tss-layout-container">
@@ -895,6 +1032,47 @@ export default function ProductDetailPage() {
         </div>
       )}
 
+      {/* REVIEWS SECTION */}
+      <div className="tss-review-section">
+        <div className="tss-review-header">
+          <div>
+            <h2 className="tss-review-title">Customer Reviews</h2>
+            <p className="tss-review-summary">
+              {displayRating} average rating • {reviewCount} review{reviewCount === 1 ? '' : 's'}
+            </p>
+          </div>
+          <button className="tss-review-button" type="button" onClick={openReviewModal}>
+            Write a review
+          </button>
+        </div>
+
+        {reviewsLoading ? (
+          <div className="tss-review-loading">Loading reviews...</div>
+        ) : reviews.length === 0 ? (
+          <div className="tss-review-empty">Be the first to leave a review for this product.</div>
+        ) : (
+          <div className="tss-review-list">
+            {reviews.map((review) => (
+              <div key={review._id} className="tss-review-card">
+                <div className="tss-review-stars">{'★'.repeat(review.rating) + '☆'.repeat(5 - review.rating)}</div>
+                <div className="tss-review-meta">
+                  <span className="tss-review-author">{review.userName || 'Customer'}</span>
+                  <span className="tss-review-date">{new Date(review.createdAt).toLocaleDateString()}</span>
+                </div>
+                <p className="tss-review-comment">{review.comment || 'No comment provided.'}</p>
+                {review.images?.length > 0 && (
+                  <div className="tss-review-images">
+                    {review.images.map((src, index) => (
+                      <img key={index} src={src} alt={`Review image ${index + 1}`} />
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* FAQ SECTION */}
       <div className="tss-faq-section">
         <h2 className="tss-faq-title">Frequently Asked Questions</h2>
@@ -922,6 +1100,82 @@ export default function ProductDetailPage() {
           </div>
         )}
       </div>
+
+      {/* REVIEW MODAL */}
+      {showReviewModal && (
+        <div className="tss-review-modal" onClick={closeReviewModal}>
+          <div className="tss-review-modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="tss-review-modal-close" onClick={closeReviewModal}>×</button>
+            <div className="tss-review-modal-header">
+              <h3>Share your review</h3>
+              <p>Rate this product and tell other shoppers what you loved.</p>
+            </div>
+
+            <div className="tss-review-steps">
+              <button className={`tss-review-step ${reviewStep === 1 ? 'active' : ''}`} type="button">
+                1. Star Rating
+              </button>
+              <button className={`tss-review-step ${reviewStep === 2 ? 'active' : ''}`} type="button" disabled>
+                2. Your Feedback
+              </button>
+            </div>
+
+            {reviewStep === 1 && (
+              <div className="tss-review-step-panel">
+                <p className="tss-review-step-text">Tap a star to rate, then continue with your review.</p>
+                <div className="tss-review-star-row">
+                  {[1, 2, 3, 4, 5].map((value) => (
+                    <button
+                      key={value}
+                      type="button"
+                      className={`tss-review-star ${reviewRating >= value ? 'active' : ''}`}
+                      onClick={() => handleRatingSelect(value)}
+                    >
+                      ★
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {reviewStep === 2 && (
+              <form className="tss-review-step-panel" onSubmit={handleSubmitReview}>
+                <div className="tss-review-summary-row">
+                  <div className="tss-review-stars-large">
+                    {'★'.repeat(reviewRating) + '☆'.repeat(5 - reviewRating)}
+                  </div>
+                  <span>{reviewRating} / 5</span>
+                </div>
+
+                <label className="tss-review-label">Tell us what you think</label>
+                <textarea
+                  value={reviewComment}
+                  onChange={(e) => setReviewComment(e.target.value)}
+                  placeholder="Write a short review..."
+                  rows={5}
+                />
+
+                <label className="tss-review-label">Add a photo (optional)</label>
+                <input type="file" accept="image/*" onChange={handleReviewImageChange} />
+                {reviewImagePreview && (
+                  <div className="tss-review-image-preview">
+                    <img src={reviewImagePreview} alt="Review preview" />
+                  </div>
+                )}
+
+                <div className="tss-review-modal-actions">
+                  <button type="button" className="tss-review-back-btn" onClick={() => setReviewStep(1)}>
+                    Back
+                  </button>
+                  <button type="submit" className="tss-review-submit-btn" disabled={reviewSubmitting}>
+                    {reviewSubmitting ? 'Submitting...' : 'Submit Review'}
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Similar Products Modal */}
       {showSimilarModal && (

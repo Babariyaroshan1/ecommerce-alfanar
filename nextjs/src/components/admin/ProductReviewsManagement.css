@@ -1,0 +1,192 @@
+.review-management {
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+}
+
+.review-header h2 {
+  margin: 0 0 8px;
+  font-size: 24px;
+  color: #111;
+}
+
+.review-header p {
+  margin: 0 0 20px;
+  color: #555;
+  line-height: 1.6;
+}
+
+.message {
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.message.success {
+  background: #e6ffed;
+  color: #1f7a3f;
+}
+
+.message.error {
+  background: #ffe6e6;
+  color: #872020;
+}
+
+.review-edit-form {
+  margin-bottom: 24px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px;
+  background: #f8fafc;
+}
+
+.review-edit-form h3 {
+  margin-top: 0;
+  margin-bottom: 18px;
+  font-size: 18px;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.form-row-inline {
+  flex-direction: row;
+  align-items: center;
+}
+
+.form-row label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #111;
+}
+
+.review-edit-form select,
+.review-edit-form textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #fff;
+  color: #111;
+}
+
+.approve-btn {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  color: #111;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.approve-btn.active {
+  background: #111;
+  border-color: #111;
+  color: #fff;
+}
+
+.action-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.save-btn,
+.cancel-btn,
+.edit-btn,
+.delete-btn,
+.approve-toggle-btn {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.save-btn {
+  background: #111;
+  color: white;
+}
+
+.cancel-btn {
+  background: #f3f4f6;
+  color: #111;
+}
+
+.edit-btn,
+.approve-toggle-btn {
+  background: #f3f4f6;
+  color: #111;
+}
+
+.delete-btn {
+  background: #ef4444;
+  color: white;
+}
+
+.reviews-table-wrapper {
+  overflow-x: auto;
+}
+
+.reviews-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 760px;
+}
+
+.reviews-table th,
+.reviews-table td {
+  padding: 14px 12px;
+  border: 1px solid #e5e7eb;
+  text-align: left;
+  vertical-align: top;
+}
+
+.reviews-table th {
+  background: #f8fafc;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.comment-cell {
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.actions-header {
+  width: 220px;
+}
+
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+@media (max-width: 768px) {
+  .review-management {
+    padding: 16px;
+  }
+
+  .reviews-table {
+    min-width: 100%;
+  }
+
+  .reviews-table th,
+  .reviews-table td {
+    padding: 12px 10px;
+  }
+}

@@ -18,6 +18,7 @@ import paymentRoutes from './routes/payment.js';
 import settingsRoutes from './routes/settings.js';
 import faqRoutes from './routes/faqs.js';
 import productFaqRoutes from './routes/productFaqs.js';
+import reviewRoutes from './routes/reviews.js';
 import couponRoutes from './routes/coupons.js';
 
 dotenv.config();
@@ -130,6 +131,7 @@ app.use('/api/payment', paymentRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/faqs', faqRoutes);
 app.use('/api/product-faqs', productFaqRoutes);
+app.use('/api/reviews', reviewRoutes);
 app.use('/api/coupons', couponRoutes);
 
 // Health check

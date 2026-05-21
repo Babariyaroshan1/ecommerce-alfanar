@@ -9,6 +9,7 @@ import CurrencyManagement from './CurrencyManagement';
 import PermissionManagement from './PermissionManagement';
 import FAQManagement from './FAQManagement';
 import ProductFAQManagement from './ProductFAQManagement';
+import ProductReviewsManagement from './ProductReviewsManagement';
 import Analytics from './Analytics';
 import Coupons from './Coupons';
 import BannerSettings from './BannerSettings';
@@ -102,6 +103,7 @@ export default function Dashboard({ onLogout }) {
       { id: 'add-kids-product', label: 'Add Kids ', icon: 'fa-solid fa-child' },
       { id: 'faqs', label: 'FAQs', icon: 'fa-solid fa-question-circle' },
       { id: 'product-faqs', label: 'Product FAQs', icon: 'fa-solid fa-question-circle' },
+      { id: 'reviews', label: 'Reviews', icon: 'fa-solid fa-star' },
       { id: 'currency', label: 'Currency', icon: 'fa-solid fa-dollar-sign' },
       { id: 'banner', label: 'Banner', icon: 'fa-solid fa-image' },
       { id: 'coupons', label: 'Coupons', icon: 'fa-solid fa-tags' },
@@ -193,6 +195,7 @@ export default function Dashboard({ onLogout }) {
           {activeTab === 'add-kids-product' && <AddKidsProducts />}
           {activeTab === 'faqs' && <FAQManagement />}
           {activeTab === 'product-faqs' && <ProductFAQManagement />}
+          {activeTab === 'reviews' && <ProductReviewsManagement />}
           {activeTab === 'currency' && <CurrencyManagement />}
           {activeTab === 'banner' && <BannerSettings />}
           {activeTab === 'coupons' && <Coupons />}
