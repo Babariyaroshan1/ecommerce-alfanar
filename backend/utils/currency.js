@@ -46,30 +46,33 @@ const COUNTRIES = {
 
 export const getCurrentCurrencySettings = async () => {
     try {
-        const [countrySetting, currencySetting, symbolSetting, shippingKwdSetting, shippingInrSetting, oldShippingSetting, showKwdNavbarOptionSetting, showNewArrivalsNavbarSetting] = await Promise.all([
-            Settings.findOne({ key: 'country' }),
-            Settings.findOne({ key: 'currency' }),
-            Settings.findOne({ key: 'currencySymbol' }),
-            Settings.findOne({ key: 'shippingPriceKWD' }),
-            Settings.findOne({ key: 'shippingPriceINR' }),
-            Settings.findOne({ key: 'shippingPrice' }),
-            Settings.findOne({ key: 'showKwdNavbarOption' }),
-            Settings.findOne({ key: 'showNewArrivalsNavbar' })
-        ]);
+        const keys = [
+            'country',
+            'currency',
+            'currencySymbol',
+            'shippingPriceKWD',
+            'shippingPriceINR',
+            'shippingPrice',
+            'showKwdNavbarOption',
+            'showNewArrivalsNavbar'
+        ];
 
-        const country = countrySetting?.value || 'India';
-        const currency = currencySetting?.value || 'INR';
-        const symbol = symbolSetting?.value || '₹';
-        const shippingPriceKWD = shippingKwdSetting?.value !== undefined ? Number(shippingKwdSetting.value) : (oldShippingSetting?.value !== undefined ? Number(oldShippingSetting.value) : 5);
-        const shippingPriceINR = shippingInrSetting?.value !== undefined ? Number(shippingInrSetting.value) : convertKwdToINR(shippingPriceKWD);
+        const settings = await Settings.find({ key: { $in: keys } }).lean();
+        const map = Object.fromEntries(settings.map(item => [item.key, item.value]));
+
+        const country = map.country || 'India';
+        const currency = map.currency || 'INR';
+        const symbol = map.currencySymbol || '₹';
+        const shippingPriceKWD = map.shippingPriceKWD !== undefined ? Number(map.shippingPriceKWD) : (map.shippingPrice !== undefined ? Number(map.shippingPrice) : 5);
+        const shippingPriceINR = map.shippingPriceINR !== undefined ? Number(map.shippingPriceINR) : convertKwdToINR(shippingPriceKWD);
         const shippingPrice = currency === 'KWD' ? shippingPriceKWD : shippingPriceINR;
-        const showKwdNavbarOption = showKwdNavbarOptionSetting?.value !== undefined ? Boolean(showKwdNavbarOptionSetting.value) : false;
-        const showNewArrivalsNavbar = showNewArrivalsNavbarSetting?.value !== undefined ? Boolean(showNewArrivalsNavbarSetting.value) : false;
+        const showKwdNavbarOption = map.showKwdNavbarOption !== undefined ? Boolean(map.showKwdNavbarOption) : false;
+        const showNewArrivalsNavbar = map.showNewArrivalsNavbar !== undefined ? Boolean(map.showNewArrivalsNavbar) : false;
 
         return { country, currency, symbol, shippingPrice, shippingPriceKWD, shippingPriceINR, showKwdNavbarOption, showNewArrivalsNavbar };
     } catch (error) {
         console.error('Error getting currency settings:', error);
-        return { country: 'India', currency: 'INR', symbol: '₹', shippingPrice: 5, showKwdNavbarOption: false, showNewArrivalsNavbar: false };
+        return { country: 'India', currency: 'INR', symbol: '₹', shippingPrice: 5, shippingPriceKWD: 5, shippingPriceINR: convertKwdToINR(5), showKwdNavbarOption: false, showNewArrivalsNavbar: false };
     }
 };
 

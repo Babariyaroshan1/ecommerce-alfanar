@@ -6,36 +6,47 @@ import { getCurrentCurrencySettings, convertPrice } from '../utils/currency.js';
 import { PERMISSIONS } from '../utils/permissions.js';
 
 const router = express.Router();
+const getPriceValue = (prices, key) => {
+    if (!prices) return undefined;
+    if (typeof prices.get === 'function') return prices.get(key);
+    return prices[key];
+};
+
 // Get all products
 router.get('/', async (req, res) => {
     try {
-        const products = await Product.find();
-        const currencySettings = await getCurrentCurrencySettings();
+        const [products, currencySettings] = await Promise.all([
+            Product.find().lean(),
+            getCurrentCurrencySettings()
+        ]);
+
         const productsWithCurrency = products.map(product => {
-            // Use specific price for currency if available, otherwise convert base price
-            let displayPrice, displayOriginalPrice = null;
-            if (product.prices && product.prices.get(currencySettings.currency)) {
-                displayPrice = product.prices.get(currencySettings.currency);
+            let displayPrice = null;
+            let displayOriginalPrice = null;
+            const priceKey = currencySettings.currency;
+            const originalPriceKey = `${currencySettings.currency}_original`;
+
+            const specificPrice = getPriceValue(product.prices, priceKey);
+            if (specificPrice !== undefined && specificPrice !== null) {
+                displayPrice = specificPrice;
             } else {
-                const converted = convertPrice(product.price, currencySettings.currency);
-                displayPrice = converted.price;
+                displayPrice = convertPrice(product.price, currencySettings.currency).price;
             }
 
             if (product.originalPrice) {
-                if (product.prices && product.prices.get(currencySettings.currency + '_original')) {
-                    displayOriginalPrice = product.prices.get(currencySettings.currency + '_original');
+                const specificOriginalPrice = getPriceValue(product.prices, originalPriceKey);
+                if (specificOriginalPrice !== undefined && specificOriginalPrice !== null) {
+                    displayOriginalPrice = specificOriginalPrice;
                 } else {
-                    const convertedOriginal = convertPrice(product.originalPrice, currencySettings.currency);
-                    displayOriginalPrice = convertedOriginal.price;
+                    displayOriginalPrice = convertPrice(product.originalPrice, currencySettings.currency).price;
                 }
             }
 
-            const flatProduct = product.toObject({ flattenMaps: true });
-            console.log(`[GET] Product ${product._id}: isNew=${flatProduct.isNew}`);
+            console.log(`[GET] Product ${product._id}: isNew=${Boolean(product.isNew)}`);
             return {
-                ...flatProduct,
-                displayPrice: displayPrice,
-                displayOriginalPrice: displayOriginalPrice,
+                ...product,
+                displayPrice,
+                displayOriginalPrice,
                 currency: currencySettings.currency,
                 currencySymbol: currencySettings.symbol,
                 country: currencySettings.country
@@ -61,33 +72,42 @@ router.get('/:id', async (req, res) => {
             return res.status(404).json({ message: 'Product not found' });
         }
 
-        const product = await Product.findById(req.params.id);
+        const product = await Product.findById(req.params.id).lean();
         if (!product) return res.status(404).json({ message: 'Product not found' });
 
         const currencySettings = await getCurrentCurrencySettings();
 
-        // Use specific price for currency if available, otherwise convert base price
-        let displayPrice, displayOriginalPrice = null;
-        if (product.prices && product.prices.get(currencySettings.currency)) {
-            displayPrice = product.prices.get(currencySettings.currency);
+        const getPriceValue = (prices, key) => {
+            if (!prices) return undefined;
+            if (typeof prices.get === 'function') return prices.get(key);
+            return prices[key];
+        };
+
+        let displayPrice = null;
+        let displayOriginalPrice = null;
+        const priceKey = currencySettings.currency;
+        const originalPriceKey = `${currencySettings.currency}_original`;
+
+        const specificPrice = getPriceValue(product.prices, priceKey);
+        if (specificPrice !== undefined && specificPrice !== null) {
+            displayPrice = specificPrice;
         } else {
-            const converted = convertPrice(product.price, currencySettings.currency);
-            displayPrice = converted.price;
+            displayPrice = convertPrice(product.price, currencySettings.currency).price;
         }
 
         if (product.originalPrice) {
-            if (product.prices && product.prices.get(currencySettings.currency + '_original')) {
-                displayOriginalPrice = product.prices.get(currencySettings.currency + '_original');
+            const specificOriginalPrice = getPriceValue(product.prices, originalPriceKey);
+            if (specificOriginalPrice !== undefined && specificOriginalPrice !== null) {
+                displayOriginalPrice = specificOriginalPrice;
             } else {
-                const convertedOriginal = convertPrice(product.originalPrice, currencySettings.currency);
-                displayOriginalPrice = convertedOriginal.price;
+                displayOriginalPrice = convertPrice(product.originalPrice, currencySettings.currency).price;
             }
         }
 
         res.json({
-            ...product.toObject({ flattenMaps: true }), // 🔥 FIX: Flatten Map
-            displayPrice: displayPrice,
-            displayOriginalPrice: displayOriginalPrice,
+            ...product,
+            displayPrice,
+            displayOriginalPrice,
             currency: currencySettings.currency,
             currencySymbol: currencySettings.symbol,
             country: currencySettings.country

@@ -130,7 +130,7 @@ const Home = () => {
       {/* Loading Indicator */}
       {loading && (
         <div className="text-center mb-4">
-          <div className="spinner-border text-primary" role="status">
+          <div className="spinner-border text-dark" role="status">
             <span className="visually-hidden">Loading...</span>
           </div>
           <p>Loading products...</p>
@@ -163,7 +163,7 @@ const Home = () => {
         <div className="faq-container">
           {faqsLoading ? (
             <div className="text-center py-4">
-              <div className="spinner-border text-primary" role="status">
+              <div className="spinner-border text-dark" role="status">
                 <span className="visually-hidden">Loading FAQs...</span>
               </div>
             </div>
