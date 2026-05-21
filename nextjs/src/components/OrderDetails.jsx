@@ -658,12 +658,14 @@ export default function OrderDetails({ orderId }) {
               </button>
             )}
             {canReorder && (
-              <button className="od-btn od-btn-primary" onClick={handleReorder} style={{background: '#007bff', color: 'white', border: 'none'}}>
-                🛒 Reorder
+              <button className="od-btn od-btn-primary" onClick={handleReorder} style={{background: '#000000', color: 'white', border: 'none'}}>
+                <i className="fas fa-shopping-cart" style={{marginRight: '8px'}}></i>
+                Reorder
               </button>
             )}
-            <button className="od-btn od-btn-info" onClick={() => setShowTrackingModal(true)} style={{background: '#007bff', color: 'white', border: 'none'}}>
-              📍 Track Order
+            <button className="od-btn od-btn-info" onClick={() => setShowTrackingModal(true)} style={{background: '#000000', color: 'white', border: 'none'}}>
+              <i className="fas fa-map-marker-alt" style={{marginRight: '8px'}}></i>
+              Track Order
             </button>
           </div>
         </div>
