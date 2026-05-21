@@ -97,6 +97,8 @@ export default function ProductDetailPage() {
   const [selectedSize, setSelectedSize] = useState('');
   const [activeAccordion, setActiveAccordion] = useState('details'); // Accordion state
   const [activeFaq, setActiveFaq] = useState(null);
+  const [faqs, setFaqs] = useState([]);
+  const [faqsLoading, setFaqsLoading] = useState(false);
 
   // Image overlay state
   const [showImageOverlay, setShowImageOverlay] = useState(false);
@@ -157,8 +159,28 @@ export default function ProductDetailPage() {
     if (product) {
       setSelectedColor(product.colors?.[0] || '');
       setSelectedSize(product.sizes?.[0] || '');
+      fetchProductFAQs(product._id || product.id);
     }
   }, [product]);
+
+  const fetchProductFAQs = async (productId) => {
+    try {
+      setFaqsLoading(true);
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+      const response = await fetch(`${API_URL}/product-faqs/${productId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setFaqs(data);
+      } else {
+        setFaqs([]);
+      }
+    } catch (error) {
+      console.error('Error fetching product FAQs:', error);
+      setFaqs([]);
+    } finally {
+      setFaqsLoading(false);
+    }
+  };
 
   const isFavorite = product && favorites.some(item => String(item.id || item._id) === String(product.id || product._id));
 
@@ -876,69 +898,29 @@ export default function ProductDetailPage() {
       {/* FAQ SECTION */}
       <div className="tss-faq-section">
         <h2 className="tss-faq-title">Frequently Asked Questions</h2>
-        <p className="tss-faq-subtitle">Find answers to common questions about our products and services</p>
+        <p className="tss-faq-subtitle">Find answers to common questions about this product</p>
         
-        <div className="tss-faq-container">
-          <div className={`tss-faq-item ${activeFaq === 0 ? 'active' : ''}`}>
-            <div className="tss-faq-question" onClick={() => toggleFaq(0)}>
-              <span>What is your return policy?</span>
-              <span className="tss-faq-toggle">+</span>
-            </div>
-            <div className="tss-faq-answer">
-              <p>We offer a 30-day return policy for all our products. Items must be in their original condition with tags attached. Return shipping costs are the responsibility of the customer unless the item is defective.</p>
-            </div>
+        {faqsLoading ? (
+          <div className="tss-faq-loading">Loading FAQs...</div>
+        ) : faqs.length === 0 ? (
+          <div className="tss-faq-empty">No FAQs available for this product yet.</div>
+        ) : (
+          <div className="tss-faq-container">
+            {faqs.map((faq, index) => (
+              <div key={faq._id || index} className={`tss-faq-item ${activeFaq === index ? 'active' : ''}`}>
+                <div className="tss-faq-question" onClick={() => setActiveFaq(activeFaq === index ? null : index)}>
+                  <span>{faq.question}</span>
+                  <span className="tss-faq-toggle">{activeFaq === index ? '−' : '+'}</span>
+                </div>
+                {activeFaq === index && (
+                  <div className="tss-faq-answer">
+                    <p>{faq.answer}</p>
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
-
-          <div className={`tss-faq-item ${activeFaq === 1 ? 'active' : ''}`}>
-            <div className="tss-faq-question" onClick={() => toggleFaq(1)}>
-              <span>How long does shipping take?</span>
-              <span className="tss-faq-toggle">+</span>
-            </div>
-            <div className="tss-faq-answer">
-              <p>Standard shipping typically takes 3-7 business days within Kuwait. Express shipping is available for 1-2 business days. International shipping may take 7-14 business days depending on the destination.</p>
-            </div>
-          </div>
-
-          <div className={`tss-faq-item ${activeFaq === 2 ? 'active' : ''}`}>
-            <div className="tss-faq-question" onClick={() => toggleFaq(2)}>
-              <span>Do you offer international shipping?</span>
-              <span className="tss-faq-toggle">+</span>
-            </div>
-            <div className="tss-faq-answer">
-              <p>Yes, we ship internationally to most countries. Shipping costs and delivery times vary by location. You can see exact rates during checkout based on your shipping address.</p>
-            </div>
-          </div>
-
-          <div className={`tss-faq-item ${activeFaq === 3 ? 'active' : ''}`}>
-            <div className="tss-faq-question" onClick={() => toggleFaq(3)}>
-              <span>How do I track my order?</span>
-              <span className="tss-faq-toggle">+</span>
-            </div>
-            <div className="tss-faq-answer">
-              <p>Once your order ships, you'll receive a tracking number via email. You can also track your order by logging into your account and viewing your order history.</p>
-            </div>
-          </div>
-
-          <div className={`tss-faq-item ${activeFaq === 4 ? 'active' : ''}`}>
-            <div className="tss-faq-question" onClick={() => toggleFaq(4)}>
-              <span>What payment methods do you accept?</span>
-              <span className="tss-faq-toggle">+</span>
-            </div>
-            <div className="tss-faq-answer">
-              <p>We accept all major credit cards (Visa, MasterCard, American Express), PayPal, and cash on delivery (COD) for local orders. All payments are processed securely.</p>
-            </div>
-          </div>
-
-          <div className={`tss-faq-item ${activeFaq === 5 ? 'active' : ''}`}>
-            <div className="tss-faq-question" onClick={() => toggleFaq(5)}>
-              <span>Are your products authentic?</span>
-              <span className="tss-faq-toggle">+</span>
-            </div>
-            <div className="tss-faq-answer">
-              <p>Yes, all our products are 100% authentic and sourced directly from authorized manufacturers. We guarantee the quality and authenticity of every item we sell.</p>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* Similar Products Modal */}
