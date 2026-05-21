@@ -411,14 +411,9 @@ export default function Navbar() {
 
               <ul className="dropdown-menu dropdown-menu-end shadow-sm border-0">
                 {!mounted ? (
-                  <>
-                    <li>
-                      <Link className="dropdown-item" href="/login">{t('Login')}</Link>
-                    </li>
-                    <li>
-                      <Link className="dropdown-item" href="/register">{t('Register')}</Link>
-                    </li>
-                  </>
+                  <li>
+                    <span className="dropdown-item text-muted">{t('Loading...')}</span>
+                  </li>
                 ) : user ? (
                   <>
                     <li>
