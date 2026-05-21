@@ -1,448 +1,1154 @@
-/* ==========================================
-   REVIEW SECTION STYLES
-========================================== */
-
-.tss-review-section {
-  max-width: 950px;
-  margin: 70px auto 0;
-  padding: 0 20px;
+/* Container & Layout */
+.tss-layout-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px 40px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
-.tss-review-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 30px;
-  flex-wrap: wrap;
-}
-
-.tss-review-title {
-  font-size: 32px;
-  font-weight: 800;
-  color: #111;
-  margin: 0;
+.tss-breadcrumbs {
+  font-size: 12px;
+  color: #777;
+  margin-bottom: 20px;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
-.tss-review-summary {
-  color: #666;
-  margin: 10px 0 0;
-  font-size: 15px;
-  font-weight: 500;
+.tss-breadcrumbs a {
+  color: #777;
+  text-decoration: none;
 }
 
-.tss-review-button {
-  background: #111;
-  color: white;
-  border: none;
-  border-radius: 999px;
-  padding: 14px 24px;
-  cursor: pointer;
-  font-weight: 700;
-  font-size: 14px;
-  transition: all 0.25s ease;
+.tss-breadcrumbs span {
+  color: #111;
+  font-weight: 600;
 }
 
-.tss-review-button:hover {
-  background: #000;
-  transform: translateY(-2px);
+.tss-main-row {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
 }
 
-.tss-review-loading,
-.tss-review-empty {
-  padding: 22px;
-  border-radius: 16px;
-  background: #f9fafb;
-  color: #4b5563;
-  text-align: center;
-  border: 1px solid #ececec;
+/* LEFT: Image Grid - Desktop Grid, Mobile Scrollable Row */
+.tss-left-images {
+  width: 55%; /* Left side takes 55% space */
 }
 
-/* REVIEW LIST */
-
-.tss-review-list {
+.tss-image-grid {
   display: grid;
-  gap: 20px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
 }
 
-.tss-review-card {
-  padding: 22px;
-  border: 1px solid #ececec;
-  border-radius: 18px;
-  background: #fff;
-  transition: all 0.25s ease;
+/* If there is an odd number of images, make the first one full width */
+.tss-image-grid .tss-img-wrapper:first-child:nth-last-child(odd) {
+  grid-column: span 2;
 }
 
-.tss-review-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.06);
+.tss-img-wrapper {
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.2s ease;
 }
 
-.tss-review-stars {
-  display: flex;
-  gap: 4px;
-  margin-bottom: 12px;
+.tss-img-wrapper:hover {
+  transform: scale(1.02);
 }
 
-.tss-review-stars i {
-  font-size: 16px;
-}
-
-.tss-review-stars i.active {
-  color: #111;
-}
-
-.tss-review-stars i.inactive {
-  color: #d1d5db;
-}
-
-.tss-review-meta {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  color: #6b7280;
-  font-size: 13px;
-  margin-bottom: 12px;
-}
-
-.tss-review-author {
-  font-weight: 700;
-  color: #111;
-}
-
-.tss-review-date {
-  color: #888;
-}
-
-.tss-review-comment {
-  color: #444;
-  line-height: 1.7;
-  margin: 0 0 12px;
-  font-size: 15px;
-}
-
-.tss-review-images {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.tss-review-images img {
-  width: 110px;
-  height: 110px;
+.tss-img-wrapper img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border-radius: 14px;
-  border: 1px solid #e5e7eb;
+  display: block;
+  transition: transform 0.2s ease;
 }
 
-/* REVIEW MODAL */
+.tss-img-wrapper:hover img {
+  transform: scale(1.05);
+}
 
-.tss-review-modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.7);
+.tss-more-images-box {
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 12000;
-  padding: 20px;
-  backdrop-filter: blur(4px);
+  border: 1px solid #ddd;
+  background: #f8f8f8;
+  color: #111;
+  min-height: 180px;
+  transition: transform 0.2s ease, background 0.2s ease;
+  text-align: center;
 }
 
-.tss-review-modal-content {
-  position: relative;
-  width: min(720px, 100%);
-  max-height: 90vh;
-  overflow-y: auto;
-  background: white;
-  border-radius: 24px;
-  padding: 34px;
-  box-shadow: 0 25px 70px rgba(0,0,0,0.25);
+.tss-more-images-box:hover {
+  background: #ececec;
+  transform: translateY(-2px);
 }
 
-.tss-review-modal-close {
+.tss-more-images-bg {
   position: absolute;
-  top: 18px;
-  right: 18px;
-  border: none;
-  background: #111;
-  color: white;
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  font-size: 20px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(12px) brightness(0.75);
+  opacity: 0.55;
+  transform: scale(1.08);
+}
+
+.tss-more-images-box::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.tss-more-images-count {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-weight: 700;
+}
+
+.tss-more-images-count span {
+  font-size: 26px;
+}
+
+.tss-more-images-count small {
+  font-size: 12px;
+  color: #fff;
+}
+
+/* Mobile: Scrollable Row */
+@media (max-width: 768px) {
+  .tss-image-grid {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding-bottom: 1px;
+  }
+
+  .tss-image-grid::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .tss-image-grid::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+  }
+
+  .tss-image-grid::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+  }
+
+  .tss-image-grid::-webkit-scrollbar-thumb:hover {
+    background: #999;
+  }
+
+  .tss-img-wrapper {
+           flex: 0 0 344px;
+        height: 354px;
+  }
+}
+
+/* RIGHT: Sticky Info */
+.tss-right-info {
+  width: 45%; /* Right side takes 45% space */
+}
+
+.tss-sticky-box {
+  position: sticky;
+  top: 30px; /* Sticks to top while scrolling left images */
+  padding-bottom: 50px;
+}
+
+/* Typography */
+.tss-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 5px 0;
+}
+
+.tss-subtitle {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.tss-price-section {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+
+.tss-price-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.tss-price {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111;
+}
+
+.tss-original-price-desk {
+  font-size: 15px;
+  color: #777;
+  text-decoration: line-through;
+  color: #888;
+  margin: 2px 0 0 0;
+}
+
+.tss-section {
+  margin-bottom: 25px;
+}
+
+.tss-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111;
+  margin-bottom: 10px;
+}
+
+/* Sizes */
+.tss-size-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.tss-size-chart {
+  font-size: 11px;
+  color: #00768e; /* Teal link color */
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.tss-sizes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tss-size-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 45px;
+}
+
+.tss-size-btn {
+  width: 45px;
+  height: 45px;
+  border: 1px solid #ddd;
+  background: white;
+  font-size: 13px;
+  font-weight: 600;
+  color: #111;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.tss-review-modal-close:hover {
-  background: #000;
-  transform: rotate(90deg);
+.tss-size-btn:hover {
+  border-color: #111;
 }
 
-.tss-review-modal-header h3 {
-  margin: 0 0 8px;
-  font-size: 28px;
-  font-weight: 800;
-  color: #111;
+.tss-size-btn.active {
+  background: #111;
+  color: white;
+  border-color: #111;
 }
 
-.tss-review-modal-header p {
-  margin: 0 0 24px;
-  color: #666;
-  line-height: 1.7;
-  font-size: 15px;
+.tss-size-btn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  text-decoration: line-through;
 }
 
-/* STEP INDICATOR */
+.tss-low-stock {
+  font-size: 10px;
+  color: #e11b22; /* Red alert text */
+  margin-top: 4px;
+}
 
-.tss-review-steps {
+/* Colors */
+.tss-colors {
   display: flex;
-  gap: 12px;
   flex-wrap: wrap;
-  margin-bottom: 24px;
+  gap: 10px;
 }
 
-.tss-review-step {
-  border: 1px solid #d1d5db;
-  padding: 10px 16px;
-  border-radius: 999px;
-  background: #f9fafb;
+.tss-color-btn {
+  min-width: 80px;
+  padding: 10px 14px;
+  border-radius: 0;
+  border: 1px solid #ddd;
+  background: #fff;
   color: #111;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.tss-color-btn:hover {
+  border-color: #111;
+  background: #f8f8f8;
+}
+
+.tss-color-btn.active {
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}
+
+/* Quantity */
+.tss-qty-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.tss-qty-section label {
   font-size: 13px;
   font-weight: 600;
 }
 
-.tss-review-step.active {
-  background: #111;
-  color: white;
-  border-color: #111;
+.tss-qty-dropdown {
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  outline: none;
+  cursor: pointer;
 }
 
-/* STEP PANEL */
+/* Action Buttons */
+.tss-action-buttons {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
 
-.tss-review-step-panel {
+.tss-btn {
+  flex: 1;
+  padding: 14px 0;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+
+.tss-btn-cart {
+  background-color: #e11b22; /* Souled Store Red */
+  color: white;
+  border: none;
+  position: relative;
+  overflow: hidden;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.tss-btn-cart:hover {
+  background-color: #c1151b;
+}
+
+.tss-btn-cart:active {
+  transform: scale(0.98);
+}
+
+.tss-btn-cart.clicked {
+  animation: buttonClick 0.6s ease;
+}
+
+@keyframes buttonClick {
+  0% { transform: scale(1); }
+  25% { transform: scale(0.95); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.tss-btn-cart:disabled {
+  background-color: #1a1a1a;
+  color: white;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.tss-btn-buy-now {
+  background-color: #111;
+  color: white;
+  border: none;
+  position: relative;
+  overflow: hidden;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.tss-btn-buy-now:hover {
+  background-color: #333;
+}
+
+.tss-btn-buy-now:active {
+  transform: scale(0.98);
+}
+
+.tss-btn-buy-now.clicked {
+  animation: buttonClick 0.6s ease;
+}
+
+.tss-btn-buy-now:disabled {
+  background-color: #1a1a1a;
+  color: white;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.tss-btn-wishlist {
+  background-color: white;
+  color: #00768e; /* Souled store Teal */
+  border: 1px solid #00768e;
+}
+
+.tss-btn-wishlist:hover {
+  background-color: #f0fbff;
+}
+
+.tss-btn-wishlist:disabled {
+  background-color: #1a1a1a;
+  color: white;
+  border-color: #1a1a1a;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.tss-btn-similar {
+  width: 100%;
+  padding: 14px 0;
+  border-radius: 4px;
+  border: none;
+  background-color: #111;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.tss-btn-similar:hover {
+  background-color: #333;
+  transform: translateY(-1px);
+}
+
+.tss-color-row-btn {
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 140px;
+  padding: 8px 12px;
+  border-radius: 0;
+  border: 1px solid #111;
+  background-color: #fff;
+  color: #111;
+  font-weight: 600;
+  font-size: 12px;
+  margin-left: 0;
+}
+
+.tss-color-row-btn:hover,
+.tss-color-row-btn:focus,
+.tss-color-row-btn:active {
+  background-color: #f4f4f4;
+  color: #111;
+}
+
+.tss-color-row-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(17, 17, 17, 0.12);
+}
+
+.tss-btn-wishlist.clicked {
+  animation: buttonClick 0.6s ease;
+}
+
+/* Share & Delivery */
+.tss-share {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.tss-social-icons i {
+  margin-left: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  color: #111;
+}
+
+.tss-delivery {
+  margin-bottom: 25px;
+}
+
+.tss-pincode-box {
+  display: flex;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.tss-pincode-box input {
+  flex: 1;
+  padding: 10px 15px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
+
+.tss-pincode-box button {
+  background: white;
+  border: none;
+  border-left: 1px solid #ccc;
+  padding: 0 15px;
+  color: #00768e;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.tss-delivery-note {
+  font-size: 11px;
+  color: #666;
+  line-height: 1.5;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+/* Return/Replacement Buttons */
+.tss-return-replacement-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+.tss-btn-return,
+.tss-btn-replacement {
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  background: white;
+  color: #111;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tss-btn-return:hover,
+.tss-btn-replacement:hover {
+  background: #f8f9fa;
+  border-color: #bbb;
+}
+
+.tss-btn-return:active,
+.tss-btn-replacement:active {
+  transform: scale(0.98);
+}
+
+/* Accordions */
+.tss-accordions {
+  border-top: 1px solid #ddd;
+}
+
+.tss-acc-item {
+  border-bottom: 1px solid #ddd;
+}
+
+.tss-acc-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  background: none;
+  border: none;
+  padding: 15px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #111;
+  cursor: pointer;
+  text-align: left;
+}
+
+.tss-acc-body {
+  padding-bottom: 15px;
+  font-size: 13px;
+  color: #444;
+  line-height: 1.6;
+}
+
+/* Responsive Mobile */
+@media (max-width: 991px) {
+  .tss-layout-container {
+    padding: 15px;
+  }
+  .tss-subtitle {
+ 
+  margin-bottom: 15px;
+}
+  .tss-main-row {
+    flex-direction: column;
+  }
+  
+  .tss-left-images, 
+  .tss-right-info {
+    width: 100%;
+  }
+
+  .tss-sticky-box {
+    position: static; /* Removes sticky on mobile */
+  }
+
+  .tss-action-buttons {
+    flex-direction: row;
+  }
+}
+
+/* IMAGE OVERLAY MODAL */
+.tss-image-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  cursor: zoom-out;
+}
+
+.tss-overlay-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  align-items: center;
 }
 
-.tss-review-step-text {
-  color: #555;
-  line-height: 1.7;
-  font-size: 15px;
+.tss-overlay-image {
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  cursor: zoom-in;
+  transition: transform 0.3s ease;
+}
+
+.tss-overlay-image.zoomed {
+  cursor: zoom-out;
+  transform: scale(1.5);
+}
+
+.tss-overlay-close {
+  position: absolute;
+  top: -50px;
+  right: 0;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.tss-overlay-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.tss-overlay-navigation {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.tss-overlay-navigation:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.tss-overlay-prev {
+  left: 20px;
+}
+
+.tss-overlay-next {
+  right: 20px;
+}
+
+.tss-overlay-dots {
+  position: absolute;
+  bottom: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+}
+
+.tss-overlay-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.tss-overlay-dot.active {
+  background: white;
+}
+
+/* Mobile adjustments for overlay */
+@media (max-width: 768px) {
+  .tss-overlay-content {
+    max-width: 95vw;
+    max-height: 95vh;
+  }
+
+  .tss-overlay-image {
+    max-height: 70vh;
+  }
+
+  .tss-overlay-close {
+    top: -45px;
+    width: 35px;
+    height: 35px;
+    font-size: 18px;
+  }
+
+  .tss-overlay-navigation {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+
+  .tss-overlay-prev {
+    left: 10px;
+  }
+
+  .tss-overlay-next {
+    right: 10px;
+  }
+
+  .tss-overlay-dots {
+    bottom: -40px;
+  }
+
+  .tss-overlay-dot {
+    width: 8px;
+    height: 8px;
+  }
+}
+
+/* RELATED PRODUCTS SECTION */
+.tss-related-products {
+  margin-top: 30px;
+  padding-top: 40px;
+  border-top: 1px solid #eee;
+}
+
+.tss-related-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 30px;
+}
+
+.tss-related-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.tss-view-all-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.tss-view-all-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 30px;
+  background-color: #111;
+  color: #fff;
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 700;
+  transition: background-color 0.2s ease;
+}
+
+.tss-view-all-button:hover {
+  background-color: #333;
+}
+
+.tss-related-card {
+  border: 1px solid #f0f0f0;
+  /* border-radius: 8px; */
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+}
+
+.tss-related-card:hover {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transform: translateY(-5px);
+}
+
+.tss-related-image {
+  width: 100%;
+  height: 310px;
+  object-fit: cover;
+  background: #f8f8f8;
+}
+
+.tss-related-info {
+  padding: 15px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.tss-related-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111;
+  margin-bottom: 8px;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.tss-related-price {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 5px;
+}
+
+.tss-related-original-price {
+  font-size: 12px;
+  color: #999;
+  text-decoration: line-through;
+}
+
+/* Mobile: Scrollable Row */
+@media (max-width: 991px) {
+  .tss-related-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .tss-related-products {
+    margin-top: 40px;
+    padding-top: 30px;
+  }
+
+  .tss-related-title {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+
+  .tss-related-grid {
+    display: flex;
+    grid-template-columns: unset;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding-bottom: 10px;
+  }
+
+  .tss-related-grid::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .tss-related-grid::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+  }
+
+  .tss-related-grid::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+  }
+
+  .tss-related-grid::-webkit-scrollbar-thumb:hover {
+    background: #999;
+  }
+
+  .tss-related-card {
+    flex: 0 0 180px;
+  }
+
+  .tss-related-image {
+    height: 200px;
+  }
+
+  .tss-related-info {
+    padding: 12px;
+  }
+
+  .tss-related-name {
+    font-size: 13px;
+  }
+
+  .tss-related-price {
+    font-size: 14px;
+  }
+}
+
+/* ==========================================
+   FAQ SECTION STYLES
+========================================== */
+
+.tss-faq-section {
+  max-width: 800px;
+  margin: 60px auto 0;
+  padding: 0 20px;
+}
+
+.tss-faq-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 8px;
   text-align: center;
 }
 
-/* STAR SELECT */
+.tss-faq-subtitle {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 40px;
+  text-align: center;
+}
 
-.tss-review-star-row {
+.tss-faq-container {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
   gap: 16px;
-  flex-wrap: wrap;
 }
 
-.tss-review-star {
-  width: 68px;
-  height: 68px;
-  border-radius: 50%;
-  border: 2px solid #e5e7eb;
-  background: #fff;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.tss-review-star i {
-  font-size: 30px;
-  color: #c7c7c7;
-  transition: all 0.25s ease;
-}
-
-.tss-review-star:hover {
-  transform: translateY(-4px) scale(1.05);
-  border-color: #111;
-}
-
-.tss-review-star:hover i {
-  color: #111;
-}
-
-.tss-review-star.active {
-  background: #111;
-  border-color: #111;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-}
-
-.tss-review-star.active i {
-  color: #fff;
-}
-
-/* LARGE STARS */
-
-.tss-review-summary-row {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  flex-wrap: wrap;
-}
-
-.tss-review-stars-large {
-  display: flex;
-  gap: 5px;
-}
-
-.tss-review-stars-large i {
-  font-size: 28px;
-}
-
-.tss-review-stars-large i.active {
-  color: #111;
-}
-
-.tss-review-stars-large i.inactive {
-  color: #d1d5db;
-}
-
-.tss-review-label {
-  color: #111;
-  font-weight: 700;
-  font-size: 15px;
-}
-
-/* TEXTAREA */
-
-.tss-review-step-panel textarea {
-  width: 100%;
-  min-height: 150px;
-  border: 1px solid #d1d5db;
-  padding: 16px 18px;
-  border-radius: 18px;
-  resize: vertical;
-  color: #111;
-  font-size: 15px;
-  transition: all 0.2s ease;
-  outline: none;
-}
-
-.tss-review-step-panel textarea:focus {
-  border-color: #111;
-  box-shadow: 0 0 0 4px rgba(0,0,0,0.05);
-}
-
-/* FILE INPUT */
-
-.tss-review-step-panel input[type='file'] {
-  width: 100%;
-  padding: 12px;
-  border: 1px dashed #d1d5db;
-  border-radius: 14px;
-  background: #fafafa;
-}
-
-.tss-review-image-preview {
-  margin-top: 12px;
-}
-
-.tss-review-image-preview img {
-  width: 100%;
-  max-width: 260px;
-  border-radius: 16px;
+.tss-faq-item {
   border: 1px solid #e5e7eb;
-  object-fit: cover;
+  border-radius: 8px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-/* BUTTONS */
-
-.tss-review-modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.tss-review-back-btn,
-.tss-review-submit-btn {
-  border: none;
-  border-radius: 999px;
-  padding: 14px 24px;
+.tss-faq-question {
+  padding: 20px 24px;
+  background: white;
   cursor: pointer;
-  font-weight: 700;
-  font-size: 14px;
-  transition: all 0.25s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: #111;
+  transition: background-color 0.2s ease;
 }
 
-.tss-review-back-btn {
-  background: #f3f4f6;
+.tss-faq-question:hover {
+  background: #f9fafb;
+}
+
+.tss-faq-toggle {
+  font-size: 20px;
+  font-weight: bold;
+  color: #6b7280;
+  transition: transform 0.3s ease, color 0.2s ease;
+}
+
+.tss-faq-item.active .tss-faq-toggle {
+  transform: rotate(45deg);
   color: #111;
 }
 
-.tss-review-back-btn:hover {
-  background: #e5e7eb;
+.tss-faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  background: #f9fafb;
 }
 
-.tss-review-submit-btn {
-  background: #111;
-  color: white;
+.tss-faq-item.active .tss-faq-answer {
+  max-height: 500px;
 }
 
-.tss-review-submit-btn:hover {
-  background: #000;
-  transform: translateY(-2px);
+.tss-faq-answer p {
+  margin: 0;
+  padding: 0 24px 24px 24px;
+  color: #4b5563;
+  line-height: 1.6;
+  font-size: 15px;
 }
 
-.tss-review-submit-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none;
-}
-
-/* MOBILE */
-
+/* Mobile FAQ Styles */
 @media (max-width: 768px) {
-
-  .tss-review-section {
-    padding: 0 14px;
+  .tss-faq-section {
+    margin-top: 40px;
+    padding: 0 15px;
   }
 
-  .tss-review-title {
+  .tss-faq-title {
     font-size: 24px;
   }
 
-  .tss-review-modal-content {
-    padding: 22px;
-    border-radius: 18px;
+  .tss-faq-subtitle {
+    font-size: 14px;
+    margin-bottom: 30px;
   }
 
-  .tss-review-button {
-    width: 100%;
+  .tss-faq-question {
+    padding: 16px 20px;
+    font-size: 15px;
   }
 
-  .tss-review-star-row {
-    gap: 12px;
+  .tss-faq-answer p {
+    padding: 0 20px 20px 20px;
+    font-size: 14px;
   }
+}
 
-  .tss-review-star {
-    width: 56px;
-    height: 56px;
-  }
+/* Similar Products Modal */
+.similar-products-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
 
-  .tss-review-star i {
-    font-size: 24px;
-  }
+.similar-products-content {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+}
 
-  .tss-review-modal-actions {
-    flex-direction: column;
-  }
+.similar-products-content .close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+}
 
-  .tss-review-back-btn,
-  .tss-review-submit-btn {
-    width: 100%;
-  }
+.similar-products-content h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.similar-products-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.similar-product-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.similar-product-item:hover {
+  background-color: #f9f9f9;
+}
+
+.similar-product-item img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.similar-product-item h4 {
+  margin: 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.similar-product-item p {
+  margin: 5px 0 0 0;
+  font-size: 14px;
+  color: #666;
 }

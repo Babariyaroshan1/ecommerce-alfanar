@@ -8,7 +8,6 @@ import { useProductStore } from '@/store/productStore';
 import { useToastStore } from '@/store/toastStore';
 import { useAuthStore } from '@/store/authStore';
 import Link from 'next/link';
-import './ProductidDetails.css'; // Nayi CSS file import kar rahe hain
 
 const slugify = (value) =>
   value?.toString().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') || '';
