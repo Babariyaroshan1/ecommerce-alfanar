@@ -1129,24 +1129,46 @@ export default function ProductDetailPage() {
                 2. Your Feedback
               </button>
             </div>
+{reviewStep === 1 && (
+  <div className="tss-review-step-panel">
+    <p className="tss-review-step-text">
+      Tap a star to rate this product.
+    </p>
 
-            {reviewStep === 1 && (
-              <div className="tss-review-step-panel">
-                <p className="tss-review-step-text">Tap a star to rate, then continue with your review.</p>
-                <div className="tss-review-star-row">
-                  {[1, 2, 3, 4, 5].map((value) => (
-                    <button
-                      key={value}
-                      type="button"
-                      className={`tss-review-star ${reviewRating >= value ? 'active' : ''}`}
-                      onClick={() => handleRatingSelect(value)}
-                    >
-                      <i className="fa-solid fa-star" aria-hidden="true" />
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
+    <div className="tss-review-star-row">
+      {[1, 2, 3, 4, 5].map((value) => (
+        <button
+          key={value}
+          type="button"
+          className={`tss-review-star ${
+            reviewRating >= value ? 'active' : ''
+          }`}
+          onClick={() => setReviewRating(value)}
+        >
+          <i
+            className={
+              reviewRating >= value
+                ? 'fa-solid fa-star'
+                : 'fa-regular fa-star'
+            }
+            aria-hidden="true"
+          />
+        </button>
+      ))}
+    </div>
+
+    <div className="tss-review-modal-actions">
+      <button
+        type="button"
+        className="tss-review-submit-btn"
+        disabled={!reviewRating}
+        onClick={() => setReviewStep(2)}
+      >
+        Next
+      </button>
+    </div>
+  </div>
+)}
 
             {reviewStep === 2 && (
               <form className="tss-review-step-panel" onSubmit={handleSubmitReview}>
