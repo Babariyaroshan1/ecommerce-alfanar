@@ -7,7 +7,7 @@ import axios from 'axios';
 import Link from 'next/link';
 import ProductCard from '../components/ProductCard';
 import { useTranslation } from 'react-i18next';
-import { useProductStore } from '../store/productStore';
+// Note: Home fetches a small set of products locally for fast initial render
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../Home.css';
 
@@ -15,9 +15,8 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'; 
 
 const Home = () => {
   const { t } = useTranslation();
-  const products = useProductStore((state) => state.products);
-  const loading = useProductStore((state) => state.loading);
-  const fetchProducts = useProductStore((state) => state.fetchProducts);
+  const [homeProducts, setHomeProducts] = useState([]);
+  const [homeLoading, setHomeLoading] = useState(true);
 
   // FAQ state
   const [activeFaq, setActiveFaq] = useState(null);
@@ -65,11 +64,26 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    fetchProducts();
+    const fetchHomeProducts = async () => {
+      try {
+        setHomeLoading(true);
+        const response = await axios.get(`${API_URL}/products?limit=8`);
+        const data = response.data;
+        setHomeProducts(Array.isArray(data) ? data : (data.products || data));
+      } catch (error) {
+        console.error('Error fetching home products:', error);
+        setHomeProducts([]);
+      } finally {
+        setHomeLoading(false);
+      }
+    };
+
+    fetchHomeProducts();
   }, []);
 
-  const featuredProducts = products.filter((product) => Boolean(product.isFeaturedOnHome));
-  const displayProducts = featuredProducts.slice(0, 8);
+  const featuredProducts = homeProducts.filter((product) => Boolean(product.isFeaturedOnHome))
+    .slice(0, 8);
+  const displayProducts = featuredProducts.length > 0 ? featuredProducts : homeProducts.slice(0, 8);
 
   return (
     <div className="home-container container py-5">
@@ -128,7 +142,7 @@ const Home = () => {
       </div>
 
       {/* Loading Indicator */}
-      {loading && (
+      {homeLoading && (
         <div className="text-center mb-4">
           <div className="spinner-border text-dark" role="status">
             <span className="visually-hidden">Loading...</span>
