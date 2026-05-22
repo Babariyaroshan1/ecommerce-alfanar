@@ -52,44 +52,53 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="contact-container">
-      <form className="contact-form" onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="name"
-          placeholder="Your Name"
-          value={formData.name}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="Your Email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="text"
-          name="subject"
-          placeholder="Subject"
-          value={formData.subject}
-          onChange={handleChange}
-          required
-        />
-        <textarea
-          name="message"
-          placeholder="Your Message"
-          rows={8}
-          value={formData.message}
-          onChange={handleChange}
-          required
-        />
-        <button type="submit" disabled={loading}>
-          {loading ? 'Sending...' : 'Send Message'}
-        </button>
-      </form>
+    <div className="contact-page-wrapper">
+      <div className="contact-container">
+        
+        {/* NEW HEADER SECTION ADDED HERE */}
+        <div className="contact-header">
+          <h1>Contact Us</h1>
+          <p>Have a question or need assistance? Drop us a message and we'll get back to you as soon as possible.</p>
+        </div>
+
+        <form className="contact-form" onSubmit={handleSubmit}>
+          <input
+            type="text"
+            name="name"
+            placeholder="Your Name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="email"
+            name="email"
+            placeholder="Your Email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="text"
+            name="subject"
+            placeholder="Subject"
+            value={formData.subject}
+            onChange={handleChange}
+            required
+          />
+          <textarea
+            name="message"
+            placeholder="Your Message"
+            rows={6} /* Reduced rows slightly for better balance */
+            value={formData.message}
+            onChange={handleChange}
+            required
+          />
+          <button type="submit" disabled={loading}>
+            {loading ? 'Sending...' : 'Send Message'}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
