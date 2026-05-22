@@ -1015,7 +1015,7 @@ export default function ProductDetailPage() {
                     <div>
                       <span className="tss-related-price">{relatedFormattedPrice}</span>
                       {relatedFormattedOriginalPrice && normalizedRelatedOrigPrice > normalizedRelatedNumPrice && (
-                        <div className="tss-related-original-price">{relatedFormattedOriginalPrice}</div>
+                      <div className="tss-related-original-price">{relatedFormattedOriginalPrice}</div>
                       )}
                     </div>
                   </div>

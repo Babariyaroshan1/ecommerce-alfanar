@@ -152,12 +152,12 @@ const Home = () => {
       )}
 
       {/* Product Grid */}
-      {!loading && displayProducts.length === 0 && (
+      {!homeLoading && displayProducts.length === 0 && (
         <div className="text-center mb-4">
           <p className="text-muted">No products are currently featured on the home page.</p>
         </div>
       )}
-      {!loading && displayProducts.length > 0 && (
+      {!homeLoading && displayProducts.length > 0 && (
         <div className="row g-4">
           {displayProducts.map(product => (
             <div key={product._id || product.id} className="col-6 col-sm-6 col-md-4 col-lg-3">
