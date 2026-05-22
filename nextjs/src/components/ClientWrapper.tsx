@@ -11,7 +11,7 @@ import Toast from './Toast';
 export default function ClientWrapper({ children }) {
   const pathname = usePathname();
   const [isAdminRoute, setIsAdminRoute] = useState(false);
-  const initializeProducts = useProductStore((state) => state.initializeProducts);
+  const initializeLimitedProducts = useProductStore((state) => state.initializeLimitedProducts);
 
   useEffect(() => {
     // Load Bootstrap JS only on client side
@@ -19,9 +19,9 @@ export default function ClientWrapper({ children }) {
   }, []);
 
   useEffect(() => {
-    // Initialize products on app load
-    initializeProducts();
-  }, [initializeProducts]);
+    // Initialize a limited product set on app load for faster startup
+    initializeLimitedProducts?.(8);
+  }, [initializeLimitedProducts]);
 
   useEffect(() => {
     // Check if current route is an admin route

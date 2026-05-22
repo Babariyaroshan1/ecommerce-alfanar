@@ -110,6 +110,40 @@ export const useProductStore = create((set, get) => ({
         }
     },
 
+    // Initialize a limited set of products (fast startup)
+    initializeLimitedProducts: async (limit = 8) => {
+        set({ loading: true });
+        const localProds = getLocalProducts();
+        set({ localProducts: localProds });
+
+        try {
+            const response = await fetch(`${API_URL}/products?limit=${limit}`);
+            if (response.ok) {
+                const data = await response.json();
+                const currencySettings = normalizeCurrencySettings(data.currencySettings || getSavedCurrencySettings());
+
+                set({
+                    backendProducts: data.products || data,
+                    currencySettings,
+                    products: [...(data.products || data), ...localProds],
+                    loading: false,
+                });
+            } else {
+                // Backend failed, show only local products
+                set({
+                    products: localProds,
+                    loading: false,
+                });
+            }
+        } catch (error) {
+            console.error('Failed to fetch limited products:', error);
+            set({
+                products: localProds,
+                loading: false,
+            });
+        }
+    },
+
     setProducts: (products) => set({ products }),
 
     setCurrencySettings: (currencySettings) => {
