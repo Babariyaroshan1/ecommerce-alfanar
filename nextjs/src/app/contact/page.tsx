@@ -81,7 +81,7 @@ export default function ContactPage() {
         <textarea
           name="message"
           placeholder="Your Message"
-          rows="8"
+          rows={8}
           value={formData.message}
           onChange={handleChange}
           required
