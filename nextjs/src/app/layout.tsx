@@ -9,16 +9,17 @@ const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
-
+export const metadata: Metadata = {
+  title: "AL-FANAR ECommerce",
+  description: "Your trusted shopping destination",
+  verification: {
+    google: "आपका-कोड-यहाँ-डालें", // Google Search Console से मिला कोड यहाँ लिखें
+  },
+};
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
-
-export const metadata: Metadata = {
-  title: "AL-FANAR ECommerce",
-  description: "Your trusted shopping destination",
-};
 
 export default function RootLayout({
   children,
