@@ -86,6 +86,7 @@ const ProductList = () => {
   const updateProduct = useProductStore((state) => state.updateProduct);
   const currencySettings = useProductStore((state) => state.currencySettings);
   const [searchTerm, setSearchTerm] = useState('');
+  const [filterMode, setFilterMode] = useState('all');
   const [editingProductId, setEditingProductId] = useState(null);
   const[editValues, setEditValues] = useState({
     name: '',
@@ -123,9 +124,18 @@ const ProductList = () => {
   // Filter only database products (those with _id)
   const dbProducts = products.filter(p => p._id);
   
-  const filteredProducts = dbProducts.filter((product) =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const isKidsProduct = (product) => {
+    const category = String(product.category || '').toLowerCase();
+    return product.isKidsProduct === true || ['boys', 'girls'].includes(category);
+  };
+
+  const filteredProducts = dbProducts
+    .filter((product) =>
+      filterMode === 'kids' ? isKidsProduct(product) : true
+    )
+    .filter((product) =>
+      product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
   const getStockTotal = (stock) => {
     if (!stock) return 0;
@@ -618,6 +628,23 @@ return (
       </div>
     </div>
 
+    <div className="product-filter-toggle">
+      <button
+        type="button"
+        className={filterMode === 'all' ? 'active' : ''}
+        onClick={() => setFilterMode('all')}
+      >
+        All Products
+      </button>
+      <button
+        type="button"
+        className={filterMode === 'kids' ? 'active' : ''}
+        onClick={() => setFilterMode('kids')}
+      >
+        Kids Products
+      </button>
+    </div>
+
     <div className="search-section">
       <input
         type="text"
@@ -871,7 +898,7 @@ return (
                     </div>
                   </div>
 
-                  
+
               </div>
             </div>
 
@@ -986,7 +1013,6 @@ return (
 
               <div className="image-controls-under-quick">
                 <div className="image-toggle-grid">
-                  
 
                   <div className="edit-form-row compact-toggle-box">
                     <label>Featured</label>

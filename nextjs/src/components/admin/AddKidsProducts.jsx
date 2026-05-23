@@ -44,7 +44,8 @@ export default function AddKidsProducts() {
     originalPrice: '',
     image: null,
     images: [],
-    category: 'kids',
+    category: 'boys',
+    customCategory: '',
     colors: [],
     sizes: [],
     stock: {},
@@ -54,6 +55,7 @@ export default function AddKidsProducts() {
 
   const [colors, setColors] = useState(['']);
   const [imagePreview, setImagePreview] = useState(null);
+  const [showMainImageUrlInput, setShowMainImageUrlInput] = useState(false);
 
   const [mainDragActive, setMainDragActive] = useState(false);
   const [quickDragActive, setQuickDragActive] = useState(false);
@@ -253,10 +255,7 @@ export default function AddKidsProducts() {
       ...prev,
       image: null,
     }));
-
-    if (mainImageInputRef.current) {
-      mainImageInputRef.current.value = '';
-    }
+    setShowMainImageUrlInput(false);
   };
 
   const resetForm = () => {
@@ -345,11 +344,14 @@ export default function AddKidsProducts() {
       try {
         imageUrl = await uploadImageFile(formData.image);
       } catch (uploadError) {
+        setShowMainImageUrlInput(true);
         setMessageType('error');
-        setMessage('Main image upload failed.');
+        setMessage('Main image upload failed. You can paste an image URL instead.');
         return;
       }
     }
+
+    const finalCategory = formData.category === 'custom' ? (formData.customCategory || 'custom') : formData.category;
 
     const requestData = {
       name: formData.name,
@@ -357,13 +359,14 @@ export default function AddKidsProducts() {
       price: basePrice,
       prices: pricesPayload,
       originalPrice: baseOriginalPrice,
-      category: 'kids',
+      category: finalCategory,
       colors: colors.filter(Boolean),
       sizes: formData.sizes,
       stock: formData.stock,
       images: formData.images.filter(Boolean),
       allowReturn: formData.allowReturn,
       allowReplacement: formData.allowReplacement,
+      isKidsProduct: true,
       image: imageUrl,
     };
 
@@ -428,6 +431,34 @@ export default function AddKidsProducts() {
               required
             />
           </div>
+
+          <div className="form-section">
+            <label>Category *</label>
+            <select
+              name="category"
+              value={formData.category}
+              onChange={handleInputChange}
+              required
+            >
+              <option value="boys">Boys</option>
+              <option value="girls">Girls</option>
+              <option value="custom">Custom</option>
+            </select>
+          </div>
+
+          {formData.category === 'custom' && (
+            <div className="form-section">
+              <label>Custom Category Name *</label>
+              <input
+                type="text"
+                name="customCategory"
+                value={formData.customCategory}
+                onChange={handleInputChange}
+                placeholder="e.g., Unisex, Baby, Teens"
+                required
+              />
+            </div>
+          )}
 
           <div className="form-section">
             <label>Sale Price (KWD) *</label>
@@ -521,6 +552,41 @@ export default function AddKidsProducts() {
                 hidden
               />
             </div>
+
+            <div className="manual-url-section">
+              <button
+                type="button"
+                className="manual-url-btn"
+                onClick={() => {
+                  setShowMainImageUrlInput((prev) => !prev);
+                  if (!showMainImageUrlInput) {
+                    setFormData((prev) => ({
+                      ...prev,
+                      image: typeof prev.image === 'object' ? '' : prev.image,
+                    }));
+                  }
+                }}
+              >
+                {showMainImageUrlInput ? 'Hide Image URL' : 'Add Image URL'}
+              </button>
+            </div>
+
+            {showMainImageUrlInput && (
+              <div className="form-section">
+                <label>Main Image URL</label>
+                <input
+                  type="url"
+                  value={typeof formData.image === 'string' ? formData.image : ''}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      image: e.target.value,
+                    }))
+                  }
+                  placeholder="Paste image URL here"
+                />
+              </div>
+            )}
           </div>
 
           <div className="form-section full-width">

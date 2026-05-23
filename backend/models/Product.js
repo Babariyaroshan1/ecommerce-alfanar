@@ -78,6 +78,10 @@ const productSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    isKidsProduct: {
+        type: Boolean,
+        default: false
+    },
     showSameColorButton: {
         type: Boolean,
         default: false

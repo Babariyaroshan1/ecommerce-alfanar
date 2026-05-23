@@ -244,7 +244,7 @@ router.put('/:id', permissionAuth(PERMISSIONS.MANAGE_PRODUCTS), async (req, res)
 // Add product (Admin and authorized Coadmin)
 router.post('/', permissionAuth(PERMISSIONS.MANAGE_PRODUCTS), async (req, res) => {
     try {
-        let { name, description, materialAndCare, countryOfOrigin, price, prices, originalPrice, discount, image, images, category, colors, sizes, stock, allowReturn, allowReplacement, isNew, isFeaturedOnHome, showSameColorButton } = req.body;
+        let { name, description, materialAndCare, countryOfOrigin, price, prices, originalPrice, discount, image, images, category, colors, sizes, stock, allowReturn, allowReplacement, isNew, isFeaturedOnHome, showSameColorButton, isKidsProduct } = req.body;
 
         // Parse JSON strings sent from FormData
         try {
@@ -279,6 +279,7 @@ router.post('/', permissionAuth(PERMISSIONS.MANAGE_PRODUCTS), async (req, res) =
             allowReplacement: allowReplacement !== undefined ? allowReplacement : true,
             isNew: typeof isNew === 'string' ? isNew.toLowerCase() === 'true' : Boolean(isNew),
             isFeaturedOnHome: typeof isFeaturedOnHome === 'string' ? isFeaturedOnHome.toLowerCase() === 'true' : Boolean(isFeaturedOnHome),
+            isKidsProduct: typeof isKidsProduct === 'string' ? isKidsProduct.toLowerCase() === 'true' : Boolean(isKidsProduct),
             showSameColorButton: typeof showSameColorButton === 'string' ? showSameColorButton.toLowerCase() === 'true' : Boolean(showSameColorButton)
         });
 
