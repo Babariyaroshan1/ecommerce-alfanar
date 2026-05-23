@@ -156,6 +156,16 @@ router.put('/:id', permissionAuth(PERMISSIONS.MANAGE_PRODUCTS), async (req, res)
             }
         }
 
+        if ('isKidsProduct' in updateData) {
+            if (typeof updateData.isKidsProduct === 'string') {
+                updateData.isKidsProduct = updateData.isKidsProduct.toLowerCase() === 'true';
+            } else if (typeof updateData.isKidsProduct === 'number') {
+                updateData.isKidsProduct = updateData.isKidsProduct !== 0;
+            } else {
+                updateData.isKidsProduct = Boolean(updateData.isKidsProduct);
+            }
+        }
+
         if (updateData.images) {
             updateData.images = Array.isArray(updateData.images)
                 ? updateData.images.filter(img => img && typeof img === 'string' && img.trim().length > 0)
@@ -194,6 +204,22 @@ router.put('/:id', permissionAuth(PERMISSIONS.MANAGE_PRODUCTS), async (req, res)
             return res.status(404).json({ message: 'Product not found' });
         }
 
+        // Validate kidsType if isKidsProduct is being set to true
+        const isKidsProductBool = updateData.isKidsProduct !== undefined
+            ? (typeof updateData.isKidsProduct === 'string' ? updateData.isKidsProduct.toLowerCase() === 'true' : Boolean(updateData.isKidsProduct))
+            : product.isKidsProduct;
+
+        if (isKidsProductBool) {
+            const kidsTypeToUse = updateData.kidsType || product.kidsType;
+            if (!kidsTypeToUse) {
+                return res.status(400).json({ message: 'kidsType is required for kids products' });
+            }
+            const validKidsTypes = ['boys', 'girls', 'unisex', 'baby', 'teens', 'custom'];
+            if (!validKidsTypes.includes(kidsTypeToUse)) {
+                return res.status(400).json({ message: `Invalid kidsType. Must be one of: ${validKidsTypes.join(', ')}` });
+            }
+        }
+
         console.log('[PUT] Update request for product:', req.params.id);
         console.log('[PUT] updateData.isNew before processing:', updateData.isNew, 'type:', typeof updateData.isNew);
         console.log('[PUT] Current product.isNew before update:', product.isNew);
@@ -229,6 +255,11 @@ router.put('/:id', permissionAuth(PERMISSIONS.MANAGE_PRODUCTS), async (req, res)
             product[key] = updateData[key];
         });
 
+        // Clear kidsType if isKidsProduct is false
+        if (!product.isKidsProduct) {
+            product.kidsType = null;
+        }
+
         console.log('[PUT] After setting fields, product.isNew:', product.isNew);
 
         await product.save();
@@ -244,7 +275,7 @@ router.put('/:id', permissionAuth(PERMISSIONS.MANAGE_PRODUCTS), async (req, res)
 // Add product (Admin and authorized Coadmin)
 router.post('/', permissionAuth(PERMISSIONS.MANAGE_PRODUCTS), async (req, res) => {
     try {
-        let { name, description, materialAndCare, countryOfOrigin, price, prices, originalPrice, discount, image, images, category, colors, sizes, stock, allowReturn, allowReplacement, isNew, isFeaturedOnHome, showSameColorButton, isKidsProduct } = req.body;
+        let { name, description, materialAndCare, countryOfOrigin, price, prices, originalPrice, discount, image, images, category, colors, sizes, stock, allowReturn, allowReplacement, isNew, isFeaturedOnHome, showSameColorButton, isKidsProduct, kidsType } = req.body;
 
         // Parse JSON strings sent from FormData
         try {
@@ -258,6 +289,17 @@ router.post('/', permissionAuth(PERMISSIONS.MANAGE_PRODUCTS), async (req, res) =
 
         if (!name || !category || !price || !colors?.length || !sizes?.length) {
             return res.status(400).json({ message: 'Missing required fields: name, category, price, colors, sizes' });
+        }
+
+        // Validate kidsType if isKidsProduct is true
+        const isKidsProductBool = typeof isKidsProduct === 'string' ? isKidsProduct.toLowerCase() === 'true' : Boolean(isKidsProduct);
+        if (isKidsProductBool && !kidsType) {
+            return res.status(400).json({ message: 'kidsType is required for kids products' });
+        }
+
+        const validKidsTypes = ['boys', 'girls', 'unisex', 'baby', 'teens', 'custom'];
+        if (isKidsProductBool && kidsType && !validKidsTypes.includes(kidsType)) {
+            return res.status(400).json({ message: `Invalid kidsType. Must be one of: ${validKidsTypes.join(', ')}` });
         }
 
         const product = new Product({
@@ -279,7 +321,8 @@ router.post('/', permissionAuth(PERMISSIONS.MANAGE_PRODUCTS), async (req, res) =
             allowReplacement: allowReplacement !== undefined ? allowReplacement : true,
             isNew: typeof isNew === 'string' ? isNew.toLowerCase() === 'true' : Boolean(isNew),
             isFeaturedOnHome: typeof isFeaturedOnHome === 'string' ? isFeaturedOnHome.toLowerCase() === 'true' : Boolean(isFeaturedOnHome),
-            isKidsProduct: typeof isKidsProduct === 'string' ? isKidsProduct.toLowerCase() === 'true' : Boolean(isKidsProduct),
+            isKidsProduct: isKidsProductBool,
+            kidsType: isKidsProductBool ? kidsType : null,
             showSameColorButton: typeof showSameColorButton === 'string' ? showSameColorButton.toLowerCase() === 'true' : Boolean(showSameColorButton)
         });
 
