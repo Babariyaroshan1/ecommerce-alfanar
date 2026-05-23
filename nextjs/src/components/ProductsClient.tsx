@@ -46,8 +46,8 @@ const ProductsClient = () => {
 
   const filterAndSortProducts = () => {
     let filtered = selectedCategory === 'all'
-      ? [...products]
-      : products.filter((p) => p.category === selectedCategory);
+      ? [...products].filter(p => p.isKidsProduct !== true)
+      : products.filter((p) => p.category === selectedCategory && p.isKidsProduct !== true);
 
     if (searchQuery && fuse) {
       const searchResults = fuse.search(searchQuery);
@@ -75,7 +75,7 @@ const ProductsClient = () => {
     setFilteredProducts(filtered);
   };
 
-  const categories = ['all', ...Array.from(new Set(products.map((product: any) => product.category).filter(Boolean))) as string[]];
+  const categories = ['all', ...Array.from(new Set(products.filter(p => p.isKidsProduct !== true).map((product: any) => product.category).filter(Boolean))) as string[]];
 
   return (
     <div className="products-container">

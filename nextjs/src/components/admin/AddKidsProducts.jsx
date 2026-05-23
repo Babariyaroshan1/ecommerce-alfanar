@@ -44,8 +44,8 @@ export default function AddKidsProducts() {
     originalPrice: '',
     image: null,
     images: [],
-    category: 'boys',
-    customCategory: '',
+    kidsType: 'boys',
+    customKidsType: '',
     colors: [],
     sizes: [],
     stock: {},
@@ -266,7 +266,8 @@ export default function AddKidsProducts() {
       originalPrice: '',
       image: null,
       images: [],
-      category: 'kids',
+      kidsType: 'boys',
+      customKidsType: '',
       colors: [],
       sizes: [],
       stock: {},
@@ -351,7 +352,7 @@ export default function AddKidsProducts() {
       }
     }
 
-    const finalCategory = formData.category === 'custom' ? (formData.customCategory || 'custom') : formData.category;
+    const finalCategory = formData.kidsType === 'custom' ? (formData.customKidsType || 'custom') : formData.kidsType;
 
     const requestData = {
       name: formData.name,
@@ -359,7 +360,8 @@ export default function AddKidsProducts() {
       price: basePrice,
       prices: pricesPayload,
       originalPrice: baseOriginalPrice,
-      category: finalCategory,
+      category: 'kids',
+      kidsType: finalCategory,
       colors: colors.filter(Boolean),
       sizes: formData.sizes,
       stock: formData.stock,
@@ -433,28 +435,31 @@ export default function AddKidsProducts() {
           </div>
 
           <div className="form-section">
-            <label>Category *</label>
+            <label>Kids Type *</label>
             <select
-              name="category"
-              value={formData.category}
+              name="kidsType"
+              value={formData.kidsType}
               onChange={handleInputChange}
               required
             >
               <option value="boys">Boys</option>
               <option value="girls">Girls</option>
+              <option value="unisex">Unisex</option>
+              <option value="baby">Baby</option>
+              <option value="teens">Teens</option>
               <option value="custom">Custom</option>
             </select>
           </div>
 
-          {formData.category === 'custom' && (
+          {formData.kidsType === 'custom' && (
             <div className="form-section">
-              <label>Custom Category Name *</label>
+              <label>Custom Kids Type Name *</label>
               <input
                 type="text"
-                name="customCategory"
-                value={formData.customCategory}
+                name="customKidsType"
+                value={formData.customKidsType}
                 onChange={handleInputChange}
-                placeholder="e.g., Unisex, Baby, Teens"
+                placeholder="e.g., Infants, Toddlers"
                 required
               />
             </div>

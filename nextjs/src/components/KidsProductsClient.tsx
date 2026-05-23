@@ -21,7 +21,7 @@ const KidsProductsClient = () => {
   }, []);
 
   useEffect(() => {
-    const kidsProducts = products.filter(p => p.category && p.category.toLowerCase() === 'kids');
+    const kidsProducts = products.filter(p => p.isKidsProduct === true);
 
     if (kidsProducts.length > 0) {
       const fuseInstance = new Fuse(kidsProducts, {
@@ -46,7 +46,7 @@ const KidsProductsClient = () => {
   }, [products, sortBy, searchQuery, fuse]);
 
   const filterAndSortProducts = () => {
-    let filtered = products.filter(p => p.category && p.category.toLowerCase() === 'kids');
+    let filtered = products.filter(p => p.isKidsProduct === true);
 
     if (searchQuery && fuse) {
       const searchResults = fuse.search(searchQuery);

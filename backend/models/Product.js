@@ -82,6 +82,11 @@ const productSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    kidsType: {
+        type: String,
+        enum: ['boys', 'girls', 'unisex', 'baby', 'teens', 'custom'],
+        default: null
+    },
     showSameColorButton: {
         type: Boolean,
         default: false
