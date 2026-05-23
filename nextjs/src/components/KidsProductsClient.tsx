@@ -12,6 +12,7 @@ const KidsProductsClient = () => {
   const fetchProducts = useProductStore((state) => state.fetchProducts);
   const searchParams = useSearchParams();
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [selectedKidsType, setSelectedKidsType] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
   const [searchQuery, setSearchQuery] = useState('');
   const [fuse, setFuse] = useState(null);
@@ -43,10 +44,15 @@ const KidsProductsClient = () => {
 
   useEffect(() => {
     filterAndSortProducts();
-  }, [products, sortBy, searchQuery, fuse]);
+  }, [products, selectedKidsType, sortBy, searchQuery, fuse]);
 
   const filterAndSortProducts = () => {
     let filtered = products.filter(p => p.isKidsProduct === true);
+
+    // Filter by kids type
+    if (selectedKidsType !== 'all') {
+      filtered = filtered.filter(p => p.kidsType === selectedKidsType);
+    }
 
     if (searchQuery && fuse) {
       const searchResults = fuse.search(searchQuery);
@@ -81,6 +87,30 @@ const KidsProductsClient = () => {
 
       <div className="filters mb-4">
         <div className="filters-left">
+          <div className="filter-group">
+            <label>Kids Type:</label>
+            <div className="kids-type-buttons">
+              <button
+                className={`filter-btn ${selectedKidsType === 'all' ? 'active' : ''}`}
+                onClick={() => setSelectedKidsType('all')}
+              >
+                All
+              </button>
+              <button
+                className={`filter-btn ${selectedKidsType === 'boys' ? 'active' : ''}`}
+                onClick={() => setSelectedKidsType('boys')}
+              >
+                 Boys
+              </button>
+              <button
+                className={`filter-btn ${selectedKidsType === 'girls' ? 'active' : ''}`}
+                onClick={() => setSelectedKidsType('girls')}
+              >
+                Girls
+              </button>
+            </div>
+          </div>
+
           <div className="filter-group">
             <label htmlFor="sort-select">Sort By:</label>
             <select

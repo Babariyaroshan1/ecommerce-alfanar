@@ -41,6 +41,35 @@
   color: #2c3e50;
 }
 
+.kids-type-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 8px 16px;
+  border: 2px solid #ddd;
+  border-radius: 20px;
+  background-color: white;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #2c3e50;
+  transition: all 0.3s ease;
+}
+
+.filter-btn:hover {
+  border-color: #ff6b6b;
+  color: #ff6b6b;
+}
+
+.filter-btn.active {
+  background-color: #ff6b6b;
+  color: white;
+  border-color: #ff6b6b;
+}
+
 .filter-group select {
   padding: 8px 12px;
   border: 1px solid #ddd;
@@ -107,5 +136,16 @@
   .filter-group select,
   .filter-group input {
     font-size: 0.95rem;
+  }
+
+  .kids-type-buttons {
+    width: 100%;
+  }
+
+  .filter-btn {
+    flex: 1;
+    min-width: 80px;
+    padding: 8px 12px;
+    font-size: 12px;
   }
 }
