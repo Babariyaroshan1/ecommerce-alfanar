@@ -796,11 +796,11 @@ return (
                   required
                 >
                   <option value="">Select Kids Type</option>
-                  <option value="boys">👦 Boys</option>
-                  <option value="girls">👧 Girls</option>
-                  <option value="unisex">👶 Unisex</option>
-                  <option value="baby">🍼 Baby</option>
-                  <option value="teens">🧑 Teens</option>
+                  <option value="boys"> Boys</option>
+                  <option value="girls"> Girls</option>
+                  <option value="unisex"> Unisex</option>
+                  <option value="baby"> Baby</option>
+                  <option value="teens"> Teens</option>
                   <option value="custom">Custom</option>
                 </select>
               </div>

@@ -6,6 +6,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
 import ProductCard from '../components/ProductCard';
+import { SkeletonGrid } from '../components/ProductSkeleton';
+import { FAQSkeletonGrid } from '../components/FAQSkeleton';
 import { useTranslation } from 'react-i18next';
 // Note: Home fetches a small set of products locally for fast initial render
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -143,12 +145,7 @@ const Home = () => {
 
       {/* Loading Indicator */}
       {homeLoading && (
-        <div className="text-center mb-4">
-          <div className="spinner-border text-dark" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-          <p>Loading products...</p>
-        </div>
+        <SkeletonGrid count={8} />
       )}
 
       {/* Product Grid */}
@@ -176,11 +173,7 @@ const Home = () => {
 
         <div className="faq-container">
           {faqsLoading ? (
-            <div className="text-center py-4">
-              <div className="spinner-border text-dark" role="status">
-                <span className="visually-hidden">Loading FAQs...</span>
-              </div>
-            </div>
+            <FAQSkeletonGrid count={5} />
           ) : faqs.length === 0 ? (
             <div className="text-center py-4">
               <p className="text-muted">No FAQs available at the moment.</p>
