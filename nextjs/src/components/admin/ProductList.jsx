@@ -110,7 +110,10 @@ const ProductList = () => {
     isNew: false,
     isFeaturedOnHome: false,
     showSimilarProductButton: false,
-    similarProducts: ''
+    similarProducts: '',
+    isKidsProduct: false,
+    kidsType: '',
+    customKidsType: ''
   });
   const[savingId, setSavingId] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
@@ -288,7 +291,10 @@ const ProductList = () => {
       isNew: product.isNew === true || product.isNew === 'true',
       isFeaturedOnHome: product.isFeaturedOnHome === true || product.isFeaturedOnHome === 'true',
       showSimilarProductButton: product.showSameColorButton === true || product.showSameColorButton === 'true',
-      similarProducts: product.similarProducts ? product.similarProducts.join(', ') : ''
+      similarProducts: product.similarProducts ? product.similarProducts.join(', ') : '',
+      isKidsProduct: product.isKidsProduct === true || product.isKidsProduct === 'true',
+      kidsType: product.kidsType || '',
+      customKidsType: product.kidsType === 'custom' ? product.customKidsType || '' : ''
     });
     setErrorMessage('');
   };
@@ -528,6 +534,8 @@ const ProductList = () => {
         return;
       }
 
+      const finalKidsType = editValues.isKidsProduct && editValues.kidsType === 'custom' ? (editValues.customKidsType || 'custom') : editValues.kidsType;
+      
       const payloadToSend = {
         name: editValues.name,
         category: finalCategory,
@@ -549,7 +557,9 @@ const ProductList = () => {
         isNew: Boolean(editValues.isNew),
         isFeaturedOnHome: Boolean(editValues.isFeaturedOnHome),
         showSameColorButton: Boolean(editValues.showSimilarProductButton),
-        similarProducts: editValues.similarProducts.split(',').map(id => id.trim()).filter(id => id)
+        similarProducts: editValues.similarProducts.split(',').map(id => id.trim()).filter(id => id),
+        isKidsProduct: Boolean(editValues.isKidsProduct),
+        kidsType: editValues.isKidsProduct ? finalKidsType : null
       };
       console.log('[ProductList] Final payload being sent:', payloadToSend);
       console.log('[ProductList] editValues.isNew:', editValues.isNew, 'Final isNew:', payloadToSend.isNew);
@@ -752,6 +762,67 @@ return (
                 />
               )}
             </div>
+
+            <div className="edit-form-row">
+              <label className="checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={editValues.isKidsProduct}
+                  onChange={(e) =>
+                    setEditValues((prev) => ({
+                      ...prev,
+                      isKidsProduct: e.target.checked,
+                      kidsType: e.target.checked ? 'boys' : '',
+                      customKidsType: ''
+                    }))
+                  }
+                />
+                <span>👶 Mark as Kids Product</span>
+              </label>
+            </div>
+
+            {editValues.isKidsProduct && (
+              <div className="edit-form-row">
+                <label>Kids Type *</label>
+                <select
+                  value={editValues.kidsType}
+                  onChange={(e) =>
+                    setEditValues((prev) => ({
+                      ...prev,
+                      kidsType: e.target.value,
+                      customKidsType: ''
+                    }))
+                  }
+                  required
+                >
+                  <option value="">Select Kids Type</option>
+                  <option value="boys">👦 Boys</option>
+                  <option value="girls">👧 Girls</option>
+                  <option value="unisex">👶 Unisex</option>
+                  <option value="baby">🍼 Baby</option>
+                  <option value="teens">🧑 Teens</option>
+                  <option value="custom">Custom</option>
+                </select>
+              </div>
+            )}
+
+            {editValues.isKidsProduct && editValues.kidsType === 'custom' && (
+              <div className="edit-form-row">
+                <label>Custom Kids Type *</label>
+                <input
+                  type="text"
+                  value={editValues.customKidsType}
+                  onChange={(e) =>
+                    setEditValues((prev) => ({
+                      ...prev,
+                      customKidsType: e.target.value
+                    }))
+                  }
+                  placeholder="e.g., Infants, Toddlers"
+                  required
+                />
+              </div>
+            )}
 
             <div className="edit-form-row">
               <label>Price ({currencySettings.symbol || '₹'})</label>
