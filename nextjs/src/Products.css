@@ -60,14 +60,14 @@
 }
 
 .filter-btn:hover {
-  border-color: #ff6b6b;
-  color: #ff6b6b;
+  border-color: #383838;
+  color: #ffffff;
 }
 
 .filter-btn.active {
-  background-color: #ff6b6b;
-  color: white;
-  border-color: #ff6b6b;
+color: #fff;
+    background-color: #000000;
+    border-color: #b4b4b4;
 }
 
 .filter-group select {
