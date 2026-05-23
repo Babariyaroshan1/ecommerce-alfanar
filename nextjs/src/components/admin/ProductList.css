@@ -662,3 +662,37 @@ input:checked + .toggle-slider:before { transform: translateX(21px); }
 .image-drop-zone.drag-over .file-input-label {
   color: #16a34a;
 }
+.product-filter-toggle {
+  display: flex;
+  gap: 12px; /* Space between the two buttons */
+  margin-bottom: 24px;
+}
+
+.product-filter-toggle button {
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 2px solid #000000; /* Black border */
+  border-radius: 6px; /* Slightly rounded edges */
+  background-color: #ffffff; /* White background normally */
+  color: #000000; /* Black text */
+  transition: all 0.2s ease-in-out;
+}
+
+/* Hover effect for inactive button */
+.product-filter-toggle button:hover {
+  background-color: #f3f4f6; 
+}
+
+/* ACTIVE STATE - Yeh button ko pura BLACK kar dega */
+.product-filter-toggle button.active {
+  background-color: #000000 !important; /* Solid Black Background */
+  color: #ffffff !important; /* White Text */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2); /* Slight shadow for active state */
+}
+
+/* Click karne par thoda press effect */
+.product-filter-toggle button:active {
+  transform: scale(0.98);
+}
