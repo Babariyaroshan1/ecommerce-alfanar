@@ -1,0 +1,47 @@
+.banner-skeleton-container {
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.banner-skeleton-image {
+  width: 100%;
+  padding-bottom: 33.33%; /* 3:1 aspect ratio for banners */
+  background: #f5f5f5;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-shimmer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 25%,
+    #e0e0e0 50%,
+    #f0f0f0 75%
+  );
+  background-size: 200% 100%;
+  animation: banner-shimmer 2s infinite;
+}
+
+/* Shimmer animation */
+@keyframes banner-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .banner-skeleton-image {
+    padding-bottom: 56.25%; /* 16:9 aspect ratio for mobile */
+  }
+}

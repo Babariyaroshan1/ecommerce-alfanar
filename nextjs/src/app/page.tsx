@@ -8,6 +8,7 @@ import Link from 'next/link';
 import ProductCard from '../components/ProductCard';
 import { SkeletonGrid } from '../components/ProductSkeleton';
 import { FAQSkeletonGrid } from '../components/FAQSkeleton';
+import BannerSkeleton from '../components/BannerSkeleton';
 import { useTranslation } from 'react-i18next';
 // Note: Home fetches a small set of products locally for fast initial render
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -26,6 +27,7 @@ const Home = () => {
   const [faqsLoading, setFaqsLoading] = useState(true);
   const [bannerImageUrl, setBannerImageUrl] = useState('');
   const [mobileBannerImageUrl, setMobileBannerImageUrl] = useState('');
+  const [bannerLoading, setBannerLoading] = useState(true);
 
   const toggleFaq = (index) => {
     setActiveFaq(activeFaq === index ? null : index);
@@ -48,6 +50,7 @@ const Home = () => {
 
     const fetchSettings = async () => {
       try {
+        setBannerLoading(true);
         const response = await axios.get(`${API_URL}/settings`);
         console.log('✅ Banner settings API response:', response.data);
         const desktop = response.data.homeBannerImageUrl || response.data.bannerImageUrl || '';
@@ -58,6 +61,8 @@ const Home = () => {
         setMobileBannerImageUrl(mobile);
       } catch (error) {
         console.error('❌ Error fetching banner settings:', error);
+      } finally {
+        setBannerLoading(false);
       }
     };
 
@@ -99,7 +104,9 @@ const Home = () => {
       </div> */}
       
       {/* AL-FANAR POSTER / BANNER SECTION */}
-      {bannerImageUrl || mobileBannerImageUrl ? (
+      {bannerLoading ? (
+        <BannerSkeleton />
+      ) : bannerImageUrl || mobileBannerImageUrl ? (
         <div className="banner-poster-container mb-5 text-center">
           <picture>
             {mobileBannerImageUrl && (

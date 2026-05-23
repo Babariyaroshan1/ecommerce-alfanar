@@ -183,7 +183,7 @@ export default function Dashboard({ onLogout }) {
                   <div className="stat-header">
                     <h3 className="stat-title">Total Revenue</h3>
                   </div>
-                  <p className="stat-value">KWD  {Number(stats.totalRevenue * 0.0037).toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</p>
+                  <p className="stat-value">KWD {Number(stats.totalRevenue).toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</p>
                   <p className="stat-label">total earned (KWD)</p>
                 </div>
               </div>
