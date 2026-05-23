@@ -66,9 +66,13 @@ export default function Dashboard({ onLogout }) {
       });
       const productsRes = await axios.get(`${API_URL}/products`);
 
+      // Sum item-level amounts (price * quantity) for orders that are paid or delivered
       const totalRevenue = ordersRes.data
         .filter(order => order.paymentStatus === 'paid' || order.orderStatus === 'delivered')
-        .reduce((sum, order) => sum + Number(order.totalAmount || 0), 0);
+        .reduce((sum, order) => {
+          const itemsSum = (order.items || []).reduce((s, it) => s + (Number(it.price || 0) * Number(it.quantity || 0)), 0);
+          return sum + itemsSum;
+        }, 0);
 
       // Count pending return/replacement requests
       const pendingRequests = ordersRes.data.filter(order => {
@@ -179,7 +183,7 @@ export default function Dashboard({ onLogout }) {
                   <div className="stat-header">
                     <h3 className="stat-title">Total Revenue</h3>
                   </div>
-                  <p className="stat-value">KWD {Number(stats.totalRevenue * 0.0037).toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</p>
+                  <p className="stat-value">KWD:  {Number(stats.totalRevenue * 0.0037).toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</p>
                   <p className="stat-label">total earned (KWD)</p>
                 </div>
               </div>
