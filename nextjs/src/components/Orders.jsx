@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import './Orders.css';
+import OrderListSkeleton from './OrderListSkeleton';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'; // Set in nextjs/.env.local for development and in Vercel env for production
 
@@ -69,6 +70,10 @@ export default function Orders() {
         </div>
       </div>
     );
+  }
+
+  if (loading) {
+    return <OrderListSkeleton />;
   }
 
   return (

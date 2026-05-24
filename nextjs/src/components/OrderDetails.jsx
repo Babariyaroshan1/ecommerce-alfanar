@@ -6,8 +6,9 @@ import axios from 'axios';
 import { useAuthStore } from '../store/authStore';
 import { useProductStore } from '../store/productStore';
 import './OrderDetails.css';
+import OrderDetailSkeleton from './OrderDetailSkeleton';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'; // Set in nextjs/.env.local for development and in Vercel env for production
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'; 
 
 // Format price with proper decimal places (currency-aware)
 const formatPrice = (price, currencySymbol = '₹') => {
@@ -26,7 +27,7 @@ export default function OrderDetails({ orderId }) {
   const [order, setOrder] = useState(null);
   const[loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [actionLoading, setActionLoading] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);  
   const[showRequestForm, setShowRequestForm] = useState(false);
   const [requestType, setRequestType] = useState(null);
   const [requestReason, setRequestReason] = useState('');
@@ -325,6 +326,10 @@ export default function OrderDetails({ orderId }) {
 
   if (loading) {
     return <div className="od-container"><div className="od-loading">Loading order details...</div></div>;
+  }
+
+  if (loading) {
+    return <OrderDetailSkeleton />;
   }
 
   if (error || !order) {

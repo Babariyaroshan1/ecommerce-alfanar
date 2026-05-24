@@ -4,6 +4,7 @@
 
 import React, { useEffect, useState } from 'react';
 import ProductCard from '@/components/ProductCard';
+import ProductSkeleton from '@/components/ProductSkeleton';
 import { useProductStore } from '@/store/productStore';
 import '../../Products.css';
 
@@ -11,14 +12,21 @@ export default function NewArrivalsPage() {
   const products = useProductStore((state) => state.products);
   const fetchProducts = useProductStore((state) => state.fetchProducts);
   const [newArrivals, setNewArrivals] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchProducts();
+    const timer = setTimeout(() => setLoading(false), 800);
+    return () => clearTimeout(timer);
   }, [fetchProducts]);
 
   useEffect(() => {
     setNewArrivals(products.filter((product) => product.isNew));
   }, [products]);
+
+  if (loading) {
+    return <ProductSkeleton />;
+  }
 
   return (
     <div className="products-container">

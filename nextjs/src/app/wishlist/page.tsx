@@ -2,12 +2,13 @@
 
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useFavoritesStore } from '../../store/favoritesStore';
 import { useCartStore } from '../../store/cartStore';
 import { useProductStore } from '../../store/productStore';
+import ProductSkeleton from '@/components/ProductSkeleton';
 
 export default function Wishlist() {
   const { favorites, removeFromFavorites } = useFavoritesStore();
@@ -17,6 +18,11 @@ export default function Wishlist() {
   const router = useRouter();
   const [selectedProducts, setSelectedProducts] = useState(new Set());
   const [shareModal, setShareModal] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(false);
+  }, []);
 
   const handleSelectProduct = (productId) => {
     const newSelected = new Set(selectedProducts);
@@ -98,6 +104,10 @@ export default function Wishlist() {
       setSelectedProducts(new Set(favorites.map(p => p.id || p._id)));
     }
   };
+
+  if (loading) {
+    return <ProductSkeleton />;
+  }
 
   return (
     <div className="container py-5">

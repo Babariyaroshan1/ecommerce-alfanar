@@ -2,18 +2,27 @@
 
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCartStore } from '../../store/cartStore';
 import { useProductStore } from '../../store/productStore';
 import { useAuthStore } from '../../store/authStore';
+import CartSkeleton from '@/components/CartSkeleton';
 
 export default function Cart() {
   const { cart, removeFromCart, updateQuantity, clearCart } = useCartStore();
   const products = useProductStore((state) => state.products);
   const { user } = useAuthStore();
   const router = useRouter();
+  
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate loading time for cart initialization
+    const timer = setTimeout(() => setLoading(false), 500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const currencySettings = useProductStore((state) => state.currencySettings);
   const selectedCurrency = useProductStore((state) => state.selectedCurrency);
@@ -63,6 +72,10 @@ export default function Cart() {
   </Link>
 </div>
     );
+  }
+
+  if (loading) {
+    return <CartSkeleton />;
   }
 
   return (

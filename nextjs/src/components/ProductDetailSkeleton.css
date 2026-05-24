@@ -1,0 +1,145 @@
+.product-detail-skeleton {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.skeleton-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+
+.skeleton-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skeleton-main-image {
+  width: 100%;
+  aspect-ratio: 1;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+  border-radius: 8px;
+}
+
+.skeleton-thumbnails {
+  display: flex;
+  gap: 12px;
+}
+
+.skeleton-thumbnail {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+  border-radius: 8px;
+}
+
+.skeleton-info {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.skeleton-title {
+  height: 32px;
+  width: 80%;
+}
+
+.skeleton-rating {
+  height: 20px;
+  width: 40%;
+}
+
+.skeleton-price-group {
+  display: flex;
+  gap: 12px;
+}
+
+.skeleton-price {
+  height: 24px;
+  width: 30%;
+}
+
+.skeleton-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skeleton-line {
+  height: 16px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+  border-radius: 4px;
+}
+
+.skeleton-line.skeleton-short {
+  width: 60%;
+}
+
+.skeleton-selection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skeleton-label {
+  height: 14px;
+  width: 20%;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+  border-radius: 4px;
+}
+
+.skeleton-options {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.skeleton-option {
+  width: 60px;
+  height: 40px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+  border-radius: 6px;
+}
+
+.skeleton-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.skeleton-button {
+  height: 44px;
+  flex: 1;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+  border-radius: 6px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .skeleton-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}

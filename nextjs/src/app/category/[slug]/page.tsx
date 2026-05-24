@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import ProductCard from '@/components/ProductCard';
+import ProductSkeleton from '@/components/ProductSkeleton';
 import { useProductStore } from '@/store/productStore';
 import '../../../Products.css';
 
@@ -13,13 +14,20 @@ export default function CategoryPage({ params }: { params: { slug: string } }) {
   const { slug } = params;
   const products = useProductStore((state) => state.products);
   const fetchProducts = useProductStore((state) => state.fetchProducts);
+  const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     fetchProducts();
+    const timer = setTimeout(() => setLoading(false), 800);
+    return () => clearTimeout(timer);
   }, []);
 
   const categoryProducts = products.filter((product) => slugify(product.categorySlug || product.category) === slug);
   const categoryName = categoryProducts.length > 0 ? categoryProducts[0].category : slug.replace(/-/g, ' ');
+
+  if (loading) {
+    return <ProductSkeleton />;
+  }
 
   return (
     <div className="products-container">

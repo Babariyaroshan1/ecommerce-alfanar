@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import './contact.css';
+import ContactFormSkeleton from '@/components/ContactFormSkeleton';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -13,6 +14,11 @@ export default function ContactPage() {
   });
 
   const [loading, setLoading] = useState(false);
+  const [contactLoading, setContactLoading] = useState(true);
+
+  useEffect(() => {
+    setContactLoading(false);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -50,6 +56,10 @@ export default function ContactPage() {
       setLoading(false);
     }
   };
+
+  if (contactLoading) {
+    return <ContactFormSkeleton />;
+  }
 
   return (
     <div className="contact-page-wrapper">

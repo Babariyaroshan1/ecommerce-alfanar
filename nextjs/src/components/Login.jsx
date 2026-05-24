@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '../store/authStore';
 import { useTranslation } from 'react-i18next';
 import './Login.css';
+import ContactFormSkeleton from './ContactFormSkeleton';
 
 export default function Login() {
   const [identifier, setIdentifier] = useState('');
@@ -13,10 +14,15 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loginLoading, setLoginLoading] = useState(true);
   const [error, setError] = useState('');
   const { login } = useAuthStore();
   const router = useRouter();
   const { t } = useTranslation();
+
+  useEffect(() => {
+    setLoginLoading(false);
+  }, []);
 
   // Get redirect URL from query params
   const searchParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');

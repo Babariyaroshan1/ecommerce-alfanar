@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '../store/authStore';
 import './Profile.css';
+import ProfileSkeleton from './ProfileSkeleton';
 
 // Predefined profile options using image avatars
 const PROFILE_OPTIONS = [
@@ -26,12 +27,15 @@ export default function Profile() {
   });
   const [showAvatarOptions, setShowAvatarOptions] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [profileLoading, setProfileLoading] = useState(true);
   const [message, setMessage] = useState('');
 
   useEffect(() => {
     if (!user) {
       router.push('/login');
+      return;
     }
+    setProfileLoading(false);
   }, [user, router]);
 
   if (!user) {
@@ -80,6 +84,10 @@ export default function Profile() {
       setLoading(false);
     }
   };
+
+  if (profileLoading) {
+    return <ProfileSkeleton />;
+  }
 
   return (
     <div className="profile-container">

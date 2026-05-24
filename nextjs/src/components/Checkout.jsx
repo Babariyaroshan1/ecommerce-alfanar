@@ -8,6 +8,7 @@ import { useCartStore } from '../store/cartStore';
 import { useProductStore } from '../store/productStore';
 import '../components/Checkout.css';
 import { useTranslation } from 'react-i18next';
+import CheckoutSkeleton from './CheckoutSkeleton';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'; // Set in nextjs/.env.local for development and in Vercel env for production
 
@@ -47,6 +48,7 @@ export default function Checkout() {
   }
 
   const [loading, setLoading] = useState(false);
+  const [checkoutLoading, setCheckoutLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
   const [locationLoading, setLocationLoading] = useState(false);
   const [locationError, setLocationError] = useState('');
@@ -94,6 +96,8 @@ export default function Checkout() {
       longitude: user?.address?.longitude || null,
       mapLink: user?.address?.mapLink || ''
     });
+
+    setCheckoutLoading(false);
 
   }, [user, token]);
 
@@ -309,6 +313,10 @@ export default function Checkout() {
   };
 
   return (
+    <>
+      {checkoutLoading ? (
+        <CheckoutSkeleton />
+      ) : (
     <div className="checkout-wrapper">
       <div className="checkout-container">
         <h1 className="checkout-title">{t("Checkout")}</h1>
@@ -642,7 +650,9 @@ export default function Checkout() {
         </div>
       )}
       
-    </div>
+      </div>
+      )}
+    </>
   );
 }
 

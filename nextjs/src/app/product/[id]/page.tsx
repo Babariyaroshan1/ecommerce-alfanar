@@ -8,6 +8,7 @@ import { useProductStore } from '@/store/productStore';
 import { useToastStore } from '@/store/toastStore';
 import { useAuthStore } from '@/store/authStore';
 import Link from 'next/link';
+import ProductDetailSkeleton from '@/components/ProductDetailSkeleton';
 
 const slugify = (value) =>
   value?.toString().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') || '';
@@ -640,6 +641,10 @@ export default function ProductDetailPage() {
   const displayRating = averageRating ? averageRating.toFixed(1) : '0.0';
 
   return (
+    <>
+      {loading ? (
+        <ProductDetailSkeleton />
+      ) : (
     <div className="tss-layout-container">
       
       {/* BREADCRUMBS */}
@@ -1250,5 +1255,7 @@ export default function ProductDetailPage() {
       )}
 
     </div>
+      )}
+    </>
   );
 };
