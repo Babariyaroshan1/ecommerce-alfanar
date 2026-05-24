@@ -1,5 +1,5 @@
-const redis = require('redis');
-const { promisify } = require('util');
+import redis from 'redis';
+import { promisify } from 'util';
 
 // Create Redis client
 const redisConfig = process.env.REDIS_URL
@@ -86,7 +86,7 @@ const cacheFlush = async () => {
     }
 };
 
-module.exports = {
+export {
     client,
     cacheGet,
     cacheSet,

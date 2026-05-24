@@ -1,4 +1,4 @@
-const { cacheGet, cacheSet, cacheDel } = require('./redisClient');
+import { cacheGet, cacheSet, cacheDel } from './redisClient.js';
 
 // Cache keys
 const CACHE_KEYS = {
@@ -103,7 +103,7 @@ const invalidateUser = async (userId) => {
     return await cacheDel(CACHE_KEYS.USER(userId));
 };
 
-module.exports = {
+export {
     CACHE_KEYS,
     // Products
     cacheProducts,
