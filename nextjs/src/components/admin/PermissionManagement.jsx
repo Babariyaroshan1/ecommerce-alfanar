@@ -14,6 +14,12 @@ const AVAILABLE_PERMISSIONS = [
     icon: 'fa-box'
   },
   {
+    key: 'manage_kids_products',
+    label: 'Manage Kids Products',
+    description: 'Add, edit, and delete kids products',
+    icon: 'fa-child'
+  },
+  {
     key: 'manage_orders',
     label: 'Manage Orders',
     description: 'View and update order status',
@@ -36,6 +42,48 @@ const AVAILABLE_PERMISSIONS = [
     label: 'Manage Content',
     description: 'Edit website content and banners',
     icon: 'fa-edit'
+  },
+  {
+    key: 'manage_faqs',
+    label: 'Manage FAQs',
+    description: 'Add, edit, and delete FAQ entries',
+    icon: 'fa-question-circle'
+  },
+  {
+    key: 'manage_product_faqs',
+    label: 'Manage Product FAQs',
+    description: 'Add, edit, and delete product-specific FAQs',
+    icon: 'fa-question-circle'
+  },
+  {
+    key: 'manage_reviews',
+    label: 'Manage Reviews',
+    description: 'View and manage product reviews',
+    icon: 'fa-star'
+  },
+  {
+    key: 'manage_banner',
+    label: 'Manage Banner',
+    description: 'Update website banner and images',
+    icon: 'fa-image'
+  },
+  {
+    key: 'manage_currency',
+    label: 'Manage Currency',
+    description: 'Configure currency settings and rates',
+    icon: 'fa-dollar-sign'
+  },
+  {
+    key: 'manage_coupons',
+    label: 'Manage Coupons',
+    description: 'Create and manage discount coupons',
+    icon: 'fa-tags'
+  },
+  {
+    key: 'manage_settings',
+    label: 'Manage Settings',
+    description: 'Manage system settings and permissions',
+    icon: 'fa-cog'
   }
 ];
 

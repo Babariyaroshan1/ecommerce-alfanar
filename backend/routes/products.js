@@ -117,217 +117,234 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// Update product (Admin and authorized Coadmin)
-router.put('/:id', permissionAuth(PERMISSIONS.MANAGE_PRODUCTS), async (req, res) => {
+// Update product (Admin and authorized Coadmin - with permission-based check for kids products)
+router.put('/:id', async (req, res) => {
     try {
-        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-            return res.status(404).json({ message: 'Product not found' });
-        }
+        const { isKidsProduct } = req.body;
+        const isKidsProductBool = typeof isKidsProduct === 'string' ? isKidsProduct.toLowerCase() === 'true' : Boolean(isKidsProduct);
 
-        let updateData = { ...req.body };
+        // Determine required permission based on product type
+        const requiredPermission = isKidsProductBool ? PERMISSIONS.MANAGE_KIDS_PRODUCTS : PERMISSIONS.MANAGE_PRODUCTS;
 
-        // Parse JSON strings sent from FormData
-        try {
-            if (typeof updateData.colors === 'string') updateData.colors = JSON.parse(updateData.colors);
-            if (typeof updateData.sizes === 'string') updateData.sizes = JSON.parse(updateData.sizes);
-            if (typeof updateData.prices === 'string') updateData.prices = JSON.parse(updateData.prices);
-            if (typeof updateData.stock === 'string') updateData.stock = JSON.parse(updateData.stock);
-        } catch (parseError) {
-            return res.status(400).json({ message: 'Invalid JSON format in colors, sizes, prices, or stock fields' });
-        }
+        // Use permissionAuth middleware
+        return permissionAuth(requiredPermission)(req, res, async () => {
+            if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+                return res.status(404).json({ message: 'Product not found' });
+            }
 
-        if ('isNew' in updateData) {
-            if (typeof updateData.isNew === 'string') {
-                updateData.isNew = updateData.isNew.toLowerCase() === 'true';
-            } else if (typeof updateData.isNew === 'number') {
-                updateData.isNew = updateData.isNew !== 0;
+            let updateData = { ...req.body };
+
+            // Parse JSON strings sent from FormData
+            try {
+                if (typeof updateData.colors === 'string') updateData.colors = JSON.parse(updateData.colors);
+                if (typeof updateData.sizes === 'string') updateData.sizes = JSON.parse(updateData.sizes);
+                if (typeof updateData.prices === 'string') updateData.prices = JSON.parse(updateData.prices);
+                if (typeof updateData.stock === 'string') updateData.stock = JSON.parse(updateData.stock);
+            } catch (parseError) {
+                return res.status(400).json({ message: 'Invalid JSON format in colors, sizes, prices, or stock fields' });
+            }
+
+            if ('isNew' in updateData) {
+                if (typeof updateData.isNew === 'string') {
+                    updateData.isNew = updateData.isNew.toLowerCase() === 'true';
+                } else if (typeof updateData.isNew === 'number') {
+                    updateData.isNew = updateData.isNew !== 0;
+                } else {
+                    updateData.isNew = Boolean(updateData.isNew);
+                }
+            }
+
+            if ('isFeaturedOnHome' in updateData) {
+                if (typeof updateData.isFeaturedOnHome === 'string') {
+                    updateData.isFeaturedOnHome = updateData.isFeaturedOnHome.toLowerCase() === 'true';
+                } else if (typeof updateData.isFeaturedOnHome === 'number') {
+                    updateData.isFeaturedOnHome = updateData.isFeaturedOnHome !== 0;
+                } else {
+                    updateData.isFeaturedOnHome = Boolean(updateData.isFeaturedOnHome);
+                }
+            }
+
+            if ('isKidsProduct' in updateData) {
+                if (typeof updateData.isKidsProduct === 'string') {
+                    updateData.isKidsProduct = updateData.isKidsProduct.toLowerCase() === 'true';
+                } else if (typeof updateData.isKidsProduct === 'number') {
+                    updateData.isKidsProduct = updateData.isKidsProduct !== 0;
+                } else {
+                    updateData.isKidsProduct = Boolean(updateData.isKidsProduct);
+                }
+            }
+
+            if (updateData.images) {
+                updateData.images = Array.isArray(updateData.images)
+                    ? updateData.images.filter(img => img && typeof img === 'string' && img.trim().length > 0)
+                    : [];
             } else {
-                updateData.isNew = Boolean(updateData.isNew);
+                updateData.images = [];
             }
-        }
 
-        if ('isFeaturedOnHome' in updateData) {
-            if (typeof updateData.isFeaturedOnHome === 'string') {
-                updateData.isFeaturedOnHome = updateData.isFeaturedOnHome.toLowerCase() === 'true';
-            } else if (typeof updateData.isFeaturedOnHome === 'number') {
-                updateData.isFeaturedOnHome = updateData.isFeaturedOnHome !== 0;
-            } else {
-                updateData.isFeaturedOnHome = Boolean(updateData.isFeaturedOnHome);
+            if (updateData.colors) {
+                updateData.colors = Array.isArray(updateData.colors)
+                    ? updateData.colors.filter(color => color && typeof color === 'string' && color.trim().length > 0)
+                    : [];
             }
-        }
 
-        if ('isKidsProduct' in updateData) {
-            if (typeof updateData.isKidsProduct === 'string') {
-                updateData.isKidsProduct = updateData.isKidsProduct.toLowerCase() === 'true';
-            } else if (typeof updateData.isKidsProduct === 'number') {
-                updateData.isKidsProduct = updateData.isKidsProduct !== 0;
-            } else {
-                updateData.isKidsProduct = Boolean(updateData.isKidsProduct);
+            // Handle prices Map
+            if (updateData.prices && typeof updateData.prices === 'object') {
+                updateData.prices = Object.fromEntries(
+                    Object.entries(updateData.prices)
+                        .filter(([, value]) => value !== undefined && value !== null && value !== '')
+                        .map(([key, value]) => [key, Number(value) || 0])
+                );
             }
-        }
 
-        if (updateData.images) {
-            updateData.images = Array.isArray(updateData.images)
-                ? updateData.images.filter(img => img && typeof img === 'string' && img.trim().length > 0)
-                : [];
-        } else {
-            updateData.images = [];
-        }
-
-        if (updateData.colors) {
-            updateData.colors = Array.isArray(updateData.colors)
-                ? updateData.colors.filter(color => color && typeof color === 'string' && color.trim().length > 0)
-                : [];
-        }
-
-        // Handle prices Map
-        if (updateData.prices && typeof updateData.prices === 'object') {
-            updateData.prices = Object.fromEntries(
-                Object.entries(updateData.prices)
-                    .filter(([, value]) => value !== undefined && value !== null && value !== '')
-                    .map(([key, value]) => [key, Number(value) || 0])
-            );
-        }
-
-        // Normalize stock object for mongoose Map<Number>
-        if (updateData.stock && typeof updateData.stock === 'object' && !Array.isArray(updateData.stock)) {
-            updateData.stock = Object.fromEntries(
-                Object.entries(updateData.stock)
-                    .filter(([, value]) => value !== undefined && value !== null && value !== '')
-                    .map(([key, value]) => [key, Number(value) || 0])
-            );
-            updateData.totalStock = Object.values(updateData.stock).reduce((sum, num) => sum + Number(num || 0), 0);
-        }
-
-        const product = await Product.findById(req.params.id);
-        if (!product) {
-            return res.status(404).json({ message: 'Product not found' });
-        }
-
-        // Validate kidsType if isKidsProduct is being set to true
-        const isKidsProductBool = updateData.isKidsProduct !== undefined
-            ? (typeof updateData.isKidsProduct === 'string' ? updateData.isKidsProduct.toLowerCase() === 'true' : Boolean(updateData.isKidsProduct))
-            : product.isKidsProduct;
-
-        if (isKidsProductBool) {
-            const kidsTypeToUse = updateData.kidsType || product.kidsType;
-            if (!kidsTypeToUse) {
-                return res.status(400).json({ message: 'kidsType is required for kids products' });
+            // Normalize stock object for mongoose Map<Number>
+            if (updateData.stock && typeof updateData.stock === 'object' && !Array.isArray(updateData.stock)) {
+                updateData.stock = Object.fromEntries(
+                    Object.entries(updateData.stock)
+                        .filter(([, value]) => value !== undefined && value !== null && value !== '')
+                        .map(([key, value]) => [key, Number(value) || 0])
+                );
+                updateData.totalStock = Object.values(updateData.stock).reduce((sum, num) => sum + Number(num || 0), 0);
             }
-            const validKidsTypes = ['boys', 'girls', 'unisex', 'baby', 'teens', 'custom'];
-            if (!validKidsTypes.includes(kidsTypeToUse)) {
-                return res.status(400).json({ message: `Invalid kidsType. Must be one of: ${validKidsTypes.join(', ')}` });
-            }
-        }
 
-        console.log('[PUT] Update request for product:', req.params.id);
-        console.log('[PUT] updateData.isNew before processing:', updateData.isNew, 'type:', typeof updateData.isNew);
-        console.log('[PUT] Current product.isNew before update:', product.isNew);
+            const product = await Product.findById(req.params.id);
+            if (!product) {
+                return res.status(404).json({ message: 'Product not found' });
+            }
 
-        // 🔥 FIX: Properly updating Mongoose Map
-        if (updateData.stock) {
-            if (!product.stock) {
-                product.stock = new Map();
-            } else {
-                product.stock.clear();
-            }
-            for (const [key, value] of Object.entries(updateData.stock)) {
-                product.stock.set(key, value);
-            }
-            delete updateData.stock;
-        }
+            // Validate kidsType if isKidsProduct is being set to true
+            const isKidsProductBool = updateData.isKidsProduct !== undefined
+                ? (typeof updateData.isKidsProduct === 'string' ? updateData.isKidsProduct.toLowerCase() === 'true' : Boolean(updateData.isKidsProduct))
+                : product.isKidsProduct;
 
-        // 🔥 FIX: Properly updating prices Map
-        if (updateData.prices) {
-            if (!product.prices) {
-                product.prices = new Map();
-            } else {
-                product.prices.clear();
+            if (isKidsProductBool) {
+                const kidsTypeToUse = updateData.kidsType || product.kidsType;
+                if (!kidsTypeToUse) {
+                    return res.status(400).json({ message: 'kidsType is required for kids products' });
+                }
+                const validKidsTypes = ['boys', 'girls', 'unisex', 'baby', 'teens', 'custom'];
+                if (!validKidsTypes.includes(kidsTypeToUse)) {
+                    return res.status(400).json({ message: `Invalid kidsType. Must be one of: ${validKidsTypes.join(', ')}` });
+                }
             }
-            for (const [key, value] of Object.entries(updateData.prices)) {
-                product.prices.set(key, value);
-            }
-            delete updateData.prices;
-        }
 
-        // Update each field explicitly to ensure isNew is set
-        Object.keys(updateData).forEach(key => {
-            product[key] = updateData[key];
+            console.log('[PUT] Update request for product:', req.params.id);
+            console.log('[PUT] updateData.isNew before processing:', updateData.isNew, 'type:', typeof updateData.isNew);
+            console.log('[PUT] Current product.isNew before update:', product.isNew);
+
+            // 🔥 FIX: Properly updating Mongoose Map
+            if (updateData.stock) {
+                if (!product.stock) {
+                    product.stock = new Map();
+                } else {
+                    product.stock.clear();
+                }
+                for (const [key, value] of Object.entries(updateData.stock)) {
+                    product.stock.set(key, value);
+                }
+                delete updateData.stock;
+            }
+
+            // 🔥 FIX: Properly updating prices Map
+            if (updateData.prices) {
+                if (!product.prices) {
+                    product.prices = new Map();
+                } else {
+                    product.prices.clear();
+                }
+                for (const [key, value] of Object.entries(updateData.prices)) {
+                    product.prices.set(key, value);
+                }
+                delete updateData.prices;
+            }
+
+            // Update each field explicitly to ensure isNew is set
+            Object.keys(updateData).forEach(key => {
+                product[key] = updateData[key];
+            });
+
+            // Clear kidsType if isKidsProduct is false
+            if (!product.isKidsProduct) {
+                product.kidsType = null;
+            }
+
+            console.log('[PUT] After setting fields, product.isNew:', product.isNew);
+
+            await product.save();
+            console.log('[PUT] After save, product.isNew in DB:', product.isNew);
+
+            const savedProduct = product.toObject({ flattenMaps: true });
+            console.log('[PUT] Response isNew:', savedProduct.isNew);
+            res.json({ message: 'Product updated successfully', product: savedProduct });
         });
-
-        // Clear kidsType if isKidsProduct is false
-        if (!product.isKidsProduct) {
-            product.kidsType = null;
-        }
-
-        console.log('[PUT] After setting fields, product.isNew:', product.isNew);
-
-        await product.save();
-        console.log('[PUT] After save, product.isNew in DB:', product.isNew);
-
-        const savedProduct = product.toObject({ flattenMaps: true });
-        console.log('[PUT] Response isNew:', savedProduct.isNew);
-        res.json({ message: 'Product updated successfully', product: savedProduct });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 });
-// Add product (Admin and authorized Coadmin)
-router.post('/', permissionAuth(PERMISSIONS.MANAGE_PRODUCTS), async (req, res) => {
+// Add product (Admin and authorized Coadmin - with permission-based check for kids products)
+router.post('/', async (req, res) => {
     try {
-        let { name, description, materialAndCare, countryOfOrigin, price, prices, originalPrice, discount, image, images, category, colors, sizes, stock, allowReturn, allowReplacement, isNew, isFeaturedOnHome, showSameColorButton, isKidsProduct, kidsType } = req.body;
-
-        // Parse JSON strings sent from FormData
-        try {
-            if (typeof colors === 'string') colors = JSON.parse(colors);
-            if (typeof sizes === 'string') sizes = JSON.parse(sizes);
-            if (typeof prices === 'string') prices = JSON.parse(prices);
-            if (typeof stock === 'string') stock = JSON.parse(stock);
-        } catch (parseError) {
-            return res.status(400).json({ message: 'Invalid JSON format in colors, sizes, prices, or stock fields' });
-        }
-
-        if (!name || !category || !price || !colors?.length || !sizes?.length) {
-            return res.status(400).json({ message: 'Missing required fields: name, category, price, colors, sizes' });
-        }
-
-        // Validate kidsType if isKidsProduct is true
+        const { isKidsProduct } = req.body;
         const isKidsProductBool = typeof isKidsProduct === 'string' ? isKidsProduct.toLowerCase() === 'true' : Boolean(isKidsProduct);
-        if (isKidsProductBool && !kidsType) {
-            return res.status(400).json({ message: 'kidsType is required for kids products' });
-        }
 
-        const validKidsTypes = ['boys', 'girls', 'unisex', 'baby', 'teens', 'custom'];
-        if (isKidsProductBool && kidsType && !validKidsTypes.includes(kidsType)) {
-            return res.status(400).json({ message: `Invalid kidsType. Must be one of: ${validKidsTypes.join(', ')}` });
-        }
+        // Determine required permission based on product type
+        const requiredPermission = isKidsProductBool ? PERMISSIONS.MANAGE_KIDS_PRODUCTS : PERMISSIONS.MANAGE_PRODUCTS;
 
-        const product = new Product({
-            name,
-            description,
-            materialAndCare,
-            countryOfOrigin,
-            price,
-            prices: prices || {},
-            originalPrice,
-            discount,
-            image,
-            images: Array.isArray(images) ? images.filter(Boolean) : [],
-            category,
-            colors,
-            sizes,
-            stock,
-            allowReturn: allowReturn !== undefined ? allowReturn : true,
-            allowReplacement: allowReplacement !== undefined ? allowReplacement : true,
-            isNew: typeof isNew === 'string' ? isNew.toLowerCase() === 'true' : Boolean(isNew),
-            isFeaturedOnHome: typeof isFeaturedOnHome === 'string' ? isFeaturedOnHome.toLowerCase() === 'true' : Boolean(isFeaturedOnHome),
-            isKidsProduct: isKidsProductBool,
-            kidsType: isKidsProductBool ? kidsType : null,
-            showSameColorButton: typeof showSameColorButton === 'string' ? showSameColorButton.toLowerCase() === 'true' : Boolean(showSameColorButton)
+        // Use permissionAuth middleware
+        return permissionAuth(requiredPermission)(req, res, async () => {
+            let { name, description, materialAndCare, countryOfOrigin, price, prices, originalPrice, discount, image, images, category, colors, sizes, stock, allowReturn, allowReplacement, isNew, isFeaturedOnHome, showSameColorButton, kidsType } = req.body;
+
+            // Parse JSON strings sent from FormData
+            try {
+                if (typeof colors === 'string') colors = JSON.parse(colors);
+                if (typeof sizes === 'string') sizes = JSON.parse(sizes);
+                if (typeof prices === 'string') prices = JSON.parse(prices);
+                if (typeof stock === 'string') stock = JSON.parse(stock);
+            } catch (parseError) {
+                return res.status(400).json({ message: 'Invalid JSON format in colors, sizes, prices, or stock fields' });
+            }
+
+            if (!name || !category || !price || !colors?.length || !sizes?.length) {
+                return res.status(400).json({ message: 'Missing required fields: name, category, price, colors, sizes' });
+            }
+
+            // Validate kidsType if isKidsProduct is true
+            if (isKidsProductBool && !kidsType) {
+                return res.status(400).json({ message: 'kidsType is required for kids products' });
+            }
+
+            const validKidsTypes = ['boys', 'girls', 'unisex', 'baby', 'teens', 'custom'];
+            if (isKidsProductBool && kidsType && !validKidsTypes.includes(kidsType)) {
+                return res.status(400).json({ message: `Invalid kidsType. Must be one of: ${validKidsTypes.join(', ')}` });
+            }
+
+            const product = new Product({
+                name,
+                description,
+                materialAndCare,
+                countryOfOrigin,
+                price,
+                prices: prices || {},
+                originalPrice,
+                discount,
+                image,
+                images: Array.isArray(images) ? images.filter(Boolean) : [],
+                category,
+                colors,
+                sizes,
+                stock,
+                allowReturn: allowReturn !== undefined ? allowReturn : true,
+                allowReplacement: allowReplacement !== undefined ? allowReplacement : true,
+                isNew: typeof isNew === 'string' ? isNew.toLowerCase() === 'true' : Boolean(isNew),
+                isFeaturedOnHome: typeof isFeaturedOnHome === 'string' ? isFeaturedOnHome.toLowerCase() === 'true' : Boolean(isFeaturedOnHome),
+                isKidsProduct: isKidsProductBool,
+                kidsType: isKidsProductBool ? kidsType : null,
+                showSameColorButton: typeof showSameColorButton === 'string' ? showSameColorButton.toLowerCase() === 'true' : Boolean(showSameColorButton)
+            });
+
+            await product.save();
+            res.status(201).json({ message: 'Product added successfully', product });
         });
-
-        await product.save();
-        res.status(201).json({ message: 'Product added successfully', product });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -337,19 +354,26 @@ router.post('/', permissionAuth(PERMISSIONS.MANAGE_PRODUCTS), async (req, res) =
 
 
 // Delete product (Admin and authorized Coadmin)
-router.delete('/:id', permissionAuth(PERMISSIONS.MANAGE_PRODUCTS), async (req, res) => {
+router.delete('/:id', async (req, res) => {
     try {
-        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-            return res.status(404).json({ message: 'Product not found' });
-        }
-
+        // Check if it's a kids product to determine required permission
         const product = await Product.findById(req.params.id);
-        if (!product) {
-            return res.status(404).json({ message: 'Product not found' });
-        }
+        const requiredPermission = product?.isKidsProduct ? PERMISSIONS.MANAGE_KIDS_PRODUCTS : PERMISSIONS.MANAGE_PRODUCTS;
 
-        await Product.findByIdAndDelete(req.params.id);
-        res.json({ message: 'Product deleted successfully' });
+        // Use permissionAuth middleware
+        return permissionAuth(requiredPermission)(req, res, async () => {
+            if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+                return res.status(404).json({ message: 'Product not found' });
+            }
+
+            const product = await Product.findById(req.params.id);
+            if (!product) {
+                return res.status(404).json({ message: 'Product not found' });
+            }
+
+            await Product.findByIdAndDelete(req.params.id);
+            res.json({ message: 'Product deleted successfully' });
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

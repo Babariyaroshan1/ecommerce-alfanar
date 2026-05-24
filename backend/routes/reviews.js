@@ -2,7 +2,8 @@ import express from 'express';
 import mongoose from 'mongoose';
 import Review from '../models/Review.js';
 import Product from '../models/Product.js';
-import { auth, adminAuth } from '../middleware/auth.js';
+import { auth, adminAuth, permissionAuth } from '../middleware/auth.js';
+import { PERMISSIONS } from '../utils/permissions.js';
 
 const router = express.Router();
 
@@ -70,7 +71,7 @@ router.post('/product/:id', auth, async (req, res) => {
 });
 
 // Admin: get all reviews
-router.get('/admin/all', adminAuth, async (req, res) => {
+router.get('/admin/all', permissionAuth(PERMISSIONS.MANAGE_REVIEWS), async (req, res) => {
     try {
         const reviews = await Review.find()
             .populate('productId', 'name')
@@ -83,7 +84,7 @@ router.get('/admin/all', adminAuth, async (req, res) => {
 });
 
 // Admin: update a review
-router.put('/:id', adminAuth, async (req, res) => {
+router.put('/:id', permissionAuth(PERMISSIONS.MANAGE_REVIEWS), async (req, res) => {
     try {
         if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
             return res.status(404).json({ message: 'Invalid review id' });
@@ -130,7 +131,7 @@ router.put('/:id', adminAuth, async (req, res) => {
 });
 
 // Admin: delete a review
-router.delete('/:id', adminAuth, async (req, res) => {
+router.delete('/:id', permissionAuth(PERMISSIONS.MANAGE_REVIEWS), async (req, res) => {
     try {
         if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
             return res.status(404).json({ message: 'Invalid review id' });

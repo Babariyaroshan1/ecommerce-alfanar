@@ -1,6 +1,7 @@
 import express from 'express';
 import productFaqController from '../controllers/productFaqController.js';
-import { adminAuth } from '../middleware/auth.js';
+import { adminAuth, permissionAuth } from '../middleware/auth.js';
+import { PERMISSIONS } from '../utils/permissions.js';
 
 const router = express.Router();
 
@@ -9,11 +10,11 @@ router.get('/', productFaqController.getProductFAQs);
 router.get('/admin', adminAuth, productFaqController.getAllProductFAQs);
 router.get('/:productId', productFaqController.getProductFAQs);
 
-// Admin routes
-router.post('/', adminAuth, productFaqController.createProductFAQ);
-router.post('/:productId', adminAuth, productFaqController.createProductFAQ);
-router.put('/:id', adminAuth, productFaqController.updateProductFAQ);
-router.delete('/:id', adminAuth, productFaqController.deleteProductFAQ);
-router.patch('/:id/toggle', adminAuth, productFaqController.toggleProductFAQStatus);
+// Admin/Coadmin routes with permission check
+router.post('/', permissionAuth(PERMISSIONS.MANAGE_PRODUCT_FAQS), productFaqController.createProductFAQ);
+router.post('/:productId', permissionAuth(PERMISSIONS.MANAGE_PRODUCT_FAQS), productFaqController.createProductFAQ);
+router.put('/:id', permissionAuth(PERMISSIONS.MANAGE_PRODUCT_FAQS), productFaqController.updateProductFAQ);
+router.delete('/:id', permissionAuth(PERMISSIONS.MANAGE_PRODUCT_FAQS), productFaqController.deleteProductFAQ);
+router.patch('/:id/toggle', permissionAuth(PERMISSIONS.MANAGE_PRODUCT_FAQS), productFaqController.toggleProductFAQStatus);
 
 export default router;

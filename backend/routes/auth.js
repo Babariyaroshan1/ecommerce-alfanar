@@ -2,7 +2,7 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import User from '../models/User.js';
-import { auth, adminOrCoadminAuth, permissionAuth } from '../middleware/auth.js';
+import { auth, adminAuth, adminOrCoadminAuth, permissionAuth } from '../middleware/auth.js';
 import { PERMISSIONS } from '../utils/permissions.js';
 
 const router = express.Router();
@@ -237,6 +237,31 @@ router.post('/reset-password', async (req, res) => {
         res.json({ message: 'Password reset successfully' });
     } catch (error) {
         res.status(500).json({ message: 'Failed to reset password', error: error.message });
+    }
+});
+
+// Admin: Change Coadmin Password (Only admin can change coadmin's password)
+router.put('/admin/change-coadmin-password', adminAuth, async (req, res) => {
+    try {
+        const { newPassword } = req.body;
+
+        if (!newPassword || newPassword.length < 6) {
+            return res.status(400).json({ message: 'Password must be at least 6 characters' });
+        }
+
+        // Find coadmin user
+        const coadminUser = await User.findOne({ email: 'coadmin@noor.com' });
+        if (!coadminUser) {
+            return res.status(404).json({ message: 'Coadmin not found' });
+        }
+
+        // Update password
+        coadminUser.password = newPassword;
+        await coadminUser.save();
+
+        res.json({ message: 'Coadmin password changed successfully' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 });
 

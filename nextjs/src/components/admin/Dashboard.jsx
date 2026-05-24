@@ -13,6 +13,7 @@ import ProductReviewsManagement from './ProductReviewsManagement';
 import Analytics from './Analytics';
 import Coupons from './Coupons';
 import BannerSettings from './BannerSettings';
+import ChangeCoadminPassword from './ChangeCoadminPassword';
 import { useProductStore } from '../../store/productStore';
 import './Dashboard.css';
 
@@ -59,6 +60,14 @@ export default function Dashboard({ onLogout }) {
     }
   };
 
+  // Helper function to check if user has a specific permission
+  const hasPermission = (permissionKey) => {
+    // Admin has all permissions
+    if (role === 'admin') return true;
+    // Coadmin needs to have the permission in their list
+    return permissions.includes(permissionKey);
+  };
+
   const fetchStats = async () => {
     try {
       const ordersRes = await axios.get(`${API_URL}/orders/admin/all`, {
@@ -96,24 +105,30 @@ export default function Dashboard({ onLogout }) {
   };
 
   const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: 'fa-solid fa-tachometer-alt' },
-    ...(role === 'admin' ? [{ id: 'analytics', label: 'Analytics', icon: 'fa-solid fa-chart-line' }] : []),
-    { id: 'orders', label: 'Orders', icon: 'fa-solid fa-shopping-cart' },
-    { id: 'products', label: 'Products', icon: 'fa-solid fa-box' },
-    { id: 'requests', label: 'Ret/rep', icon: 'fa-solid fa-undo', badge: stats.pendingRequests },
-    { id: 'users', label: 'Users', icon: 'fa-solid fa-users' },
-    ...(role === 'admin' ? [
-      { id: 'add-product', label: 'Add Product', icon: 'fa-solid fa-plus' },
-      { id: 'add-kids-product', label: 'Add Kids ', icon: 'fa-solid fa-child' },
-      { id: 'faqs', label: 'FAQs', icon: 'fa-solid fa-question-circle' },
-      { id: 'product-faqs', label: 'Product FAQs', icon: 'fa-solid fa-question-circle' },
-      { id: 'reviews', label: 'Reviews', icon: 'fa-solid fa-star' },
-      { id: 'currency', label: 'Currency', icon: 'fa-solid fa-dollar-sign' },
-      { id: 'banner', label: 'Banner', icon: 'fa-solid fa-image' },
-      { id: 'coupons', label: 'Coupons', icon: 'fa-solid fa-tags' },
-      { id: 'permissions', label: 'Permissions', icon: 'fa-solid fa-shield-alt' }
-    ] : []),
-  ];      
+    { id: 'dashboard', label: 'Dashboard', icon: 'fa-solid fa-tachometer-alt', permission: null },
+    { id: 'analytics', label: 'Analytics', icon: 'fa-solid fa-chart-line', permission: 'view_analytics' },
+    { id: 'orders', label: 'Orders', icon: 'fa-solid fa-shopping-cart', permission: 'manage_orders' },
+    { id: 'products', label: 'Products', icon: 'fa-solid fa-box', permission: 'manage_products' },
+    { id: 'requests', label: 'Ret/rep', icon: 'fa-solid fa-undo', badge: stats.pendingRequests, permission: 'manage_orders' },
+    { id: 'users', label: 'Users', icon: 'fa-solid fa-users', permission: 'manage_users' },
+    { id: 'add-product', label: 'Add Product', icon: 'fa-solid fa-plus', permission: 'manage_products' },
+    { id: 'add-kids-product', label: 'Add Kids', icon: 'fa-solid fa-child', permission: 'manage_kids_products' },
+    { id: 'faqs', label: 'FAQs', icon: 'fa-solid fa-question-circle', permission: 'manage_faqs' },
+    { id: 'product-faqs', label: 'Product FAQs', icon: 'fa-solid fa-question-circle', permission: 'manage_product_faqs' },
+    { id: 'reviews', label: 'Reviews', icon: 'fa-solid fa-star', permission: 'manage_reviews' },
+    { id: 'currency', label: 'Currency', icon: 'fa-solid fa-dollar-sign', permission: 'manage_currency' },
+    { id: 'banner', label: 'Banner', icon: 'fa-solid fa-image', permission: 'manage_banner' },
+    { id: 'coupons', label: 'Coupons', icon: 'fa-solid fa-tags', permission: 'manage_coupons' },
+    { id: 'permissions', label: 'Permissions', icon: 'fa-solid fa-shield-alt', permission: 'manage_settings', adminOnly: true },
+    { id: 'change-coadmin-password', label: 'Coadmin Pass', icon: 'fa-solid fa-key', permission: 'manage_settings', adminOnly: true }
+  ].filter(item => {
+    // Always show dashboard
+    if (item.permission === null) return true;
+    // Admin-only items
+    if (item.adminOnly && role !== 'admin') return false;
+    // Permission-based items
+    return hasPermission(item.permission);
+  });      
 
   return (
     <div className="dashboard-wrapper">
@@ -190,7 +205,7 @@ export default function Dashboard({ onLogout }) {
             </div>
           )}
 
-          {activeTab === 'analytics' && role === 'admin' && <Analytics />}
+          {activeTab === 'analytics' && hasPermission('view_analytics') && <Analytics />}
           {activeTab === 'orders' && <OrderList />}
           {activeTab === 'requests' && <OrderList showOnlyRequests={true} />}
           {activeTab === 'products' && <ProductList />}
@@ -203,7 +218,8 @@ export default function Dashboard({ onLogout }) {
           {activeTab === 'currency' && <CurrencyManagement />}
           {activeTab === 'banner' && <BannerSettings />}
           {activeTab === 'coupons' && <Coupons />}
-          {activeTab === 'permissions' && <PermissionManagement />}
+          {activeTab === 'permissions' && role === 'admin' && <PermissionManagement />}
+          {activeTab === 'change-coadmin-password' && role === 'admin' && <ChangeCoadminPassword />}
         </main>
       </div>
     </div>

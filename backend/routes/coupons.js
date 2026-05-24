@@ -1,11 +1,12 @@
 import express from 'express';
 import Coupon from '../models/Coupon.js';
-import { auth, adminAuth } from '../middleware/auth.js';
+import { auth, adminAuth, permissionAuth } from '../middleware/auth.js';
+import { PERMISSIONS } from '../utils/permissions.js';
 
 const router = express.Router();
 
 // Get all coupons (admin only)
-router.get('/', auth, adminAuth, async (req, res) => {
+router.get('/', permissionAuth(PERMISSIONS.MANAGE_COUPONS), async (req, res) => {
     try {
         const coupons = await Coupon.find().sort({ createdAt: -1 });
         res.json(coupons);
@@ -15,7 +16,7 @@ router.get('/', auth, adminAuth, async (req, res) => {
 });
 
 // Create coupon (admin only)
-router.post('/', auth, adminAuth, async (req, res) => {
+router.post('/', permissionAuth(PERMISSIONS.MANAGE_COUPONS), async (req, res) => {
     try {
         const { code, discountType, discountValue, minPurchase, description } = req.body;
 
@@ -41,7 +42,7 @@ router.post('/', auth, adminAuth, async (req, res) => {
 });
 
 // Update coupon (admin only)
-router.put('/:id', auth, adminAuth, async (req, res) => {
+router.put('/:id', permissionAuth(PERMISSIONS.MANAGE_COUPONS), async (req, res) => {
     try {
         const { code, discountType, discountValue, minPurchase, description, isActive } = req.body;
 
@@ -73,7 +74,7 @@ router.put('/:id', auth, adminAuth, async (req, res) => {
 });
 
 // Delete coupon (admin only)
-router.delete('/:id', auth, adminAuth, async (req, res) => {
+router.delete('/:id', permissionAuth(PERMISSIONS.MANAGE_COUPONS), async (req, res) => {
     try {
         const coupon = await Coupon.findById(req.params.id);
         if (!coupon) {
