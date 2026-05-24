@@ -325,10 +325,6 @@ export default function OrderDetails({ orderId }) {
   };
 
   if (loading) {
-    return <div className="od-container"><div className="od-loading">Loading order details...</div></div>;
-  }
-
-  if (loading) {
     return <OrderDetailSkeleton />;
   }
 
