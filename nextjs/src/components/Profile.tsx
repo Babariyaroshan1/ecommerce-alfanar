@@ -56,9 +56,21 @@ export default function Profile() {
     }
   };
 
-  const handleProfileSelect = (profileId) => {
-    setFormData(prev => ({ ...prev, selectedProfile: profileId }));
-    setShowAvatarOptions(false);
+  const handleProfileSelect = async (profileId) => {
+    const updatedFormData = { ...formData, selectedProfile: profileId };
+    setFormData(updatedFormData);
+    setLoading(true);
+    
+    try {
+      await updateProfile(updatedFormData);
+      setMessage('Avatar updated successfully!');
+      setTimeout(() => setMessage(''), 2000);
+    } catch (error) {
+      setMessage('Failed to update avatar: ' + (error?.message || 'Unknown error'));
+    } finally {
+      setLoading(false);
+      setShowAvatarOptions(false);
+    }
   };
 
   const handleCloseAvatarOverlay = () => {
@@ -122,10 +134,15 @@ export default function Profile() {
                   key={profile.id}
                   className={`profile-option ${formData.selectedProfile === profile.id ? 'selected' : ''}`}
                   onClick={() => handleProfileSelect(profile.id)}
-                  style={{ borderColor: formData.selectedProfile === profile.id ? profile.color : 'transparent' }}
+                  style={{ borderColor: formData.selectedProfile === profile.id ? profile.color : 'transparent', opacity: loading ? 0.6 : 1, pointerEvents: loading ? 'none' : 'auto', cursor: loading ? 'not-allowed' : 'pointer' }}
                 >
                   <div className="profile-avatar-option" style={{ borderColor: profile.color }}>
                     <img src={profile.src} alt={profile.name} />
+                    {loading && formData.selectedProfile === profile.id && (
+                      <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', background: 'rgba(0,0,0,0.3)' }}>
+                        <span style={{ color: '#fff', fontSize: '12px' }}>Saving...</span>
+                      </div>
+                    )}
                   </div>
                   <span className="profile-option-name">{profile.name}</span>
                 </div>

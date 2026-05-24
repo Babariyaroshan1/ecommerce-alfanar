@@ -11,6 +11,9 @@ import fs from 'fs';
 import { v2 as cloudinary } from 'cloudinary';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
 
+// 🔥 REDIS IMPORT ADDED HERE
+import { client as redisClient } from './utils/redisClient.js';
+
 import authRoutes from './routes/auth.js';
 import productRoutes from './routes/products.js';
 import orderRoutes from './routes/orders.js';

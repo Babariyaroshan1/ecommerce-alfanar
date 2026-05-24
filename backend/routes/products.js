@@ -4,6 +4,7 @@ import Product from '../models/Product.js';
 import { auth, adminAuth, adminOrCoadminAuth, permissionAuth } from '../middleware/auth.js';
 import { getCurrentCurrencySettings, convertPrice } from '../utils/currency.js';
 import { PERMISSIONS } from '../utils/permissions.js';
+import { getCachedProducts, cacheProducts, invalidateProducts, getCachedProduct, cacheProduct, invalidateProduct } from '../utils/cacheService.js';
 
 const router = express.Router();
 const getPriceValue = (prices, key) => {
@@ -15,6 +16,21 @@ const getPriceValue = (prices, key) => {
 // Get all products
 router.get('/', async (req, res) => {
     try {
+        // Try to get from cache first
+        const cachedProducts = await getCachedProducts();
+        if (cachedProducts && cachedProducts.length > 0) {
+            const currencySettings = await getCurrentCurrencySettings();
+            return res.json({
+                products: cachedProducts,
+                totalPages: 1,
+                currentPage: 1,
+                total: cachedProducts.length,
+                currencySettings,
+                cached: true
+            });
+        }
+
+        // If not in cache, fetch from database
         const [products, currencySettings] = await Promise.all([
             Product.find().lean(),
             getCurrentCurrencySettings()
@@ -53,12 +69,16 @@ router.get('/', async (req, res) => {
             };
         });
 
+        // Cache the products
+        await cacheProducts(productsWithCurrency);
+
         res.json({
             products: productsWithCurrency,
             totalPages: 1,
             currentPage: 1,
             total: productsWithCurrency.length,
-            currencySettings
+            currencySettings,
+            cached: false
         });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -72,6 +92,16 @@ router.get('/:id', async (req, res) => {
             return res.status(404).json({ message: 'Product not found' });
         }
 
+        // Try to get from cache first
+        let cachedProduct = await getCachedProduct(req.params.id);
+        if (cachedProduct) {
+            return res.json({
+                ...cachedProduct,
+                cached: true
+            });
+        }
+
+        // If not in cache, fetch from database
         const product = await Product.findById(req.params.id).lean();
         if (!product) return res.status(404).json({ message: 'Product not found' });
 
@@ -104,13 +134,21 @@ router.get('/:id', async (req, res) => {
             }
         }
 
-        res.json({
+        const productResponse = {
             ...product,
             displayPrice,
             displayOriginalPrice,
             currency: currencySettings.currency,
             currencySymbol: currencySettings.symbol,
             country: currencySettings.country
+        };
+
+        // Cache the product
+        await cacheProduct(req.params.id, productResponse);
+
+        res.json({
+            ...productResponse,
+            cached: false
         });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -275,6 +313,11 @@ router.put('/:id', async (req, res) => {
 
             const savedProduct = product.toObject({ flattenMaps: true });
             console.log('[PUT] Response isNew:', savedProduct.isNew);
+
+            // Invalidate caches
+            await invalidateProducts();
+            await invalidateProduct(req.params.id);
+
             res.json({ message: 'Product updated successfully', product: savedProduct });
         });
     } catch (error) {
@@ -343,6 +386,10 @@ router.post('/', async (req, res) => {
             });
 
             await product.save();
+
+            // Invalidate products cache
+            await invalidateProducts();
+
             res.status(201).json({ message: 'Product added successfully', product });
         });
     } catch (error) {
@@ -372,6 +419,11 @@ router.delete('/:id', async (req, res) => {
             }
 
             await Product.findByIdAndDelete(req.params.id);
+
+            // Invalidate caches
+            await invalidateProducts();
+            await invalidateProduct(req.params.id);
+
             res.json({ message: 'Product deleted successfully' });
         });
     } catch (error) {
