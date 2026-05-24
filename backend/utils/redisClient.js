@@ -1,7 +1,6 @@
 import redis from 'redis';
-import { promisify } from 'util';
 
-// Create Redis client
+// Create Redis client with promise support (redis v4+)
 const redisConfig = process.env.REDIS_URL
     ? { url: process.env.REDIS_URL }
     : {
@@ -25,17 +24,21 @@ client.on('reconnecting', () => {
     console.log('🔄 Redis reconnecting...');
 });
 
-// Promisify Redis commands
-const getAsync = promisify(client.get).bind(client);
-const setAsync = promisify(client.set).bind(client);
-const setexAsync = promisify(client.setex).bind(client);
-const delAsync = promisify(client.del).bind(client);
-const flushdbAsync = promisify(client.flushdb).bind(client);
+// Initialize Redis connection
+const initRedis = async () => {
+    try {
+        await client.connect();
+        console.log('✅ Redis client connected');
+    } catch (err) {
+        console.warn('⚠️ Failed to connect to Redis:', err.message);
+        console.warn('Continuing without Redis cache...');
+    }
+};
 
-// Helper functions with error handling
+// Redis v4+ has built-in promise support, no need to promisify
 const cacheGet = async (key) => {
     try {
-        const data = await getAsync(key);
+        const data = await client.get(key);
         if (data) {
             try {
                 return JSON.parse(data);
@@ -54,9 +57,9 @@ const cacheSet = async (key, value, expirySeconds = 3600) => {
     try {
         const jsonValue = JSON.stringify(value);
         if (expirySeconds) {
-            await setexAsync(key, expirySeconds, jsonValue);
+            await client.setEx(key, expirySeconds, jsonValue);
         } else {
-            await setAsync(key, jsonValue);
+            await client.set(key, jsonValue);
         }
         return true;
     } catch (err) {
@@ -67,7 +70,7 @@ const cacheSet = async (key, value, expirySeconds = 3600) => {
 
 const cacheDel = async (key) => {
     try {
-        await delAsync(key);
+        await client.del(key);
         return true;
     } catch (err) {
         console.warn(`Cache delete error for ${key}:`, err.message);
@@ -77,7 +80,7 @@ const cacheDel = async (key) => {
 
 const cacheFlush = async () => {
     try {
-        await flushdbAsync();
+        await client.flushDb();
         console.log('✅ Cache flushed');
         return true;
     } catch (err) {
@@ -88,6 +91,7 @@ const cacheFlush = async () => {
 
 export {
     client,
+    initRedis,
     cacheGet,
     cacheSet,
     cacheDel,

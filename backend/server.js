@@ -12,7 +12,7 @@ import { v2 as cloudinary } from 'cloudinary';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
 
 // 🔥 REDIS IMPORT ADDED HERE
-import { client as redisClient } from './utils/redisClient.js';
+import { initRedis } from './utils/redisClient.js';
 
 import authRoutes from './routes/auth.js';
 import productRoutes from './routes/products.js';
@@ -143,6 +143,7 @@ app.get('/api/health', (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
     console.log(`🚀 Server running on port ${PORT}`);
+    await initRedis();
 });
