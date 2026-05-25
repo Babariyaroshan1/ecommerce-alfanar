@@ -21,7 +21,7 @@
   aspect-ratio: 1;
   background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
   background-size: 200% 100%;
-  animation: shimmer 2s infinite;
+  animation: shimmer 1.2s infinite;
   border-radius: 8px;
 }
 
@@ -35,7 +35,7 @@
   height: 80px;
   background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
   background-size: 200% 100%;
-  animation: shimmer 2s infinite;
+  animation: shimmer 1.2s infinite;
   border-radius: 8px;
 }
 
@@ -75,7 +75,7 @@
   height: 16px;
   background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
   background-size: 200% 100%;
-  animation: shimmer 2s infinite;
+  animation: shimmer 1.2s infinite;
   border-radius: 4px;
 }
 
@@ -94,7 +94,7 @@
   width: 20%;
   background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
   background-size: 200% 100%;
-  animation: shimmer 2s infinite;
+  animation: shimmer 1.2s infinite;
   border-radius: 4px;
 }
 
@@ -109,7 +109,7 @@
   height: 40px;
   background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
   background-size: 200% 100%;
-  animation: shimmer 2s infinite;
+  animation: shimmer 1.2s infinite;
   border-radius: 6px;
 }
 
@@ -124,7 +124,7 @@
   flex: 1;
   background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
   background-size: 200% 100%;
-  animation: shimmer 2s infinite;
+  animation: shimmer 1.2s infinite;
   border-radius: 6px;
 }
 

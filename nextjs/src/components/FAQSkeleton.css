@@ -29,7 +29,7 @@
     #f0f0f0 75%
   );
   background-size: 200% 100%;
-  animation: skeleton-loading 2s infinite;
+  animation: skeleton-loading 0.8s infinite;
   border-radius: 4px;
   flex: 1;
 }
@@ -45,7 +45,7 @@
     #f0f0f0 75%
   );
   background-size: 200% 100%;
-  animation: skeleton-loading 2s infinite;
+  animation: skeleton-loading 0.8s infinite;
   flex-shrink: 0;
 }
 
@@ -67,7 +67,7 @@
     #f0f0f0 75%
   );
   background-size: 200% 100%;
-  animation: skeleton-loading 2s infinite;
+  animation: skeleton-loading 0.8s infinite;
   border-radius: 4px;
   width: 100%;
 }
