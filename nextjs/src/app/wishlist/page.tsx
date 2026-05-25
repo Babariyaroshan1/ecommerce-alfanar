@@ -9,6 +9,7 @@ import { useFavoritesStore } from '../../store/favoritesStore';
 import { useCartStore } from '../../store/cartStore';
 import { useProductStore } from '../../store/productStore';
 import ProductSkeleton from '@/components/ProductSkeleton';
+import './wishlist.css';
 
 export default function Wishlist() {
   const { favorites, removeFromFavorites } = useFavoritesStore();
@@ -110,8 +111,8 @@ export default function Wishlist() {
   }
 
   return (
-    <div className="container py-5">
-      <div className="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between mb-4 gap-3">
+    <div className="container py-5 wishlist-container">
+      <div className="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between mb-4 gap-3 wishlist-header">
         <div>
           <h2 className="fw-bold">Liked Products</h2>
           <p className="text-muted mb-0">Your saved products appear here. Tap the heart again to remove them.</p>
@@ -144,7 +145,7 @@ export default function Wishlist() {
           <Link href="/" className="btn btn-dark">Browse collections</Link>
         </div>
       ) : (
-        <div className="row g-3">
+        <div className="row g-3 wishlist-grid">
           {favorites.map((product) => {
             const productId = product.id || product._id;
             const isSelected = selectedProducts.has(productId);

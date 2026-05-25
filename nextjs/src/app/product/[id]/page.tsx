@@ -530,7 +530,7 @@ export default function ProductDetailPage() {
   };
 
   if (loading) {
-    return <div className="container py-5 text-center">Loading product...</div>;
+    return <ProductDetailSkeleton />;
   }
 
   if (!product) {
