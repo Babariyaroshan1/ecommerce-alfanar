@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { useProductStore } from '@/store/productStore';
+import NotificationModal from '@/components/NotificationModal';
 import './AddProduct.css';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
@@ -70,6 +71,8 @@ const AddProduct = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [notificationOpen, setNotificationOpen] = useState(false);
+  const [notificationType, setNotificationType] = useState('success');
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -118,6 +121,8 @@ const AddProduct = () => {
       setImagePreview(uploadedUrl);
     } catch (error) {
       setErrorMessage('Main image upload failed. Please try again.');
+      setNotificationType('error');
+      setNotificationOpen(true);
     } finally {
       setImageUploading(false);
       if (e?.target) e.target.value = '';
@@ -139,6 +144,8 @@ const AddProduct = () => {
       setImagePreview(uploadedUrl);
     } catch (error) {
       setErrorMessage('Main image upload failed.');
+      setNotificationType('error');
+      setNotificationOpen(true);
     } finally {
       setImageUploading(false);
     }
@@ -174,6 +181,8 @@ const AddProduct = () => {
       }));
     } catch (error) {
       setErrorMessage('Additional image upload failed. Please try again.');
+      setNotificationType('error');
+      setNotificationOpen(true);
     } finally {
       setQuickImagesUploading(false);
       if (e?.target) e.target.value = '';
@@ -205,6 +214,8 @@ const AddProduct = () => {
       }));
     } catch (error) {
       setErrorMessage('Quick images upload failed.');
+      setNotificationType('error');
+      setNotificationOpen(true);
     } finally {
       setQuickImagesUploading(false);
     }
@@ -340,30 +351,40 @@ const AddProduct = () => {
 
     if (!formData.name.trim()) {
       setErrorMessage('Product name is required');
+      setNotificationType('error');
+      setNotificationOpen(true);
       setLoading(false);
       return;
     }
 
     if (!formData.price) {
       setErrorMessage('Price is required');
+      setNotificationType('error');
+      setNotificationOpen(true);
       setLoading(false);
       return;
     }
 
     if (!formData.category) {
       setErrorMessage('Category is required');
+      setNotificationType('error');
+      setNotificationOpen(true);
       setLoading(false);
       return;
     }
 
     if (!formData.colors.some((color) => color.trim())) {
       setErrorMessage('At least one color is required');
+      setNotificationType('error');
+      setNotificationOpen(true);
       setLoading(false);
       return;
     }
 
     if (formData.sizes.length === 0) {
       setErrorMessage('Select at least one size');
+      setNotificationType('error');
+      setNotificationOpen(true);
       setLoading(false);
       return;
     }
@@ -398,6 +419,8 @@ const AddProduct = () => {
 
       if (formData.isFeaturedOnHome && currentFeaturedCount >= 8) {
         setErrorMessage('You can only mark up to 8 products as featured.');
+        setNotificationType('error');
+        setNotificationOpen(true);
         setLoading(false);
         return;
       }
@@ -424,6 +447,8 @@ const AddProduct = () => {
       );
 
       setSuccessMessage('Product added successfully!');
+      setNotificationType('success');
+      setNotificationOpen(true);
       resetForm();
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (error) {
@@ -440,10 +465,14 @@ const AddProduct = () => {
       try {
         addLocalProduct(localProduct);
         setSuccessMessage('Product added locally. Backend unavailable.');
+        setNotificationType('success');
+        setNotificationOpen(true);
         resetForm();
         setTimeout(() => setSuccessMessage(''), 3000);
       } catch (localError) {
         setErrorMessage(error.response?.data?.message || 'Failed to add product');
+        setNotificationType('error');
+        setNotificationOpen(true);
       }
     } finally {
       setLoading(false);
@@ -456,8 +485,12 @@ const AddProduct = () => {
         <h1>Add New Product</h1>
       </div>
 
-      {successMessage && <div className="success-message">{successMessage}</div>}
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
+      <NotificationModal
+        message={notificationType === 'success' ? successMessage : errorMessage}
+        type={notificationType}
+        isOpen={notificationOpen}
+        onClose={() => setNotificationOpen(false)}
+      />
 
       <form onSubmit={handleSubmit} className="product-form">
         <div className="form-section full-width">
