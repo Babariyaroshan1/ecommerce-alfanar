@@ -171,7 +171,7 @@
 
 .sidebar {
   width: 220px;
-  background: var(--sidebar-bg);
+  background: #000619;
   color: var(--text-sidebar);
   transition: var(--transition);
   z-index: 99;
@@ -212,8 +212,8 @@
 }
 
 .nav-item.active {
-  background: var(--primary);
-  color: #ffffff;
+      background: #ffffff;
+    color: #000000;
   box-shadow: 0 4px 15px rgba(67, 24, 255, 0.4);
 }
 
