@@ -2,6 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import axios from 'axios';
+import { FaUndoAlt, FaExchangeAlt } from 'react-icons/fa';
 import { useProductStore } from '@/store/productStore';
 import './AddKidsProducts.css';
 
@@ -324,7 +325,9 @@ export default function AddKidsProducts() {
 
     let imageUrl = formData.image;
     const enteredPrice = Number(formData.price) || 0;
-    const enteredOriginalPrice = formData.originalPrice ? Number(formData.originalPrice) : undefined;
+    const enteredOriginalPrice = formData.originalPrice
+      ? Number(formData.originalPrice)
+      : undefined;
     const activeCurrency = currencySettings?.currency || 'INR';
 
     let basePrice = enteredPrice;
@@ -352,7 +355,10 @@ export default function AddKidsProducts() {
       }
     }
 
-    const finalCategory = formData.kidsType === 'custom' ? (formData.customKidsType || 'custom') : formData.kidsType;
+    const finalCategory =
+      formData.kidsType === 'custom'
+        ? formData.customKidsType || 'custom'
+        : formData.kidsType;
 
     const requestData = {
       name: formData.name,
@@ -500,7 +506,10 @@ export default function AddKidsProducts() {
                   checked={formData.allowReturn}
                   onChange={handleInputChange}
                 />
-                <span>↩ Return Available</span>
+                <span className="policy-icon-text">
+                  <FaUndoAlt className="policy-icon" />
+                  Return Available
+                </span>
               </label>
 
               <label className="checkbox-label">
@@ -510,7 +519,10 @@ export default function AddKidsProducts() {
                   checked={formData.allowReplacement}
                   onChange={handleInputChange}
                 />
-                <span>🔁 Replacement Available</span>
+                <span className="policy-icon-text">
+                  <FaExchangeAlt className="policy-icon" />
+                  Replacement Available
+                </span>
               </label>
             </div>
           </div>
