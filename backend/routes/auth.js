@@ -108,9 +108,9 @@ router.post('/admin/login', async (req, res) => {
         const password = String(req.body.password || '').trim();
 
         let role;
-        if (username.toLowerCase() === 'admin' && password === 'admin123') {
+        if (username.toLowerCase() === 'admin') {
             role = 'admin';
-        } else if (username.toLowerCase() === 'coadmin' && password === 'coadmin123') {
+        } else if (username.toLowerCase() === 'coadmin') {
             role = 'coadmin';
         } else {
             return res.status(400).json({ message: 'Invalid credentials' });
@@ -118,19 +118,26 @@ router.post('/admin/login', async (req, res) => {
 
         const adminEmail = role === 'admin' ? 'admin@noor.com' : 'coadmin@noor.com';
         const adminName = role === 'admin' ? 'Admin' : 'Co-Admin';
-        const adminPassword = role === 'admin' ? 'admin123' : 'coadmin123';
+        const defaultPassword = role === 'admin' ? 'admin123' : 'coadmin123';
 
         let adminUser = await User.findOne({ email: adminEmail });
         if (!adminUser) {
+            // Create user with hashed default password
             adminUser = new User({
                 name: adminName,
                 email: adminEmail,
                 phone: '0000000000',
-                password: await bcrypt.hash(adminPassword, 10),
+                password: await bcrypt.hash(defaultPassword, 10),
                 role,
                 isAdmin: role === 'admin'
             });
             await adminUser.save();
+        }
+
+        // Compare password with hashed password in database
+        const isPasswordValid = await bcrypt.compare(password, adminUser.password);
+        if (!isPasswordValid) {
+            return res.status(400).json({ message: 'Invalid credentials' });
         }
 
         const token = jwt.sign(
