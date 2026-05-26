@@ -85,9 +85,14 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: async (req, file) => {
+        // Validate file type
+        const allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+        if (!allowedMimes.includes(file.mimetype)) {
+            throw new Error(`Invalid file type: ${file.mimetype}. Allowed: JPG, PNG, WebP, GIF`);
+        }
+
         return {
             folder: 'alfanar_products',
-            allowed_formats: ['jpg', 'jpeg', 'png', 'webp', 'gif'],
             resource_type: 'auto',
             public_id: `${Date.now()}-${Math.random().toString(36).substring(7)}`
         };
@@ -96,7 +101,23 @@ const storage = new CloudinaryStorage({
 
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 } // 5MB max
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max
+    fileFilter: (req, file, cb) => {
+        console.log('📁 File received:', {
+            filename: file.originalname,
+            mimetype: file.mimetype,
+            size: file.size
+        });
+
+        const allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+        
+        if (!allowedMimes.includes(file.mimetype)) {
+            console.error('❌ Invalid MIME type:', file.mimetype);
+            return cb(new Error(`Invalid file type. Allowed: JPG, PNG, WebP, GIF. Got: ${file.mimetype}`));
+        }
+
+        cb(null, true);
+    }
 });
 // ==========================================================
 
@@ -130,52 +151,65 @@ app.get('/api/test-cloudinary', async (req, res) => {
 // 🔥 UPLOAD ROUTE (UPDATED TO RETURN CLOUDINARY URL)
 // ==========================================================
 app.post('/api/upload', (req, res) => {
+    console.log('📤 Upload request received');
+    
     upload.single('file')(req, res, (err) => {
         try {
-            // Handle multer errors
+            // Handle any upload errors (file validation, size limit, etc)
             if (err) {
-                console.error('❌ Multer error:', {
+                console.error('❌ Upload processing error:', {
+                    name: err.name,
                     message: err.message,
                     code: err.code,
-                    field: err.field,
-                    originalError: err
+                    status: err.status
                 });
+                
+                // Cloudinary errors usually have these properties
+                if (err.http_code || err.status === 400) {
+                    return res.status(400).json({ 
+                        message: err.message || 'Invalid file or upload failed',
+                        error: err.message
+                    });
+                }
                 
                 if (err.code === 'LIMIT_FILE_SIZE') {
                     return res.status(400).json({ message: 'File too large. Max 5MB allowed.' });
                 }
+                
                 return res.status(400).json({ message: `Upload error: ${err.message}` });
             }
 
             if (!req.file) {
-                console.error('❌ Upload error: No file in request');
-                return res.status(400).json({ message: 'No file uploaded' });
+                console.error('❌ Upload error: No file received after upload processing');
+                return res.status(400).json({ message: 'No file was processed' });
             }
 
-            console.log('✅ File uploaded successfully:', {
+            console.log('✅ File uploaded successfully to Cloudinary:', {
+                originalname: req.file.originalname,
                 filename: req.file.filename,
                 size: req.file.size,
                 mimetype: req.file.mimetype,
                 url: req.file.path
             });
 
-            // req.file.path ab Cloudinary ka direct secure URL dega
+            // Return the Cloudinary URL
             res.json({
                 success: true,
                 message: 'File uploaded successfully',
-                url: req.file.path, // Yeh seedha Cloudinary ka link hai
+                url: req.file.path,
                 filename: req.file.filename
             });
         } catch (error) {
-            console.error('❌ Upload endpoint error:', {
+            console.error('❌ Unexpected error in upload endpoint:', {
                 message: error.message,
-                stack: error.stack,
-                originalError: error
+                name: error.name,
+                stack: error.stack
             });
+            
             res.status(500).json({ 
-                message: 'Upload failed', 
+                message: 'Upload failed unexpectedly',
                 error: error.message,
-                details: process.env.NODE_ENV === 'development' ? error.stack : 'Contact support'
+                details: process.env.NODE_ENV === 'development' ? error.stack : undefined
             });
         }
     });

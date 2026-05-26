@@ -99,12 +99,41 @@ const AddProduct = () => {
   };
 
   const uploadImageFile = async (file) => {
+    // Validate file before uploading
+    console.log('📁 DEBUG - File validation:', {
+      name: file.name,
+      type: file.type,
+      size: file.size,
+      sizeInMB: (file.size / (1024 * 1024)).toFixed(2),
+      lastModified: file.lastModified
+    });
+
+    const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    if (!validTypes.includes(file.type)) {
+      console.error('❌ Invalid file type:', file.type);
+      throw new Error(`Invalid file type: ${file.type}. Allowed: JPG, PNG, WebP, GIF`);
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      console.error('❌ File too large:', file.size);
+      throw new Error('File too large. Max 5MB allowed.');
+    }
+
     const uploadForm = new FormData();
     uploadForm.append('file', file);
+
+    console.log('🚀 DEBUG - Sending file to backend');
 
     try {
       const response = await axios.post(`${API_URL}/upload`, uploadForm, {
         headers: { 'Content-Type': 'multipart/form-data' },
+        timeout: 30000 // 30 second timeout
+      });
+
+      console.log('✅ DEBUG - Upload response:', {
+        status: response.status,
+        url: response.data.url,
+        message: response.data.message
       });
 
       return response.data.url;
@@ -114,7 +143,8 @@ const AddProduct = () => {
         statusText: error.response?.statusText,
         message: error.response?.data?.message,
         details: error.response?.data?.details,
-        error: error.message
+        error: error.message,
+        responseData: error.response?.data
       });
       
       throw new Error(error.response?.data?.message || error.message || 'Upload failed');
@@ -131,8 +161,13 @@ const AddProduct = () => {
       const uploadedUrl = await uploadImageFile(file);
       setFormData((prev) => ({ ...prev, image: uploadedUrl }));
       setImagePreview(uploadedUrl);
+      setSuccessMessage('Main image uploaded successfully');
+      setNotificationType('success');
+      setNotificationOpen(true);
     } catch (error) {
-      setErrorMessage('Main image upload failed. Please try again.');
+      const errorMsg = error.message || 'Main image upload failed';
+      console.error('❌ Main image upload error:', errorMsg);
+      setErrorMessage(errorMsg);
       setNotificationType('error');
       setNotificationOpen(true);
     } finally {
@@ -154,8 +189,13 @@ const AddProduct = () => {
       const uploadedUrl = await uploadImageFile(file);
       setFormData((prev) => ({ ...prev, image: uploadedUrl }));
       setImagePreview(uploadedUrl);
+      setSuccessMessage('Main image uploaded successfully');
+      setNotificationType('success');
+      setNotificationOpen(true);
     } catch (error) {
-      setErrorMessage('Main image upload failed.');
+      const errorMsg = error.message || 'Main image upload failed';
+      console.error('❌ Main image drag-drop error:', errorMsg);
+      setErrorMessage(errorMsg);
       setNotificationType('error');
       setNotificationOpen(true);
     } finally {
@@ -182,6 +222,7 @@ const AddProduct = () => {
 
     try {
       const uploadedUrls = [];
+      const failedUploads = [];
 
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
@@ -192,19 +233,40 @@ const AddProduct = () => {
           console.log(`✅ DEBUG - Image ${i + 1} uploaded:`, url);
           uploadedUrls.push(url);
         } catch (error) {
-          console.error(`❌ DEBUG - Image ${i + 1} failed:`, error);
+          const errorMsg = error.message || 'Unknown error';
+          console.error(`❌ DEBUG - Image ${i + 1} failed:`, errorMsg);
+          failedUploads.push({ filename: file.name, error: errorMsg });
         }
       }
 
-      console.log('📸 DEBUG - All uploads complete. Total successful:', uploadedUrls.length, uploadedUrls);
+      console.log('📸 DEBUG - Batch complete:', {
+        successful: uploadedUrls.length,
+        failed: failedUploads.length,
+        urls: uploadedUrls
+      });
 
-      setFormData((prev) => ({
-        ...prev,
-        images: [...prev.images, ...uploadedUrls],
-      }));
+      if (uploadedUrls.length > 0) {
+        setFormData((prev) => ({
+          ...prev,
+          images: [...prev.images, ...uploadedUrls],
+        }));
+      }
+
+      if (failedUploads.length > 0) {
+        const failedList = failedUploads.map(f => `${f.filename}: ${f.error}`).join('\n');
+        setErrorMessage(`Failed to upload ${failedUploads.length} image(s):\n${failedList}`);
+        setNotificationType('error');
+        setNotificationOpen(true);
+      }
+
+      if (uploadedUrls.length > 0 && failedUploads.length === 0) {
+        setSuccessMessage(`Successfully uploaded ${uploadedUrls.length} image(s)`);
+        setNotificationType('success');
+        setNotificationOpen(true);
+      }
     } catch (error) {
       console.error('❌ DEBUG - Batch upload error:', error);
-      setErrorMessage('Additional image upload failed. Please try again.');
+      setErrorMessage(`Upload error: ${error.message}`);
       setNotificationType('error');
       setNotificationOpen(true);
     } finally {
@@ -225,19 +287,38 @@ const AddProduct = () => {
     setQuickImagesUploading(true);
 
     try {
-      const uploaded = [];
+      const uploadedUrls = [];
+      const failedUploads = [];
 
-      for (const file of limited) {
-        const url = await uploadImageFile(file);
-        uploaded.push(url);
+      for (let i = 0; i < limited.length; i++) {
+        const file = limited[i];
+        console.log(`📸 DEBUG - Uploading dropped image ${i + 1}/${limited.length}:`, file.name);
+
+        try {
+          const url = await uploadImageFile(file);
+          uploadedUrls.push(url);
+        } catch (error) {
+          const errorMsg = error.message || 'Unknown error';
+          failedUploads.push({ filename: file.name, error: errorMsg });
+        }
       }
 
-      setFormData((prev) => ({
-        ...prev,
-        images: [...prev.images, ...uploaded],
-      }));
+      if (uploadedUrls.length > 0) {
+        setFormData((prev) => ({
+          ...prev,
+          images: [...prev.images, ...uploadedUrls],
+        }));
+      }
+
+      if (failedUploads.length > 0) {
+        const failedList = failedUploads.map(f => `${f.filename}: ${f.error}`).join('\n');
+        setErrorMessage(`Failed to upload ${failedUploads.length} image(s):\n${failedList}`);
+        setNotificationType('error');
+        setNotificationOpen(true);
+      }
     } catch (error) {
-      setErrorMessage('Quick images upload failed.');
+      console.error('❌ Quick images drag-drop error:', error);
+      setErrorMessage(`Upload error: ${error.message}`);
       setNotificationType('error');
       setNotificationOpen(true);
     } finally {
