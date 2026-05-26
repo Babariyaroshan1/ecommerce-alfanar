@@ -138,16 +138,20 @@ const AddProduct = () => {
 
       return response.data.url;
     } catch (error) {
-      console.error('❌ Upload failed for', file.name, ':', {
+      const errorDetails = {
         status: error.response?.status,
         statusText: error.response?.statusText,
         message: error.response?.data?.message,
         details: error.response?.data?.details,
         error: error.message,
-        responseData: error.response?.data
-      });
+        fullResponse: error.response?.data
+      };
+
+      console.error('❌ Upload failed for', file.name, ':', errorDetails);
       
-      throw new Error(error.response?.data?.message || error.message || 'Upload failed');
+      // Show the actual backend error
+      const backendError = error.response?.data?.message || error.response?.data?.error || error.message;
+      throw new Error(backendError);
     }
   };
 
