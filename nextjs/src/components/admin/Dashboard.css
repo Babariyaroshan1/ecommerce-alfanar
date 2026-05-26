@@ -90,6 +90,14 @@
   max-width: 1600px;
   margin: 0 auto;
   width: 100%;
+  gap: 1rem;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
 }
 
 .header-title {
@@ -117,6 +125,8 @@
   font-weight: 600;
   transition: var(--transition);
   box-shadow: var(--shadow-sm);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .logout-btn:hover {
@@ -585,8 +595,18 @@ table tbody tr:hover {
 
 @media (max-width: 768px) {
   .dashboard-header { padding: 1rem; }
-  .header-content { justify-content: flex-start; }
-  .header-title { flex: 1; font-size: 1.2rem; }
+  .header-content { 
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 0;
+  }
+  .header-title { flex: 0 1 auto; font-size: 1.1rem; }
   .role-label { display: none; }
   
   .sidebar-toggle { display: flex; align-items: center; justify-content: center; }
@@ -599,7 +619,9 @@ table tbody tr:hover {
     height: calc(100vh - 70px);
     margin: 0;
     border-radius: 0;
+    z-index: 1000;
     transform: translateX(-100%);
+    transition: transform 0.3s ease;
   }
 
   .sidebar.open { transform: translateX(0); }

@@ -139,12 +139,14 @@ export default function Dashboard({ onLogout }) {
       {/* Header */}
       <header className="dashboard-header">
         <div className="header-content">
-          <button className="sidebar-toggle" onClick={() => setSidebarOpen(!sidebarOpen)}>
-            <span className="hamburger"></span>
-          </button>
-          <div>
-            <h1 className="header-title">Admin Control Panel</h1>
-            <p className="role-label">Role: {role === 'admin' ? 'Admin' : 'Co-Admin'}</p>
+          <div className="header-left">
+            <button className="sidebar-toggle" onClick={() => setSidebarOpen(!sidebarOpen)}>
+              <span className="hamburger"></span>
+            </button>
+            <div>
+              <h1 className="header-title">Admin Control Panel</h1>
+              <p className="role-label">Role: {role === 'admin' ? 'Admin' : 'Co-Admin'}</p>
+            </div>
           </div>
           <button className="logout-btn" onClick={onLogout}>Logout</button>
         </div>
@@ -157,7 +159,13 @@ export default function Dashboard({ onLogout }) {
             {menuItems.map((item) => (
               <button
                 key={item.id}
-                onClick={() => setActiveTab(item.id)}
+                onClick={() => {
+                  setActiveTab(item.id);
+                  // Close sidebar on mobile after clicking
+                  if (window.innerWidth < 1024) {
+                    setSidebarOpen(false);
+                  }
+                }}
                 className={`nav-item ${activeTab === item.id ? 'active' : ''}`}
                 title={item.label}
               >

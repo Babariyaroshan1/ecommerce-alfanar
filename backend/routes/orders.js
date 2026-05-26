@@ -530,8 +530,8 @@ router.post('/admin/create-test-requests', async (req, res) => {
     }
 });
 
-// Get all orders (Admin only)
-router.get('/admin/all', adminAuth, async (req, res) => {
+// Get all orders (Admin or Co-Admin with manage_orders permission)
+router.get('/admin/all', permissionAuth(PERMISSIONS.MANAGE_ORDERS), async (req, res) => {
     try {
         const orders = await Order.find()
             .populate('userId', 'name email phone')
@@ -542,8 +542,8 @@ router.get('/admin/all', adminAuth, async (req, res) => {
     }
 });
 
-// Analytics route
-router.get('/admin/analytics', adminAuth, async (req, res) => {
+// Analytics route (Admin or Co-Admin with view_analytics permission)
+router.get('/admin/analytics', permissionAuth(PERMISSIONS.VIEW_ANALYTICS), async (req, res) => {
     try {
         const { startDate, endDate, currency = 'INR' } = req.query;
 
