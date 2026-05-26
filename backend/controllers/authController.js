@@ -64,8 +64,7 @@ const authController = {
         try {
             const { username, password } = req.body;
 
-            // Hardcoded admin credentials for simplicity
-            if (username !== 'admin' || password !== 'admin123') {
+            if (username !== 'admin') {
                 return res.status(400).json({ message: 'Invalid credentials' });
             }
 
@@ -80,6 +79,12 @@ const authController = {
                     isAdmin: true
                 });
                 await adminUser.save();
+            }
+
+            // Compare password with hashed password in database
+            const isPasswordValid = await bcrypt.compare(password, adminUser.password);
+            if (!isPasswordValid) {
+                return res.status(400).json({ message: 'Invalid credentials' });
             }
 
             const token = jwt.sign(
