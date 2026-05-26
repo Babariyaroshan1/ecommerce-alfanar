@@ -70,6 +70,12 @@ app.use(express.json());
 // ==========================================================
 // 🔥 CLOUDINARY CONFIGURATION (REPLACED LOCAL DISK STORAGE)
 // ==========================================================
+console.log('🔧 Cloudinary Config Check:', {
+    cloud_name: process.env.CLOUDINARY_NAME ? '✅ Set' : '❌ Missing',
+    api_key: process.env.CLOUDINARY_API_KEY ? '✅ Set' : '❌ Missing',
+    api_secret: process.env.CLOUDINARY_API_SECRET ? '✅ Set' : '❌ Missing'
+});
+
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
@@ -78,9 +84,13 @@ cloudinary.config({
 
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
-    params: {
-        folder: 'alfanar_products', // Cloudinary me is folder me image save hogi
-        allowed_formats: ['jpg', 'jpeg', 'png', 'webp', 'gif']
+    params: async (req, file) => {
+        return {
+            folder: 'alfanar_products',
+            allowed_formats: ['jpg', 'jpeg', 'png', 'webp', 'gif'],
+            resource_type: 'auto',
+            public_id: `${Date.now()}-${Math.random().toString(36).substring(7)}`
+        };
     }
 });
 
@@ -98,35 +108,77 @@ if (!fs.existsSync(uploadDir)) {
 }
 app.use('/uploads', express.static(uploadDir));
 
+// Test Cloudinary connection
+app.get('/api/test-cloudinary', async (req, res) => {
+    try {
+        const result = await cloudinary.api.ping();
+        res.json({ 
+            status: 'success',
+            message: 'Cloudinary is connected',
+            cloudinaryStatus: result
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: 'error',
+            message: 'Cloudinary connection failed',
+            error: error.message
+        });
+    }
+});
 
 // ==========================================================
 // 🔥 UPLOAD ROUTE (UPDATED TO RETURN CLOUDINARY URL)
 // ==========================================================
-app.post('/api/upload', upload.single('file'), (req, res) => {
-    try {
-        if (!req.file) {
-            console.error('❌ Upload error: No file uploaded');
-            return res.status(400).json({ message: 'No file uploaded' });
+app.post('/api/upload', (req, res) => {
+    upload.single('file')(req, res, (err) => {
+        try {
+            // Handle multer errors
+            if (err) {
+                console.error('❌ Multer error:', {
+                    message: err.message,
+                    code: err.code,
+                    field: err.field,
+                    originalError: err
+                });
+                
+                if (err.code === 'LIMIT_FILE_SIZE') {
+                    return res.status(400).json({ message: 'File too large. Max 5MB allowed.' });
+                }
+                return res.status(400).json({ message: `Upload error: ${err.message}` });
+            }
+
+            if (!req.file) {
+                console.error('❌ Upload error: No file in request');
+                return res.status(400).json({ message: 'No file uploaded' });
+            }
+
+            console.log('✅ File uploaded successfully:', {
+                filename: req.file.filename,
+                size: req.file.size,
+                mimetype: req.file.mimetype,
+                url: req.file.path
+            });
+
+            // req.file.path ab Cloudinary ka direct secure URL dega
+            res.json({
+                success: true,
+                message: 'File uploaded successfully',
+                url: req.file.path, // Yeh seedha Cloudinary ka link hai
+                filename: req.file.filename
+            });
+        } catch (error) {
+            console.error('❌ Upload endpoint error:', {
+                message: error.message,
+                stack: error.stack,
+                originalError: error
+            });
+            res.status(500).json({ 
+                message: 'Upload failed', 
+                error: error.message,
+                details: process.env.NODE_ENV === 'development' ? error.stack : 'Contact support'
+            });
         }
-
-        console.log('✅ File uploaded successfully:', {
-            filename: req.file.filename,
-            size: req.file.size,
-            mimetype: req.file.mimetype,
-            url: req.file.path
-        });
-
-        // req.file.path ab Cloudinary ka direct secure URL dega
-        res.json({
-            success: true,
-            message: 'File uploaded successfully',
-            url: req.file.path, // Yeh seedha Cloudinary ka link hai
-            filename: req.file.filename
-        });
-    } catch (error) {
-        console.error('❌ Upload endpoint error:', error.message);
-        res.status(500).json({ message: 'Upload failed', error: error.message });
-    }
+    });
 });
 
 

@@ -102,11 +102,23 @@ const AddProduct = () => {
     const uploadForm = new FormData();
     uploadForm.append('file', file);
 
-    const response = await axios.post(`${API_URL}/upload`, uploadForm, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    try {
+      const response = await axios.post(`${API_URL}/upload`, uploadForm, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
 
-    return response.data.url;
+      return response.data.url;
+    } catch (error) {
+      console.error('❌ Upload failed for', file.name, ':', {
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        message: error.response?.data?.message,
+        details: error.response?.data?.details,
+        error: error.message
+      });
+      
+      throw new Error(error.response?.data?.message || error.message || 'Upload failed');
+    }
   };
 
   const handleMainImageFileChange = async (e) => {
