@@ -14,6 +14,8 @@ import Analytics from './Analytics';
 import Coupons from './Coupons';
 import BannerSettings from './BannerSettings';
 import ChangeCoadminPassword from './ChangeCoadminPassword';
+import ChangeAdminPassword from './ChangeAdminPassword';
+import ChangeCoadminUsername from './ChangeCoadminUsername';
 import { useProductStore } from '../../store/productStore';
 import './Dashboard.css';
 
@@ -120,7 +122,9 @@ export default function Dashboard({ onLogout }) {
     { id: 'banner', label: 'Banner', icon: 'fa-solid fa-image', permission: 'manage_banner' },
     { id: 'coupons', label: 'Coupons', icon: 'fa-solid fa-tags', permission: 'manage_coupons' },
     { id: 'permissions', label: 'Permissions', icon: 'fa-solid fa-shield-alt', permission: 'manage_settings', adminOnly: true },
-    { id: 'change-coadmin-password', label: 'Coadmin Pass', icon: 'fa-solid fa-key', permission: 'manage_settings', adminOnly: true }
+    { id: 'change-admin-password', label: 'Admin Pass', icon: 'fa-solid fa-key', permission: 'manage_settings', adminOnly: true },
+    { id: 'change-coadmin-password', label: 'Coadmin Pass', icon: 'fa-solid fa-key', permission: 'manage_settings', adminOnly: true },
+    { id: 'change-coadmin-username', label: 'Coadmin User', icon: 'fa-solid fa-user-edit', permission: 'manage_settings', adminOnly: true }
   ].filter(item => {
     // Always show dashboard
     if (item.permission === null) return true;
@@ -219,7 +223,9 @@ export default function Dashboard({ onLogout }) {
           {activeTab === 'banner' && <BannerSettings />}
           {activeTab === 'coupons' && <Coupons />}
           {activeTab === 'permissions' && role === 'admin' && <PermissionManagement />}
+          {activeTab === 'change-admin-password' && role === 'admin' && <ChangeAdminPassword />}
           {activeTab === 'change-coadmin-password' && role === 'admin' && <ChangeCoadminPassword />}
+          {activeTab === 'change-coadmin-username' && role === 'admin' && <ChangeCoadminUsername />}
         </main>
       </div>
     </div>

@@ -108,19 +108,31 @@ router.post('/admin/login', async (req, res) => {
         const password = String(req.body.password || '').trim();
 
         let role;
+        let adminUser;
+
+        // Check for admin login
         if (username.toLowerCase() === 'admin') {
             role = 'admin';
-        } else if (username.toLowerCase() === 'coadmin') {
-            role = 'coadmin';
+            adminUser = await User.findOne({ email: 'admin@noor.com' });
         } else {
-            return res.status(400).json({ message: 'Invalid credentials' });
+            // For coadmin, check if username matches the stored username
+            const coadminUser = await User.findOne({ email: 'coadmin@noor.com' });
+            if (coadminUser && coadminUser.username && username.toLowerCase() === coadminUser.username.toLowerCase()) {
+                role = 'coadmin';
+                adminUser = coadminUser;
+            } else if (!coadminUser && username.toLowerCase() === 'coadmin') {
+                // Fallback to default username if coadmin user doesn't exist yet
+                role = 'coadmin';
+            } else {
+                return res.status(400).json({ message: 'Invalid credentials' });
+            }
         }
 
         const adminEmail = role === 'admin' ? 'admin@noor.com' : 'coadmin@noor.com';
         const adminName = role === 'admin' ? 'Admin' : 'Co-Admin';
         const defaultPassword = role === 'admin' ? 'admin123' : 'coadmin123';
+        const defaultUsername = role === 'admin' ? 'admin' : 'coadmin';
 
-        let adminUser = await User.findOne({ email: adminEmail });
         if (!adminUser) {
             // Create user with hashed default password
             adminUser = new User({
@@ -128,6 +140,7 @@ router.post('/admin/login', async (req, res) => {
                 email: adminEmail,
                 phone: '0000000000',
                 password: await bcrypt.hash(defaultPassword, 10),
+                username: defaultUsername,
                 role,
                 isAdmin: role === 'admin'
             });
@@ -262,11 +275,67 @@ router.put('/admin/change-coadmin-password', adminAuth, async (req, res) => {
             return res.status(404).json({ message: 'Coadmin not found' });
         }
 
-        // Update password
-        coadminUser.password = newPassword;
+        // Update password with bcrypt hash
+        coadminUser.password = await bcrypt.hash(newPassword, 10);
         await coadminUser.save();
 
         res.json({ message: 'Coadmin password changed successfully' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Admin: Change Admin Password (Admin changes own password)
+router.put('/admin/change-admin-password', adminAuth, async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+
+        if (!newPassword || newPassword.length < 6) {
+            return res.status(400).json({ message: 'New password must be at least 6 characters' });
+        }
+
+        // Find admin user
+        const adminUser = await User.findById(req.userId);
+        if (!adminUser) {
+            return res.status(404).json({ message: 'Admin not found' });
+        }
+
+        // Verify current password
+        const isPasswordValid = await bcrypt.compare(currentPassword, adminUser.password);
+        if (!isPasswordValid) {
+            return res.status(400).json({ message: 'Current password is incorrect' });
+        }
+
+        // Update password
+        adminUser.password = await bcrypt.hash(newPassword, 10);
+        await adminUser.save();
+
+        res.json({ message: 'Admin password changed successfully' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Admin: Change Coadmin Username (Only admin can change coadmin username)
+router.put('/admin/change-coadmin-username', adminAuth, async (req, res) => {
+    try {
+        const { newUsername } = req.body;
+
+        if (!newUsername || newUsername.trim().length < 3) {
+            return res.status(400).json({ message: 'Username must be at least 3 characters' });
+        }
+
+        // Find coadmin user
+        const coadminUser = await User.findOne({ email: 'coadmin@noor.com' });
+        if (!coadminUser) {
+            return res.status(404).json({ message: 'Coadmin not found' });
+        }
+
+        // Update username
+        coadminUser.username = newUsername.trim();
+        await coadminUser.save();
+
+        res.json({ message: 'Coadmin username changed successfully', username: coadminUser.username });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

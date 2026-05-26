@@ -16,6 +16,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    username: {
+        type: String,
+        default: null
+    },
     password: {
         type: String,
         required: true
@@ -81,6 +85,8 @@ const userSchema = new mongoose.Schema({
 // Password hashing
 userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) return next();
+    // Don't hash if already hashed (bcrypt hashes start with $2)
+    if (this.password.startsWith('$2')) return next();
     this.password = await bcrypt.hash(this.password, 10);
     next();
 });
