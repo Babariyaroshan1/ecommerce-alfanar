@@ -164,7 +164,7 @@ export default function ProductDetailPage() {
       }
     };
     if (id) fetchProduct();
-  }, [id, products]);
+  }, [id]);
 
   useEffect(() => {
     if (product) {
