@@ -165,21 +165,33 @@ const AddProduct = () => {
     const files = Array.from(e.target.files || []);
     if (files.length === 0) return;
 
+    console.log('📸 DEBUG - Starting upload of', files.length, 'images');
     setQuickImagesUploading(true);
 
     try {
       const uploadedUrls = [];
 
-      for (const file of files) {
-        const url = await uploadImageFile(file);
-        uploadedUrls.push(url);
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        console.log(`📸 DEBUG - Uploading image ${i + 1}/${files.length}:`, file.name);
+        
+        try {
+          const url = await uploadImageFile(file);
+          console.log(`✅ DEBUG - Image ${i + 1} uploaded:`, url);
+          uploadedUrls.push(url);
+        } catch (error) {
+          console.error(`❌ DEBUG - Image ${i + 1} failed:`, error);
+        }
       }
+
+      console.log('📸 DEBUG - All uploads complete. Total successful:', uploadedUrls.length, uploadedUrls);
 
       setFormData((prev) => ({
         ...prev,
         images: [...prev.images, ...uploadedUrls],
       }));
     } catch (error) {
+      console.error('❌ DEBUG - Batch upload error:', error);
       setErrorMessage('Additional image upload failed. Please try again.');
       setNotificationType('error');
       setNotificationOpen(true);
@@ -389,6 +401,15 @@ const AddProduct = () => {
       return;
     }
 
+    // 🔥 DEBUG: Log what we're about to submit
+    const imagesToSubmit = formData.images.filter(Boolean);
+    console.log('🔍 DEBUG - Images to submit:', {
+      totalImages: formData.images.length,
+      filteredImages: imagesToSubmit.length,
+      imagesList: imagesToSubmit,
+      mainImage: formData.image,
+    });
+
     try {
       const token = localStorage.getItem('adminToken');
       const activeCurrency = currencySettings?.currency || 'INR';
@@ -425,26 +446,28 @@ const AddProduct = () => {
         return;
       }
 
-      await axios.post(
-        `${API_URL}/products`,
-        {
-          ...formData,
-          price: basePrice,
-          prices: pricesPayload,
-          originalPrice: baseOriginalPrice,
-          colors: formData.colors.filter(Boolean),
-          images: formData.images.filter(Boolean),
-          isFeaturedOnHome: Boolean(formData.isFeaturedOnHome),
-          showSameColorButton: Boolean(formData.showSimilarProductButton),
-          similarProducts: formData.similarProducts
-            .split(',')
-            .map((id) => id.trim())
-            .filter(Boolean),
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const submitPayload = {
+        ...formData,
+        price: basePrice,
+        prices: pricesPayload,
+        originalPrice: baseOriginalPrice,
+        colors: formData.colors.filter(Boolean),
+        images: imagesToSubmit,
+        isFeaturedOnHome: Boolean(formData.isFeaturedOnHome),
+        showSameColorButton: Boolean(formData.showSimilarProductButton),
+        similarProducts: formData.similarProducts
+          .split(',')
+          .map((id) => id.trim())
+          .filter(Boolean),
+      };
+
+      console.log('🚀 DEBUG - Submitting to backend:', submitPayload);
+
+      const response = await axios.post(`${API_URL}/products`, submitPayload, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      console.log('✅ DEBUG - Backend response:', response.data);
 
       setSuccessMessage('Product added successfully!');
       setNotificationType('success');
@@ -452,6 +475,8 @@ const AddProduct = () => {
       resetForm();
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (error) {
+      console.error('❌ DEBUG - Backend error:', error.response?.data || error.message);
+      
       const localProduct = {
         _id: Date.now().toString(),
         ...formData,
@@ -462,6 +487,8 @@ const AddProduct = () => {
         createdAt: new Date().toISOString(),
       };
 
+      console.log('📱 DEBUG - Adding locally:', localProduct);
+
       try {
         addLocalProduct(localProduct);
         setSuccessMessage('Product added locally. Backend unavailable.');
@@ -470,6 +497,7 @@ const AddProduct = () => {
         resetForm();
         setTimeout(() => setSuccessMessage(''), 3000);
       } catch (localError) {
+        console.error('❌ DEBUG - Local add error:', localError);
         setErrorMessage(error.response?.data?.message || 'Failed to add product');
         setNotificationType('error');
         setNotificationOpen(true);

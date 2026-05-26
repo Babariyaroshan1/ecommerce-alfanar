@@ -337,6 +337,14 @@ router.post('/', async (req, res) => {
         return permissionAuth(requiredPermission)(req, res, async () => {
             let { name, description, materialAndCare, countryOfOrigin, price, prices, originalPrice, discount, image, images, category, colors, sizes, stock, allowReturn, allowReplacement, isNew, isFeaturedOnHome, showSameColorButton, kidsType } = req.body;
 
+            console.log('📦 DEBUG - Creating product:', {
+              name,
+              imagesReceived: images,
+              imagesType: typeof images,
+              imagesIsArray: Array.isArray(images),
+              imagesLength: images?.length,
+            });
+
             // Parse JSON strings sent from FormData
             try {
                 if (typeof colors === 'string') colors = JSON.parse(colors);
@@ -361,6 +369,12 @@ router.post('/', async (req, res) => {
                 return res.status(400).json({ message: `Invalid kidsType. Must be one of: ${validKidsTypes.join(', ')}` });
             }
 
+            const imagesArray = Array.isArray(images) ? images.filter(Boolean) : [];
+            console.log('📦 DEBUG - After filtering:', {
+              imagesFiltered: imagesArray,
+              filteredLength: imagesArray.length,
+            });
+
             const product = new Product({
                 name,
                 description,
@@ -371,7 +385,7 @@ router.post('/', async (req, res) => {
                 originalPrice,
                 discount,
                 image,
-                images: Array.isArray(images) ? images.filter(Boolean) : [],
+                images: imagesArray,
                 category,
                 colors,
                 sizes,
@@ -387,12 +401,21 @@ router.post('/', async (req, res) => {
 
             await product.save();
 
-            // Invalidate products cache
+            console.log('✅ DEBUG - Product saved:', {
+              _id: product._id,
+              name: product.name,
+              imagesSaved: product.images,
+              imagesLength: product.images?.length,
+            });
+
+            // 🔥 IMPORTANT: Invalidate ALL caches - don't let stale data persist
             await invalidateProducts();
+            await invalidateProduct(product._id.toString());
 
             res.status(201).json({ message: 'Product added successfully', product });
         });
     } catch (error) {
+        console.error('❌ DEBUG - Product creation error:', error);
         res.status(500).json({ message: error.message });
     }
 });

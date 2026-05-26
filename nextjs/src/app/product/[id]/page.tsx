@@ -121,7 +121,7 @@ export default function ProductDetailPage() {
 
   useEffect(() => {
     fetchProducts();
-  }, [fetchProducts]);
+  }, []);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -147,6 +147,7 @@ export default function ProductDetailPage() {
 
         // If products are still loading, keep waiting until the next effect run.
         setProduct(null);
+        setLoading(false);
         return;
       }
 
@@ -164,7 +165,7 @@ export default function ProductDetailPage() {
       }
     };
     if (id) fetchProduct();
-  }, [id]);
+  }, [id, products]);
 
   useEffect(() => {
     if (product) {
@@ -641,10 +642,6 @@ export default function ProductDetailPage() {
   const displayRating = averageRating ? averageRating.toFixed(1) : '0.0';
 
   return (
-    <>
-      {loading ? (
-        <ProductDetailSkeleton />
-      ) : (
     <div className="tss-layout-container">
       
       {/* BREADCRUMBS */}
@@ -1255,7 +1252,5 @@ export default function ProductDetailPage() {
       )}
 
     </div>
-      )}
-    </>
   );
 };

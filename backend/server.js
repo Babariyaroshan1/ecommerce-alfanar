@@ -105,8 +105,16 @@ app.use('/uploads', express.static(uploadDir));
 app.post('/api/upload', upload.single('file'), (req, res) => {
     try {
         if (!req.file) {
+            console.error('❌ Upload error: No file uploaded');
             return res.status(400).json({ message: 'No file uploaded' });
         }
+
+        console.log('✅ File uploaded successfully:', {
+            filename: req.file.filename,
+            size: req.file.size,
+            mimetype: req.file.mimetype,
+            url: req.file.path
+        });
 
         // req.file.path ab Cloudinary ka direct secure URL dega
         res.json({
@@ -116,6 +124,7 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
             filename: req.file.filename
         });
     } catch (error) {
+        console.error('❌ Upload endpoint error:', error.message);
         res.status(500).json({ message: 'Upload failed', error: error.message });
     }
 });
