@@ -125,7 +125,7 @@
   font-size: 16px;
   font-weight: 600;
   color: #ffffff;
-  background: #2563eb;
+  background: #000000;
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.2s ease;
 }
@@ -147,7 +147,7 @@
 }
 
 .register-link a {
-  color: #2563eb;
+  color: #000000;
   text-decoration: none;
   font-weight: 600;
 }

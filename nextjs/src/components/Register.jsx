@@ -95,14 +95,7 @@ export default function Register() {
         name: formData.name,
         email: formData.email,
         password: formData.password,
-        phone: normalizedPhone,
-        address: {
-          houseNumber: formData.houseNumber,
-          street: formData.street,
-          city: formData.city,
-          state: formData.state,
-          pincode: formData.pincode
-        }
+        phone: normalizedPhone
       });
 
       if (typeof window !== 'undefined') {
@@ -132,7 +125,7 @@ export default function Register() {
             <input
               type="text"
               name="name"
-              placeholder={t('Full Name')}
+              placeholder={t('Full Name *')}
               value={formData.name}
               onChange={handleChange}
               className="register-input"
@@ -147,7 +140,6 @@ export default function Register() {
               onChange={handleChange}
               className="register-input"
               autoComplete="email"
-              required
             />
           </div>
 
@@ -166,7 +158,7 @@ export default function Register() {
               <input
                 type="tel"
                 name="phone"
-                placeholder={t('Phone Number')}
+                placeholder={t('Phone Number *')}
                 value={formData.phone}
                 onChange={handleChange}
                 className="register-input"
@@ -178,7 +170,7 @@ export default function Register() {
               <input
                 type={showPassword ? 'text' : 'password'}
                 name="password"
-                placeholder={t('Password')}
+                placeholder={t('Password *')}
                 value={formData.password}
                 onChange={handleChange}
                 className="register-input register-password-input"
@@ -204,63 +196,6 @@ export default function Register() {
                 )}
               </button>
             </div>
-          </div>
-
-          <div className="register-row">
-            <input
-              type="text"
-              name="houseNumber"
-              placeholder={t('32,House Number')}
-              value={formData.houseNumber}
-              onChange={handleChange}
-              className="register-input"
-              autoComplete="off"
-              required
-            />
-            <input
-              type="text"
-              name="street"
-              placeholder={t('Street Address')}
-              value={formData.street}
-              onChange={handleChange}
-              className="register-input"
-              autoComplete="off"
-              required
-            />
-          </div>
-
-          <div className="register-row">
-            <input
-              type="text"
-              name="city"
-              placeholder={t('City')}
-              value={formData.city}
-              onChange={handleChange}
-              className="register-input"
-              autoComplete="off"
-              required
-            />
-            <input
-              type="text"
-              name="state"
-              placeholder={t('State')}
-              value={formData.state}
-              onChange={handleChange}
-              className="register-input"
-              autoComplete="off"
-            />
-          </div>
-
-          <div className="register-row">
-            <input
-              type="text"
-              name="pincode"
-              placeholder={t('Pincode')}
-              value={formData.pincode}
-              onChange={handleChange}
-              className="register-input"
-              autoComplete="off"
-            />
           </div>
 
           <button
