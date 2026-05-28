@@ -1248,7 +1248,7 @@
 
 .tss-review-stars i {
   font-size: 16px;
-  color: #fbbf24;
+  color: #000000;
 }
 
 .tss-review-stars i.inactive {
@@ -1445,7 +1445,11 @@
 .tss-review-star.active {
   color: #000000;
 }
-
+.tss-review-textarea{
+  width: 100%;
+    border: 1px solid #dadada;
+    border-radius: 4px;
+}
 .tss-review-summary-row {
   display: flex;
   align-items: center;

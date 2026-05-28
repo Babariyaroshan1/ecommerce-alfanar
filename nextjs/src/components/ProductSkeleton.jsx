@@ -22,11 +22,9 @@ export default function ProductSkeleton() {
 
 export function SkeletonGrid({ count = 8 }) {
   return (
-    <div className="row g-4">
+    <div className="skeleton-grid">
       {Array.from({ length: count }).map((_, index) => (
-        <div key={index} className="col-6 col-sm-6 col-md-4 col-lg-3">
-          <ProductSkeleton />
-        </div>
+        <ProductSkeleton key={index} />
       ))}
     </div>
   );
