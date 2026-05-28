@@ -121,6 +121,34 @@ export default function ProductDetailPage() {
   // This prevents calling fetchProducts multiple times on initial render
   const hasFetchedProducts = React.useRef(false);
 
+  // Memoize related products calculation - must be before early returns
+  const relatedProducts = useMemo(() => {
+    if (!product || products.length === 0) return [];
+    let related = products.filter(p => String(p._id || p.id) !== String(product._id || product.id));
+    
+    // Shuffle array
+    for (let i = related.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [related[i], related[j]] = [related[j], related[i]];
+    }
+    
+    // Return first 4 products
+    return related.slice(0, 4);
+  }, [product, products]);
+
+  // Memoize review stats calculation
+  const reviewStats = useMemo(() => {
+    const count = reviews.length;
+    const average = count
+      ? reviews.reduce((sum, item) => sum + Number(item.rating || 0), 0) / count
+      : Number(product?.rating || 0);
+    return {
+      count,
+      average,
+      displayRating: average ? average.toFixed(1) : '0.0'
+    };
+  }, [reviews, product?.rating]);
+
   const allowReturn = product?.allowReturn !== false;
   const allowReplacement = product?.allowReplacement !== false;
 
@@ -636,28 +664,9 @@ export default function ProductDetailPage() {
   const maxStock = typeof product.stock === 'object' ? (product.stock[selectedSize] || 0) : (product.stock || 10);
   const quantityOptions = Array.from({ length: Math.min(maxStock, 10) }, (_, i) => i + 1);
 
-  // Get random related products (exclude current product)
-  // Memoize so products only change when the product itself changes, not on every render
-  const relatedProducts = useMemo(() => {
-    let related = products.filter(p => String(p._id || p.id) !== String(product._id || product.id));
-    
-    // Shuffle array
-    for (let i = related.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [related[i], related[j]] = [related[j], related[i]];
-    }
-    
-    // Return first 4 products
-    return related.slice(0, 4);
-  }, [product, products]);
-
-  const reviewCount = reviews.length;
-  const averageRating = useMemo(() => {
-    return reviewCount
-      ? reviews.reduce((sum, item) => sum + Number(item.rating || 0), 0) / reviewCount
-      : Number(product.rating || 0);
-  }, [reviews, product.rating]);
-  const displayRating = averageRating ? averageRating.toFixed(1) : '0.0';
+  const reviewCount = reviewStats.count;
+  const averageRating = reviewStats.average;
+  const displayRating = reviewStats.displayRating;
 
   return (
     <div className="tss-layout-container">
