@@ -98,7 +98,7 @@ export default function Footer() {
       {/* Footer Bottom */}
       <div className="footer-bottom">
         <div className="footer-bottom-content">
-          <p className="copyright-text">© Crystal House General Trading Co 2026</p>
+          <p className="copyright-text">Powered By Chai and Chill  © 2026 All Rights Reserved.</p>
           <Link href="/orders" className="orders-link">Orders</Link>
         </div>
       </div>

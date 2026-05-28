@@ -109,19 +109,19 @@ const PrivacyPolicy = () => {
           
           <div className="contact-details">
             <p>
-              <strong>Email:</strong> <a href="mailto:info@alfanar.com.kw">info@alfanar.com.kw</a>
+              <strong>Email:</strong> <a href="mailto:info@alfanar.store">info@alfanar.store</a>
             </p>
             <p>
-              <strong>Phone:</strong> <a href="tel:+96569900918">+965 69900918</a>
+              <strong>Phone:</strong> <a href="tel:+96597210352">+965 97210352</a>
             </p>
           </div>
 
           <div className="contact-address">
             <p><strong>Mailing Address:</strong></p>
             <p>AL-FANAR</p>
-            <p>Al Salam Tower, Floor 14</p>
-            <p>Fahad Al Salem Street</p>
-            <p>Kuwait City, Kuwait</p>
+            <p> Al Hamra Tower & Mall</p>
+            <p>Al-Shuhada St</p>
+            <p>Kuwait City 13010, Kuwait</p>
           </div>
         </section>
       </div>
