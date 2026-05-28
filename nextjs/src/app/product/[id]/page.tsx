@@ -116,13 +116,24 @@ export default function ProductDetailPage() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isImageZoomed, setIsImageZoomed] = useState(false);
 
+  // Track if we've already fetched products on mount
+  // This prevents calling fetchProducts multiple times on initial render
+  const hasFetchedProducts = React.useRef(false);
+
   const allowReturn = product?.allowReturn !== false;
   const allowReplacement = product?.allowReplacement !== false;
 
+  // Fetch all products once on component mount
   useEffect(() => {
-    fetchProducts();
+    if (!hasFetchedProducts.current) {
+      hasFetchedProducts.current = true;
+      fetchProducts();
+    }
   }, []);
 
+  // Fetch specific product when id changes
+  // Note: products is not in dependencies to prevent re-fetching when products array updates
+  // The fallbackProduct lookup will use current products from closure
   useEffect(() => {
     const fetchProduct = async () => {
       setLoading(true);
@@ -165,7 +176,7 @@ export default function ProductDetailPage() {
       }
     };
     if (id) fetchProduct();
-  }, [id, products]);
+  }, [id]);
 
   useEffect(() => {
     if (product) {
