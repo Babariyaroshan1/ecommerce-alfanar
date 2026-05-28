@@ -85,41 +85,57 @@ export default function Checkout() {
   useEffect(() => {
     setMounted(true);
 
-    const savedData = localStorage.getItem('registerFormData');
+    // Load from checkout form cache first, then user profile, then registerFormData
+    const checkoutCache = localStorage.getItem('checkoutFormData');
+    const savedRegisterData = localStorage.getItem('registerFormData');
+    let cachedForm = {};
     let savedForm = {};
 
     try {
-      savedForm = savedData ? JSON.parse(savedData) : {};
+      cachedForm = checkoutCache ? JSON.parse(checkoutCache) : {};
+      savedForm = savedRegisterData ? JSON.parse(savedRegisterData) : {};
     } catch {
+      cachedForm = {};
       savedForm = {};
     }
 
     setFormData({
-      name: user?.name || savedForm.name || '',
-      phone: user?.phone || savedForm.phone || '',
+      name: user?.name || cachedForm.name || savedForm.name || '',
+      phone: user?.phone || cachedForm.phone || savedForm.phone || '',
       // Kuwait fields
-      addressTitle: user?.address?.addressTitle || savedForm.addressTitle || '',
-      governorate: user?.address?.governorate || savedForm.governorate || '',
-      area: user?.address?.area || savedForm.area || '',
-      block: user?.address?.block || savedForm.block || '',
-      apartment: user?.address?.apartment || savedForm.apartment || '',
-      floor: user?.address?.floor || savedForm.floor || '',
-      jadda: user?.address?.jadda || savedForm.jadda || '',
+      addressTitle: user?.address?.addressTitle || cachedForm.addressTitle || savedForm.addressTitle || '',
+      governorate: user?.address?.governorate || cachedForm.governorate || savedForm.governorate || '',
+      area: user?.address?.area || cachedForm.area || savedForm.area || '',
+      block: user?.address?.block || cachedForm.block || savedForm.block || '',
+      apartment: user?.address?.apartment || cachedForm.apartment || savedForm.apartment || '',
+      floor: user?.address?.floor || cachedForm.floor || savedForm.floor || '',
+      jadda: user?.address?.jadda || cachedForm.jadda || savedForm.jadda || '',
       // India fields
-      city: user?.address?.city || savedForm.city || '',
-      state: user?.address?.state || savedForm.state || '',
-      pincode: user?.address?.pincode || savedForm.pincode || '',
+      city: user?.address?.city || cachedForm.city || savedForm.city || '',
+      state: user?.address?.state || cachedForm.state || savedForm.state || '',
+      pincode: user?.address?.pincode || cachedForm.pincode || savedForm.pincode || '',
       // Common fields
-      street: user?.address?.street || savedForm.street || '',
-      houseNumber: user?.address?.houseNumber || savedForm.houseNumber || '',
-      latitude: user?.address?.latitude || null,
-      longitude: user?.address?.longitude || null,
-      mapLink: user?.address?.mapLink || ''
+      street: user?.address?.street || cachedForm.street || savedForm.street || '',
+      houseNumber: user?.address?.houseNumber || cachedForm.houseNumber || savedForm.houseNumber || '',
+      latitude: user?.address?.latitude || cachedForm.latitude || null,
+      longitude: user?.address?.longitude || cachedForm.longitude || null,
+      mapLink: user?.address?.mapLink || cachedForm.mapLink || ''
     });
 
     setCheckoutLoading(false);
 
   }, [user, token]);
+
+  // Auto-save form data to localStorage whenever it changes
+  useEffect(() => {
+    if (mounted && formData.name) {
+      try {
+        localStorage.setItem('checkoutFormData', JSON.stringify(formData));
+      } catch (err) {
+        console.error('Error saving checkout form to localStorage:', err);
+      }
+    }
+  }, [formData, mounted]);
 
   // Validate cart items when currency changes
   useEffect(() => {
@@ -355,6 +371,7 @@ export default function Checkout() {
       if (selectedMethod === 'cod') {
         clearCart();
         setUpiId('');
+        localStorage.removeItem('checkoutFormData');
         router.push(`/order/${orderId}`);
         return;
       }
@@ -363,6 +380,7 @@ export default function Checkout() {
       if (selectedMethod === 'upi') {
         clearCart();
         setUpiId('');
+        localStorage.removeItem('checkoutFormData');
         router.push(`/order/${orderId}`);
         return;
       }
@@ -388,6 +406,7 @@ export default function Checkout() {
 
           clearCart();
           setUpiId('');
+          localStorage.removeItem('checkoutFormData');
           router.push(`/order/${orderId}`);
         }
       });
