@@ -8,6 +8,9 @@ const router = express.Router();
 // Get all settings
 router.get('/', settingsController.getSettings);
 
+// Get payment methods (public - no auth required)
+router.get('/payment-methods', settingsController.getPaymentMethods);
+
 // Update currency (admin/coadmin with permission)
 router.put('/currency', permissionAuth(PERMISSIONS.MANAGE_CURRENCY), settingsController.updateCurrency);
 
@@ -30,5 +33,8 @@ router.put('/coadmin-permissions', adminAuth, settingsController.updateCoadminPe
 
 // Get available permissions
 router.get('/permissions', adminAuth, settingsController.getAvailablePermissions);
+
+// Update payment methods (admin only)
+router.put('/payment-methods', adminAuth, settingsController.updatePaymentMethods);
 
 export default router;

@@ -13,6 +13,7 @@ import ProductReviewsManagement from './ProductReviewsManagement';
 import Analytics from './Analytics';
 import Coupons from './Coupons';
 import BannerSettings from './BannerSettings';
+import PaymentMethodsManagement from './PaymentMethodsManagement';
 import ChangeCoadminPassword from './ChangeCoadminPassword';
 import ChangeAdminPassword from './ChangeAdminPassword';
 import ChangeCoadminUsername from './ChangeCoadminUsername';
@@ -120,6 +121,7 @@ export default function Dashboard({ onLogout }) {
     { id: 'reviews', label: 'Reviews', icon: 'fa-solid fa-star', permission: 'manage_reviews' },
     { id: 'currency', label: 'Currency', icon: 'fa-solid fa-dollar-sign', permission: 'manage_currency' },
     { id: 'banner', label: 'Banner', icon: 'fa-solid fa-image', permission: 'manage_banner' },
+    { id: 'payment-methods', label: 'Payment', icon: 'fa-solid fa-credit-card', permission: 'manage_settings', adminOnly: true },
     { id: 'coupons', label: 'Coupons', icon: 'fa-solid fa-tags', permission: 'manage_coupons' },
     { id: 'permissions', label: 'Permissions', icon: 'fa-solid fa-shield-alt', permission: 'manage_settings', adminOnly: true },
     { id: 'change-admin-password', label: 'Admin Pass', icon: 'fa-solid fa-key', permission: 'manage_settings', adminOnly: true },
@@ -229,6 +231,7 @@ export default function Dashboard({ onLogout }) {
           {activeTab === 'reviews' && <ProductReviewsManagement />}
           {activeTab === 'currency' && <CurrencyManagement />}
           {activeTab === 'banner' && <BannerSettings />}
+          {activeTab === 'payment-methods' && role === 'admin' && <PaymentMethodsManagement />}
           {activeTab === 'coupons' && <Coupons />}
           {activeTab === 'permissions' && role === 'admin' && <PermissionManagement />}
           {activeTab === 'change-admin-password' && role === 'admin' && <ChangeAdminPassword />}

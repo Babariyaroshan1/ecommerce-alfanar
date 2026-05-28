@@ -33,24 +33,41 @@ const userSchema = new mongoose.Schema({
         default: 'avatar1'
     },
     address: {
-        houseNumber: String,
+        name: String,
+        phone: String,
+        addressTitle: String,
+        governorate: String,
+        area: String,
+        block: String,
         street: String,
-        city: String,
-        state: String,
-        pincode: String,
-        country: { type: String, default: 'India' }
+        houseNumber: String,
+        apartment: String,
+        floor: String,
+        jadda: String,
+        latitude: Number,
+        longitude: Number,
+        mapLink: String,
+        country: { type: String, default: 'Kuwait' }
     },
     addresses: [
         {
             _id: mongoose.Schema.Types.ObjectId,
             label: { type: String, required: true }, // e.g., "Home", "Office", "Parents Place"
-            houseNumber: String,
-            street: String,
-            city: String,
-            state: String,
-            pincode: String,
-            country: { type: String, default: 'India' },
+            name: String,
             phone: String,
+            addressTitle: String,
+            governorate: String,
+            area: String,
+            block: String,
+            street: String,
+            houseNumber: String,
+            apartment: String,
+            floor: String,
+            jadda: String,
+            latitude: Number,
+            longitude: Number,
+            mapLink: String,
+            country: { type: String, default: 'Kuwait' },
             isDefault: { type: Boolean, default: false },
             createdAt: { type: Date, default: Date.now }
         }

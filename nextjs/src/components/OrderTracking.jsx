@@ -156,9 +156,28 @@ export default function OrderTracking({ orderId }) {
           <h3 className="text-xl font-bold mt-8 mb-4">Delivery Address</h3>
           <div className="bg-white p-6 rounded-lg shadow">
             <p className="font-bold">{order.shippingAddress.name}</p>
-            {order.shippingAddress.houseNumber && <p>House No: {order.shippingAddress.houseNumber}</p>}
-            <p>{order.shippingAddress.street}</p>
-            <p>{order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.pincode}</p>
+            
+            {order.shippingAddress.governorate ? (
+              // KUWAIT ADDRESS FORMAT
+              <>
+                {order.shippingAddress.addressTitle && <p className="text-sm text-gray-600">{order.shippingAddress.addressTitle}</p>}
+                <p>Block: {order.shippingAddress.block}, Street: {order.shippingAddress.street}</p>
+                <p>House No: {order.shippingAddress.houseNumber}
+                  {order.shippingAddress.apartment && <>, Apt: {order.shippingAddress.apartment}</>}
+                  {order.shippingAddress.floor && <>, Floor: {order.shippingAddress.floor}</>}
+                </p>
+                <p>{order.shippingAddress.area}, {order.shippingAddress.governorate}</p>
+                {order.shippingAddress.jadda && <p className="text-sm text-gray-600">Details: {order.shippingAddress.jadda}</p>}
+              </>
+            ) : (
+              // INDIA ADDRESS FORMAT
+              <>
+                {order.shippingAddress.houseNumber && <p>House No: {order.shippingAddress.houseNumber}</p>}
+                <p>{order.shippingAddress.street}</p>
+                <p>{order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.pincode}</p>
+              </>
+            )}
+            
             <p className="mt-2">Phone: {order.shippingAddress.phone}</p>
           </div>
         </div>

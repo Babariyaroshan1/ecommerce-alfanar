@@ -263,8 +263,17 @@ export default function OrderDetails({ orderId }) {
           <div class="section">
             <h3>Shipping Address</h3>
             <p>${order.shippingAddress.name}<br>
+            ${order.shippingAddress.governorate ? `
+            ${order.shippingAddress.addressTitle}<br>
+            ${order.shippingAddress.block}, ${order.shippingAddress.street}, House No. ${order.shippingAddress.houseNumber}<br>
+            ${order.shippingAddress.apartment ? 'Apt: ' + order.shippingAddress.apartment + '<br>' : ''}
+            ${order.shippingAddress.floor ? 'Floor: ' + order.shippingAddress.floor + '<br>' : ''}
+            ${order.shippingAddress.area}, ${order.shippingAddress.governorate}<br>
+            ${order.shippingAddress.jadda ? 'Details: ' + order.shippingAddress.jadda + '<br>' : ''}
+            ` : `
             ${order.shippingAddress.houseNumber}, ${order.shippingAddress.street}<br>
             ${order.shippingAddress.city}, ${order.shippingAddress.state} ${order.shippingAddress.pincode}<br>
+            `}
             Phone: ${order.shippingAddress.phone}</p>
           </div>
 
@@ -762,8 +771,40 @@ export default function OrderDetails({ orderId }) {
           <div className="od-card od-address-card">
             <h3>Shipping Address</h3>
             <strong>{order.shippingAddress.name}</strong>
-            <p>{order.shippingAddress.houseNumber}, {order.shippingAddress.street}</p>
-            <p>{order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.pincode}</p>
+            
+            {order.shippingAddress.governorate ? (
+              // KUWAIT ADDRESS FORMAT
+              <>
+                <p style={{marginTop: '8px', marginBottom: '4px', fontSize: '14px'}}>{order.shippingAddress.addressTitle}</p>
+                <p style={{marginBottom: '4px', fontSize: '14px'}}>
+                  Block: {order.shippingAddress.block}, Street: {order.shippingAddress.street}
+                </p>
+                <p style={{marginBottom: '4px', fontSize: '14px'}}>
+                  House No.: {order.shippingAddress.houseNumber}
+                  {order.shippingAddress.apartment && <>, Apartment: {order.shippingAddress.apartment}</>}
+                  {order.shippingAddress.floor && <>, Floor: {order.shippingAddress.floor}</>}
+                </p>
+                <p style={{marginBottom: '4px', fontSize: '14px'}}>
+                  {order.shippingAddress.area}, {order.shippingAddress.governorate}
+                </p>
+                {order.shippingAddress.jadda && (
+                  <p style={{marginBottom: '4px', fontSize: '14px', color: '#666'}}>
+                    Details: {order.shippingAddress.jadda}
+                  </p>
+                )}
+              </>
+            ) : (
+              // INDIA ADDRESS FORMAT
+              <>
+                <p style={{marginBottom: '4px', fontSize: '14px'}}>
+                  {order.shippingAddress.houseNumber}, {order.shippingAddress.street}
+                </p>
+                <p style={{marginBottom: '4px', fontSize: '14px'}}>
+                  {order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.pincode}
+                </p>
+              </>
+            )}
+            
             <p className="od-phone">Phone number: {order.shippingAddress.phone}</p>
           </div>
 

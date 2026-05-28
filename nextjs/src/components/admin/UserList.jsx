@@ -82,8 +82,17 @@ export default function UserList() {
                 <p className="user-email">{user.email}</p>
                 <p className="user-phone">{user.phone}</p>
                 <div className="user-address">
-                  {user.address?.city && <span>{user.address.city}</span>}
-                  {user.address?.state && <span>, {user.address.state}</span>}
+                  {user.address?.governorate ? (
+                    <>
+                      {user.address.area && <span>{user.address.area}</span>}
+                      {user.address.governorate && <span>, {user.address.governorate}</span>}
+                    </>
+                  ) : (
+                    <>
+                      {user.address?.city && <span>{user.address.city}</span>}
+                      {user.address?.state && <span>, {user.address.state}</span>}
+                    </>
+                  )}
                 </div>
               </div>
               <div className="user-actions">

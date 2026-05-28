@@ -240,6 +240,50 @@ const settingsController = {
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
+    },
+
+    // Update payment methods (admin only)
+    updatePaymentMethods: async (req, res) => {
+        try {
+            const { enabledPaymentMethods } = req.body;
+
+            if (!enabledPaymentMethods || !Array.isArray(enabledPaymentMethods)) {
+                return res.status(400).json({ message: 'enabledPaymentMethods must be an array' });
+            }
+
+            // Validate that methods are valid
+            const validMethods = ['upi', 'card', 'netbanking', 'cod'];
+            const isValid = enabledPaymentMethods.every(method => validMethods.includes(method));
+
+            if (!isValid) {
+                return res.status(400).json({ message: `Invalid payment method. Valid methods are: ${validMethods.join(', ')}` });
+            }
+
+            await Settings.findOneAndUpdate(
+                { key: 'enabledPaymentMethods' },
+                { value: enabledPaymentMethods, updatedBy: req.userId, updatedAt: new Date() },
+                { upsert: true }
+            );
+
+            res.json({
+                message: 'Payment methods updated successfully',
+                enabledPaymentMethods
+            });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    },
+
+    // Get payment methods (public - no auth required)
+    getPaymentMethods: async (req, res) => {
+        try {
+            const settings = await Settings.findOne({ key: 'enabledPaymentMethods' });
+            const enabledPaymentMethods = settings?.value || ['upi', 'card', 'netbanking', 'cod'];
+
+            res.json({ enabledPaymentMethods });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
     }
 };
 

@@ -50,23 +50,33 @@ export default function Checkout() {
   const [loading, setLoading] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
-  const [locationLoading, setLocationLoading] = useState(false);
-  const [locationError, setLocationError] = useState('');
+  const [unavailableItems, setUnavailableItems] = useState([]);
 
   // Modal State
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
   const [upiId, setUpiId] = useState('');
   const [upiError, setUpiError] = useState('');
+  const [enabledPaymentMethods, setEnabledPaymentMethods] = useState(['upi', 'card', 'netbanking', 'cod']);
 
   const[formData, setFormData] = useState({
     name: '',
     phone: '',
-    houseNumber: '',
-    street: '',
+    // Kuwait fields
+    addressTitle: '',
+    governorate: '',
+    area: '',
+    block: '',
+    apartment: '',
+    floor: '',
+    jadda: '',
+    // India fields
     city: '',
     state: '',
     pincode: '',
+    // Common fields
+    street: '',
+    houseNumber: '',
     latitude: null,
     longitude: null,
     mapLink: ''
@@ -87,11 +97,21 @@ export default function Checkout() {
     setFormData({
       name: user?.name || savedForm.name || '',
       phone: user?.phone || savedForm.phone || '',
-      houseNumber: user?.address?.houseNumber || savedForm.houseNumber || '',
-      street: user?.address?.street || savedForm.street || '',
+      // Kuwait fields
+      addressTitle: user?.address?.addressTitle || savedForm.addressTitle || '',
+      governorate: user?.address?.governorate || savedForm.governorate || '',
+      area: user?.address?.area || savedForm.area || '',
+      block: user?.address?.block || savedForm.block || '',
+      apartment: user?.address?.apartment || savedForm.apartment || '',
+      floor: user?.address?.floor || savedForm.floor || '',
+      jadda: user?.address?.jadda || savedForm.jadda || '',
+      // India fields
       city: user?.address?.city || savedForm.city || '',
       state: user?.address?.state || savedForm.state || '',
       pincode: user?.address?.pincode || savedForm.pincode || '',
+      // Common fields
+      street: user?.address?.street || savedForm.street || '',
+      houseNumber: user?.address?.houseNumber || savedForm.houseNumber || '',
       latitude: user?.address?.latitude || null,
       longitude: user?.address?.longitude || null,
       mapLink: user?.address?.mapLink || ''
@@ -101,62 +121,73 @@ export default function Checkout() {
 
   }, [user, token]);
 
+  // Validate cart items when currency changes
+  useEffect(() => {
+    validateCartItems();
+  }, [selectedCurrency, cart]);
+
+  // Fetch enabled payment methods
+  useEffect(() => {
+    const fetchPaymentMethods = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/settings/payment-methods`);
+        setEnabledPaymentMethods(response.data.enabledPaymentMethods || ['upi', 'card', 'netbanking', 'cod']);
+      } catch (error) {
+        console.error('Error fetching payment methods:', error);
+        // Default to all methods if fetch fails
+        setEnabledPaymentMethods(['upi', 'card', 'netbanking', 'cod']);
+      }
+    };
+
+    fetchPaymentMethods();
+  }, []);
+
+  const validateCartItems = async () => {
+    try {
+      const unavailable = [];
+      
+      for (const item of cart) {
+        // Check if item has displayPrice in the selected currency
+        const itemPrice = parsePrice(typeof item.displayPrice === 'number' ? item.displayPrice : item.price);
+        
+        // If no price, try to fetch product details to check multi-currency prices
+        if (!itemPrice || itemPrice <= 0) {
+          unavailable.push(item._id || item.id);
+        }
+      }
+      
+      setUnavailableItems(unavailable);
+    } catch (err) {
+      console.error('Error validating cart items:', err);
+    }
+  };
+
   const currencyDecimals = selectedCurrency === 'KWD' ? 3 : 2;
   const currencySymbol = selectedCurrency === 'INR' ? '₹' : selectedCurrency === 'KWD' ? 'KWD' : currencySettings?.symbol || '₹';
-  const subtotal = cart.reduce((sum, item) => sum + parsePrice(typeof item.displayPrice === 'number' ? item.displayPrice : item.price) * item.quantity, 0);
+  
+  // Calculate subtotal excluding unavailable items
+  const subtotal = cart.reduce((sum, item) => {
+    if (unavailableItems.includes(item._id || item.id)) return sum;
+    return sum + parsePrice(typeof item.displayPrice === 'number' ? item.displayPrice : item.price) * item.quantity;
+  }, 0);
+  
   const originalSubtotal = cart.reduce((sum, item) => {
+    if (unavailableItems.includes(item._id || item.id)) return sum;
     const unit = parsePrice(typeof item.displayOriginalPrice === 'number' ? item.displayOriginalPrice : item.originalPrice);
     return sum + (unit > 0 ? unit * item.quantity : 0);
   }, 0);
+  
   const discount = Math.max(0, originalSubtotal - subtotal);
-  const shipping = cart.length ? (selectedCurrency === 'INR' ? (currencySettings?.shippingPriceINR ?? 0) : (currencySettings?.shippingPriceKWD ?? currencySettings?.shippingPrice ?? 5)) : 0;
+  
+  // Calculate shipping only if there are available items
+  const availableItemsCount = cart.length - unavailableItems.length;
+  const shipping = availableItemsCount > 0 ? (selectedCurrency === 'INR' ? (currencySettings?.shippingPriceINR ?? 0) : (currencySettings?.shippingPriceKWD ?? currencySettings?.shippingPrice ?? 5)) : 0;
   const discountedSubtotal = getDiscountedTotal();
   const total = discountedSubtotal + shipping;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  // 🔥 NEW: Geolocation Handler
-  const handleUseCurrentLocation = async () => {
-    setLocationLoading(true);
-    setLocationError('');
-
-    if (!navigator.geolocation) {
-      setLocationError('Geolocation is not supported by your browser');
-      setLocationLoading(false);
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        const mapLink = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
-        
-        setFormData(prev => ({
-          ...prev,
-          latitude,
-          longitude,
-          mapLink
-        }));
-        
-        setLocationLoading(false);
-      },
-      (error) => {
-        let errorMsg = 'Failed to get location';
-        if (error.code === 1) {
-          errorMsg = 'Please enable location permission in your browser settings';
-        } else if (error.code === 2) {
-          errorMsg = 'Location data is currently unavailable';
-        } else if (error.code === 3) {
-          errorMsg = 'Location request timed out - please try again or enable location services';
-        }
-        setLocationError(errorMsg);
-        setLocationLoading(false);
-      },
-      { timeout: 30000 }
-    );
   };
 
   // UPI Validation
@@ -192,10 +223,32 @@ export default function Checkout() {
   const handleOpenPaymentModal = (e) => {
     e.preventDefault();
     
-    // Validate address fields
-    if (!formData.name || !formData.phone || !formData.houseNumber || !formData.street || !formData.city || !formData.pincode) {
-      alert('Please fill in all address fields');
+    // Check if any items are unavailable
+    if (unavailableItems.length > 0) {
+      alert(`${unavailableItems.length} product(s) not available in selected country. Please remove unavailable items or change country.`);
       return;
+    }
+
+    const isKuwait = selectedCurrency === 'KWD';
+
+    // Validate common fields
+    if (!formData.name || !formData.phone || !formData.street || !formData.houseNumber) {
+      alert('Please fill in all required address fields');
+      return;
+    }
+
+    // Validate country-specific fields
+    if (isKuwait) {
+      if (!formData.addressTitle || !formData.governorate || !formData.area || !formData.block) {
+        alert('Please fill in all required address fields');
+        return;
+      }
+    } else {
+      // India validation
+      if (!formData.city || !formData.state || !formData.pincode) {
+        alert('Please fill in all required address fields');
+        return;
+      }
     }
 
     // Validate cart
@@ -210,7 +263,44 @@ export default function Checkout() {
       return;
     }
 
-    setShowPaymentModal(true);
+    // Fetch geolocation automatically
+    fetchGeolocationAndProceed();
+  };
+
+  // Fetch geolocation and proceed to payment modal
+  const fetchGeolocationAndProceed = async () => {
+    setLoading(true);
+
+    if (!navigator.geolocation) {
+      console.warn('Geolocation not supported, proceeding without location data');
+      setLoading(false);
+      setShowPaymentModal(true);
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        const mapLink = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
+        
+        setFormData(prev => ({
+          ...prev,
+          latitude,
+          longitude,
+          mapLink
+        }));
+        
+        setLoading(false);
+        setShowPaymentModal(true);
+      },
+      (error) => {
+        // If geolocation fails, proceed anyway without location data
+        console.warn('Geolocation failed:', error.message);
+        setLoading(false);
+        setShowPaymentModal(true);
+      },
+      { timeout: 10000 }
+    );
   };
 
   // 🔥 Triggered from inside the modal
@@ -332,104 +422,153 @@ export default function Checkout() {
 
               <input name="name" value={formData.name} onChange={handleChange} placeholder={t("Full Name")} required />
               <input name="phone" value={formData.phone} onChange={handleChange} placeholder={t("Phone Number")} required />
-
-              <div style={{display: 'grid', gridTemplateColumns: '1.5fr 2fr', gap: '10px', width: '100%', alignItems: 'start'}}>
-                <div>
-                  <label style={{fontSize: '12px', color: '#666', fontWeight: '500', marginBottom: '4px', display: 'block'}}>House Number *</label>
+              
+              {selectedCurrency === 'KWD' ? (
+                // KUWAIT ADDRESS FORM
+                <>
                   <input 
-                    name="houseNumber" 
-                    value={formData.houseNumber} 
+                    name="addressTitle" 
+                    className="full-width" 
+                    value={formData.addressTitle} 
                     onChange={handleChange} 
-                    placeholder="Apt/House No." 
+                    placeholder={t("Address Title (e.g., Home, Work)")} 
                     required 
-                    style={{width: '100%', padding: '12px'}}
                   />
-                </div>
-                <div>
-                  <label style={{fontSize: '12px', color: '#666', fontWeight: '500', marginBottom: '4px', display: 'block'}}>
-                    {locationLoading ? 'Fetching Location...' : 'Current Location'}
-                  </label>
-                  <div style={{display: 'flex', gap: '8px', alignItems: 'center'}}>
-                    <div 
-                      style={{
-                        flex: 1, 
-                        padding: '12px',
-                        background: formData.mapLink ? '#dcfce7' : locationLoading ? '#fef3c7' : '#f3f4f6',
-                        border: '1px solid ' + (formData.mapLink ? '#86efac' : locationLoading ? '#fcd34d' : '#e5e7eb'),
-                        borderRadius: '6px',
-                        fontSize: '13px',
-                        color: formData.mapLink ? '#166534' : locationLoading ? '#92400e' : '#6b7280',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        fontWeight: '500'
-                      }}
-                    >
-                      {locationLoading ? (
-                        <>
-                          <span style={{display: 'inline-block', animation: 'spin 1s linear infinite', fontSize: '16px'}}>⏳</span>
-                          Getting location...
-                        </>
-                      ) : formData.mapLink ? (
-                        <>
-                          <i className="fa-solid fa-check-circle" style={{color: '#22c55e'}}></i>
-                          Location Saved
-                        </>
-                      ) : (
-                        <>
-                          <i className="fa-solid fa-location-dot" style={{color: '#9ca3af'}}></i>
-                          Click button →
-                        </>
-                      )}
-                    </div>
-                    <button
-                      type="button"
-                      onClick={handleUseCurrentLocation}
-                      disabled={locationLoading}
-                      style={{
-                        padding: '12px 16px',
-                        background: formData.mapLink ? '#10b981' : '#3b82f6',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '6px',
-                        cursor: locationLoading ? 'not-allowed' : 'pointer',
-                        fontWeight: 'bold',
-                        fontSize: '13px',
-                        whiteSpace: 'nowrap',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        opacity: locationLoading ? 0.7 : 1
-                      }}
-                    >
-                      <i className={`fa-solid ${locationLoading ? 'fa-spinner' : formData.mapLink ? 'fa-check' : 'fa-location-crosshairs'}`} 
-                         style={{display: 'inline-block', animation: locationLoading ? 'spin 1s linear infinite' : 'none'}}
-                      ></i>
-                      {locationLoading ? 'Wait...' : formData.mapLink ? 'Saved' : 'Get GPS'}
-                    </button>
+
+                  <select 
+                    name="governorate" 
+                    value={formData.governorate} 
+                    onChange={handleChange} 
+                    className="full-width"
+                    required
+                    style={{padding: '12px', borderRadius: '4px', border: '1px solid #ddd', fontSize: '14px'}}
+                  >
+                    <option value="">{t("Select Governorate *")}</option>
+                    <option value="Kuwait">Kuwait</option>
+                    <option value="Farwaniya">Farwaniya</option>
+                    <option value="Hawalli">Hawalli</option>
+                    <option value="Ahmadi">Ahmadi</option>
+                    <option value="Jahra">Jahra</option>
+                    <option value="Mubarak Al-Kabeer">Mubarak Al-Kabeer</option>
+                  </select>
+
+                  <input 
+                    name="area" 
+                    className="full-width" 
+                    value={formData.area} 
+                    onChange={handleChange} 
+                    placeholder={t("Area")} 
+                    required 
+                  />
+
+                  {/* Grid layout for Address Details */}
+                  <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', width: '100%'}}>
+                    <input 
+                      name="block" 
+                      value={formData.block} 
+                      onChange={handleChange} 
+                      placeholder={t("Block *")} 
+                      required 
+                      style={{width: '100%', padding: '12px'}}
+                    />
+                    <input 
+                      name="street" 
+                      value={formData.street} 
+                      onChange={handleChange} 
+                      placeholder={t("Street *")} 
+                      required 
+                      style={{width: '100%', padding: '12px'}}
+                    />
                   </div>
-                </div>
-              </div>
 
-              <style jsx>{`
-                @keyframes spin {
-                  from { transform: rotate(0deg); }
-                  to { transform: rotate(360deg); }
-                }
-              `}</style>
+                  <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px', width: '100%'}}>
+                    <input 
+                      name="houseNumber" 
+                      value={formData.houseNumber} 
+                      onChange={handleChange} 
+                      placeholder={t("House No. *")} 
+                      required 
+                      style={{width: '100%', padding: '12px'}}
+                    />
+                    <input 
+                      name="apartment" 
+                      value={formData.apartment} 
+                      onChange={handleChange} 
+                      placeholder={t("Apartment")} 
+                      style={{width: '100%', padding: '12px'}}
+                    />
+                    <input 
+                      name="floor" 
+                      value={formData.floor} 
+                      onChange={handleChange} 
+                      placeholder={t("Floor")} 
+                      style={{width: '100%', padding: '12px'}}
+                    />
+                  </div>
 
-              {locationError && (
-                <div style={{color: '#ef4444', fontSize: '12px', marginTop: '5px', width: '100%'}}>
-                  ⚠️ {locationError}
-                </div>
+                  <input 
+                    name="jadda" 
+                    className="full-width" 
+                    value={formData.jadda} 
+                    onChange={handleChange} 
+                    placeholder={t("Jadda (Additional Details)")} 
+                    style={{padding: '12px'}}
+                  />
+                </>
+              ) : (
+                // INDIA ADDRESS FORM
+                <>
+                  <input 
+                    name="street" 
+                    className="full-width" 
+                    value={formData.street} 
+                    onChange={handleChange} 
+                    placeholder={t("Street Address *")} 
+                    required 
+                  />
+
+                  <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', width: '100%'}}>
+                    <input 
+                      name="city" 
+                      value={formData.city} 
+                      onChange={handleChange} 
+                      placeholder={t("City *")} 
+                      required 
+                      style={{width: '100%', padding: '12px'}}
+                    />
+                    <input 
+                      name="state" 
+                      value={formData.state} 
+                      onChange={handleChange} 
+                      placeholder={t("State *")} 
+                      required 
+                      style={{width: '100%', padding: '12px'}}
+                    />
+                  </div>
+
+                  <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', width: '100%'}}>
+                    <input 
+                      name="houseNumber" 
+                      value={formData.houseNumber} 
+                      onChange={handleChange} 
+                      placeholder={t("House/Building No. *")} 
+                      required 
+                      style={{width: '100%', padding: '12px'}}
+                    />
+                    <input 
+                      name="pincode" 
+                      value={formData.pincode} 
+                      onChange={handleChange} 
+                      placeholder={t("Pincode *")} 
+                      required 
+                      style={{width: '100%', padding: '12px'}}
+                    />
+                  </div>
+                </>
               )}
 
-              <input name="street" className="full-width" value={formData.street} onChange={handleChange} placeholder={t("Street Address")} required />
-              <input name="city" value={formData.city} onChange={handleChange} placeholder={t("City")} required />
-              <input name="pincode" value={formData.pincode} onChange={handleChange} placeholder={t("Pincode")} required />
-
-              <button type="submit" className="btn btnbuy" disabled={loading}>
-                {loading ? t('Processing...') : t('Buy Now')}
+              <button type="submit" className="btn btnbuy" disabled={loading || unavailableItems.length > 0} style={{opacity: unavailableItems.length > 0 ? 0.6 : 1}}>
+                {unavailableItems.length > 0 ? t('Remove Unavailable Items') : loading ? t('Fetching Location & Processing...') : t('Buy Now')}
               </button>
             </form>
           </div>
@@ -437,6 +576,24 @@ export default function Checkout() {
           {/* RIGHT - ORDER SUMMARY */}
           <div className="card checkout-right">
             <h2>{t("Order Summary")}</h2>
+            
+            {unavailableItems.length > 0 && (
+              <div style={{
+                background: '#fef3c7',
+                border: '1px solid #fcd34d',
+                borderRadius: '6px',
+                padding: '12px',
+                marginBottom: '16px',
+                fontSize: '13px',
+                color: '#92400e'
+              }}>
+                <strong>⚠️ {unavailableItems.length} item(s) not available</strong>
+                <p style={{margin: '6px 0 0 0', fontSize: '12px'}}>
+                  These products are not available in {selectedCurrency === 'KWD' ? 'Kuwait' : 'India'}. Please remove them or change country to continue.
+                </p>
+              </div>
+            )}
+            
             <div>
               {!mounted ? (
                 <p style={{textAlign: 'center', color: '#999'}}>{t("Loading cart...")}</p>
@@ -444,36 +601,46 @@ export default function Checkout() {
                 <p style={{textAlign: 'center', color: '#999'}}>{t("Your cart is empty")}</p>
               ) : (
                 cart.map(item => {
+                  const itemId = item._id || item.id;
+                  const isUnavailable = unavailableItems.includes(itemId);
                   const itemPrice = parsePrice(typeof item.displayPrice === 'number' ? item.displayPrice : item.price);
                   const itemTotal = itemPrice * item.quantity;
                   const originalPrice = parsePrice(typeof item.displayOriginalPrice === 'number' ? item.displayOriginalPrice : item.originalPrice);
                   const originalTotal = originalPrice > 0 ? originalPrice * item.quantity : 0;
                   const currencyDecimals = selectedCurrency === 'KWD' ? 3 : 2;
                   const itemCurrencySymbol = item.currencySymbol || currencySymbol;
+                  const countryName = selectedCurrency === 'KWD' ? 'Kuwait' : 'India';
                   
                   return (
-                    <div key={item._id || item.id} className="item" style={{marginBottom: '8px'}}>
+                    <div key={itemId} className="item" style={{marginBottom: '8px', opacity: isUnavailable ? 0.6 : 1}}>
                       <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px'}}>
                         <span 
                           style={{
                             flex: 1, 
                             marginRight: '8px', 
                             cursor: 'pointer', 
-                            color: '#2563eb',
-                            textDecoration: 'none'
+                            color: isUnavailable ? '#999' : '#2563eb',
+                            textDecoration: 'none',
+                            textDecorationLine: isUnavailable ? 'line-through' : 'none'
                           }}
-                          onClick={() => router.push(`/product/${item._id || item.id}`)}
-                          onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
-                          onMouseLeave={(e) => e.target.style.textDecoration = 'none'}
+                          onClick={() => !isUnavailable && router.push(`/product/${itemId}`)}
                         >
                           {item.name} x {item.quantity}
                         </span>
                         <div style={{textAlign: 'right'}}>
-                          <span>{itemTotal.toFixed(currencyDecimals)} {currencySymbol}</span>
-                          {originalTotal > itemTotal && (
-                            <div style={{fontSize: '10px', color: '#dc2626', textDecoration: 'line-through'}}>
-                              {originalTotal.toFixed(currencyDecimals)} {currencySymbol}
+                          {isUnavailable ? (
+                            <div style={{fontSize: '11px', color: '#ef4444', fontWeight: 'bold'}}>
+                              Not available in {countryName}
                             </div>
+                          ) : (
+                            <>
+                              <span>{itemTotal.toFixed(currencyDecimals)} {currencySymbol}</span>
+                              {originalTotal > itemTotal && (
+                                <div style={{fontSize: '10px', color: '#dc2626', textDecoration: 'line-through'}}>
+                                  {originalTotal.toFixed(currencyDecimals)} {currencySymbol}
+                                </div>
+                              )}
+                            </>
                           )}
                         </div>
                       </div>
@@ -539,6 +706,7 @@ export default function Checkout() {
             <div className="payment-options-container">
               
               {/* UPI Option */}
+              {enabledPaymentMethods.includes('upi') && (
               <div 
                 className={`pay-method-card ${selectedPaymentMethod === 'upi' ? 'selected' : ''}`}
                 onClick={() => handlePaymentMethodSelect('upi')}
@@ -608,8 +776,10 @@ export default function Checkout() {
                   </div>
                 )}
               </div>
+              )}
 
               {/* Credit / Debit Card Option */}
+              {enabledPaymentMethods.includes('card') && (
               <div 
                 className={`pay-method-card ${selectedPaymentMethod === 'card' ? 'selected' : ''}`}
                 onClick={() => handlePaymentMethodSelect('card')}
@@ -619,8 +789,10 @@ export default function Checkout() {
                 </div>
                 <span style={{fontSize: '12px', color: '#64748b'}}>Visa, MasterCard, RuPay & more</span>
               </div>
+              )}
 
                {/* Net Banking Option */}
+               {enabledPaymentMethods.includes('netbanking') && (
                <div 
                  className={`pay-method-card ${selectedPaymentMethod === 'netbanking' ? 'selected' : ''}`}
                  onClick={() => handlePaymentMethodSelect('netbanking')}
@@ -630,8 +802,10 @@ export default function Checkout() {
                 </div>
                 <span style={{fontSize: '12px', color: '#64748b'}}>All major banks available</span>
               </div>
+              )}
 
               {/* Cash on Delivery Option */}
+              {enabledPaymentMethods.includes('cod') && (
               <div 
                 className={`pay-method-card ${selectedPaymentMethod === 'cod' ? 'selected' : ''}`}
                 onClick={() => {
@@ -643,6 +817,7 @@ export default function Checkout() {
                   <span>💵</span> {t("Cash on Delivery (COD)")}
                 </div>
               </div>
+              )}
 
             </div>
 

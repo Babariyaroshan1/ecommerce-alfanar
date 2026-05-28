@@ -240,13 +240,30 @@ export default function OrderList({ showOnlyRequests = false }) {
 
   const formatShippingAddress = (address) => {
     if (!address) return 'No address available';
-    const lines = [
-      address.houseNumber ? `House No: ${address.houseNumber}` : '',
-      address.street || '',
-      `${address.city || ''}${address.city && address.state ? ', ' : ''} ${address.pincode || ''}`.trim(),
-      address.phone ? `Phone: ${address.phone}` : ''
-    ];
-    return lines.filter(Boolean).join('\n');
+    
+    // Check if Kuwait address (has governorate field)
+    if (address.governorate) {
+      const lines = [
+        address.addressTitle ? `${address.addressTitle}` : '',
+        address.houseNumber ? `Block: ${address.block}, Street: ${address.street}, House: ${address.houseNumber}` : '',
+        address.apartment ? `Apt: ${address.apartment}` : '',
+        address.floor ? `Floor: ${address.floor}` : '',
+        address.area ? `${address.area}, ${address.governorate}` : '',
+        address.jadda ? `Details: ${address.jadda}` : '',
+        address.phone ? `Phone: ${address.phone}` : ''
+      ];
+      return lines.filter(Boolean).join('\n');
+    } else {
+      // India address (has city field)
+      const lines = [
+        address.houseNumber ? `House No: ${address.houseNumber}` : '',
+        address.street || '',
+        `${address.city || ''}${address.city && address.state ? ', ' : ''} ${address.state || ''}`.trim(),
+        address.pincode ? `Pincode: ${address.pincode}` : '',
+        address.phone ? `Phone: ${address.phone}` : ''
+      ];
+      return lines.filter(Boolean).join('\n');
+    }
   };
 
   return (

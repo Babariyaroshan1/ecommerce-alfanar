@@ -135,7 +135,7 @@ export default function Register() {
             <input
               type="email"
               name="email"
-              placeholder={t('Email')}
+              placeholder={t('Email (optional)')}
               value={formData.email}
               onChange={handleChange}
               className="register-input"
