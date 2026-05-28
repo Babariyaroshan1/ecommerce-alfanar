@@ -92,7 +92,7 @@ const storage = new CloudinaryStorage({
         }
 
         return {
-            folder: 'alfanar_products',
+            folder: req.body?.folder || 'alfanar_products',
             resource_type: 'auto',
             public_id: `${Date.now()}-${Math.random().toString(36).substring(7)}`
         };
@@ -110,7 +110,7 @@ const upload = multer({
         });
 
         const allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-        
+
         if (!allowedMimes.includes(file.mimetype)) {
             console.error('❌ Invalid MIME type:', file.mimetype);
             return cb(new Error(`Invalid file type. Allowed: JPG, PNG, WebP, GIF. Got: ${file.mimetype}`));
@@ -133,7 +133,7 @@ app.use('/uploads', express.static(uploadDir));
 app.get('/api/test-cloudinary', async (req, res) => {
     try {
         const result = await cloudinary.api.ping();
-        res.json({ 
+        res.json({
             status: 'success',
             message: 'Cloudinary is connected',
             cloudinaryStatus: result
@@ -152,7 +152,7 @@ app.get('/api/test-cloudinary', async (req, res) => {
 // ==========================================================
 app.post('/api/upload', (req, res) => {
     console.log('📤 Upload request received');
-    
+
     upload.single('file')(req, res, (err) => {
         try {
             // Handle any upload errors (file validation, size limit, etc)
@@ -163,19 +163,19 @@ app.post('/api/upload', (req, res) => {
                     code: err.code,
                     status: err.status
                 });
-                
+
                 // Cloudinary errors usually have these properties
                 if (err.http_code || err.status === 400) {
-                    return res.status(400).json({ 
+                    return res.status(400).json({
                         message: err.message || 'Invalid file or upload failed',
                         error: err.message
                     });
                 }
-                
+
                 if (err.code === 'LIMIT_FILE_SIZE') {
                     return res.status(400).json({ message: 'File too large. Max 5MB allowed.' });
                 }
-                
+
                 return res.status(400).json({ message: `Upload error: ${err.message}` });
             }
 
@@ -205,8 +205,8 @@ app.post('/api/upload', (req, res) => {
                 name: error.name,
                 stack: error.stack
             });
-            
-            res.status(500).json({ 
+
+            res.status(500).json({
                 message: 'Upload failed unexpectedly',
                 error: error.message,
                 details: process.env.NODE_ENV === 'development' ? error.stack : undefined

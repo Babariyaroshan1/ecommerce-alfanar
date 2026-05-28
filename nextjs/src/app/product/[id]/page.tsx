@@ -108,6 +108,7 @@ export default function ProductDetailPage() {
   const [reviewRating, setReviewRating] = useState(0);
   const [reviewComment, setReviewComment] = useState('');
   const [reviewImage, setReviewImage] = useState(null);
+  const [reviewImageName, setReviewImageName] = useState('');
   const [reviewImagePreview, setReviewImagePreview] = useState(null);
   const [reviewSubmitting, setReviewSubmitting] = useState(false);
 
@@ -235,6 +236,7 @@ export default function ProductDetailPage() {
     setReviewRating(0);
     setReviewComment('');
     setReviewImage(null);
+    setReviewImageName('');
     setReviewImagePreview(null);
     setShowReviewModal(true);
   };
@@ -242,6 +244,7 @@ export default function ProductDetailPage() {
   const closeReviewModal = () => {
     setShowReviewModal(false);
     setReviewStep(1);
+    setReviewImageName('');
   };
 
   const handleRatingSelect = (ratingValue) => {
@@ -253,6 +256,7 @@ export default function ProductDetailPage() {
     const file = event.target.files?.[0];
     if (!file) return;
     setReviewImage(file);
+    setReviewImageName(file.name);
     setReviewImagePreview(URL.createObjectURL(file));
   };
 
@@ -262,6 +266,7 @@ export default function ProductDetailPage() {
       const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
       const formData = new FormData();
       formData.append('file', reviewImage);
+      formData.append('folder', 'review_images');
       const response = await fetch(`${API_URL}/upload`, {
         method: 'POST',
         body: formData
@@ -1123,8 +1128,8 @@ export default function ProductDetailPage() {
 
       {/* REVIEW MODAL */}
       {showReviewModal && (
-        <div className="tss-review-modal" onClick={closeReviewModal}>
-          <div className="tss-review-modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="tss-review-modal">
+          <div className="tss-review-modal-content">
             <button className="tss-review-modal-close" onClick={closeReviewModal}>
               <i className="fa-solid fa-xmark" aria-hidden="true" />
             </button>
@@ -1206,10 +1211,25 @@ export default function ProductDetailPage() {
                 />
 
                 <label className="tss-review-label">Add a photo (optional)</label>
-                <input type="file" accept="image/*" onChange={handleReviewImageChange} />
+                <div className="tss-review-image-upload">
+                  <input
+                    id="review-image-upload"
+                    className="tss-review-image-input"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleReviewImageChange}
+                  />
+                  <label htmlFor="review-image-upload" className="tss-review-image-button">
+                    {reviewImage ? 'Change photo' : 'Choose photo'}
+                  </label>
+                  <span className="tss-review-image-info">
+                    {reviewImageName || 'No file chosen'}
+                  </span>
+                </div>
                 {reviewImagePreview && (
                   <div className="tss-review-image-preview">
                     <img src={reviewImagePreview} alt="Review preview" />
+                    {reviewImageName && <p className="tss-review-image-name">{reviewImageName}</p>}
                   </div>
                 )}
 
