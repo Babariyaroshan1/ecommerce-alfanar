@@ -317,9 +317,9 @@
 }
 
 .stat-value {
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 700;
-  color: var(--text-main);
+  color: black;
   margin: 0.5rem 0;
   line-height: 1;
 }
