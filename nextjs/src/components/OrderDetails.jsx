@@ -270,7 +270,7 @@ export default function OrderDetails({ orderId }) {
     y += 18;
 
     const tableHeaders = ['Product', 'Color', 'Size', 'Qty', 'Price', 'Total'];
-    const columnPositions = [leftMargin, 160, 260, 340, 390, 460];
+    const columnPositions = [leftMargin, 250, 330, 380, 420, 480];
 
     doc.setFontSize(10);
     tableHeaders.forEach((header, index) => {
@@ -284,9 +284,19 @@ export default function OrderDetails({ orderId }) {
         doc.addPage();
         y = 40;
       }
+      
+      let productName = item.name || 'Product';
+      if (productName.length > 35) {
+        productName = productName.substring(0, 32) + '...';
+      }
 
-      doc.text(item.name || 'Product', columnPositions[0], y);
-      doc.text(item.selectedColor || 'Default', columnPositions[1], y);
+      let colorName = item.selectedColor || 'Default';
+      if (colorName.length > 12) {
+        colorName = colorName.substring(0, 10) + '...';
+      }
+
+      doc.text(productName, columnPositions[0], y);
+      doc.text(colorName, columnPositions[1], y);
       doc.text(item.selectedSize || 'One Size', columnPositions[2], y);
       doc.text(String(item.quantity || 1), columnPositions[3], y);
       doc.text(`${order.currencySymbol || '₹'}${formatPrice(item.price, order.currencySymbol)}`, columnPositions[4], y);
@@ -328,8 +338,13 @@ export default function OrderDetails({ orderId }) {
     return (
       <div className="od-container">
         <div className="od-error">
-          <h2>❌ {error || 'Order not found'}</h2>
-          <button className="od-btn od-btn-outline" onClick={() => window.history.back()}>← Go Back</button>
+          <h2>
+            <i className="fas fa-exclamation-circle" style={{ color: '#dc3545', marginRight: '8px' }}></i> 
+            {error || 'Order not found'}
+          </h2>
+          <button className="od-btn od-btn-outline" onClick={() => window.history.back()}>
+            <i className="fas fa-arrow-left" style={{marginRight: '8px'}}></i> Go Back
+          </button>
         </div>
       </div>
     );
@@ -368,7 +383,6 @@ export default function OrderDetails({ orderId }) {
   const orderStatusLabel = statusLabels[order.orderStatus] || order.orderStatus.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 
   const isCancelledOrReturned =['cancelled', 'returned', 'refunded', 'replacement-requested', 'return-approved', 'return-processing', 'replacement-approved', 'replacement-processing', 'return-rejected', 'replacement-rejected'].includes(order.orderStatus);
-  const progressPercentage = ((['confirmed', 'processing', 'shipped', 'delivered'].indexOf(order.orderStatus) + 1) / 4) * 100;
 
   return (
     <div className="od-wrapper">
@@ -412,20 +426,19 @@ export default function OrderDetails({ orderId }) {
             <div className="od-progress-container">
               <div className="od-progress-bar">
                 {[
-                  { key: 'confirmed', level: 0, label: 'Order Confirmed', icon: '✓', desc: 'Your order has been confirmed' },
-                  { key: 'processing', level: 1, label: 'Processing', icon: '📦', desc: 'We are preparing your order' },
-                  { key: 'shipped', level: 2, label: 'Shipped', icon: '🚚', desc: 'Your order is on the way' },
-                  { key: 'delivered', level: 3, label: 'Delivered', icon: '📍', desc: 'Order delivered successfully' }
+                  { key: 'confirmed', level: 0, label: 'Order Confirmed', icon: <i className="fas fa-clipboard-check"></i>, desc: 'Your order has been confirmed' },
+                  { key: 'processing', level: 1, label: 'Processing', icon: <i className="fas fa-box"></i>, desc: 'We are preparing your order' },
+                  { key: 'shipped', level: 2, label: 'Shipped', icon: <i className="fas fa-truck"></i>, desc: 'Your order is on the way' },
+                  { key: 'delivered', level: 3, label: 'Delivered', icon: <i className="fas fa-home"></i>, desc: 'Order delivered successfully' }
                 ].map((stage) => {
                   
-                  // Status ko numerical level mein map kiya taki "out-for-delivery" pe UI blank na ho
                   const getStatusLevel = (status) => {
                     switch(status) {
                       case 'pending': return 0;
                       case 'confirmed': return 0;
                       case 'processing': return 1;
                       case 'shipped': return 2;
-                      case 'out-for-delivery': return 2.5; // Shipped aur Delivered ke beech ka level
+                      case 'out-for-delivery': return 2.5; 
                       case 'delivered': return 3;
                       default: return -1;
                     }
@@ -439,7 +452,7 @@ export default function OrderDetails({ orderId }) {
                   return (
                     <div key={stage.key} className={`od-progress-step ${isCompleted ? 'completed' : ''} ${isActive ? 'active' : ''} ${isPending ? 'pending' : ''}`}>
                       <div className="od-progress-icon">
-                        {isCompleted ? '✓' : isActive ? stage.icon : '○'}
+                        {isCompleted ? <i className="fas fa-check"></i> : isActive ? stage.icon : <i className="fas fa-circle" style={{fontSize: '10px', opacity: 0.3}}></i>}
                       </div>
                       <div className="od-progress-content">
                         <div className="od-progress-title">{stage.label}</div>
@@ -463,7 +476,7 @@ export default function OrderDetails({ orderId }) {
                   order.orderStatus === 'confirmed' ? 0 :
                   order.orderStatus === 'processing' ? 33.33 :
                   order.orderStatus === 'shipped' ? 66.66 :
-                  order.orderStatus === 'out-for-delivery' ? 85 : // Line thoda aage badhegi par delivered tak nahi pahuchegi
+                  order.orderStatus === 'out-for-delivery' ? 85 : 
                   order.orderStatus === 'delivered' ? 100 : 0
                 }%` }}
               ></div>
@@ -473,7 +486,7 @@ export default function OrderDetails({ orderId }) {
             <div className="od-status-special">
               {order.orderStatus === 'cancelled' && (
                 <div className="od-status-cancelled">
-                  <span className="od-status-icon">❌</span>
+                  <span className="od-status-icon"><i className="fas fa-times-circle" style={{ color: '#dc3545' }}></i></span>
                   <div>
                     <div className="od-status-title">Order Cancelled</div>
                     <div className="od-status-desc">This order has been cancelled</div>
@@ -482,7 +495,7 @@ export default function OrderDetails({ orderId }) {
               )}
               {(order.orderStatus === 'returned' || order.orderStatus === 'return-approved' || order.orderStatus === 'return-processing') && (
                 <div className="od-status-return">
-                  <span className="od-status-icon">↩</span>
+                  <span className="od-status-icon"><i className="fas fa-undo" style={{ color: '#ff9800' }}></i></span>
                   <div>
                     <div className="od-status-title">Return Request</div>
                     <div className="od-status-desc">
@@ -497,7 +510,7 @@ export default function OrderDetails({ orderId }) {
               )}
               {(order.orderStatus === 'replacement-requested' || order.orderStatus === 'replacement-approved' || order.orderStatus === 'replacement-processing') && (
                 <div className="od-status-replacement">
-                  <span className="od-status-icon">🔄</span>
+                  <span className="od-status-icon"><i className="fas fa-sync-alt" style={{ color: '#3a76f0' }}></i></span>
                   <div>
                     <div className="od-status-title">Replacement Request</div>
                     <div className="od-status-desc">
@@ -512,7 +525,7 @@ export default function OrderDetails({ orderId }) {
               )}
               {order.orderStatus === 'refunded' && (
                 <div className="od-status-refund">
-                  <span className="od-status-icon">💰</span>
+                  <span className="od-status-icon"><i className="fas fa-hand-holding-usd" style={{ color: '#26a541' }}></i></span>
                   <div>
                     <div className="od-status-title">Refund Processed</div>
                     <div className="od-status-desc">Your refund has been processed successfully</div>
@@ -542,14 +555,22 @@ export default function OrderDetails({ orderId }) {
                 </div>
                 <div className="od-item-eligibility">
                   {item.allowReturn !== false ? (
-                    <span className="od-eligibility-badge od-return-badge">↩ Return Available</span>
+                    <span className="od-eligibility-badge od-return-badge">
+                      <i className="fas fa-undo" style={{marginRight: '6px'}}></i> Return Available
+                    </span>
                   ) : (
-                    <span className="od-eligibility-badge od-not-available-badge">↩ Return Not Available</span>
+                    <span className="od-eligibility-badge od-not-available-badge">
+                      <i className="fas fa-ban" style={{marginRight: '6px'}}></i> Return Not Available
+                    </span>
                   )}
                   {item.allowReplacement !== false ? (
-                    <span className="od-eligibility-badge od-replace-badge">🔁 Replacement Available</span>
+                    <span className="od-eligibility-badge od-replace-badge">
+                      <i className="fas fa-sync-alt" style={{marginRight: '6px'}}></i> Replacement Available
+                    </span>
                   ) : (
-                    <span className="od-eligibility-badge od-not-available-badge">🔁 Replacement Not Available</span>
+                    <span className="od-eligibility-badge od-not-available-badge">
+                      <i className="fas fa-ban" style={{marginRight: '6px'}}></i> Replacement Not Available
+                    </span>
                   )}
                 </div>
               </div>
@@ -642,7 +663,7 @@ export default function OrderDetails({ orderId }) {
           <div className="od-order-actions" style={{display: 'flex', flexWrap: 'nowrap', gap: '12px', marginTop: '20px'}}>
              {canCancel && (
               <button className="od-btn od-btn-danger" onClick={handleCancelOrder} disabled={actionLoading}>
-                {actionLoading ? 'Cancelling...' : <><i className="fas fa-ban" style={{marginRight: '8px'}}></i>Cancel Order</>}
+                {actionLoading ? 'Cancelling...' : <><i className="fas fa-times-circle" style={{marginRight: '8px'}}></i>Cancel Order</>}
               </button>
             )}
             {canReturn && (
@@ -671,7 +692,7 @@ export default function OrderDetails({ orderId }) {
         {/* Return & Refund Info */}
         {(order.returnRequest?.requestedAt || order.replacementRequest?.requestedAt || order.orderStatus === 'refunded') && (
           <div className="od-card od-refund-card">
-             <h3>↩ Return & Replacement Details</h3>
+             <h3><i className="fas fa-exchange-alt" style={{marginRight: '8px'}}></i> Return & Replacement Details</h3>
              <div className="od-summary-row">
                <span>Order Status:</span>
                <strong style={{color: order.orderStatus === 'returned' ? '#ff6161' : '#3a76f0'}}>{order.orderStatus.toUpperCase()}</strong>
@@ -723,7 +744,7 @@ export default function OrderDetails({ orderId }) {
                        onClick={() => handleCancelRequest('return')}
                        disabled={actionLoading}
                      >
-                       {actionLoading ? 'Cancelling...' : '✕ Cancel Return Request'}
+                       {actionLoading ? 'Cancelling...' : <><i className="fas fa-times" style={{marginRight: '6px'}}></i> Cancel Return Request</>}
                      </button>
                    </div>
                  )}
@@ -742,7 +763,7 @@ export default function OrderDetails({ orderId }) {
                        onClick={() => handleCancelRequest('replacement')}
                        disabled={actionLoading}
                      >
-                       {actionLoading ? 'Cancelling...' : '✕ Cancel Replacement Request'}
+                       {actionLoading ? 'Cancelling...' : <><i className="fas fa-times" style={{marginRight: '6px'}}></i> Cancel Replacement Request</>}
                      </button>
                    </div>
                  )}
@@ -829,7 +850,9 @@ export default function OrderDetails({ orderId }) {
           <div className="od-modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="od-modal-header">
               <h3>Order Tracking</h3>
-              <button className="od-modal-close" onClick={() => setShowTrackingModal(false)}>×</button>
+              <button className="od-modal-close" onClick={() => setShowTrackingModal(false)}>
+                <i className="fas fa-times"></i>
+              </button>
             </div>
             <div className="od-modal-body">
               <div className="od-tracking-status">
