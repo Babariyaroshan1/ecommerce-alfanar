@@ -217,121 +217,108 @@ export default function OrderDetails({ orderId }) {
   };
 
   // LOGIC 6: Download Invoice
-  const downloadInvoice = () => {
+  const downloadInvoice = async () => {
     if (!order) return;
-    const element = document.createElement('a');
-    const file = new Blob([generateInvoiceHTML()], { type: 'text/html' });
-    element.href = URL.createObjectURL(file);
-    element.download = `Invoice-${order.orderId}.html`;
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-  };
 
-  const generateInvoiceHTML = () => {
-    if (!order) return '';
+    const { jsPDF } = await import('jspdf');
+    const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+    const leftMargin = 40;
+    let y = 40;
+
     const subtotal = order.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const shipping = 5;
     const total = order.totalAmount;
+    const paymentMethodLabel = order.paymentMethod === 'cod' ? 'Cash on Delivery' : 'Online Payment';
+    const paymentStatusLabel = order.paymentStatus || 'pending';
 
-    return `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>Invoice ${order.orderId}</title>
-        <style>
-          body { font-family: Arial, sans-serif; margin: 20px; }
-          .invoice { max-width: 800px; margin: 0 auto; border: 1px solid #ddd; padding: 20px; }
-          .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 20px; }
-          .section { margin: 20px 0; }
-          .section h3 { border-bottom: 1px solid #ddd; padding-bottom: 10px; }
-          table { width: 100%; border-collapse: collapse; }
-          th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
-          .summary { float: right; width: 250px; }
-          .summary-row { display: flex; justify-content: space-between; padding: 5px 0; }
-          .total-row { font-weight: bold; font-size: 18px; border-top: 2px solid #333; padding-top: 10px; }
-        </style>
-      </head>
-      <body>
-        <div class="invoice">
-          <div class="header">
-            <h1>Invoice</h1>
-            <p><strong>Order ID:</strong> ${order.orderId}</p>
-            <p><strong>Date:</strong> ${new Date(order.createdAt).toLocaleDateString()}</p>
-          </div>
-          
-          <div class="section">
-            <h3>Shipping Address</h3>
-            <p>${order.shippingAddress.name}<br>
-            ${order.shippingAddress.governorate ? `
-            ${order.shippingAddress.addressTitle}<br>
-            ${order.shippingAddress.block}, ${order.shippingAddress.street}, House No. ${order.shippingAddress.houseNumber}<br>
-            ${order.shippingAddress.apartment ? 'Apt: ' + order.shippingAddress.apartment + '<br>' : ''}
-            ${order.shippingAddress.floor ? 'Floor: ' + order.shippingAddress.floor + '<br>' : ''}
-            ${order.shippingAddress.area}, ${order.shippingAddress.governorate}<br>
-            ${order.shippingAddress.jadda ? 'Details: ' + order.shippingAddress.jadda + '<br>' : ''}
-            ` : `
-            ${order.shippingAddress.houseNumber}, ${order.shippingAddress.street}<br>
-            ${order.shippingAddress.city}, ${order.shippingAddress.state} ${order.shippingAddress.pincode}<br>
-            `}
-            Phone: ${order.shippingAddress.phone}</p>
-          </div>
+    doc.setFontSize(18);
+    doc.text('Invoice', leftMargin, y);
+    y += 30;
 
-          <div class="section">
-            <h3>Order Items</h3>
-            <table>
-              <thead>
-                <tr>
-                  <th>Product</th>
-                  <th>Color</th>
-                  <th>Size</th>
-                  <th>Qty</th>
-                  <th>Price</th>
-                  <th>Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${order.items.map(item => `
-                  <tr>
-                    <td>${item.name}</td>
-                    <td>${item.selectedColor || 'Default'}</td>
-                    <td>${item.selectedSize || 'One Size'}</td>
-                    <td>${item.quantity}</td>
-                    <td>${order.currencySymbol}${formatPrice(item.price, order.currencySymbol)}</td>
-                    <td>${order.currencySymbol}${formatPrice(item.price * item.quantity, order.currencySymbol)}</td>
-                  </tr>
-                `).join('')}
-              </tbody>
-            </table>
-          </div>
+    doc.setFontSize(12);
+    doc.text(`Order ID: ${order.orderId}`, leftMargin, y);
+    y += 18;
+    doc.text(`Date: ${new Date(order.createdAt).toLocaleDateString()}`, leftMargin, y);
+    y += 25;
 
-          <div class="summary">
-            <div class="summary-row">
-              <span>Subtotal:</span>
-              <span>${order.currencySymbol}${formatPrice(subtotal, order.currencySymbol)}</span>
-            </div>
-            <div class="summary-row">
-              <span>Shipping:</span>
-              <span>${order.currencySymbol}${formatPrice(shipping, order.currencySymbol)}</span>
-            </div>
-            <div class="summary-row total-row">
-              <span>Total:</span>
-              <span>${order.currencySymbol}${formatPrice(total, order.currencySymbol)}</span>
-            </div>
-            <div class="summary-row">
-              <span>Payment Method:</span>
-              <span>${order.paymentMethod === 'cod' ? 'Cash on Delivery' : 'Online Payment'}</span>
-            </div>
-            <div class="summary-row">
-              <span>Payment Status:</span>
-              <span>${order.paymentStatus || 'pending'}</span>
-            </div>
-          </div>
-        </div>
-      </body>
-      </html>
-    `;
+    doc.setFontSize(14);
+    doc.text('Shipping Address', leftMargin, y);
+    y += 18;
+    doc.setFontSize(11);
+
+    const addressLines = [
+      order.shippingAddress.name,
+      order.shippingAddress.addressTitle || '',
+      order.shippingAddress.block
+        ? `${order.shippingAddress.block}, ${order.shippingAddress.street}`
+        : `${order.shippingAddress.houseNumber}, ${order.shippingAddress.street}`,
+      order.shippingAddress.apartment ? `Apt: ${order.shippingAddress.apartment}` : '',
+      order.shippingAddress.floor ? `Floor: ${order.shippingAddress.floor}` : '',
+      `${order.shippingAddress.area || order.shippingAddress.city || ''}${order.shippingAddress.governorate ? ', ' + order.shippingAddress.governorate : ''}`.trim(),
+      order.shippingAddress.jadda ? `Details: ${order.shippingAddress.jadda}` : '',
+      `Phone: ${order.shippingAddress.phone}`
+    ].filter(Boolean);
+
+    addressLines.forEach((line) => {
+      doc.text(line, leftMargin, y);
+      y += 16;
+    });
+
+    y += 10;
+    doc.setFontSize(14);
+    doc.text('Order Items', leftMargin, y);
+    y += 18;
+
+    const tableHeaders = ['Product', 'Color', 'Size', 'Qty', 'Price', 'Total'];
+    const columnPositions = [leftMargin, 160, 260, 340, 390, 460];
+
+    doc.setFontSize(10);
+    tableHeaders.forEach((header, index) => {
+      doc.text(header, columnPositions[index], y);
+    });
+    y += 16;
+    doc.line(leftMargin, y - 8, 550, y - 8);
+
+    order.items.forEach((item) => {
+      if (y > 760) {
+        doc.addPage();
+        y = 40;
+      }
+
+      doc.text(item.name || 'Product', columnPositions[0], y);
+      doc.text(item.selectedColor || 'Default', columnPositions[1], y);
+      doc.text(item.selectedSize || 'One Size', columnPositions[2], y);
+      doc.text(String(item.quantity || 1), columnPositions[3], y);
+      doc.text(`${order.currencySymbol || '₹'}${formatPrice(item.price, order.currencySymbol)}`, columnPositions[4], y);
+      doc.text(`${order.currencySymbol || '₹'}${formatPrice(item.price * item.quantity, order.currencySymbol)}`, columnPositions[5], y);
+      y += 16;
+    });
+
+    y += 20;
+    doc.line(leftMargin, y - 8, 550, y - 8);
+    y += 20;
+
+    const summaryLeft = leftMargin + 320;
+    const addSummaryRow = (label, value) => {
+      doc.text(label, summaryLeft, y);
+      doc.text(value, summaryLeft + 170, y, { align: 'right' });
+      y += 16;
+    };
+
+    doc.setFontSize(12);
+    addSummaryRow('Subtotal:', `${order.currencySymbol || '₹'}${formatPrice(subtotal, order.currencySymbol)}`);
+    addSummaryRow('Shipping:', `${order.currencySymbol || '₹'}${formatPrice(shipping, order.currencySymbol)}`);
+    doc.setFont(undefined, 'bold');
+    addSummaryRow('Total:', `${order.currencySymbol || '₹'}${formatPrice(total, order.currencySymbol)}`);
+    doc.setFont(undefined, 'normal');
+    y += 10;
+
+    addSummaryRow('Payment Method:', paymentMethodLabel);
+    addSummaryRow('Payment Status:', paymentStatusLabel);
+
+    doc.save(`Invoice-${order.orderId}.pdf`);
   };
+
 
   if (loading) {
     return <OrderDetailSkeleton />;
