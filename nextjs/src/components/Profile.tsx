@@ -60,7 +60,7 @@ export default function Profile() {
     const updatedFormData = { ...formData, selectedProfile: profileId };
     setFormData(updatedFormData);
     setLoading(true);
-    
+
     try {
       await updateProfile(updatedFormData);
       setMessage('Avatar updated successfully!');
@@ -136,10 +136,18 @@ export default function Profile() {
                   onClick={() => handleProfileSelect(profile.id)}
                   style={{ borderColor: formData.selectedProfile === profile.id ? profile.color : 'transparent', opacity: loading ? 0.6 : 1, pointerEvents: loading ? 'none' : 'auto', cursor: loading ? 'not-allowed' : 'pointer' }}
                 >
-                  <div className="profile-avatar-option" style={{ borderColor: profile.color }}>
+                  <div
+                    className="profile-avatar-option"
+                    style={{
+                      position: 'relative', 
+                      borderColor: profile.color
+                    }}
+                  >
                     <img src={profile.src} alt={profile.name} />
                     {loading && formData.selectedProfile === profile.id && (
-                      <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', background: 'rgba(0,0,0,0.3)' }}>
+                      <div style={{
+                        position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 'inherit', background: 'rgba(0,0,0,0.4)'
+                      }}>
                         <span style={{ color: '#fff', fontSize: '12px' }}>Saving...</span>
                       </div>
                     )}

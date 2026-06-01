@@ -134,6 +134,7 @@
   font-weight: 600;
   text-decoration: none;
   margin-bottom: 0.75rem;
+  padding-right: 10px;
 }
 
 .profile-link:hover {
@@ -187,7 +188,7 @@
   padding: 1rem 1.25rem;
   border-radius: 14px;
   border: none;
-  background: #2563eb;
+  background: #000000;
   color: white;
   font-size: 1rem;
   font-weight: 700;
@@ -387,7 +388,7 @@
   width: 100%;
   margin-top: 16px;
   padding: 0.95rem 1rem;
-  background: #2563eb;
+  background: #000000;
   color: white;
   border: none;
   border-radius: 14px;
@@ -429,7 +430,9 @@
   .profile-card {
     padding: 22px;
   }
-
+.profile-link{
+    padding-right: 10px;
+}
   .profile-avatar {
     width: 150px;
     height: 150px;
