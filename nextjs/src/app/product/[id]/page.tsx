@@ -90,8 +90,14 @@ export default function ProductDetailPage() {
   const { addToast } = useToastStore();
   const { user, token } = useAuthStore();
 
-  const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [product, setProduct] = useState(() => {
+    if (!id) return null;
+    return products.find((item) => String(item.id) === String(id) || String(item._id) === String(id)) || null;
+  });
+  const [loading, setLoading] = useState(() => {
+    if (!id) return false;
+    return !products.some((item) => String(item.id) === String(id) || String(item._id) === String(id));
+  });
   const [error, setError] = useState('');
   
   const [quantity, setQuantity] = useState(1);
@@ -126,58 +132,56 @@ export default function ProductDetailPage() {
 
   // Fetch all products once on component mount
   useEffect(() => {
-    if (!hasFetchedProducts.current) {
+    if (!hasFetchedProducts.current && products.length === 0) {
       hasFetchedProducts.current = true;
       fetchProducts();
     }
-  }, []);
+  }, [fetchProducts, products.length]);
 
-  // Fetch specific product when id changes
-  // Note: products is not in dependencies to prevent re-fetching when products array updates
-  // The fallbackProduct lookup will use current products from closure
+  // Fetch specific product when id or products change
   useEffect(() => {
-    const fetchProduct = async () => {
+    const fallbackProduct = products.find((item) => String(item.id) === String(id) || String(item._id) === String(id));
+    const shouldSkipBackend = !isValidObjectId(id);
+
+    if (fallbackProduct) {
+      setProduct(fallbackProduct);
+      setError('');
+      setLoading(false);
+      return;
+    }
+
+    if (!id) {
+      setProduct(null);
+      setLoading(false);
+      return;
+    }
+
+    if (shouldSkipBackend) {
+      setProduct(null);
+      setError('Product not found');
+      setLoading(false);
+      return;
+    }
+
+    const fetchProductById = async () => {
       setLoading(true);
       setError('');
-
-      const fallbackProduct = products.find((item) => String(item.id) === String(id) || String(item._id) === String(id));
-      const shouldSkipBackend = !isValidObjectId(id);
-
-      if (shouldSkipBackend) {
-        if (fallbackProduct) {
-          setProduct(fallbackProduct);
-          setLoading(false);
-          return;
-        }
-
-        if (products.length > 0) {
-          setProduct(null);
-          setError('Product not found');
-          setLoading(false);
-          return;
-        }
-
-        // If products are still loading, keep waiting until the next effect run.
-        setProduct(null);
-        setLoading(false);
-        return;
-      }
-
       try {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'; // Set in nextjs/.env.local for development and in Vercel env for production
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
         const response = await fetch(`${API_URL}/products/${id}`);
         if (!response.ok) throw new Error('Product not found');
         const data = await response.json();
         setProduct(data);
       } catch (err) {
-        setProduct(fallbackProduct || null);
+        setProduct(null);
         setError(err.message || 'Failed to load product');
       } finally {
         setLoading(false);
       }
     };
-    if (id) fetchProduct();
-  }, [id]);
+
+    fetchProductById();
+  }, [id, products]);
 
   useEffect(() => {
     if (product) {
@@ -687,13 +691,24 @@ export default function ProductDetailPage() {
                       src={src}
                       alt={`${product.name} - ${index + 1}`}
                       onError={(e) => {
-                        console.error('Image failed to load:', src);
                         const target = e.currentTarget as HTMLImageElement;
-                        if (target && target.src && target.src.includes('drive.google.com/uc?export=view&id=')) {
+                        if (!target) return;
+                        
+                        // Check if we've already tried fallback (prevent infinite loop)
+                        if (target.dataset.errorAttempt === 'true') return;
+                        
+                        console.error('Image failed to load:', src);
+                        
+                        // Try Google Drive export=download variant
+                        if (target.src && target.src.includes('drive.google.com/uc?export=view&id=')) {
+                          target.dataset.errorAttempt = 'true';
                           target.src = target.src.replace('export=view', 'export=download');
                           return;
                         }
-                        target.src = 'https://via.placeholder.com/500x500?text=Image+Error';
+                        
+                        // Set error flag and use placeholder
+                        target.dataset.errorAttempt = 'true';
+                        target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="500" height="500"%3E%3Crect fill="%23e0e0e0" width="500" height="500"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="%23999" font-size="24"%3EImage Not Available%3C/text%3E%3C/svg%3E';
                       }}
                     />
                   </div>
@@ -710,11 +725,21 @@ export default function ProductDetailPage() {
                       alt="More images preview"
                       onError={(e) => {
                         const target = e.currentTarget as HTMLImageElement;
-                        if (target && target.src && target.src.includes('drive.google.com/uc?export=view&id=')) {
+                        if (!target) return;
+                        
+                        // Check if we've already tried fallback (prevent infinite loop)
+                        if (target.dataset.errorAttempt === 'true') return;
+                        
+                        // Try Google Drive export=download variant
+                        if (target.src && target.src.includes('drive.google.com/uc?export=view&id=')) {
+                          target.dataset.errorAttempt = 'true';
                           target.src = target.src.replace('export=view', 'export=download');
                           return;
                         }
-                        target.src = 'https://via.placeholder.com/500x500?text=Image+Error';
+                        
+                        // Set error flag and use SVG placeholder
+                        target.dataset.errorAttempt = 'true';
+                        target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="500" height="500"%3E%3Crect fill="%23e0e0e0" width="500" height="500"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="%23999" font-size="24"%3EMore Images%3C/text%3E%3C/svg%3E';
                       }}
                     />
                     <div className="tss-more-images-count">

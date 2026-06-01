@@ -418,10 +418,17 @@ export default function ProductCard({ product: initialProduct, directToProduct =
             className="card-img-top card-img-base"
             onError={(e) => {
               const target = e.target;
-              if (target && target.src && target.src.includes('drive.google.com/uc?export=view&id=')) {
+              if (!target) return;
+              
+              // Prevent infinite error loops
+              if (target.dataset.errorAttempt === 'true') return;
+              
+              if (target.src && target.src.includes('drive.google.com/uc?export=view&id=')) {
+                target.dataset.errorAttempt = 'true';
                 target.src = getDriveFallbackUrl(target.src);
               } else {
-                target.src = 'https://via.placeholder.com/500x500';
+                target.dataset.errorAttempt = 'true';
+                target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="500" height="500"%3E%3Crect fill="%23e0e0e0" width="500" height="500"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="%23999" font-size="24"%3EImage Not Available%3C/text%3E%3C/svg%3E';
               }
             }}
           />
@@ -432,10 +439,17 @@ export default function ProductCard({ product: initialProduct, directToProduct =
               className={`card-img-top card-img-fade ${isCardFading ? 'fade-out' : ''}`}
               onError={(e) => {
                 const target = e.target;
-                if (target && target.src && target.src.includes('drive.google.com/uc?export=view&id=')) {
+                if (!target) return;
+                
+                // Prevent infinite error loops
+                if (target.dataset.errorAttempt === 'true') return;
+                
+                if (target.src && target.src.includes('drive.google.com/uc?export=view&id=')) {
+                  target.dataset.errorAttempt = 'true';
                   target.src = getDriveFallbackUrl(target.src);
                 } else {
-                  target.src = 'https://via.placeholder.com/500x500';
+                  target.dataset.errorAttempt = 'true';
+                  target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="500" height="500"%3E%3Crect fill="%23e0e0e0" width="500" height="500"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="%23999" font-size="24"%3EImage Not Available%3C/text%3E%3C/svg%3E';
                 }
               }}
             />
@@ -544,10 +558,17 @@ export default function ProductCard({ product: initialProduct, directToProduct =
                 className="quickview-img"
                 onError={(e) => {
                   const target = e.target;
-                  if (target && target.src && target.src.includes('drive.google.com/uc?export=view&id=')) {
+                  if (!target) return;
+                  
+                  // Prevent infinite error loops
+                  if (target.dataset.errorAttempt === 'true') return;
+                  
+                  if (target.src && target.src.includes('drive.google.com/uc?export=view&id=')) {
+                    target.dataset.errorAttempt = 'true';
                     target.src = getDriveFallbackUrl(target.src);
                   } else {
-                    target.src = 'https://via.placeholder.com/500x500';
+                    target.dataset.errorAttempt = 'true';
+                    target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="500" height="500"%3E%3Crect fill="%23e0e0e0" width="500" height="500"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="%23999" font-size="24"%3EImage Not Available%3C/text%3E%3C/svg%3E';
                   }
                 }}
               />
@@ -570,10 +591,17 @@ export default function ProductCard({ product: initialProduct, directToProduct =
                           alt={`${product.name} ${index + 1}`}
                           onError={(e) => {
                             const target = e.target;
-                            if (target && target.src && target.src.includes('drive.google.com/uc?export=view&id=')) {
+                            if (!target) return;
+                            
+                            // Prevent infinite error loops
+                            if (target.dataset.errorAttempt === 'true') return;
+                            
+                            if (target.src && target.src.includes('drive.google.com/uc?export=view&id=')) {
+                              target.dataset.errorAttempt = 'true';
                               target.src = getDriveFallbackUrl(target.src);
                             } else {
-                              target.src = 'https://via.placeholder.com/100x100?text=Image';
+                              target.dataset.errorAttempt = 'true';
+                              target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Crect fill="%23e0e0e0" width="100" height="100"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="%23999" font-size="12"%3ENo Image%3C/text%3E%3C/svg%3E';
                             }
                           }}
                         />
@@ -594,10 +622,17 @@ export default function ProductCard({ product: initialProduct, directToProduct =
                           className="quickview-more-bg"
                           onError={(e) => {
                             const target = e.target;
-                            if (target && target.src && target.src.includes('drive.google.com/uc?export=view&id=')) {
+                            if (!target) return;
+                            
+                            // Prevent infinite error loops
+                            if (target.dataset.errorAttempt === 'true') return;
+                            
+                            if (target.src && target.src.includes('drive.google.com/uc?export=view&id=')) {
+                              target.dataset.errorAttempt = 'true';
                               target.src = getDriveFallbackUrl(target.src);
                             } else {
-                              target.src = 'https://via.placeholder.com/100x100?text=Image';
+                              target.dataset.errorAttempt = 'true';
+                              target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Crect fill="%23e0e0e0" width="100" height="100"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="%23999" font-size="12"%3EMore%3C/text%3E%3C/svg%3E';
                             }
                           }}
                         />
