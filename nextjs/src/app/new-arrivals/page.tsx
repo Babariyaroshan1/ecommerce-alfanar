@@ -2,30 +2,53 @@
 
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import ProductCard from '@/components/ProductCard';
-import ProductSkeleton from '@/components/ProductSkeleton';
+import { SkeletonGrid } from '@/components/ProductSkeleton';
 import { useProductStore } from '@/store/productStore';
 import '../../Products.css';
 
 export default function NewArrivalsPage() {
   const products = useProductStore((state) => state.products);
+  const storeLoading = useProductStore((state) => state.loading);
   const fetchProducts = useProductStore((state) => state.fetchProducts);
-  const [newArrivals, setNewArrivals] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const initialLoad = useRef(products.length === 0);
+  const skeletonStart = useRef(Date.now());
+  const minSkeletonDuration = 500;
+  const [newArrivals, setNewArrivals] = useState(() => products.filter((product) => product.isNew));
+  const [loading, setLoading] = useState(initialLoad.current);
 
   useEffect(() => {
-    fetchProducts();
-    const timer = setTimeout(() => setLoading(false), 800);
-    return () => clearTimeout(timer);
-  }, [fetchProducts]);
+    if (products.length === 0) {
+      fetchProducts();
+    }
+  }, [fetchProducts, products.length]);
 
   useEffect(() => {
-    setNewArrivals(products.filter((product) => product.isNew));
-  }, [products]);
+    const newArrivalsData = products.filter((product) => product.isNew);
+    setNewArrivals(newArrivalsData);
+
+    if (initialLoad.current && (newArrivalsData.length > 0 || !storeLoading)) {
+      const elapsed = Date.now() - skeletonStart.current;
+      const timer = setTimeout(
+        () => setLoading(false),
+        Math.max(0, minSkeletonDuration - elapsed)
+      );
+      return () => clearTimeout(timer);
+    }
+
+    if (!initialLoad.current) {
+      setLoading(false);
+    }
+  }, [products, storeLoading]);
 
   if (loading) {
-    return <ProductSkeleton />;
+    return (
+      <div className="products-container">
+        <h1 className="text-center mb-4">New Arrivals</h1>
+        <SkeletonGrid count={12} />
+      </div>
+    );
   }
 
   return (

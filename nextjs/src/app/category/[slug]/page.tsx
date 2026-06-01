@@ -1,9 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useRef } from 'react';
 import Link from 'next/link';
 import ProductCard from '@/components/ProductCard';
-import ProductSkeleton from '@/components/ProductSkeleton';
+import { SkeletonGrid } from '@/components/ProductSkeleton';
 import { useProductStore } from '@/store/productStore';
 import '../../../Products.css';
 
@@ -13,20 +13,44 @@ const slugify = (value) =>
 export default function CategoryPage({ params }: { params: { slug: string } }) {
   const { slug } = params;
   const products = useProductStore((state) => state.products);
+  const storeLoading = useProductStore((state) => state.loading);
   const fetchProducts = useProductStore((state) => state.fetchProducts);
-  const [loading, setLoading] = React.useState(true);
+  const initialLoad = useRef(products.length === 0);
+  const skeletonStart = useRef(Date.now());
+  const minSkeletonDuration = 500;
+  const [loading, setLoading] = React.useState(initialLoad.current);
 
   React.useEffect(() => {
-    fetchProducts();
-    const timer = setTimeout(() => setLoading(false), 800);
-    return () => clearTimeout(timer);
-  }, []);
+    if (products.length === 0) {
+      fetchProducts();
+    }
+  }, [fetchProducts, products.length]);
+
+  React.useEffect(() => {
+    if (initialLoad.current && (products.length > 0 || !storeLoading)) {
+      const elapsed = Date.now() - skeletonStart.current;
+      const timer = setTimeout(
+        () => setLoading(false),
+        Math.max(0, minSkeletonDuration - elapsed)
+      );
+      return () => clearTimeout(timer);
+    }
+
+    if (!initialLoad.current) {
+      setLoading(false);
+    }
+  }, [products.length, storeLoading]);
 
   const categoryProducts = products.filter((product) => slugify(product.categorySlug || product.category) === slug);
   const categoryName = categoryProducts.length > 0 ? categoryProducts[0].category : slug.replace(/-/g, ' ');
 
   if (loading) {
-    return <ProductSkeleton />;
+    return (
+      <div className="products-container">
+        <h1 className="text-center mb-4">{slug.replace(/-/g, ' ')}</h1>
+        <SkeletonGrid count={12} />
+      </div>
+    );
   }
 
   return (

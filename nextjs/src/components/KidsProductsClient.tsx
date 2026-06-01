@@ -1,28 +1,37 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import ProductCard from './ProductCard';
+import { SkeletonGrid } from './ProductSkeleton';
 import { useProductStore } from '../store/productStore';
 import Fuse from 'fuse.js';
 import '../Products.css';
 
 const KidsProductsClient = () => {
   const products = useProductStore((state) => state.products);
+  const storeLoading = useProductStore((state) => state.loading);
   const fetchProducts = useProductStore((state) => state.fetchProducts);
   const searchParams = useSearchParams();
-  const [filteredProducts, setFilteredProducts] = useState([]);
+  const initialKidsLoad = useRef(products.length === 0);
+  const kidsSkeletonStart = useRef(Date.now());
+  const minSkeletonDuration = 500;
+  const [filteredProducts, setFilteredProducts] = useState(() => products.filter((p) => p.isKidsProduct === true));
   const [selectedKidsType, setSelectedKidsType] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
   const [searchQuery, setSearchQuery] = useState('');
   const [fuse, setFuse] = useState(null);
+  const [loading, setLoading] = useState(initialKidsLoad.current);
 
   useEffect(() => {
-    fetchProducts();
-  }, []);
+    if (products.length === 0) {
+      fetchProducts();
+    }
+  }, [fetchProducts, products.length]);
 
   useEffect(() => {
     const kidsProducts = products.filter(p => p.isKidsProduct === true);
+    setFilteredProducts(kidsProducts);
 
     if (kidsProducts.length > 0) {
       const fuseInstance = new Fuse(kidsProducts, {
@@ -33,7 +42,20 @@ const KidsProductsClient = () => {
       });
       setFuse(fuseInstance);
     }
-  }, [products]);
+
+    if (initialKidsLoad.current && (kidsProducts.length > 0 || !storeLoading)) {
+      const elapsed = Date.now() - kidsSkeletonStart.current;
+      const timer = setTimeout(
+        () => setLoading(false),
+        Math.max(0, minSkeletonDuration - elapsed)
+      );
+      return () => clearTimeout(timer);
+    }
+
+    if (!initialKidsLoad.current) {
+      setLoading(false);
+    }
+  }, [products, storeLoading]);
 
   useEffect(() => {
     const search = searchParams.get('search');
@@ -79,6 +101,15 @@ const KidsProductsClient = () => {
     }
     setFilteredProducts(filtered);
   };
+
+  if (loading) {
+    return (
+      <div className="products-container">
+        <h1 className="text-center mb-4">Kids Products</h1>
+        <SkeletonGrid count={8} />
+      </div>
+    );
+  }
 
   return (
     <div className="products-container">

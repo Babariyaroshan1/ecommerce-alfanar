@@ -16,13 +16,16 @@ export default function Cart() {
   const { user } = useAuthStore();
   const router = useRouter();
   
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(cart.length === 0);
 
   useEffect(() => {
-    // Simulate loading time for cart initialization
-    const timer = setTimeout(() => setLoading(false), 500);
-    return () => clearTimeout(timer);
-  }, []);
+    if (cart.length > 0) {
+      setLoading(false);
+    } else {
+      const timer = setTimeout(() => setLoading(false), 300);
+      return () => clearTimeout(timer);
+    }
+  }, [cart.length]);
 
   const currencySettings = useProductStore((state) => state.currencySettings);
   const selectedCurrency = useProductStore((state) => state.selectedCurrency);

@@ -2,7 +2,7 @@
 
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
 import ProductCard from '../components/ProductCard';
@@ -10,6 +10,7 @@ import { SkeletonGrid } from '../components/ProductSkeleton';
 import { FAQSkeletonGrid } from '../components/FAQSkeleton';
 import BannerSkeleton from '../components/BannerSkeleton';
 import { useTranslation } from 'react-i18next';
+import { useProductStore } from '@/store/productStore';
 // Note: Home fetches a small set of products locally for fast initial render
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../Home.css';
@@ -18,8 +19,18 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'; 
 
 const Home = () => {
   const { t } = useTranslation();
-  const [homeProducts, setHomeProducts] = useState([]);
-  const [homeLoading, setHomeLoading] = useState(true);
+  const storeProducts = useProductStore((state) => state.products);
+  const storeLoading = useProductStore((state) => state.loading);
+  const fetchProducts = useProductStore((state) => state.fetchProducts);
+  const initialHomeLoad = useRef(storeProducts.length === 0);
+  const homeSkeletonStart = useRef(Date.now());
+  const minSkeletonDuration = 500;
+  const [homeProducts, setHomeProducts] = useState(() => {
+    if (!storeProducts || storeProducts.length === 0) return [];
+    const featured = storeProducts.filter((product) => Boolean(product.isFeaturedOnHome)).slice(0, 8);
+    return featured.length > 0 ? featured : storeProducts.slice(0, 8);
+  });
+  const [homeLoading, setHomeLoading] = useState(initialHomeLoad.current);
 
   // FAQ state
   const [activeFaq, setActiveFaq] = useState(null);
@@ -71,22 +82,36 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    const fetchHomeProducts = async () => {
-      try {
-        setHomeLoading(true);
-        const response = await axios.get(`${API_URL}/products?limit=8`);
-        const data = response.data;
-        setHomeProducts(Array.isArray(data) ? data : (data.products || data));
-      } catch (error) {
-        console.error('Error fetching home products:', error);
-        setHomeProducts([]);
-      } finally {
-        setHomeLoading(false);
-      }
-    };
+    if (storeProducts.length === 0) {
+      fetchProducts();
+      return;
+    }
 
-    fetchHomeProducts();
-  }, []);
+    const featured = storeProducts.filter((product) => Boolean(product.isFeaturedOnHome)).slice(0, 8);
+    setHomeProducts(featured.length > 0 ? featured : storeProducts.slice(0, 8));
+
+    if (initialHomeLoad.current) {
+      const elapsed = Date.now() - homeSkeletonStart.current;
+      const timer = setTimeout(
+        () => setHomeLoading(false),
+        Math.max(0, minSkeletonDuration - elapsed)
+      );
+      return () => clearTimeout(timer);
+    }
+
+    setHomeLoading(false);
+  }, [fetchProducts, storeLoading, storeProducts]);
+
+  useEffect(() => {
+    if (initialHomeLoad.current && !storeLoading && storeProducts.length === 0) {
+      const elapsed = Date.now() - homeSkeletonStart.current;
+      const timer = setTimeout(
+        () => setHomeLoading(false),
+        Math.max(0, minSkeletonDuration - elapsed)
+      );
+      return () => clearTimeout(timer);
+    }
+  }, [storeLoading, storeProducts.length]);
 
   const featuredProducts = homeProducts.filter((product) => Boolean(product.isFeaturedOnHome))
     .slice(0, 8);
