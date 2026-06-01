@@ -226,7 +226,7 @@ export default function OrderDetails({ orderId }) {
     let y = 40;
 
     const subtotal = order.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const shipping = 5;
+    const shipping = 5; // Replace with your actual shipping logic if needed
     const total = order.totalAmount;
     const paymentMethodLabel = order.paymentMethod === 'cod' ? 'Cash on Delivery' : 'Online Payment';
     const paymentStatusLabel = order.paymentStatus || 'pending';
@@ -264,20 +264,24 @@ export default function OrderDetails({ orderId }) {
       y += 16;
     });
 
-    y += 10;
+    y += 15;
     doc.setFontSize(14);
     doc.text('Order Items', leftMargin, y);
-    y += 18;
+    y += 20;
 
+    // --- TABLE FIXES START HERE ---
     const tableHeaders = ['Product', 'Color', 'Size', 'Qty', 'Price', 'Total'];
-    const columnPositions = [leftMargin, 250, 330, 380, 420, 480];
+    // Increased gap between columns further
+    const columnPositions = [leftMargin, 270, 340, 390, 430, 490]; 
 
     doc.setFontSize(10);
     tableHeaders.forEach((header, index) => {
       doc.text(header, columnPositions[index], y);
     });
-    y += 16;
-    doc.line(leftMargin, y - 8, 550, y - 8);
+    
+    y += 10; // Extra space before the line
+    doc.line(leftMargin, y, 550, y);
+    y += 18; // Extra space after the line for the first product
 
     order.items.forEach((item) => {
       if (y > 760) {
@@ -286,8 +290,8 @@ export default function OrderDetails({ orderId }) {
       }
       
       let productName = item.name || 'Product';
-      if (productName.length > 35) {
-        productName = productName.substring(0, 32) + '...';
+      if (productName.length > 32) {
+        productName = productName.substring(0, 29) + '...';
       }
 
       let colorName = item.selectedColor || 'Default';
@@ -301,27 +305,34 @@ export default function OrderDetails({ orderId }) {
       doc.text(String(item.quantity || 1), columnPositions[3], y);
       doc.text(`${order.currencySymbol || '₹'}${formatPrice(item.price, order.currencySymbol)}`, columnPositions[4], y);
       doc.text(`${order.currencySymbol || '₹'}${formatPrice(item.price * item.quantity, order.currencySymbol)}`, columnPositions[5], y);
-      y += 16;
+      
+      y += 20; // Increased space between rows
     });
 
-    y += 20;
-    doc.line(leftMargin, y - 8, 550, y - 8);
-    y += 20;
+    y += 5; // Small padding before the closing line
+    doc.line(leftMargin, y, 550, y);
+    y += 25;
 
-    const summaryLeft = leftMargin + 320;
+    // --- SUMMARY OVERLAP FIXES START HERE ---
+    // Moved label X far left, and value X far right to create a big gap in between.
+    const summaryLabelX = 290; 
+    const summaryValueX = 530; 
+    
     const addSummaryRow = (label, value) => {
-      doc.text(label, summaryLeft, y);
-      doc.text(value, summaryLeft + 170, y, { align: 'right' });
-      y += 16;
+      doc.text(label, summaryLabelX, y);
+      doc.text(String(value), summaryValueX, y, { align: 'right' });
+      y += 18; // Slightly more padding between lines
     };
 
     doc.setFontSize(12);
     addSummaryRow('Subtotal:', `${order.currencySymbol || '₹'}${formatPrice(subtotal, order.currencySymbol)}`);
     addSummaryRow('Shipping:', `${order.currencySymbol || '₹'}${formatPrice(shipping, order.currencySymbol)}`);
+    
     doc.setFont(undefined, 'bold');
     addSummaryRow('Total:', `${order.currencySymbol || '₹'}${formatPrice(total, order.currencySymbol)}`);
     doc.setFont(undefined, 'normal');
-    y += 10;
+    
+    y += 15; // Gap before payment details
 
     addSummaryRow('Payment Method:', paymentMethodLabel);
     addSummaryRow('Payment Status:', paymentStatusLabel);
@@ -934,4 +945,4 @@ export default function OrderDetails({ orderId }) {
       )}
     </div>
   );
-}
+} 
