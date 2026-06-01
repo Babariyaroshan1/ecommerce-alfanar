@@ -62,19 +62,9 @@ export default function Orders() {
   };
 
   if (loading) {
-    return (
-      <div className="orders-wrapper">
-        <div className="loader-container">
-          <div className="spinner"></div>
-          <p>Loading your orders...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (loading) {
     return <OrderListSkeleton />;
   }
+
 
   return (
     <div className="orders-wrapper">

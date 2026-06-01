@@ -191,13 +191,13 @@
   background: #000000;
   color: white;
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 700; 
   cursor: pointer;
   transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .profile-button:hover:not(:disabled) {
-  background: #1d4ed8;
+  background: #232323;
 }
 
 .profile-button:disabled {
@@ -399,7 +399,7 @@
 }
 
 .avatar-toggle-button:hover {
-  background: #1d4ed8;
+  background: #232323;
 }
 
 .profile-form h3 {
