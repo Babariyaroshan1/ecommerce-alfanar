@@ -36,7 +36,7 @@ const AVAILABLE_PERMISSIONS = [
     label: 'View Analytics',
     description: 'Access sales and performance data',
     icon: 'fa-chart-bar'
-  },
+  }, 
   {
     key: 'manage_content',
     label: 'Manage Content',

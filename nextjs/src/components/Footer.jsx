@@ -75,7 +75,7 @@ export default function Footer() {
             <div className="footer-section footer-column">
               <h4 className="footer-column-title">CONTACT</h4>
               <div className="contact-section">
-                <p className="contact-phone">+965 69900918</p>
+                <p className="contact-phone">+965 97210352</p>
                 <p className="contact-hours">Saturday - Wednesday: 10am to 10pm</p>
                 <p className="contact-hours">Thursday & Friday: 10am to 11pm</p>
               </div>

@@ -835,7 +835,7 @@ return (
                 }
               />
             </div>
-
+            
             <div className="edit-form-row">
               <label>Original Price ({currencySettings.symbol || '₹'})</label>
               <input
