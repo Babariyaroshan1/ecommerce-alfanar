@@ -243,10 +243,14 @@ export default function Navbar() {
               </Link>
 
               {mounted && user && (
-                <Link href="/orders" className="nav-link-custom text-dark mobile-only-order " onClick={closeMobileMenu}>
-                  {/* <OrdersIcon /> */}
-                  {t('Orders')}
-                </Link>
+                <>
+                  <Link href="/orders" className="nav-link-custom text-dark mobile-only-order " onClick={closeMobileMenu}>
+                    {t('Orders')}
+                  </Link>
+                  <Link href="/profile/addresses" className="nav-link-custom text-dark mobile-only-order " onClick={closeMobileMenu}>
+                    {t('My Addresses')}
+                  </Link>
+                </>
               )}
 
      
@@ -427,6 +431,12 @@ export default function Navbar() {
                       <Link className="dropdown-item d-flex align-items-center gap-2" href="/orders">
                         <OrdersIcon />
                         {t('Orders')}
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="dropdown-item d-flex align-items-center gap-2" href="/profile/addresses">
+                        <AddressIcon />
+                        {t('My Addresses')}
                       </Link>
                     </li>
 

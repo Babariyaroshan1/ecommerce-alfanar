@@ -40,6 +40,7 @@ router.post('/register', async (req, res) => {
                 email: user.email,
                 phone: user.phone,
                 address: user.address,
+                addresses: user.addresses,
                 profileImage: user.profileImage,
                 selectedProfile: user.selectedProfile,
                 isAdmin: user.isAdmin
@@ -91,6 +92,7 @@ router.post('/login', async (req, res) => {
                 email: user.email,
                 phone: user.phone,
                 address: user.address,
+                addresses: user.addresses,
                 profileImage: user.profileImage,
                 selectedProfile: user.selectedProfile,
                 isAdmin: user.isAdmin
@@ -182,10 +184,18 @@ router.get('/profile', auth, async (req, res) => {
 // Update Profile
 router.put('/profile', auth, async (req, res) => {
     try {
-        const { name, phone, address, profileImage, selectedProfile } = req.body;
+        const { name, phone, address, profileImage, selectedProfile, addresses } = req.body;
+        const updateFields = {};
+        if (name !== undefined) updateFields.name = name;
+        if (phone !== undefined) updateFields.phone = phone;
+        if (address !== undefined) updateFields.address = address;
+        if (profileImage !== undefined) updateFields.profileImage = profileImage;
+        if (selectedProfile !== undefined) updateFields.selectedProfile = selectedProfile;
+        if (addresses !== undefined) updateFields.addresses = addresses;
+
         const user = await User.findByIdAndUpdate(
             req.userId,
-            { name, phone, address, profileImage, selectedProfile },
+            updateFields,
             { new: true }
         ).select('-password');
         res.json(user);

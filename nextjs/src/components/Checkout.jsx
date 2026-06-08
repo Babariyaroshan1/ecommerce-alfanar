@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import axios from 'axios';
 import { useAuthStore } from '../store/authStore';
 import { useCartStore } from '../store/cartStore';
@@ -18,11 +18,12 @@ const parsePrice = (price) => {
 };
 
 export default function Checkout() {
-  const { user, token } = useAuthStore();
+  const { user, token, updateProfile } = useAuthStore();
   const { cart, clearCart, appliedCoupon, getDiscountedTotal } = useCartStore();
   const currencySettings = useProductStore((state) => state.currencySettings);
   const selectedCurrency = useProductStore((state) => state.selectedCurrency);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { t } = useTranslation();
 
   // Redirect to login if not authenticated
@@ -81,6 +82,142 @@ export default function Checkout() {
     longitude: null,
     mapLink: ''
   });
+  const [savedAddresses, setSavedAddresses] = useState([]);
+  const [selectedSavedAddressId, setSelectedSavedAddressId] = useState('');
+  const [addressModalOpen, setAddressModalOpen] = useState(false);
+  const [addressMessage, setAddressMessage] = useState('');
+
+  const persistSelectedAddressId = (id) => {
+    if (typeof window === 'undefined') return;
+    localStorage.setItem('selectedAddressId', id);
+    setSelectedSavedAddressId(id);
+  };
+
+  const saveAddressToBackend = async (address) => {
+    if (!isAddressSaveable(address)) return null;
+    const normalized = normalizeAddress(address);
+    const existing = savedAddresses.find((item) =>
+      item.name === normalized.name &&
+      item.phone === normalized.phone &&
+      item.street === normalized.street &&
+      item.houseNumber === normalized.houseNumber &&
+      item.addressTitle === normalized.addressTitle &&
+      item.city === normalized.city &&
+      item.pincode === normalized.pincode
+    );
+
+    const nextAddresses = [
+      ...savedAddresses.filter((item) => item.id !== (existing?.id || normalized.id)),
+      {
+        ...normalized,
+        id: existing?.id || normalized.id,
+        label: normalized.addressTitle || normalized.name || 'Address'
+      }
+    ];
+
+    const backendAddresses = nextAddresses.map((address) => {
+      const payload = {
+        ...address,
+        label: address.label || address.addressTitle || address.name || 'Address'
+      };
+      delete payload.id;
+      if (address.id && /^[0-9a-fA-F]{24}$/.test(address.id)) {
+        payload._id = address.id;
+      }
+      return payload;
+    });
+
+    try {
+      const updatedUser = await updateProfile({ addresses: backendAddresses });
+      const updatedAddresses = Array.isArray(updatedUser.addresses) ? updatedUser.addresses : nextAddresses;
+      setSavedAddresses(updatedAddresses);
+      const savedAddress = updatedAddresses.find((item) =>
+        item.name === normalized.name &&
+        item.phone === normalized.phone &&
+        item.street === normalized.street &&
+        item.houseNumber === normalized.houseNumber &&
+        item.addressTitle === normalized.addressTitle &&
+        item.city === normalized.city &&
+        item.pincode === normalized.pincode
+      );
+      const persistedId = savedAddress?.id || existing?.id || normalized.id;
+      persistSelectedAddressId(persistedId);
+      setAddressMessage('Address saved to My Addresses.');
+      return savedAddress || normalized;
+    } catch (error) {
+      console.error('Failed to save address to backend:', error);
+      return null;
+    }
+  };
+
+  const normalizeAddress = (address) => ({
+    id: address.id || `addr-${Date.now()}`,
+    name: address.name || '',
+    phone: address.phone || '',
+    addressTitle: address.addressTitle || '',
+    governorate: address.governorate || '',
+    area: address.area || '',
+    block: address.block || '',
+    apartment: address.apartment || '',
+    floor: address.floor || '',
+    jadda: address.jadda || '',
+    city: address.city || '',
+    state: address.state || '',
+    pincode: address.pincode || '',
+    street: address.street || '',
+    houseNumber: address.houseNumber || '',
+    latitude: address.latitude || null,
+    longitude: address.longitude || null,
+    mapLink: address.mapLink || ''
+  });
+
+  const isAddressSaveable = (address) => {
+    const normalized = normalizeAddress(address);
+    if (!normalized.name || !normalized.phone || !normalized.street || !normalized.houseNumber) return false;
+    const country = selectedCurrency || 'INR';
+    if (country === 'KWD') {
+      return !!(normalized.addressTitle && normalized.governorate && normalized.area && normalized.block);
+    }
+    return !!(normalized.city && normalized.state && normalized.pincode);
+  };
+
+  const handleSelectSavedAddress = (address) => {
+    setFormData(normalizeAddress(address));
+    persistSelectedAddressId(address.id);
+    setAddressModalOpen(false);
+    setAddressMessage('Address selected for checkout.');
+  };
+
+  const handleDeleteSavedAddress = async (id) => {
+    const remaining = savedAddresses.filter((address) => address.id !== id);
+    const backendAddresses = remaining.map((address) => {
+      const payload = {
+        ...address,
+        label: address.label || address.addressTitle || address.name || 'Address'
+      };
+      delete payload.id;
+      if (address.id && /^[0-9a-fA-F]{24}$/.test(address.id)) {
+        payload._id = address.id;
+      }
+      return payload;
+    });
+    try {
+      const updatedUser = await updateProfile({ addresses: backendAddresses });
+      const updatedAddresses = Array.isArray(updatedUser.addresses) ? updatedUser.addresses : remaining;
+      setSavedAddresses(updatedAddresses);
+      if (selectedSavedAddressId === id) {
+        localStorage.removeItem('selectedAddressId');
+        setSelectedSavedAddressId('');
+      }
+    } catch (error) {
+      console.error('Failed to delete saved address:', error);
+    }
+  };
+
+  const handleOpenAddressModal = () => {
+    setAddressModalOpen(true);
+    setAddressMessage('');
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -99,7 +236,16 @@ export default function Checkout() {
       savedForm = {};
     }
 
-    setFormData({
+    const backendAddresses = Array.isArray(user.addresses) ? user.addresses : [];
+    setSavedAddresses(backendAddresses);
+
+    const addressIdFromQuery = searchParams.get('addressId');
+    const showAddressForm = searchParams.get('showAddressForm') === 'true';
+    const selectedAddressIdFromStorage = localStorage.getItem('selectedAddressId');
+    const activeAddressId = addressIdFromQuery || selectedAddressIdFromStorage;
+    const selectedAddress = backendAddresses.find((address) => address.id === activeAddressId);
+
+    const initialForm = {
       name: user?.name || cachedForm.name || savedForm.name || '',
       phone: user?.phone || cachedForm.phone || savedForm.phone || '',
       // Kuwait fields
@@ -120,11 +266,20 @@ export default function Checkout() {
       latitude: user?.address?.latitude || cachedForm.latitude || null,
       longitude: user?.address?.longitude || cachedForm.longitude || null,
       mapLink: user?.address?.mapLink || cachedForm.mapLink || ''
-    });
+    };
+
+    setFormData(selectedAddress ? { ...initialForm, ...selectedAddress } : initialForm);
+
+    if (selectedAddress) {
+      persistSelectedAddressId(selectedAddress.id);
+    }
 
     setCheckoutLoading(false);
 
-  }, [user, token]);
+    if (showAddressForm) {
+      setAddressModalOpen(true);
+    }
+  }, [user, token, searchParams]);
 
   // Auto-save form data to localStorage whenever it changes
   useEffect(() => {
@@ -236,7 +391,7 @@ export default function Checkout() {
     }
   };
 
-  const handleOpenPaymentModal = (e) => {
+  const handleOpenPaymentModal = async (e) => {
     e.preventDefault();
     
     // Check if any items are unavailable
@@ -278,6 +433,9 @@ export default function Checkout() {
       alert('Invalid cart total');
       return;
     }
+
+    // Save this shipping address to saved addresses if possible
+    await saveAddressToBackend(formData);
 
     // Fetch geolocation automatically
     fetchGeolocationAndProceed();
@@ -428,7 +586,13 @@ export default function Checkout() {
       ) : (
     <div className="checkout-wrapper">
       <div className="checkout-container">
-        <h1 className="checkout-title">{t("Checkout")}</h1>
+        <div className="checkout-header d-flex align-items-center justify-content-between mb-3">
+          <h1 className="checkout-title">{t("Checkout")}</h1>
+          <button type="button" className="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1" onClick={handleOpenAddressModal}>
+            <i className="fa-solid fa-map-marker-alt"></i>
+            {t('My Addresses')}
+          </button>
+        </div>
 
         <div className="checkout-grid">
 
@@ -698,6 +862,264 @@ export default function Checkout() {
           </div>
         </div>
       </div>
+
+      {addressModalOpen && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(15, 23, 42, 0.6)',
+            zIndex: 2000,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px'
+          }}
+          onClick={() => setAddressModalOpen(false)}
+        >
+          <div
+            style={{
+              width: '100%',
+              maxWidth: '920px',
+              maxHeight: '90vh',
+              overflowY: 'auto',
+              borderRadius: '14px',
+              background: '#fff',
+              padding: '24px',
+              boxShadow: '0 24px 80px rgba(15, 23, 42, 0.18)'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px'}}>
+              <div>
+                <h2 style={{margin: 0}}>{t('My Addresses')}</h2>
+                <p style={{margin: '6px 0 0 0', color: '#475569'}}>{t('Select a saved address or save a new address for future checkout.')}</p>
+              </div>
+              <button
+                type="button"
+                className="btn btn-outline-secondary btn-sm"
+                onClick={() => setAddressModalOpen(false)}
+              >
+                ✕
+              </button>
+            </div>
+
+            {addressMessage && (
+              <div style={{marginBottom: '16px', padding: '12px 16px', borderRadius: '10px', background: '#ecfdf5', color: '#166534'}}>
+                {addressMessage}
+              </div>
+            )}
+
+            {savedAddresses.length > 0 ? (
+              <div style={{display: 'grid', gap: '12px', marginBottom: '24px'}}>
+                {savedAddresses.map((address) => (
+                  <div
+                    key={address.id}
+                    style={{
+                      border: selectedSavedAddressId === address.id ? '1px solid #2563eb' : '1px solid #d1d5db',
+                      borderRadius: '12px',
+                      padding: '18px',
+                      background: selectedSavedAddressId === address.id ? '#eff6ff' : '#ffffff'
+                    }}
+                  >
+                    <div style={{display: 'flex', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap'}}>
+                      <div style={{minWidth: 0}}>
+                        <div style={{fontWeight: 700, fontSize: '15px', marginBottom: '6px'}}>{address.addressTitle || address.name || t('Address')}</div>
+                        <div style={{fontSize: '13px', color: '#475569', lineHeight: 1.6}}>
+                          {address.street}{address.houseNumber ? `, ${address.houseNumber}` : ''}{address.apartment ? `, ${address.apartment}` : ''}{address.floor ? `, ${address.floor}` : ''}
+                          {address.area ? `, ${address.area}` : ''}{address.city ? `, ${address.city}` : ''}{address.state ? `, ${address.state}` : ''}{address.governorate ? `, ${address.governorate}` : ''}{address.pincode ? `, ${address.pincode}` : ''}
+                        </div>
+                        <div style={{marginTop: '6px', fontSize: '13px', color: '#475569'}}>📞 {address.phone}</div>
+                      </div>
+                      <div style={{display: 'flex', flexWrap: 'wrap', gap: '10px'}}>
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-primary"
+                          onClick={() => handleSelectSavedAddress(address)}
+                        >
+                          {t('Use This Address')}
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-outline-secondary"
+                          onClick={() => handleDeleteSavedAddress(address.id)}
+                        >
+                          {t('Delete')}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div style={{marginBottom: '24px', padding: '18px', borderRadius: '12px', background: '#f8fafc', border: '1px solid #e2e8f0', color: '#334155'}}>
+                {t('No saved addresses yet. Add one below and it will appear on My Addresses page.')}
+              </div>
+            )}
+
+            <div style={{borderTop: '1px solid #e2e8f0', paddingTop: '20px'}}>
+              <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px'}}>
+                <h3 style={{margin: 0}}>{t('Add New Address')}</h3>
+                <span style={{fontSize: '13px', color: '#64748b'}}>{t('Saved to My Addresses automatically')}</span>
+              </div>
+
+              <div style={{display: 'grid', gap: '12px'}}>
+                <input
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder={t('Full Name')}
+                  className="form-control"
+                />
+                <input
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  placeholder={t('Phone Number')}
+                  className="form-control"
+                />
+
+                {selectedCurrency === 'KWD' ? (
+                  <>
+                    <input
+                      name="addressTitle"
+                      value={formData.addressTitle}
+                      onChange={handleChange}
+                      placeholder={t('Address Title (e.g. Home, Work)')}
+                      className="form-control"
+                    />
+                    <select
+                      name="governorate"
+                      value={formData.governorate}
+                      onChange={handleChange}
+                      className="form-control"
+                    >
+                      <option value="">{t('Select Governorate')}</option>
+                      <option value="Kuwait">Kuwait</option>
+                      <option value="Farwaniya">Farwaniya</option>
+                      <option value="Hawalli">Hawalli</option>
+                      <option value="Ahmadi">Ahmadi</option>
+                      <option value="Jahra">Jahra</option>
+                      <option value="Mubarak Al-Kabeer">Mubarak Al-Kabeer</option>
+                    </select>
+                    <input
+                      name="area"
+                      value={formData.area}
+                      onChange={handleChange}
+                      placeholder={t('Area')}
+                      className="form-control"
+                    />
+                    <div style={{display: 'grid', gap: '12px', gridTemplateColumns: '1fr 1fr'}}>
+                      <input
+                        name="block"
+                        value={formData.block}
+                        onChange={handleChange}
+                        placeholder={t('Block')}
+                        className="form-control"
+                      />
+                      <input
+                        name="street"
+                        value={formData.street}
+                        onChange={handleChange}
+                        placeholder={t('Street')}
+                        className="form-control"
+                      />
+                    </div>
+                    <div style={{display: 'grid', gap: '12px', gridTemplateColumns: '1fr 1fr 1fr'}}>
+                      <input
+                        name="houseNumber"
+                        value={formData.houseNumber}
+                        onChange={handleChange}
+                        placeholder={t('House No.')}
+                        className="form-control"
+                      />
+                      <input
+                        name="apartment"
+                        value={formData.apartment}
+                        onChange={handleChange}
+                        placeholder={t('Apartment')}
+                        className="form-control"
+                      />
+                      <input
+                        name="floor"
+                        value={formData.floor}
+                        onChange={handleChange}
+                        placeholder={t('Floor')}
+                        className="form-control"
+                      />
+                    </div>
+                    <input
+                      name="jadda"
+                      value={formData.jadda}
+                      onChange={handleChange}
+                      placeholder={t('Jadda (Additional Details)')}
+                      className="form-control"
+                    />
+                  </>
+                ) : (
+                  <>
+                    <input
+                      name="street"
+                      value={formData.street}
+                      onChange={handleChange}
+                      placeholder={t('Street Address')}
+                      className="form-control"
+                    />
+                    <div style={{display: 'grid', gap: '12px', gridTemplateColumns: '1fr 1fr'}}>
+                      <input
+                        name="city"
+                        value={formData.city}
+                        onChange={handleChange}
+                        placeholder={t('City')}
+                        className="form-control"
+                      />
+                      <input
+                        name="state"
+                        value={formData.state}
+                        onChange={handleChange}
+                        placeholder={t('State')}
+                        className="form-control"
+                      />
+                    </div>
+                    <div style={{display: 'grid', gap: '12px', gridTemplateColumns: '1fr 1fr'}}>
+                      <input
+                        name="houseNumber"
+                        value={formData.houseNumber}
+                        onChange={handleChange}
+                        placeholder={t('House/Building No.')}
+                        className="form-control"
+                      />
+                      <input
+                        name="pincode"
+                        value={formData.pincode}
+                        onChange={handleChange}
+                        placeholder={t('Pincode')}
+                        className="form-control"
+                      />
+                    </div>
+                  </>
+                )}
+              </div>
+
+              <div style={{display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '20px'}}>
+                <button type="button" className="btn btn-outline-secondary" onClick={() => setAddressModalOpen(false)}>
+                  {t('Close')}
+                </button>
+                <button type="button" className="btn btn-primary" onClick={async () => {
+                  const saved = await saveAddressToBackend(formData);
+                  if (saved) {
+                    setAddressMessage(t('Address saved to My Addresses.'));
+                  } else {
+                    setAddressMessage(t('Fill the required address fields before saving.'));
+                  }
+                }}>
+                  {t('Save Address')}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 🔥 PAYMENT MODAL / BOTTOM SHEET */}
       {showPaymentModal && (
