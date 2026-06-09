@@ -8,7 +8,26 @@
   color: #e4e4e7;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
-
+@media (mix-width:768px) {
+    .admin-history-container {    
+    padding-top: 0;
+    }
+    .ad-his-main{
+        font-size: 18px;
+    }
+    .history-topbar p {
+  font-size: 12px;
+}
+.keypad {
+    gap: 20px;
+    margin-bottom: 20px;
+}
+}
+@media (max-width: 768px) {
+    .coadmin-management-container {
+        padding: 15px !important;
+    }
+}
 /* Topbar Styling */
 .history-topbar {
   display: flex;

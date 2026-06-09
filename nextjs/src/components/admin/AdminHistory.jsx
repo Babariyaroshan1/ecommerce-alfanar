@@ -97,7 +97,7 @@ const AdminHistory = () => {
     <div className="admin-history-container">
       <div className="history-topbar">
         <div>
-          <h3>Admin Change History</h3>
+          <h3 class="ad-his-main">Admin Change History</h3>
           <p >Only main admin can unlock this view using the secret history password.</p>
         </div>
       </div>
