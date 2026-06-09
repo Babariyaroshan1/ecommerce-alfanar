@@ -1,7 +1,7 @@
 /* Container & Base - Deep Black Theme */
 .admin-history-container {
   padding: 30px;
-  background: #09090b; /* Deep Black */
+  background: #09090b; 
   border-radius: 20px;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
   border: 1px solid #27272a;
@@ -15,7 +15,7 @@
   justify-content: space-between;
   align-items: flex-start;
   gap: 20px;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   padding-bottom: 20px;
   border-bottom: 1px solid #27272a;
 }
@@ -34,49 +34,141 @@
   font-size: 0.95rem;
 }
 
-/* Unlock Box Styling */
-.history-unlock-box {
+/* ---------------------------------
+   iOS Style Lock Screen UI
+-----------------------------------*/
+.ios-lock-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background: #09090b;
+}
+
+.ios-lock-title {
+  color: #fafafa;
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 25px;
+  letter-spacing: 1px;
+}
+
+.passcode-dots {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 30px;
+  height: 20px;
+  align-items: center;
+}
+
+.dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid #52525b;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Jese hi number type hoga dot fill ho jayega aur glow karega */
+.dot.filled {
+  background: #3b82f6; 
+  border-color: #3b82f6;
+  transform: scale(1.1); 
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+}
+
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+  margin-bottom: 35px;
+}
+
+.key-btn {
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(39, 39, 42, 0.6); /* Glassmorphism dark */
+  color: #fafafa;
+  font-size: 1.8rem;
+  font-weight: 300;
+  cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 12px;
-  background: #18181b;
-  padding: 16px;
-  border-radius: 16px;
-  border: 1px solid #3f3f46;
+  justify-content: center;
+  transition: all 0.15s ease;
+  backdrop-filter: blur(10px);
 }
 
-.history-unlock-box label {
-  font-weight: 600;
-  color: #e4e4e7;
-  white-space: nowrap;
+.key-btn:hover {
+  background: rgba(63, 63, 70, 0.8);
 }
 
-.history-unlock-box input {
-  min-width: 200px;
-  padding: 12px 16px;
-  border: 1px solid #3f3f46;
-  border-radius: 10px;
-  background: #09090b;
-  color: #fafafa;
-  font-size: 0.95rem;
-  transition: all 0.2s ease;
+/* Click hone par white ho jana bilkul iOS jaisa */
+.key-btn:active {
+  background: #ffffff;
+  color: #000000;
+  transform: scale(0.9);
 }
 
-.history-unlock-box input::placeholder {
-  color: #52525b;
+/* Clear and Backspace buttons */
+.key-btn.action-btn {
+  background: transparent;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #a1a1aa;
 }
 
-.history-unlock-box input:focus {
-  outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+.key-btn.action-btn:active {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
 }
 
-/* Buttons */
+.unlock-btn-wide {
+  width: 100%;
+  max-width: 275px;
+  padding: 14px;
+  font-size: 1rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-radius: 12px;
+}
+
+/* ---------------------------------
+   Error Display & Shake Animation (Red Color)
+-----------------------------------*/
+.history-error {
+  color: #ef4444; /* Bright Red for Dark Theme */
+  font-weight: 500;
+  margin-bottom: 20px;
+  background: rgba(239, 68, 68, 0.1);
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  text-align: center;
+}
+
+/* Shake Animation Class */
+.shake {
+  animation: shake 0.4s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-10px); }
+  40%, 80% { transform: translateX(10px); }
+}
+
+
+/* ---------------------------------
+   Rest Topbar, Filters & Table Code
+-----------------------------------*/
 .unlock-btn,
 .refresh-history-btn {
   padding: 12px 20px;
-  background: linear-gradient(135deg, #3b82f6, #2563eb); /* Bright Blue Accent */
+  background: linear-gradient(135deg, #3b82f6, #2563eb); 
   color: white;
   border: none;
   border-radius: 10px;
@@ -101,18 +193,6 @@
   transform: none;
 }
 
-/* Error Message */
-.history-error {
-  margin-top: 10px;
-  color: #ef4444; /* Bright Red for dark theme */
-  font-weight: 500;
-  background: rgba(239, 68, 68, 0.1);
-  padding: 10px 15px;
-  border-radius: 8px;
-  border: 1px solid rgba(239, 68, 68, 0.2);
-}
-
-/* Filters */
 .history-content {
   display: flex;
   flex-direction: column;
@@ -152,7 +232,6 @@
   border-color: #3b82f6;
 }
 
-/* Table Styling */
 .history-table-wrapper {
   overflow-x: auto;
   border-radius: 16px;
@@ -160,7 +239,6 @@
   border: 1px solid #27272a;
 }
 
-/* Custom Scrollbar for the dark table wrapper */
 .history-table-wrapper::-webkit-scrollbar {
   height: 8px;
 }
@@ -171,9 +249,6 @@
 .history-table-wrapper::-webkit-scrollbar-thumb {
   background: #3f3f46;
   border-radius: 8px;
-}
-.history-table-wrapper::-webkit-scrollbar-thumb:hover {
-  background: #52525b;
 }
 
 .history-table {
@@ -204,10 +279,9 @@
   vertical-align: middle;
 }
 
-/* Action Tags coloring (Optional but looks great) */
 .history-table td:nth-child(3) {
   font-weight: 600;
-  color: #60a5fa; /* Blue tint for actions */
+  color: #60a5fa;
 }
 
 .history-table tr {
@@ -215,7 +289,7 @@
 }
 
 .history-table tr:hover td {
-  background: #27272a; /* Lighter dark for hover */
+  background: #27272a; 
 }
 
 .history-table tr:last-child td {

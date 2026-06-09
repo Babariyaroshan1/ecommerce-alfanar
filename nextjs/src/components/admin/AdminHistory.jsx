@@ -17,13 +17,40 @@ const AdminHistory = () => {
 
   const token = typeof window !== 'undefined' ? localStorage.getItem('adminToken') : null;
 
+  // Keyboard Event Listener (For typing via Physical Keyboard)
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (unlocked) return; // Agar unlock ho chuka hai toh keyboard type na kare
+
+      if (/^[0-9]$/.test(e.key)) {
+        setPassword((prev) => prev + e.key);
+        setError(''); // Type karte hi error hata do
+      } else if (e.key === 'Backspace') {
+        setPassword((prev) => prev.slice(0, -1));
+        setError('');
+      } else if (e.key === 'Enter') {
+        document.getElementById('unlock-btn')?.click();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [unlocked]);
+
+  // Filters change hone par list refresh karega (Only if Unlocked)
   useEffect(() => {
     if (unlocked) {
-      fetchHistory();
+      verifyAndFetch();
     }
-  }, [unlocked, filterType, filterAction]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterType, filterAction]);
 
-  const fetchHistory = async () => {
+  // Main API Call (Check Password & Fetch Data)
+  const verifyAndFetch = async () => {
+    if (!password) {
+      setError('Please enter passcode');
+      return;
+    }
     try {
       setLoading(true);
       setError('');
@@ -32,23 +59,19 @@ const AdminHistory = () => {
         { password, entityType: filterType || undefined, actionType: filterAction || undefined },
         { headers: { Authorization: `Bearer ${token}` } }
       );
+      
+      // Agar password sahi hai:
       setHistory(res.data.history || []);
+      setUnlocked(true);
     } catch (err) {
-      console.error('History fetch failed:', err.response?.data || err.message);
-      setError(err.response?.data?.message || 'Failed to fetch history');
-      setHistory([]);
+      console.error('History fetch failed:', err);
+      // Agar password galat hai (Error Handle):
+      setError('Incorrect password! Please try again.');
+      setPassword(''); // Password auto clear kardo
       setUnlocked(false);
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleUnlock = async () => {
-    if (!password) {
-      setError('Please enter history password');
-      return;
-    }
-    setUnlocked(true);
   };
 
   const formatTimestamp = (value) => {
@@ -60,9 +83,14 @@ const AdminHistory = () => {
 
   const getClientInfo = (info) => {
     if (!info) return '-';
-    return [info.platform, info.browserName, info.os, info.language]
-      .filter(Boolean)
-      .join(' | ');
+    return [info.platform, info.browserName, info.os, info.language].filter(Boolean).join(' | ');
+  };
+
+  // On-Screen Keypad Handler
+  const handleKeypadClick = (val) => {
+    if (loading) return;
+    setPassword((prev) => prev + val);
+    setError('');
   };
 
   return (
@@ -72,22 +100,46 @@ const AdminHistory = () => {
           <h2>Admin Change History</h2>
           <p>Only main admin can unlock this view using the secret history password.</p>
         </div>
-        {!unlocked && (
-          <div className="history-unlock-box">
-            <label>Secret Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter history password"
-            />
-            <button type="button" className="unlock-btn" onClick={handleUnlock}>Unlock</button>
-            {error && <p className="history-error">{error}</p>}
-          </div>
-        )}
       </div>
 
-      {unlocked && (
+      {!unlocked ? (
+        <div className="ios-lock-wrapper">
+          <p className="ios-lock-title">Enter Passcode</p>
+          
+          {/* Dots Indicator */}
+          <div className="passcode-dots">
+            {/* Hamesha minimum 4 dots dikhayega, jaise jaise type hoga fill hoga */}
+            {Array.from({ length: Math.max(4, password.length) }).map((_, i) => (
+              <div key={i} className={`dot ${i < password.length ? 'filled' : ''}`}></div>
+            ))}
+          </div>
+
+          {/* Error Message with Shake Animation */}
+          {error && <p className="history-error shake">{error}</p>}
+
+          {/* iOS Style Number Pad */}
+          <div className="keypad">
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
+              <button key={num} className="key-btn" onClick={() => handleKeypadClick(num)}>
+                {num}
+              </button>
+            ))}
+            <button className="key-btn action-btn" onClick={() => { setPassword(''); setError(''); }}>
+              C
+            </button>
+            <button className="key-btn" onClick={() => handleKeypadClick('0')}>
+              0
+            </button>
+            <button className="key-btn action-btn" onClick={() => { setPassword((p) => p.slice(0, -1)); setError(''); }}>
+              ⌫
+            </button>
+          </div>
+
+          <button id="unlock-btn" className="unlock-btn unlock-btn-wide" onClick={verifyAndFetch} disabled={loading}>
+            {loading ? 'Verifying...' : 'Unlock'}
+          </button>
+        </div>
+      ) : (
         <div className="history-content">
           <div className="history-filters">
             <select value={filterType} onChange={(e) => setFilterType(e.target.value)}>
@@ -105,7 +157,7 @@ const AdminHistory = () => {
               <option value="cancel">Cancel</option>
               <option value="refund">Refund</option>
             </select>
-            <button type="button" className="refresh-history-btn" onClick={fetchHistory} disabled={loading}>
+            <button type="button" className="refresh-history-btn" onClick={verifyAndFetch} disabled={loading}>
               {loading ? 'Loading...' : 'Refresh'}
             </button>
           </div>
