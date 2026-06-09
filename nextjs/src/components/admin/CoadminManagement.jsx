@@ -56,6 +56,11 @@ export default function CoadminManagement() {
       return;
     }
 
+    if (!token) {
+      setUnlockError('Admin authentication missing. Please log in again.');
+      return;
+    }
+
     try {
       setUnlockLoading(true);
       setUnlockError('');
@@ -65,9 +70,11 @@ export default function CoadminManagement() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setUnlocked(true);
+      setPassword('');
+      setActiveTab('username');
     } catch (error) {
       console.error('Unlock failed:', error);
-      setUnlockError('Incorrect password! Please try again.');
+      setUnlockError('Incorrect passcode or authentication failed. Please try again.');
       setPassword('');
       setUnlocked(false);
     } finally {
