@@ -14,9 +14,8 @@ import Analytics from './Analytics';
 import Coupons from './Coupons';
 import BannerSettings from './BannerSettings';
 import PaymentMethodsManagement from './PaymentMethodsManagement';
-import ChangeCoadminPassword from './ChangeCoadminPassword';
 import ChangeAdminPassword from './ChangeAdminPassword';
-import ChangeCoadminUsername from './ChangeCoadminUsername';
+import CoadminManagement from './CoadminManagement';
 import AdminHistory from './AdminHistory';
 import { useProductStore } from '../../store/productStore';
 import './Dashboard.css';
@@ -127,8 +126,7 @@ export default function Dashboard({ onLogout }) {
     { id: 'coupons', label: 'Coupons', icon: 'fa-solid fa-tags', permission: 'manage_coupons' },
     { id: 'permissions', label: 'Permissions', icon: 'fa-solid fa-shield-alt', permission: 'manage_settings', adminOnly: true },
     { id: 'change-admin-password', label: 'Admin Pass', icon: 'fa-solid fa-key', permission: 'manage_settings', adminOnly: true },
-    { id: 'change-coadmin-password', label: 'Coadmin Pass', icon: 'fa-solid fa-key', permission: 'manage_settings', adminOnly: true },
-    { id: 'change-coadmin-username', label: 'Coadmin User', icon: 'fa-solid fa-user-edit', permission: 'manage_settings', adminOnly: true }
+    { id: 'coadmin-management', label: 'Coadmin Mgmt', icon: 'fa-solid fa-user-shield', permission: 'manage_settings', adminOnly: true }
   ].filter(item => {
     // Always show dashboard
     if (item.permission === null) return true;
@@ -238,8 +236,7 @@ export default function Dashboard({ onLogout }) {
           {activeTab === 'history' && role === 'admin' && <AdminHistory />}
           {activeTab === 'permissions' && role === 'admin' && <PermissionManagement />}
           {activeTab === 'change-admin-password' && role === 'admin' && <ChangeAdminPassword />}
-          {activeTab === 'change-coadmin-password' && role === 'admin' && <ChangeCoadminPassword />}
-          {activeTab === 'change-coadmin-username' && role === 'admin' && <ChangeCoadminUsername />}
+          {activeTab === 'coadmin-management' && role === 'admin' && <CoadminManagement />}
         </main>
       </div>
     </div>

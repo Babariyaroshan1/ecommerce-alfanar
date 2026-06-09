@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './PermissionManagement.css';
+import './AdminHistory.css';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'; // Set in nextjs/.env.local for development and in Vercel env for production
 
@@ -88,6 +89,11 @@ const AVAILABLE_PERMISSIONS = [
 ];
 
 export default function PermissionManagement() {
+  const [password, setPassword] = useState('');
+  const [unlocked, setUnlocked] = useState(false);
+  const [unlockLoading, setUnlockLoading] = useState(false);
+  const [unlockError, setUnlockError] = useState('');
+
   const [coadmins, setCoadmins] = useState([]);
   const [selectedCoadmin, setSelectedCoadmin] = useState(null);
   const [permissions, setPermissions] = useState({});
@@ -97,8 +103,54 @@ export default function PermissionManagement() {
   const token = typeof window !== 'undefined' ? localStorage.getItem('adminToken') : null;
 
   useEffect(() => {
-    fetchCoadmins();
-  }, []);
+    if (unlocked) {
+      fetchCoadmins();
+    }
+  }, [unlocked]);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (unlocked) return;
+
+      if (/^[0-9]$/.test(e.key)) {
+        setPassword((prev) => prev + e.key);
+        setUnlockError('');
+      } else if (e.key === 'Backspace') {
+        setPassword((prev) => prev.slice(0, -1));
+        setUnlockError('');
+      } else if (e.key === 'Enter') {
+        document.getElementById('permission-unlock-btn')?.click();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [unlocked]);
+
+  const verifyPassword = async () => {
+    if (!password) {
+      setUnlockError('Please enter passcode');
+      return;
+    }
+
+    try {
+      setUnlockLoading(true);
+      setUnlockError('');
+      await axios.post(
+        `${API_URL}/history/admin`,
+        { password },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setUnlocked(true);
+    } catch (error) {
+      console.error('Permission unlock failed:', error);
+      setUnlockError('Incorrect password! Please try again.');
+      setPassword('');
+      setUnlocked(false);
+    } finally {
+      setUnlockLoading(false);
+    }
+  };
 
   const fetchCoadmins = async () => {
     try {
@@ -168,84 +220,138 @@ export default function PermissionManagement() {
 
   return (
     <div className="permission-management">
-      <div className="permission-header">
-        <h2>Permission Management</h2>
-        <p>Control what features co-admins can access. Only main admin can modify permissions.</p>
-      </div>
-
-      {message && (
-        <div className={`message ${message.includes('✅') ? 'success' : 'error'}`}>
-          {message}
-        </div>
-      )}
-
-      <div className="permission-content">
-        <div className="coadmin-list">
-          <h3>Co-Admins</h3>
-          {coadmins.length === 0 ? (
-            <p className="no-coadmins">No co-admins found. Create co-admin accounts first.</p>
-          ) : (
-            <div className="coadmin-grid">
-              {coadmins.map(coadmin => (
-                <div
-                  key={coadmin._id}
-                  className={`coadmin-card ${selectedCoadmin?._id === coadmin._id ? 'selected' : ''}`}
-                  onClick={() => handleCoadminSelect(coadmin)}
-                >
-                  <div className="coadmin-info">
-                    <h4>{coadmin.name}</h4>
-                    <p>{coadmin.email}</p>
-                    <span className="permission-count">
-                      {coadmin.permissions?.length || 0} permissions granted
-                    </span>
-                  </div>
-                  <div className="selection-indicator">
-                    {selectedCoadmin?._id === coadmin._id && <i className="fa-solid fa-check"></i>}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {selectedCoadmin && (
-          <div className="permission-editor">
-            <h3>Edit Permissions for {selectedCoadmin.name}</h3>
-
-            <div className="permissions-list">
-              {AVAILABLE_PERMISSIONS.map(permission => (
-                <div key={permission.key} className="permission-item">
-                  <div className="permission-info">
-                    <div className="permission-header">
-                      <i className={`fa-solid ${permission.icon}`}></i>
-                      <h4>{permission.label}</h4>
-                    </div>
-                    <p>{permission.description}</p>
-                  </div>
-                  <label className="permission-toggle">
-                    <input
-                      type="checkbox"
-                      checked={permissions[permission.key] || false}
-                      onChange={() => handlePermissionToggle(permission.key)}
-                    />
-                    <span className="toggle-slider"></span>
-                  </label>
-                </div>
-              ))}
-            </div>
-
-            <div className="permission-actions">
-              <button
-                onClick={handleSavePermissions}
-                disabled={loading}
-                className="save-btn"
-              >
-                {loading ? 'Saving...' : 'Save Permissions'}
-              </button>
+      {!unlocked ? (
+        <div className="admin-history-container">
+          <div className="history-topbar">
+            <div>
+              <h3>Permission Management Lock</h3>
+              <p>Unlock with the same admin history passcode to manage co-admin permissions.</p>
             </div>
           </div>
-        )}
-      </div>
+
+          <div className="ios-lock-wrapper">
+            <p className="ios-lock-title">Enter Passcode</p>
+            <div className="passcode-dots">
+              {Array.from({ length: Math.max(4, password.length) }).map((_, i) => (
+                <div key={i} className={`dot ${i < password.length ? 'filled' : ''}`}></div>
+              ))}
+            </div>
+
+            {unlockError && <p className="history-error shake">{unlockError}</p>}
+
+            <div className="keypad">
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
+                <button
+                  key={num}
+                  className="key-btn"
+                  onClick={() => { setPassword((prev) => prev + num); setUnlockError(''); }}
+                >
+                  {num}
+                </button>
+              ))}
+              <button className="key-btn action-btn" onClick={() => { setPassword(''); setUnlockError(''); }}>
+                C
+              </button>
+              <button className="key-btn" onClick={() => { setPassword((prev) => prev + '0'); setUnlockError(''); }}>
+                0
+              </button>
+              <button className="key-btn action-btn" onClick={() => { setPassword((p) => p.slice(0, -1)); setUnlockError(''); }}>
+                ⌫
+              </button>
+            </div>
+
+            <button
+              id="permission-unlock-btn"
+              className="unlock-btn unlock-btn-wide"
+              onClick={verifyPassword}
+              disabled={unlockLoading}
+            >
+              {unlockLoading ? 'Verifying...' : 'Unlock'}
+            </button>
+          </div>
+        </div>
+      ) : (
+        <>
+          <div className="permission-header">
+            <h2>Permission Management</h2>
+            <p>Control what features co-admins can access. Only main admin can modify permissions.</p>
+          </div>
+
+          {message && (
+            <div className={`message ${message.includes('✅') ? 'success' : 'error'}`}>
+              {message}
+            </div>
+          )}
+
+          <div className="permission-content">
+            <div className="coadmin-list">
+              <h3>Co-Admins</h3>
+              {coadmins.length === 0 ? (
+                <p className="no-coadmins">No co-admins found. Create co-admin accounts first.</p>
+              ) : (
+                <div className="coadmin-grid">
+                  {coadmins.map(coadmin => (
+                    <div
+                      key={coadmin._id}
+                      className={`coadmin-card ${selectedCoadmin?._id === coadmin._id ? 'selected' : ''}`}
+                      onClick={() => handleCoadminSelect(coadmin)}
+                    >
+                      <div className="coadmin-info">
+                        <h4>{coadmin.name}</h4>
+                        <p>{coadmin.email}</p>
+                        <span className="permission-count">
+                          {coadmin.permissions?.length || 0} permissions granted
+                        </span>
+                      </div>
+                      <div className="selection-indicator">
+                        {selectedCoadmin?._id === coadmin._id && <i className="fa-solid fa-check"></i>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {selectedCoadmin && (
+              <div className="permission-editor">
+                <h3>Edit Permissions for {selectedCoadmin.name}</h3>
+
+                <div className="permissions-list">
+                  {AVAILABLE_PERMISSIONS.map(permission => (
+                    <div key={permission.key} className="permission-item">
+                      <div className="permission-info">
+                        <div className="permission-header">
+                          <i className={`fa-solid ${permission.icon}`}></i>
+                          <h4>{permission.label}</h4>
+                        </div>
+                        <p>{permission.description}</p>
+                      </div>
+                      <label className="permission-toggle">
+                        <input
+                          type="checkbox"
+                          checked={permissions[permission.key] || false}
+                          onChange={() => handlePermissionToggle(permission.key)}
+                        />
+                        <span className="toggle-slider"></span>
+                      </label>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="permission-actions">
+                  <button
+                    onClick={handleSavePermissions}
+                    disabled={loading}
+                    className="save-btn"
+                  >
+                    {loading ? 'Saving...' : 'Save Permissions'}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }
