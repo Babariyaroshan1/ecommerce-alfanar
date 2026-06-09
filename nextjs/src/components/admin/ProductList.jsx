@@ -79,7 +79,7 @@ const convertToINR = (amount, currency) => {
   return Number((Number(amount) / rate).toFixed(2));
 };
 
-const ProductList = () => {
+const ProductList = ({ role = 'admin', permissions = [] }) => {
   const fetchProducts = useProductStore((state) => state.fetchProducts);
   const products = useProductStore((state) => state.products);
   const deleteProduct = useProductStore((state) => state.deleteProduct);
@@ -88,6 +88,10 @@ const ProductList = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterMode, setFilterMode] = useState('all');
   const [editingProductId, setEditingProductId] = useState(null);
+  
+  // Check if user is co-admin and lacks edit permission
+  const isCoAdmin = role === 'coadmin';
+  const canEditProducts = role === 'admin' || permissions.includes('manage_products');
   const[editValues, setEditValues] = useState({
     name: '',
     category: '',
@@ -234,6 +238,12 @@ const ProductList = () => {
   };
 
   const handleEditClick = (product) => {
+    // Only admin can edit products
+    if (isCoAdmin) {
+      setErrorMessage('Co-admins can only view products. Contact admin for edit access.');
+      return;
+    }
+    
     if (!product._id) {
       setErrorMessage('Cannot edit default products. Only database products can be edited.');
       return;
@@ -592,6 +602,12 @@ const ProductList = () => {
   };
 
   const handleDelete = async (productId) => {
+    // Only admin can delete products
+    if (isCoAdmin) {
+      alert('Co-admins cannot delete products. Contact admin for deletion.');
+      return;
+    }
+    
     if (window.confirm('Are you sure you want to delete this product?')) {
       try {
         const isLocalProduct = !/^[a-f\d]{24}$/i.test(productId);
@@ -1304,8 +1320,13 @@ return (
           <th>Sizes</th>
           <th>Return</th>
           <th>Replacement</th>
-          <th>NEW</th>
-          <th>Featured</th>
+          {canEditProducts && (
+            <>
+              <th>NEW</th>
+              <th>Featured</th>
+            </>
+          )}
+          {!canEditProducts && <th>Image</th>}
           <th>Actions</th>
         </tr>
       </thead>
@@ -1347,22 +1368,53 @@ return (
             <td>{product.sizes?.join(', ')}</td>
             <td>{product.allowReturn ? 'Yes' : 'No'}</td>
             <td>{product.allowReplacement ? 'Yes' : 'No'}</td>
-            <td>{product.isNew ? 'Yes' : 'No'}</td>
-            <td>
-              <input
-                type="checkbox"
-                checked={normalizeFeatured(product.isFeaturedOnHome)}
-                onChange={() => handleToggleFeatured(product)}
-              />
-            </td>
+            {canEditProducts && (
+              <>
+                <td>{product.isNew ? 'Yes' : 'No'}</td>
+                <td>
+                  <input
+                    type="checkbox"
+                    checked={normalizeFeatured(product.isFeaturedOnHome)}
+                    onChange={() => handleToggleFeatured(product)}
+                  />
+                </td>
+              </>
+            )}
+            {!canEditProducts && (
+              <td>
+                {product.image ? (
+                  <img 
+                    src={normalizeImageUrl(product.image)} 
+                    alt={product.name}
+                    className="product-preview-image"
+                    title={product.name}
+                    style={{
+                      maxWidth: '60px',
+                      maxHeight: '60px',
+                      objectFit: 'cover',
+                      borderRadius: '4px',
+                      cursor: 'pointer'
+                    }}
+                  />
+                ) : (
+                  <span style={{ color: '#999' }}>No image</span>
+                )}
+              </td>
+            )}
             <td className="actions-cell">
-              <button className="edit-btn" onClick={() => handleEditClick(product)}>
-                <i className="fa-solid fa-pen"></i> Edit
-              </button>
+              {canEditProducts ? (
+                <>
+                  <button className="edit-btn" onClick={() => handleEditClick(product)}>
+                    <i className="fa-solid fa-pen"></i> Edit
+                  </button>
 
-              <button className="delete-btn" onClick={() => handleDelete(product._id || product.id)}>
-                <i className="fa-solid fa-trash"></i> Delete
-              </button>
+                  <button className="delete-btn" onClick={() => handleDelete(product._id || product.id)}>
+                    <i className="fa-solid fa-trash"></i> Delete
+                  </button>
+                </>
+              ) : (
+                <span style={{ color: '#999', fontSize: '0.85em' }}>View Only</span>
+              )}
             </td>
           </tr>
         ))}

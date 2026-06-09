@@ -222,7 +222,7 @@ export default function Dashboard({ onLogout }) {
           {activeTab === 'analytics' && hasPermission('view_analytics') && <Analytics />}
           {activeTab === 'orders' && <OrderList />}
           {activeTab === 'requests' && <OrderList showOnlyRequests={true} />}
-          {activeTab === 'products' && <ProductList />}
+          {activeTab === 'products' && <ProductList role={role} permissions={permissions} />}
           {activeTab === 'users' && <UserList />}
           {activeTab === 'add-product' && <AddProduct />}
           {activeTab === 'add-kids-product' && <AddKidsProducts />}
