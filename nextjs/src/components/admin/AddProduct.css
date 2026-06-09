@@ -283,7 +283,7 @@
   height: 0;
 }
 
-.toggle-slider {
+.toggle-slider-add {
   position: absolute;
   inset: 0;
   background: #cbd5e1;
@@ -304,7 +304,7 @@
   transition: 0.25s;
 }
 
-.toggle-switch input:checked + .toggle-slider {
+.toggle-switch input:checked + .toggle-slider-add {
   background: #2563eb;
 }
 

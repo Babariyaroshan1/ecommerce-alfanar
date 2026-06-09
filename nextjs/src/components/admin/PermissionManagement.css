@@ -170,7 +170,7 @@
   height: 0;
 }
 
-.toggle-slider {
+.toggle-slider-per {
   position: absolute;
   cursor: pointer;
   top: 0;
@@ -182,7 +182,7 @@
   border-radius: 24px;
 }
 
-.toggle-slider:before {
+.toggle-slider-per:before {
   position: absolute;
   content: "";
   height: 18px;
@@ -194,11 +194,11 @@
   border-radius: 50%;
 }
 
-input:checked + .toggle-slider {
-  background-color: #007bff;
+input:checked + .toggle-slider-per {
+  background-color: #1fad32;
 }
 
-input:checked + .toggle-slider:before {
+input:checked + .toggle-slider-per:before {
   transform: translateX(26px);
 }
 
