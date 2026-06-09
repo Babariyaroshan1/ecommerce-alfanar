@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './ChangeAdminPassword.css';
+import './AdminHistory.css';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 export default function ChangeAdminPassword() {
+  const [lockPassword, setLockPassword] = useState('');
+  const [unlocked, setUnlocked] = useState(false);
+  const [unlockLoading, setUnlockLoading] = useState(false);
+  const [unlockError, setUnlockError] = useState('');
+
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -14,6 +20,61 @@ export default function ChangeAdminPassword() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
+  const token = typeof window !== 'undefined' ? localStorage.getItem('adminToken') : null;
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (unlocked) return;
+
+      if (/^[0-9]$/.test(e.key)) {
+        setLockPassword((prev) => prev + e.key);
+        setUnlockError('');
+      } else if (e.key === 'Backspace') {
+        setLockPassword((prev) => prev.slice(0, -1));
+        setUnlockError('');
+      } else if (e.key === 'Enter') {
+        document.getElementById('admin-pass-unlock-btn')?.click();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [unlocked]);
+
+  const verifyUnlock = async () => {
+    if (!lockPassword) {
+      setUnlockError('Please enter passcode');
+      return;
+    }
+
+    if (!token) {
+      setUnlockError('Admin authentication missing, please login again.');
+      return;
+    }
+
+    try {
+      setUnlockLoading(true);
+      setUnlockError('');
+      await axios.post(
+        `${API_URL}/history/admin`,
+        { password: lockPassword },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      setUnlocked(true);
+      setLockPassword('');
+    } catch (error) {
+      console.error('Admin pass unlock failed:', error);
+      setUnlockError('Incorrect password. Please try again.');
+      setLockPassword('');
+      setUnlocked(false);
+    } finally {
+      setUnlockLoading(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -76,125 +137,177 @@ export default function ChangeAdminPassword() {
 
   return (
     <div className="change-admin-password-container">
-      <div className="password-form-card">
-        <h2 className="form-title">
-          <i className="fas fa-lock"></i> Change Admin Password
-        </h2>
-        <p className="form-subtitle">
-          Update your admin account password
-        </p>
-
-        {message && (
-          <div className={`alert alert-${messageType}`}>
-            <i className={`fas fa-${messageType === 'success' ? 'check-circle' : 'exclamation-circle'}`}></i>
-            {message}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit}>
-          {/* Current Password Field */}
-          <div className="form-group">
-            <label htmlFor="currentPassword">Current Password</label>
-            <div className="password-input-wrapper">
-              <input
-                type={showCurrentPassword ? 'text' : 'password'}
-                id="currentPassword"
-                placeholder="Enter current password"
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-                disabled={loading}
-                required
-              />
-              <button
-                type="button"
-                className="toggle-password"
-                onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                disabled={loading}
-              >
-                <i className={`fas fa-eye${showCurrentPassword ? '' : '-slash'}`}></i>
-              </button>
+      {!unlocked ? (
+        <div className="admin-history-container">
+          <div className="history-topbar">
+            <div>
+              <h3>Admin Passcode Lock</h3>
+              <p>Unlock with the history passcode to change the admin password.</p>
             </div>
           </div>
 
-          {/* New Password Field */}
-          <div className="form-group">
-            <label htmlFor="newPassword">New Password</label>
-            <div className="password-input-wrapper">
-              <input
-                type={showNewPassword ? 'text' : 'password'}
-                id="newPassword"
-                placeholder="Enter new password (min. 6 characters)"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                disabled={loading}
-                required
-              />
-              <button
-                type="button"
-                className="toggle-password"
-                onClick={() => setShowNewPassword(!showNewPassword)}
-                disabled={loading}
-              >
-                <i className={`fas fa-eye${showNewPassword ? '' : '-slash'}`}></i>
+          <div className="ios-lock-wrapper">
+            <p className="ios-lock-title">Enter Passcode</p>
+            <div className="passcode-dots">
+              {Array.from({ length: Math.max(4, lockPassword.length) }).map((_, i) => (
+                <div key={i} className={`dot ${i < lockPassword.length ? 'filled' : ''}`}></div>
+              ))}
+            </div>
+
+            {unlockError && <p className="history-error shake">{unlockError}</p>}
+
+            <div className="keypad">
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
+                <button
+                  key={num}
+                  className="key-btn"
+                  onClick={() => { setLockPassword((prev) => prev + num); setUnlockError(''); }}
+                >
+                  {num}
+                </button>
+              ))}
+              <button className="key-btn action-btn" onClick={() => { setLockPassword(''); setUnlockError(''); }}>
+                C
+              </button>
+              <button className="key-btn" onClick={() => { setLockPassword((prev) => prev + '0'); setUnlockError(''); }}>
+                0
+              </button>
+              <button className="key-btn action-btn" onClick={() => { setLockPassword((prev) => prev.slice(0, -1)); setUnlockError(''); }}>
+                ⌫
               </button>
             </div>
-          </div>
 
-          {/* Confirm Password Field */}
-          <div className="form-group">
-            <label htmlFor="confirmPassword">Confirm New Password</label>
-            <div className="password-input-wrapper">
-              <input
-                type={showConfirmPassword ? 'text' : 'password'}
-                id="confirmPassword"
-                placeholder="Confirm new password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                disabled={loading}
-                required
-              />
-              <button
-                type="button"
-                className="toggle-password"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                disabled={loading}
-              >
-                <i className={`fas fa-eye${showConfirmPassword ? '' : '-slash'}`}></i>
-              </button>
-            </div>
-          </div>
-
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className="btn-submit"
-            disabled={loading}
-          >
-            {loading ? (
-              <>
-                <i className="fas fa-spinner fa-spin"></i> Changing...
-              </>
-            ) : (
-              <>
-                <i className="fas fa-save"></i> Change Password
-              </>
-            )}
-          </button>
-        </form>
-
-        <div className="info-box">
-          <i className="fas fa-info-circle"></i>
-          <div>
-            <p><strong>Password Requirements:</strong></p>
-            <ul>
-              <li>Current password must be correct</li>
-              <li>Minimum 6 characters</li>
-              <li>Passwords must match</li>
-              <li>New password must be different from current</li>
-            </ul>
+            <button
+              id="admin-pass-unlock-btn"
+              className="unlock-btn unlock-btn-wide"
+              onClick={verifyUnlock}
+              disabled={unlockLoading}
+            >
+              {unlockLoading ? 'Verifying...' : 'Unlock'}
+            </button>
           </div>
         </div>
-      </div>
+      ) : (
+        <div className="password-form-card">
+          <h2 className="form-title">
+            <i className="fas fa-lock"></i> Change Admin Password
+          </h2>
+          <p className="form-subtitle">
+            Update your admin account password
+          </p>
+
+          {message && (
+            <div className={`alert alert-${messageType}`}>
+              <i className={`fas fa-${messageType === 'success' ? 'check-circle' : 'exclamation-circle'}`}></i>
+              {message}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit}>
+            {/* Current Password Field */}
+            <div className="form-group">
+              <label htmlFor="currentPassword">Current Password</label>
+              <div className="password-input-wrapper">
+                <input
+                  type={showCurrentPassword ? 'text' : 'password'}
+                  id="currentPassword"
+                  placeholder="Enter current password"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  disabled={loading}
+                  required
+                />
+                <button
+                  type="button"
+                  className="toggle-password"
+                  onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                  disabled={loading}
+                >
+                  <i className={`fas fa-eye${showCurrentPassword ? '' : '-slash'}`}></i>
+                </button>
+              </div>
+            </div>
+
+            {/* New Password Field */}
+            <div className="form-group">
+              <label htmlFor="newPassword">New Password</label>
+              <div className="password-input-wrapper">
+                <input
+                  type={showNewPassword ? 'text' : 'password'}
+                  id="newPassword"
+                  placeholder="Enter new password (min. 6 characters)"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  disabled={loading}
+                  required
+                />
+                <button
+                  type="button"
+                  className="toggle-password"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  disabled={loading}
+                >
+                  <i className={`fas fa-eye${showNewPassword ? '' : '-slash'}`}></i>
+                </button>
+              </div>
+            </div>
+
+            {/* Confirm Password Field */}
+            <div className="form-group">
+              <label htmlFor="confirmPassword">Confirm New Password</label>
+              <div className="password-input-wrapper">
+                <input
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  id="confirmPassword"
+                  placeholder="Confirm new password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  disabled={loading}
+                  required
+                />
+                <button
+                  type="button"
+                  className="toggle-password"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  disabled={loading}
+                >
+                  <i className={`fas fa-eye${showConfirmPassword ? '' : '-slash'}`}></i>
+                </button>
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              className="btn-submit"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <i className="fas fa-spinner fa-spin"></i> Changing...
+                </>
+              ) : (
+                <>
+                  <i className="fas fa-save"></i> Change Password
+                </>
+              )}
+            </button>
+          </form>
+
+          <div className="info-box">
+            <i className="fas fa-info-circle"></i>
+            <div>
+              <p><strong>Password Requirements:</strong></p>
+              <ul>
+                <li>Current password must be correct</li>
+                <li>Minimum 6 characters</li>
+                <li>Passwords must match</li>
+                <li>New password must be different from current password</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
