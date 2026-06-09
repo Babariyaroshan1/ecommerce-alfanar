@@ -17,6 +17,7 @@ import { initRedis } from './utils/redisClient.js';
 import authRoutes from './routes/auth.js';
 import productRoutes from './routes/products.js';
 import orderRoutes from './routes/orders.js';
+import historyRoutes from './routes/history.js';
 import paymentRoutes from './routes/payment.js';
 import settingsRoutes from './routes/settings.js';
 import faqRoutes from './routes/faqs.js';
@@ -231,6 +232,7 @@ app.use('/api/faqs', faqRoutes);
 app.use('/api/product-faqs', productFaqRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/coupons', couponRoutes);
+app.use('/api/history', historyRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

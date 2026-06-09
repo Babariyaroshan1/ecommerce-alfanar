@@ -5,6 +5,7 @@ import { auth, adminAuth, adminOrCoadminAuth, permissionAuth } from '../middlewa
 import { getCurrentCurrencySettings, convertPrice } from '../utils/currency.js';
 import { PERMISSIONS } from '../utils/permissions.js';
 import { getCachedProducts, cacheProducts, invalidateProducts, getCachedProduct, cacheProduct, invalidateProduct } from '../utils/cacheService.js';
+import { createHistoryLog, buildHistoryEntry } from '../utils/historyService.js';
 
 const router = express.Router();
 const getPriceValue = (prices, key) => {
@@ -170,7 +171,11 @@ router.put('/:id', async (req, res) => {
                 return res.status(404).json({ message: 'Product not found' });
             }
 
+            const clientInfo = req.body.clientInfo || {};
+            const historyPayload = req.body.historyPayload || {};
             let updateData = { ...req.body };
+            delete updateData.clientInfo;
+            delete updateData.historyPayload;
 
             // Parse JSON strings sent from FormData
             try {
@@ -314,6 +319,22 @@ router.put('/:id', async (req, res) => {
             const savedProduct = product.toObject({ flattenMaps: true });
             console.log('[PUT] Response isNew:', savedProduct.isNew);
 
+            await createHistoryLog(await buildHistoryEntry({
+                req,
+                entityType: 'Product',
+                entityId: product._id,
+                entityName: product.name,
+                actionType: 'update',
+                description: historyPayload.description || `Product updated by ${req.role}`,
+                metadata: {
+                    changedFields: Object.keys(updateData),
+                    updatedValues: updateData,
+                    historyPayload
+                },
+                clientInfo,
+                ipAddress: req.ip
+            }));
+
             // Invalidate caches
             await invalidateProducts();
             await invalidateProduct(req.params.id);
@@ -338,11 +359,11 @@ router.post('/', async (req, res) => {
             let { name, description, materialAndCare, countryOfOrigin, price, prices, originalPrice, discount, image, images, category, colors, sizes, stock, allowReturn, allowReplacement, isNew, isFeaturedOnHome, showSameColorButton, kidsType } = req.body;
 
             console.log('📦 DEBUG - Creating product:', {
-              name,
-              imagesReceived: images,
-              imagesType: typeof images,
-              imagesIsArray: Array.isArray(images),
-              imagesLength: images?.length,
+                name,
+                imagesReceived: images,
+                imagesType: typeof images,
+                imagesIsArray: Array.isArray(images),
+                imagesLength: images?.length,
             });
 
             // Parse JSON strings sent from FormData
@@ -371,8 +392,8 @@ router.post('/', async (req, res) => {
 
             const imagesArray = Array.isArray(images) ? images.filter(Boolean) : [];
             console.log('📦 DEBUG - After filtering:', {
-              imagesFiltered: imagesArray,
-              filteredLength: imagesArray.length,
+                imagesFiltered: imagesArray,
+                filteredLength: imagesArray.length,
             });
 
             const product = new Product({
@@ -402,10 +423,10 @@ router.post('/', async (req, res) => {
             await product.save();
 
             console.log('✅ DEBUG - Product saved:', {
-              _id: product._id,
-              name: product.name,
-              imagesSaved: product.images,
-              imagesLength: product.images?.length,
+                _id: product._id,
+                name: product.name,
+                imagesSaved: product.images,
+                imagesLength: product.images?.length,
             });
 
             // 🔥 IMPORTANT: Invalidate ALL caches - don't let stale data persist
@@ -426,22 +447,40 @@ router.post('/', async (req, res) => {
 // Delete product (Admin and authorized Coadmin)
 router.delete('/:id', async (req, res) => {
     try {
+        const clientInfo = req.body?.clientInfo || {};
+        const historyPayload = req.body?.historyPayload || {};
+
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
         // Check if it's a kids product to determine required permission
         const product = await Product.findById(req.params.id);
-        const requiredPermission = product?.isKidsProduct ? PERMISSIONS.MANAGE_KIDS_PRODUCTS : PERMISSIONS.MANAGE_PRODUCTS;
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        const requiredPermission = product.isKidsProduct ? PERMISSIONS.MANAGE_KIDS_PRODUCTS : PERMISSIONS.MANAGE_PRODUCTS;
 
         // Use permissionAuth middleware
         return permissionAuth(requiredPermission)(req, res, async () => {
-            if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-                return res.status(404).json({ message: 'Product not found' });
-            }
-
-            const product = await Product.findById(req.params.id);
-            if (!product) {
-                return res.status(404).json({ message: 'Product not found' });
-            }
 
             await Product.findByIdAndDelete(req.params.id);
+
+            await createHistoryLog(await buildHistoryEntry({
+                req,
+                entityType: 'Product',
+                entityId: product._id,
+                entityName: product.name,
+                actionType: 'delete',
+                description: historyPayload.description || `Deleted product ${product.name} (${product._id})`,
+                metadata: {
+                    deletedProduct: product.toObject({ flattenMaps: true }),
+                    historyPayload
+                },
+                clientInfo,
+                ipAddress: req.ip
+            }));
 
             // Invalidate caches
             await invalidateProducts();
