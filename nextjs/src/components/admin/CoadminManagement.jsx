@@ -268,193 +268,187 @@ export default function CoadminManagement() {
 
           {/* Tab Content */}
           <div className="tab-content">
-            {/* Username Tab */}
-            {activeTab === 'username' && (
-              <div className="tab-pane">
-                <div className="form-card">
-                  <h3 className="form-title">
-                    <i className="fas fa-user-edit"></i> Change Co-Admin Username / ID
-                  </h3>
-                  <p className="form-subtitle">
-                    Update the login username for co-admin account
-                  </p>
+            <div className={`tab-pane ${activeTab === 'username' ? 'visible' : 'hidden'}`}>
+              <div className="form-card">
+                <h3 className="form-title">
+                  <i className="fas fa-user-edit"></i> Change Co-Admin Username / ID
+                </h3>
+                <p className="form-subtitle">
+                  Update the login username for co-admin account
+                </p>
 
-                  {usernameMessage && (
-                    <div className={`alert alert-${usernameMessageType}`}>
-                      <i className={`fas fa-${usernameMessageType === 'success' ? 'check-circle' : 'exclamation-circle'}`}></i>
-                      {usernameMessage}
+                {usernameMessage && (
+                  <div className={`alert alert-${usernameMessageType}`}>
+                    <i className={`fas fa-${usernameMessageType === 'success' ? 'check-circle' : 'exclamation-circle'}`}></i>
+                    {usernameMessage}
+                  </div>
+                )}
+
+                <form onSubmit={handleUsernameSubmit}>
+                  {/* New Username Field */}
+                  <div className="form-group">
+                    <label htmlFor="newUsername">New Username / ID</label>
+                    <div className="input-wrapper">
+                      <i className="fas fa-at"></i>
+                      <input
+                        type="text"
+                        id="newUsername"
+                        placeholder="Enter new username (min. 3 characters)"
+                        value={newUsername}
+                        onChange={(e) => setNewUsername(e.target.value.trim())}
+                        disabled={usernameLoading}
+                        required
+                      />
                     </div>
-                  )}
+                  </div>
 
-                  <form onSubmit={handleUsernameSubmit}>
-                    {/* New Username Field */}
-                    <div className="form-group">
-                      <label htmlFor="newUsername">New Username / ID</label>
-                      <div className="input-wrapper">
-                        <i className="fas fa-at"></i>
-                        <input
-                          type="text"
-                          id="newUsername"
-                          placeholder="Enter new username (min. 3 characters)"
-                          value={newUsername}
-                          onChange={(e) => setNewUsername(e.target.value.trim())}
-                          disabled={usernameLoading}
-                          required
-                        />
-                      </div>
+                  {/* Confirm Username Field */}
+                  <div className="form-group">
+                    <label htmlFor="confirmUsername">Confirm Username / ID</label>
+                    <div className="input-wrapper">
+                      <i className="fas fa-at"></i>
+                      <input
+                        type="text"
+                        id="confirmUsername"
+                        placeholder="Confirm new username"
+                        value={confirmUsername}
+                        onChange={(e) => setConfirmUsername(e.target.value.trim())}
+                        disabled={usernameLoading}
+                        required
+                      />
                     </div>
+                  </div>
 
-                    {/* Confirm Username Field */}
-                    <div className="form-group">
-                      <label htmlFor="confirmUsername">Confirm Username / ID</label>
-                      <div className="input-wrapper">
-                        <i className="fas fa-at"></i>
-                        <input
-                          type="text"
-                          id="confirmUsername"
-                          placeholder="Confirm new username"
-                          value={confirmUsername}
-                          onChange={(e) => setConfirmUsername(e.target.value.trim())}
-                          disabled={usernameLoading}
-                          required
-                        />
-                      </div>
-                    </div>
+                  {/* Submit Button */}
+                  <button
+                    type="submit"
+                    className="btn-submit"
+                    disabled={usernameLoading}
+                  >
+                    {usernameLoading ? (
+                      <>
+                        <i className="fas fa-spinner fa-spin"></i> Updating...
+                      </>
+                    ) : (
+                      <>
+                        <i className="fas fa-save"></i> Update Username
+                      </>
+                    )}
+                  </button>
+                </form>
 
-                    {/* Submit Button */}
-                    <button
-                      type="submit"
-                      className="btn-submit"
-                      disabled={usernameLoading}
-                    >
-                      {usernameLoading ? (
-                        <>
-                          <i className="fas fa-spinner fa-spin"></i> Updating...
-                        </>
-                      ) : (
-                        <>
-                          <i className="fas fa-save"></i> Update Username
-                        </>
-                      )}
-                    </button>
-                  </form>
-
-                  <div className="info-box">
-                    <i className="fas fa-info-circle"></i>
-                    <div>
-                      <p><strong>Username Requirements:</strong></p>
-                      <ul>
-                        <li>Minimum 3 characters</li>
-                        <li>Letters, numbers, and underscores only</li>
-                        <li>Usernames must match</li>
-                        <li>Cannot use "coadmin" (default username)</li>
-                        <li>Co-Admin will need to use new username to login</li>
-                      </ul>
-                    </div>
+                <div className="info-box">
+                  <i className="fas fa-info-circle"></i>
+                  <div>
+                    <p><strong>Username Requirements:</strong></p>
+                    <ul>
+                      <li>Minimum 3 characters</li>
+                      <li>Letters, numbers, and underscores only</li>
+                      <li>Usernames must match</li>
+                      <li>Cannot use "coadmin" (default username)</li>
+                      <li>Co-Admin will need to use new username to login</li>
+                    </ul>
                   </div>
                 </div>
               </div>
-            )}
+            </div>
 
-            {/* Password Tab */}
-            {activeTab === 'password' && (
-              <div className="tab-pane">
-                <div className="form-card">
-                  <h3 className="form-title">
-                    <i className="fas fa-key"></i> Change Co-Admin Password
-                  </h3>
-                  <p className="form-subtitle">
-                    Only admin can change the co-admin's password
-                  </p>
+            <div className={`tab-pane ${activeTab === 'password' ? 'visible' : 'hidden'}`}>
+              <div className="form-card">
+                <h3 className="form-title">
+                  <i className="fas fa-key"></i> Change Co-Admin Password
+                </h3>
+                <p className="form-subtitle">
+                  Only admin can change the co-admin's password
+                </p>
 
-                  {passwordMessage && (
-                    <div className={`alert alert-${passwordMessageType}`}>
-                      <i className={`fas fa-${passwordMessageType === 'success' ? 'check-circle' : 'exclamation-circle'}`}></i>
-                      {passwordMessage}
+                {passwordMessage && (
+                  <div className={`alert alert-${passwordMessageType}`}>
+                    <i className={`fas fa-${passwordMessageType === 'success' ? 'check-circle' : 'exclamation-circle'}`}></i>
+                    {passwordMessage}
+                  </div>
+                )}
+
+                <form onSubmit={handlePasswordSubmit}>
+                  {/* New Password Field */}
+                  <div className="form-group">
+                    <label htmlFor="newPassword">New Password</label>
+                    <div className="password-input-wrapper">
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        id="newPassword"
+                        placeholder="Enter new password (min. 6 characters)"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        disabled={passwordLoading}
+                        required
+                      />
+                      <button
+                        type="button"
+                        className="toggle-password"
+                        onClick={() => setShowPassword(!showPassword)}
+                        disabled={passwordLoading}
+                      >
+                        <i className={`fas fa-eye${showPassword ? '' : '-slash'}`}></i>
+                      </button>
                     </div>
-                  )}
+                  </div>
 
-                  <form onSubmit={handlePasswordSubmit}>
-                    {/* New Password Field */}
-                    <div className="form-group">
-                      <label htmlFor="newPassword">New Password</label>
-                      <div className="password-input-wrapper">
-                        <input
-                          type={showPassword ? 'text' : 'password'}
-                          id="newPassword"
-                          placeholder="Enter new password (min. 6 characters)"
-                          value={newPassword}
-                          onChange={(e) => setNewPassword(e.target.value)}
-                          disabled={passwordLoading}
-                          required
-                        />
-                        <button
-                          type="button"
-                          className="toggle-password"
-                          onClick={() => setShowPassword(!showPassword)}
-                          disabled={passwordLoading}
-                        >
-                          <i className={`fas fa-eye${showPassword ? '' : '-slash'}`}></i>
-                        </button>
-                      </div>
+                  {/* Confirm Password Field */}
+                  <div className="form-group">
+                    <label htmlFor="confirmPassword">Confirm Password</label>
+                    <div className="password-input-wrapper">
+                      <input
+                        type={showConfirmPassword ? 'text' : 'password'}
+                        id="confirmPassword"
+                        placeholder="Confirm new password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        disabled={passwordLoading}
+                        required
+                      />
+                      <button
+                        type="button"
+                        className="toggle-password"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        disabled={passwordLoading}
+                      >
+                        <i className={`fas fa-eye${showConfirmPassword ? '' : '-slash'}`}></i>
+                      </button>
                     </div>
+                  </div>
 
-                    {/* Confirm Password Field */}
-                    <div className="form-group">
-                      <label htmlFor="confirmPassword">Confirm Password</label>
-                      <div className="password-input-wrapper">
-                        <input
-                          type={showConfirmPassword ? 'text' : 'password'}
-                          id="confirmPassword"
-                          placeholder="Confirm new password"
-                          value={confirmPassword}
-                          onChange={(e) => setConfirmPassword(e.target.value)}
-                          disabled={passwordLoading}
-                          required
-                        />
-                        <button
-                          type="button"
-                          className="toggle-password"
-                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                          disabled={passwordLoading}
-                        >
-                          <i className={`fas fa-eye${showConfirmPassword ? '' : '-slash'}`}></i>
-                        </button>
-                      </div>
-                    </div>
+                  {/* Submit Button */}
+                  <button
+                    type="submit"
+                    className="btn-submit"
+                    disabled={passwordLoading}
+                  >
+                    {passwordLoading ? (
+                      <>
+                        <i className="fas fa-spinner fa-spin"></i> Changing...
+                      </>
+                    ) : (
+                      <>
+                        <i className="fas fa-save"></i> Change Password
+                      </>
+                    )}
+                  </button>
+                </form>
 
-                    {/* Submit Button */}
-                    <button
-                      type="submit"
-                      className="btn-submit"
-                      disabled={passwordLoading}
-                    >
-                      {passwordLoading ? (
-                        <>
-                          <i className="fas fa-spinner fa-spin"></i> Changing...
-                        </>
-                      ) : (
-                        <>
-                          <i className="fas fa-save"></i> Change Password
-                        </>
-                      )}
-                    </button>
-                  </form>
-
-                  <div className="info-box">
-                    <i className="fas fa-info-circle"></i>
-                    <div>
-                      <p><strong>Password Requirements:</strong></p>
-                      <ul>
-                        <li>Minimum 6 characters</li>
-                        <li>Passwords must match</li>
-                        <li>This action logs out the co-admin from all sessions</li>
-                      </ul>
-                    </div>
+                <div className="info-box">
+                  <i className="fas fa-info-circle"></i>
+                  <div>
+                    <p><strong>Password Requirements:</strong></p>
+                    <ul>
+                      <li>Minimum 6 characters</li>
+                      <li>Passwords must match</li>
+                      <li>This action logs out the co-admin from all sessions</li>
+                    </ul>
                   </div>
                 </div>
               </div>
-            )}
+            </div>
           </div>
         </>
       )}
