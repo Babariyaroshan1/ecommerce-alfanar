@@ -349,7 +349,7 @@ export default function ProductCard({ product: initialProduct, directToProduct =
       quantity: quantity
     }, selectedSizeStock);
 
-    addToast(`<i className="fa-solid fa-check"></i> ${product.name} added to cart successfully!`, 'success', 4000);
+    addToast(`${product.name} added to cart successfully!`, 'success', 4000);
   };
 
   const handleViewDetails = (event) => {
@@ -823,7 +823,7 @@ export default function ProductCard({ product: initialProduct, directToProduct =
                       selectedSize: selectedSize || product.sizes?.[0] || 'One Size',
                       quantity: quantity
                     }, selectedSizeStock);
-                    addToast(`<i className="fa-solid fa-check"></i> ${product.name} added to cart successfully!`, 'success', 4000);
+                    addToast(`${product.name} added to cart successfully!`, 'success', 4000);
                     setShowModal(false);
                   }}
                   disabled={isUnavailable || (requiresSizeSelection && !selectedSize)}

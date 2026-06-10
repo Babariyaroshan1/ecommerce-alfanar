@@ -177,7 +177,7 @@
 .remove-image-btn,
 .remove-color-btn {
   min-height: 42px;
-  padding: 0 16px;
+  padding: 0 3px;
   border-radius: 10px;
   font-weight: 700;
   cursor: pointer;
@@ -339,7 +339,7 @@
 
 .image-drop-zone,
 .quick-drop-zone {
-  min-height: 160px;
+  min-height: 160px !important;
   border: 2px dashed #bfdbfe;
   border-radius: 14px;
   background: #f8fbff;
