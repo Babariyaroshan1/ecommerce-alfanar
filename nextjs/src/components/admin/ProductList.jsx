@@ -89,9 +89,15 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
   const [filterMode, setFilterMode] = useState('all');
   const [editingProductId, setEditingProductId] = useState(null);
   
-  // Check if user is co-admin and lacks edit permission
+  // Granular permission checks
+  const isAdmin = role === 'admin';
+  const canViewProducts = isAdmin || permissions.includes('view_products');
+  const canAddProducts = isAdmin || permissions.includes('add_products');
+  const canEditProducts = isAdmin || permissions.includes('edit_products');
+  const canDeleteProducts = isAdmin || permissions.includes('delete_products');
   const isCoAdmin = role === 'coadmin';
-  const canEditProducts = role === 'admin' || permissions.includes('manage_products');
+  const isViewOnlyCoAdmin = isCoAdmin && canViewProducts && !canEditProducts && !canAddProducts && !canDeleteProducts;
+  
   const[editValues, setEditValues] = useState({
     name: '',
     category: '',
@@ -109,8 +115,8 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
     images: [],
     colors: [''],
     sizes:[],
-    allowReturn: true,
-    allowReplacement: true,
+    allowReturn: false,
+    allowReplacement: false,
     isNew: false,
     isFeaturedOnHome: false,
     showSimilarProductButton: false,
@@ -124,6 +130,10 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
   const[successMessage, setSuccessMessage] = useState('');
   const [previewImageUrl, setPreviewImageUrl] = useState('');
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [detailedPreviewOpen, setDetailedPreviewOpen] = useState(false);
+  const [detailedPreviewProduct, setDetailedPreviewProduct] = useState(null);
+  const [fullScreenImageUrl, setFullScreenImageUrl] = useState('');
+  const [fullScreenImageOpen, setFullScreenImageOpen] = useState(false);
 
   const openPreview = (url) => {
     if (!url) return;
@@ -134,6 +144,28 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
   const closePreview = () => {
     setPreviewOpen(false);
     setPreviewImageUrl('');
+  };
+
+  const openDetailedPreview = (product) => {
+    setDetailedPreviewProduct(product);
+    setDetailedPreviewOpen(true);
+  };
+
+  const closeDetailedPreview = () => {
+    setDetailedPreviewOpen(false);
+    setDetailedPreviewProduct(null);
+    setFullScreenImageOpen(false);
+    setFullScreenImageUrl('');
+  };
+
+  const openFullScreenImage = (url) => {
+    setFullScreenImageUrl(url);
+    setFullScreenImageOpen(true);
+  };
+
+  const closeFullScreenImage = () => {
+    setFullScreenImageOpen(false);
+    setFullScreenImageUrl('');
   };
 
   // Fetch products from API on component mount
@@ -1339,7 +1371,7 @@ return (
               <th>Featured</th>
             </>
           )}
-          {!canEditProducts ? <th>Review</th> : <th>Actions</th>}
+          {isViewOnlyCoAdmin ? <th>Preview</th> : canEditProducts ? <th>Actions</th> : null}
         </tr>
       </thead>
 
@@ -1392,28 +1424,15 @@ return (
                 </td>
               </>
             )}
-            {!canEditProducts && (
-              <td className="review-cell">
-                {([normalizeImageUrl(product.image), ...(product.images || []).map(normalizeImageUrl)]
-                  .filter(Boolean)
-                  .slice(0, 4)).length > 0 ? (
-                  <div className="review-thumbnails">
-                    {([normalizeImageUrl(product.image), ...(product.images || []).map(normalizeImageUrl)]
-                      .filter(Boolean)
-                      .slice(0, 4)).map((imgUrl, idx) => (
-                      <img
-                        key={`${product._id || product.id}-${idx}`}
-                        src={imgUrl}
-                        alt={`${product.name} preview ${idx + 1}`}
-                        className="review-thumbnail"
-                        onClick={() => openPreview(imgUrl)}
-                        title="Click to enlarge"
-                      />
-                    ))}
-                  </div>
-                ) : (
-                  <span style={{ color: '#999' }}>No image</span>
-                )}
+            {isViewOnlyCoAdmin && (
+              <td className="preview-cell">
+                <button 
+                  className="preview-btn"
+                  onClick={() => openDetailedPreview(product)}
+                  title="View product details"
+                >
+                  <i className="fa-solid fa-eye"></i> View
+                </button>
               </td>
             )}
             {canEditProducts && (
@@ -1421,10 +1440,11 @@ return (
                 <button className="edit-btn" onClick={() => handleEditClick(product)}>
                   <i className="fa-solid fa-pen"></i> Edit
                 </button>
-
-                <button className="delete-btn" onClick={() => handleDelete(product._id || product.id)}>
-                  <i className="fa-solid fa-trash"></i> Delete
-                </button>
+                {canDeleteProducts && (
+                  <button className="delete-btn" onClick={() => handleDelete(product._id || product.id)}>
+                    <i className="fa-solid fa-trash"></i> Delete
+                  </button>
+                )}
               </td>
             )}
           </tr>
@@ -1440,6 +1460,140 @@ return (
             </button>
             <img src={previewImageUrl} alt="Product Preview" />
           </div>
+        </div>
+      )}
+
+      {detailedPreviewOpen && detailedPreviewProduct && (
+        <div className="detailed-preview-overlay" onClick={closeDetailedPreview}>
+          <div className="detailed-preview-modal" onClick={(e) => e.stopPropagation()}>
+            <button className="detailed-preview-close" onClick={closeDetailedPreview}>
+              ×
+            </button>
+
+            <div className="detailed-preview-content">
+              <div className="preview-image-section">
+                <div className="preview-main-image">
+                  {detailedPreviewProduct.image ? (
+                    <img 
+                      src={normalizeImageUrl(detailedPreviewProduct.image)} 
+                      alt={detailedPreviewProduct.name}
+                      onClick={() => openFullScreenImage(normalizeImageUrl(detailedPreviewProduct.image))}
+                    />
+                  ) : (
+                    <div className="no-image">No image</div>
+                  )}
+                </div>
+                <div className="preview-thumbnails">
+                  {detailedPreviewProduct.images?.map((img, idx) => (
+                    <img
+                      key={idx}
+                      src={normalizeImageUrl(img)}
+                      alt={`${detailedPreviewProduct.name} ${idx}`}
+                      className="thumbnail"
+                      onClick={() => openFullScreenImage(normalizeImageUrl(img))}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <div className="preview-details-section">
+                <h2>{detailedPreviewProduct.name}</h2>
+                
+                <div className="preview-detail-row">
+                  <span className="label">Product ID:</span>
+                  <span className="value">#{detailedPreviewProduct._id?.slice(-6) || detailedPreviewProduct.id}</span>
+                </div>
+
+                <div className="preview-detail-row">
+                  <span className="label">Category:</span>
+                  <span className="value">{detailedPreviewProduct.category}</span>
+                </div>
+
+                <div className="preview-detail-row">
+                  <span className="label">Price:</span>
+                  <span className="value">
+                    {formatAdminPrice(
+                      detailedPreviewProduct.displayPrice || detailedPreviewProduct.price,
+                      detailedPreviewProduct.currencySymbol,
+                      detailedPreviewProduct.currency
+                    )}
+                  </span>
+                </div>
+
+                <div className="preview-detail-row">
+                  <span className="label">Stock:</span>
+                  <span className="value">{getStockTotal(detailedPreviewProduct.stock)}</span>
+                </div>
+
+                <div className="preview-detail-row">
+                  <span className="label">Colors:</span>
+                  <div className="color-badges">
+                    {detailedPreviewProduct.colors?.map((color) => (
+                      <span
+                        key={color}
+                        className="color-badge"
+                        style={{
+                          borderLeft: `10px solid ${color.startsWith('#') ? color : '#ccc'}`,
+                        }}
+                      >
+                        {color}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="preview-detail-row">
+                  <span className="label">Sizes:</span>
+                  <span className="value">{detailedPreviewProduct.sizes?.join(', ') || 'N/A'}</span>
+                </div>
+
+                <div className="preview-detail-row">
+                  <span className="label">Return:</span>
+                  <span className="value">{detailedPreviewProduct.allowReturn ? '✅ Yes' : '❌ No'}</span>
+                </div>
+
+                <div className="preview-detail-row">
+                  <span className="label">Replacement:</span>
+                  <span className="value">{detailedPreviewProduct.allowReplacement ? '✅ Yes' : '❌ No'}</span>
+                </div>
+
+                <div className="preview-detail-row">
+                  <span className="label">Featured:</span>
+                  <span className="value">{normalizeFeatured(detailedPreviewProduct.isFeaturedOnHome) ? '⭐ Yes' : 'No'}</span>
+                </div>
+
+                {detailedPreviewProduct.description && (
+                  <div className="preview-detail-row full-width">
+                    <span className="label">Description:</span>
+                    <p className="value description-text">{detailedPreviewProduct.description}</p>
+                  </div>
+                )}
+
+                {detailedPreviewProduct.materialAndCare && (
+                  <div className="preview-detail-row full-width">
+                    <span className="label">Material & Care:</span>
+                    <p className="value description-text">{detailedPreviewProduct.materialAndCare}</p>
+                  </div>
+                )}
+
+                {detailedPreviewProduct.countryOfOrigin && (
+                  <div className="preview-detail-row">
+                    <span className="label">Country of Origin:</span>
+                    <span className="value">{detailedPreviewProduct.countryOfOrigin}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {fullScreenImageOpen && (
+        <div className="fullscreen-image-overlay" onClick={closeFullScreenImage}>
+          <button className="fullscreen-image-close" onClick={closeFullScreenImage}>
+            ×
+          </button>
+          <img src={fullScreenImageUrl} alt="Full size view" />
         </div>
       )}
   </div>

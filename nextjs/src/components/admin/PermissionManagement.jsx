@@ -9,10 +9,28 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'; 
 
 const AVAILABLE_PERMISSIONS = [
   {
-    key: 'manage_products',
-    label: 'Manage Products',
-    description: 'Add, edit, and delete products',
-    icon: 'fa-box'
+    key: 'view_products',
+    label: 'View Products',
+    description: 'View product listings and details only',
+    icon: 'fa-eye'
+  },
+  {
+    key: 'add_products',
+    label: 'Add Products',
+    description: 'Create new products',
+    icon: 'fa-plus'
+  },
+  {
+    key: 'edit_products',
+    label: 'Edit Products',
+    description: 'Modify existing products',
+    icon: 'fa-edit'
+  },
+  {
+    key: 'delete_products',
+    label: 'Delete Products',
+    description: 'Remove products from database',
+    icon: 'fa-trash'
   },
   {
     key: 'manage_kids_products',
