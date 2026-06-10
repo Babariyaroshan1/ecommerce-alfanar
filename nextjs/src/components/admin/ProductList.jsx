@@ -1371,7 +1371,8 @@ return (
               <th>Featured</th>
             </>
           )}
-          {isViewOnlyCoAdmin ? <th>Preview</th> : canEditProducts ? <th>Actions</th> : null}
+          {canViewProducts && <th>Preview</th>}
+          {canEditProducts && <th>Actions</th>}
         </tr>
       </thead>
 
@@ -1424,7 +1425,7 @@ return (
                 </td>
               </>
             )}
-            {isViewOnlyCoAdmin && (
+            {canViewProducts && (
               <td className="preview-cell">
                 <button 
                   className="preview-btn"
