@@ -1351,7 +1351,7 @@ return (
         </div>
       </div>
     )}
-
+<div className="table-responsive">
     <table className="products-table">
       <thead>
         <tr>
@@ -1452,7 +1452,7 @@ return (
         ))}
       </tbody>
     </table>
-
+    </div>
       {previewOpen && (
         <div className="image-preview-overlay" onClick={closePreview}>
           <div className="image-preview-dialog" onClick={(e) => e.stopPropagation()}>
@@ -1470,6 +1470,7 @@ return (
             <button className="detailed-preview-close" onClick={closeDetailedPreview}>
               ×
             </button>
+            
 
             <div className="detailed-preview-content">
               <div className="preview-image-section">
