@@ -648,8 +648,18 @@ input:checked + .toggle-slider:before {
 }
 
 /* Table */
+/* Nayi class wrapper ke liye */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* Mobile me smooth scroll ke liye */
+  border-radius: 12px; /* Optional: achhe look ke liye */
+}
+
+/* Aapki purani products-table class me min-width add karein */
 .products-table {
   width: 100%;
+  min-width: 1050px; /* Ye bohot IMPORTANT hai! Isse kam screen par scroll aayega */
   border-collapse: separate;
   border-spacing: 0 0.5rem;
 }
