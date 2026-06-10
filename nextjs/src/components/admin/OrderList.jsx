@@ -398,13 +398,13 @@ export default function OrderList({ showOnlyRequests = false }) {
         <div className="order-controls">
           <div className="control-group">
             <span>Auto Accept</span>
-            <button type="button" className={`toggle-switch ${autoAccept ? 'on' : 'off'}`} onClick={() => setAutoAccept(!autoAccept)}>
+            <button type="button" className={`toggle-switch-ord ${autoAccept ? 'on' : 'off'}`} onClick={() => setAutoAccept(!autoAccept)}>
               <span className="toggle-thumb" />
             </button>
           </div>
           <div className="control-group">
             <span>Auto Refresh</span>
-            <button type="button" className={`toggle-switch ${autoRefresh ? 'on' : 'off'}`} onClick={() => setAutoRefresh(!autoRefresh)}>
+            <button type="button" className={`toggle-switch-ord ${autoRefresh ? 'on' : 'off'}`} onClick={() => setAutoRefresh(!autoRefresh)}>
               <span className="toggle-thumb" />
             </button>
           </div>

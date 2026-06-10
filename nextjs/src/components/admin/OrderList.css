@@ -41,7 +41,7 @@
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-.toggle-switch {
+.toggle-switch-ord {
   position: relative;
   width: 50px;
   height: 28px;
@@ -56,12 +56,12 @@
 }
 
 /* OFF State (Professional Gray) - Agar aapko Red chahiye toh #cbd5e1 ki jagah #f87171 likh dein */
-.toggle-switch.off {
+.toggle-switch-ord.off {
   background-color: #cbd5e1;
 }
 
 /* ON State (Emerald Green) */
-.toggle-switch.on {
+.toggle-switch-ord.on {
   background-color: #10b981; 
 }
 
@@ -76,11 +76,11 @@
 }
 
 /* Thumb Movement */
-.toggle-switch.off .toggle-thumb {
+.toggle-switch-ord.off .toggle-thumb {
   transform: translateX(0);
 }
 
-.toggle-switch.on .toggle-thumb {
+.toggle-switch-ord.on .toggle-thumb {
   transform: translateX(22px); 
 }
 
