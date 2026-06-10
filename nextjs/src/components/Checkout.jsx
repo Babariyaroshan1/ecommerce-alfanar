@@ -1121,7 +1121,7 @@ export default function Checkout() {
         </div>
       )}
 
-      {/* PAYMENT MODAL / BOTTOM SHEET */}}
+      {/* PAYMENT MODAL / BOTTOM SHEET */}
       {showPaymentModal && (
         <div className="payment-overlay" onClick={() => {
           setShowPaymentModal(false);
@@ -1153,7 +1153,7 @@ export default function Checkout() {
                 onClick={() => handlePaymentMethodSelect('upi')}
               >
                 <div className="pay-method-title">
-                  <span><i className="fa-solid fa-bolt"></i></span> {t("UPI Payment")}}
+                  <span><i className="fa-solid fa-bolt"></i></span> {t("UPI Payment")}
                 </div>
                 <div className="upi-apps">
                   <div className="upi-app-icon">
