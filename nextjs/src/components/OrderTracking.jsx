@@ -246,7 +246,7 @@ export default function OrderTracking({ orderId }) {
                       onClick={handleReplaceOrder}
                       disabled={actionLoading}
                     >
-                      {actionLoading ? 'Processing...' : '🔁 Replace Order'}
+                      {actionLoading ? 'Processing...' : <><i className="fa-solid fa-repeat"></i> Replace Order</>}
                     </button>
                   )}
                 </div>

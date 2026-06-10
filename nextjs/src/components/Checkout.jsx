@@ -929,7 +929,7 @@ export default function Checkout() {
                           {address.street}{address.houseNumber ? `, ${address.houseNumber}` : ''}{address.apartment ? `, ${address.apartment}` : ''}{address.floor ? `, ${address.floor}` : ''}
                           {address.area ? `, ${address.area}` : ''}{address.city ? `, ${address.city}` : ''}{address.state ? `, ${address.state}` : ''}{address.governorate ? `, ${address.governorate}` : ''}{address.pincode ? `, ${address.pincode}` : ''}
                         </div>
-                        <div style={{marginTop: '6px', fontSize: '13px', color: '#475569'}}>📞 {address.phone}</div>
+                        <div style={{marginTop: '6px', fontSize: '13px', color: '#475569'}}><i className="fa-solid fa-phone"></i> {address.phone}</div>
                       </div>
                       <div style={{display: 'flex', flexWrap: 'wrap', gap: '10px'}}>
                         <button
@@ -1226,7 +1226,7 @@ export default function Checkout() {
                 onClick={() => handlePaymentMethodSelect('card')}
               >
                 <div className="pay-method-title">
-                  <span>💳</span> {t("Credit / Debit Card")}
+                  <span><i className="fa-solid fa-credit-card"></i></span> {t("Credit / Debit Card")}
                 </div>
                 <span style={{fontSize: '12px', color: '#64748b'}}>Visa, MasterCard, RuPay & more</span>
               </div>
@@ -1239,7 +1239,7 @@ export default function Checkout() {
                  onClick={() => handlePaymentMethodSelect('netbanking')}
                >
                 <div className="pay-method-title">
-                  <span>🏦</span> {t("Net Banking")}
+                  <span><i className="fa-solid fa-building-columns"></i></span> {t("Net Banking")}
                 </div>
                 <span style={{fontSize: '12px', color: '#64748b'}}>All major banks available</span>
               </div>
@@ -1255,7 +1255,7 @@ export default function Checkout() {
                 }}
               >
                 <div className="pay-method-title" style={{marginBottom: '0'}}>
-                  <span>💵</span> {t("Cash on Delivery (COD)")}
+                  <span><i className="fa-solid fa-money-bill"></i></span> {t("Cash on Delivery (COD)")}
                 </div>
               </div>
               )}

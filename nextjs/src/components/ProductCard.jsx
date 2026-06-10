@@ -549,7 +549,7 @@ export default function ProductCard({ product: initialProduct, directToProduct =
               ✖
             </span>
 
-            {/* 📸 IMAGE GALLERY SECTION */}
+            {/* IMAGE GALLERY SECTION */}
             <div className="quickview-gallery">
               {/* Main Image */}
               <img

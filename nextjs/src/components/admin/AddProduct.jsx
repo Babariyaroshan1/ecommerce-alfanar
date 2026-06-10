@@ -100,7 +100,7 @@
 
     const uploadImageFile = async (file) => {
       // Validate file before uploading
-      console.log('📁 DEBUG - File validation:', {
+      console.log('[DEBUG] File validation:', {
         name: file.name,
         type: file.type,
         size: file.size,
@@ -221,7 +221,7 @@
       const files = Array.from(e.target.files || []);
       if (files.length === 0) return;
 
-      console.log('📸 DEBUG - Starting upload of', files.length, 'images');
+      console.log('[DEBUG] Starting upload of', files.length, 'images');
       setQuickImagesUploading(true);
 
       try {
@@ -230,7 +230,7 @@
 
         for (let i = 0; i < files.length; i++) {
           const file = files[i];
-          console.log(`📸 DEBUG - Uploading image ${i + 1}/${files.length}:`, file.name);
+          console.log(`[DEBUG] Uploading image ${i + 1}/${files.length}:`, file.name);
           
           try {
             const url = await uploadImageFile(file);
@@ -243,7 +243,7 @@
           }
         }
 
-        console.log('📸 DEBUG - Batch complete:', {
+        console.log('[DEBUG] Batch complete:', {
           successful: uploadedUrls.length,
           failed: failedUploads.length,
           urls: uploadedUrls
@@ -296,7 +296,7 @@
 
         for (let i = 0; i < limited.length; i++) {
           const file = limited[i];
-          console.log(`📸 DEBUG - Uploading dropped image ${i + 1}/${limited.length}:`, file.name);
+          console.log(`[DEBUG] Uploading dropped image ${i + 1}/${limited.length}:`, file.name);
 
           try {
             const url = await uploadImageFile(file);
@@ -500,7 +500,7 @@
 
       // DEBUG: Log what we're about to submit
       const imagesToSubmit = formData.images.filter(Boolean);
-      console.log('🔍 DEBUG - Images to submit:', {
+      console.log('[DEBUG] Images to submit:', {
         totalImages: formData.images.length,
         filteredImages: imagesToSubmit.length,
         imagesList: imagesToSubmit,
@@ -584,7 +584,7 @@
           createdAt: new Date().toISOString(),
         };
 
-        console.log('📱 DEBUG - Adding locally:', localProduct);
+        console.log('[DEBUG] Adding locally:', localProduct);
 
         try {
           addLocalProduct(localProduct);
@@ -845,8 +845,8 @@
                     </label>
                     <span className="toggle-label">
                       {formData.allowReplacement
-                        ? '🔁 Replacement Available'
-                        : '🔁 Replacement Not Available'}
+                        ? <><i className="fa-solid fa-repeat"></i> Replacement Available</>
+                        : <><i className="fa-solid fa-repeat"></i> Replacement Not Available</>}
                     </span>
                   </div>
 

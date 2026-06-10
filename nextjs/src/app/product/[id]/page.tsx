@@ -438,8 +438,8 @@ export default function ProductDetailPage() {
     const isNowFavorite = !isFavorite;
     addToast(
       isNowFavorite 
-        ? `❤️ ${product.name} added to wishlist!` 
-        : `💔 ${product.name} removed from wishlist.`,
+        ? `${product.name} added to wishlist!` 
+        : `${product.name} removed from wishlist.`,
       'success',
       3000
     );

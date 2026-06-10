@@ -66,8 +66,8 @@ const Home = () => {
         // console.log('[SUCCESS] Banner settings API response:', response.data);
         const desktop = response.data.homeBannerImageUrl || response.data.bannerImageUrl || '';
         const mobile = response.data.homeBannerMobileImageUrl || response.data.mobileBannerImageUrl || '';
-        // console.log('📱 Desktop Banner URL:', desktop);
-        // console.log('📱 Mobile Banner URL:', mobile);
+        // console.log('[DEBUG] Desktop Banner URL:', desktop);
+        // console.log('[DEBUG] Mobile Banner URL:', mobile);
         setBannerImageUrl(desktop);
         setMobileBannerImageUrl(mobile);
       } catch (error) {
