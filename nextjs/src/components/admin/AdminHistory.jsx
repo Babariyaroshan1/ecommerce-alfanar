@@ -83,7 +83,9 @@ const AdminHistory = () => {
 
   const getClientInfo = (info) => {
     if (!info) return '-';
-    return [info.platform, info.browserName, info.os, info.language].filter(Boolean).join(' | ');
+    const parts = [info.platform, info.browserName, info.os, info.language].filter(Boolean);
+    if (parts.length === 0 && info.userAgent) return info.userAgent;
+    return parts.join(' | ');
   };
 
   // On-Screen Keypad Handler

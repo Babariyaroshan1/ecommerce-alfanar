@@ -12,6 +12,13 @@ export const createHistoryLog = async (logData) => {
 };
 
 export const buildHistoryEntry = async ({ req, entityType, entityId, entityName, actionType, description, metadata = {}, clientInfo = {}, ipAddress = '' }) => {
+    // Attempt to derive client info from request headers if frontend didn't provide it
+    const headers = req?.headers || {};
+    const rawUA = headers['user-agent'] || '';
+    const acceptLang = headers['accept-language'] || '';
+    const secPlatform = headers['sec-ch-ua-platform'] || '';
+    const forwardedFor = (headers['x-forwarded-for'] || '').split(',')[0] || '';
+
     const historyEntry = {
         entityType,
         entityId,
@@ -19,8 +26,17 @@ export const buildHistoryEntry = async ({ req, entityType, entityId, entityName,
         actionType,
         description,
         metadata,
-        clientInfo,
-        ipAddress: ipAddress || req.ip || '',
+        clientInfo: {
+            userAgent: clientInfo.userAgent || rawUA,
+            platform: clientInfo.platform || secPlatform || '',
+            vendor: clientInfo.vendor || '',
+            language: clientInfo.language || acceptLang,
+            deviceMemory: clientInfo.deviceMemory || '',
+            browserName: clientInfo.browserName || '',
+            browserVersion: clientInfo.browserVersion || '',
+            os: clientInfo.os || ''
+        },
+        ipAddress: ipAddress || req.ip || forwardedFor || '',
         changedByRole: req.role || 'unknown',
         changedById: req.userId || null,
         changedByName: '',
