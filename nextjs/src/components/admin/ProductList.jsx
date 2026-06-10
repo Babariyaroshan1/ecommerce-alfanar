@@ -122,6 +122,19 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
   const[savingId, setSavingId] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
   const[successMessage, setSuccessMessage] = useState('');
+  const [previewImageUrl, setPreviewImageUrl] = useState('');
+  const [previewOpen, setPreviewOpen] = useState(false);
+
+  const openPreview = (url) => {
+    if (!url) return;
+    setPreviewImageUrl(url);
+    setPreviewOpen(true);
+  };
+
+  const closePreview = () => {
+    setPreviewOpen(false);
+    setPreviewImageUrl('');
+  };
 
   // Fetch products from API on component mount
   useEffect(() => {
@@ -1326,8 +1339,7 @@ return (
               <th>Featured</th>
             </>
           )}
-          {!canEditProducts && <th>Image</th>}
-          <th>Actions</th>
+          {!canEditProducts ? <th>Review</th> : <th>Actions</th>}
         </tr>
       </thead>
 
@@ -1381,45 +1393,55 @@ return (
               </>
             )}
             {!canEditProducts && (
-              <td>
-                {product.image ? (
-                  <img 
-                    src={normalizeImageUrl(product.image)} 
-                    alt={product.name}
-                    className="product-preview-image"
-                    title={product.name}
-                    style={{
-                      maxWidth: '60px',
-                      maxHeight: '60px',
-                      objectFit: 'cover',
-                      borderRadius: '4px',
-                      cursor: 'pointer'
-                    }}
-                  />
+              <td className="review-cell">
+                {([normalizeImageUrl(product.image), ...(product.images || []).map(normalizeImageUrl)]
+                  .filter(Boolean)
+                  .slice(0, 4)).length > 0 ? (
+                  <div className="review-thumbnails">
+                    {([normalizeImageUrl(product.image), ...(product.images || []).map(normalizeImageUrl)]
+                      .filter(Boolean)
+                      .slice(0, 4)).map((imgUrl, idx) => (
+                      <img
+                        key={`${product._id || product.id}-${idx}`}
+                        src={imgUrl}
+                        alt={`${product.name} preview ${idx + 1}`}
+                        className="review-thumbnail"
+                        onClick={() => openPreview(imgUrl)}
+                        title="Click to enlarge"
+                      />
+                    ))}
+                  </div>
                 ) : (
                   <span style={{ color: '#999' }}>No image</span>
                 )}
               </td>
             )}
-            <td className="actions-cell">
-              {canEditProducts ? (
-                <>
-                  <button className="edit-btn" onClick={() => handleEditClick(product)}>
-                    <i className="fa-solid fa-pen"></i> Edit
-                  </button>
+            {canEditProducts && (
+              <td className="actions-cell">
+                <button className="edit-btn" onClick={() => handleEditClick(product)}>
+                  <i className="fa-solid fa-pen"></i> Edit
+                </button>
 
-                  <button className="delete-btn" onClick={() => handleDelete(product._id || product.id)}>
-                    <i className="fa-solid fa-trash"></i> Delete
-                  </button>
-                </>
-              ) : (
-                <span style={{ color: '#999', fontSize: '0.85em' }}>View Only</span>
-              )}
-            </td>
+                <button className="delete-btn" onClick={() => handleDelete(product._id || product.id)}>
+                  <i className="fa-solid fa-trash"></i> Delete
+                </button>
+              </td>
+            )}
           </tr>
         ))}
       </tbody>
     </table>
+
+      {previewOpen && (
+        <div className="image-preview-overlay" onClick={closePreview}>
+          <div className="image-preview-dialog" onClick={(e) => e.stopPropagation()}>
+            <button className="image-preview-close" onClick={closePreview}>
+              ×
+            </button>
+            <img src={previewImageUrl} alt="Product Preview" />
+          </div>
+        </div>
+      )}
   </div>
 
 );

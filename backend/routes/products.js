@@ -429,6 +429,24 @@ router.post('/', async (req, res) => {
                 imagesLength: product.images?.length,
             });
 
+            const clientInfo = req.body?.clientInfo || {};
+            const historyPayload = req.body?.historyPayload || {};
+
+            await createHistoryLog(await buildHistoryEntry({
+                req,
+                entityType: 'Product',
+                entityId: product._id,
+                entityName: product.name,
+                actionType: 'create',
+                description: historyPayload.description || `Product created by ${req.role}`,
+                metadata: {
+                    createdProduct: product.toObject({ flattenMaps: true }),
+                    historyPayload
+                },
+                clientInfo,
+                ipAddress: req.ip
+            }));
+
             // 🔥 IMPORTANT: Invalidate ALL caches - don't let stale data persist
             await invalidateProducts();
             await invalidateProduct(product._id.toString());

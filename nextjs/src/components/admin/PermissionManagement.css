@@ -305,3 +305,221 @@
   color: #71717a !important;
   font-size: 1.1rem;
 }
+
+/* Permission Management UI Styles */
+.permission-management {
+  padding: 24px;
+  background: #0f172a;
+  border-radius: 24px;
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.55);
+  color: #f8fafc;
+}
+
+.permission-header {
+  margin-bottom: 22px;
+}
+
+.permission-header h2 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: 2rem;
+}
+
+.permission-header p {
+  margin: 8px 0 0;
+  color: #cbd5e1;
+  font-size: 0.95rem;
+}
+
+.permission-content {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 22px;
+  margin-top: 18px;
+}
+
+.coadmin-list,
+.permission-editor {
+  background: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 18px;
+  padding: 20px;
+}
+
+.coadmin-list h3,
+.permission-editor h3 {
+  margin-top: 0;
+  color: #f8fafc;
+}
+
+.no-coadmins {
+  color: #94a3b8;
+}
+
+.coadmin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.coadmin-card {
+  background: #0f172a;
+  border: 1px solid #1f2937;
+  border-radius: 16px;
+  padding: 16px;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.coadmin-card:hover,
+.coadmin-card.selected {
+  transform: translateY(-2px);
+  border-color: #2563eb;
+  box-shadow: 0 12px 30px rgba(37, 99, 235, 0.18);
+}
+
+.coadmin-info h4 {
+  margin: 0 0 6px;
+  font-size: 1.05rem;
+  color: #f8fafc;
+}
+
+.coadmin-info p,
+.permission-count {
+  margin: 0;
+  color: #cbd5e1;
+  font-size: 0.92rem;
+}
+
+.permission-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
+  border-radius: 14px;
+  background: #111827;
+  border: 1px solid #1f2937;
+}
+
+.permission-item:last-child {
+  margin-bottom: 0;
+}
+
+.permission-info {
+  display: grid;
+  gap: 6px;
+  flex: 1;
+}
+
+.permission-item h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: #f8fafc;
+}
+
+.permission-item p {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+.permission-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 52px;
+  height: 28px;
+}
+
+.permission-toggle input {
+  opacity: 0;
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.permission-toggle .toggle-slider {
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  background: #334155;
+  transition: background 0.2s ease;
+}
+
+.permission-toggle .toggle-slider:before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  width: 18px;
+  height: 18px;
+  background: #ffffff;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+}
+
+.permission-toggle input:checked + .toggle-slider {
+  background: #2563eb;
+}
+
+.permission-toggle input:checked + .toggle-slider:before {
+  transform: translateX(24px);
+}
+
+.permission-actions {
+  margin-top: 16px;
+  text-align: right;
+}
+
+.permission-actions .save-btn {
+  padding: 12px 22px;
+  border-radius: 12px;
+  border: none;
+  background: #2563eb;
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.permission-actions .save-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.25);
+}
+
+.message {
+  margin-bottom: 20px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  font-weight: 600;
+}
+
+.message.success {
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.message.error {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+@media (max-width: 768px) {
+  .permission-content {
+    grid-template-columns: 1fr;
+  }
+
+  .coadmin-card {
+    padding: 14px;
+  }
+
+  .permission-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
