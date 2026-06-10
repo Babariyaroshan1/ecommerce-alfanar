@@ -226,10 +226,10 @@ export default function PermissionManagement() {
           : coadmin
       ));
 
-      setMessage('✅ Permissions updated successfully!');
+      setMessage('[SUCCESS] Permissions updated successfully!');
       setTimeout(() => setMessage(''), 3000);
     } catch (error) {
-      setMessage('❌ Failed to update permissions. Please try again.');
+      setMessage('[ERROR] Failed to update permissions. Please try again.');
       console.error('Error updating permissions:', error);
     } finally {
       setLoading(false);
@@ -296,7 +296,7 @@ export default function PermissionManagement() {
           </div>
 
           {message && (
-            <div className={`message ${message.includes('✅') ? 'success' : 'error'}`}>
+            <div className={`message ${message.includes('[SUCCESS]') ? 'success' : 'error'}`}>
               {message}
             </div>
           )}

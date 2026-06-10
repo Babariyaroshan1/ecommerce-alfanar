@@ -556,16 +556,12 @@
   font-weight: 800;
 }
 
-/* =========================================
-   SUBMIT BUTTON
-========================================= */
 .submit-btn {
   width: 100%;
   min-height: 56px;
   border: none;
   border-radius: 17px;
-  background:
-    linear-gradient(135deg, #000000 0%, #1d1d1d 100%);
+  background: linear-gradient(135deg, #000000 0%, #1d1d1d 100%);
   color: #ffffff;
   font-size: 16px;
   font-weight: 900;

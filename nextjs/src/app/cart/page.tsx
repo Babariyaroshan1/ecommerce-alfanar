@@ -92,7 +92,7 @@ export default function Cart() {
           {cart.map((item: any) => {
             const itemId = item._id ?? item.id;
 
-            // ✅ FIX: size & color lo
+            // FIX: size & color handling
             const itemColor = item.selectedColor || 'Default';
             const itemSize = item.selectedSize || 'One Size';
 
@@ -119,7 +119,7 @@ export default function Cart() {
                           {item.description || ''}
                         </p> */}
 
-                        {/* ✅ SHOW COLOR & SIZE */}
+                        {/* SHOW COLOR & SIZE */}}
                         <p className="text-xs text-slate-500">
                           Color: <strong>{itemColor}</strong>
                         </p>
@@ -159,7 +159,7 @@ export default function Cart() {
 
                     <div className="flex flex-wrap items-center gap-2">
 
-                      {/* ✅ QUANTITY FIX */}
+                      {/* QUANTITY FIX */}}
                       <div className="inline-flex items-center rounded-2xl bg-slate-100 px-2 py-1 text-sm text-slate-700">
                         <button
                           onClick={() =>
@@ -192,7 +192,7 @@ export default function Cart() {
                         </button>
                       </div>
 
-                      {/* ✅ REMOVE FIX */}
+                      {/* REMOVE FIX */}
                       <button
                         onClick={() =>
                           removeFromCart(itemId, itemSize, itemColor)

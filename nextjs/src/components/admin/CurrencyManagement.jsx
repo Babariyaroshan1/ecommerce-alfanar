@@ -67,12 +67,12 @@ export default function CurrencyManagement() {
     const parsedShippingKWD = Number(shippingPriceKwdInput);
     const parsedShippingINR = Number(shippingPriceInrInput);
     if (isNaN(parsedShippingKWD) || parsedShippingKWD < 0 || isNaN(parsedShippingINR) || parsedShippingINR < 0) {
-      setMessage('❌ Please enter valid shipping prices for both currencies.');
+      setMessage('[ERROR] Please enter valid shipping prices for both currencies.');
       return;
     }
 
     if (!token) {
-      setMessage('❌ Admin token missing. Please login again.');
+      setMessage('[ERROR] Admin token missing. Please login again.');
       return;
     }
 
@@ -97,11 +97,11 @@ export default function CurrencyManagement() {
       setCurrencySettings(newSettings);
       await fetchProducts();
 
-      setMessage('✅ Shipping prices updated successfully!');
+      setMessage('[SUCCESS] Shipping prices updated successfully!');
       setTimeout(() => setMessage(''), 5000);
     } catch (error) {
       const errorText = error.response?.data?.message || error.message;
-      setMessage(`❌ Failed to update shipping price. ${errorText}`);
+      setMessage(`[ERROR] Failed to update shipping price. ${errorText}`);
       console.error('Error updating shipping price:', error);
     } finally {
       setLoading(false);
@@ -112,7 +112,7 @@ export default function CurrencyManagement() {
     const enabled = e.target.checked;
 
     if (!token) {
-      setMessage('❌ Admin token missing. Please login again.');
+      setMessage('[ERROR] Admin token missing. Please login again.');
       return;
     }
 
@@ -133,11 +133,11 @@ export default function CurrencyManagement() {
 
       setCurrentSettings(newSettings);
       setCurrencySettings(newSettings);
-      setMessage(`✅ Navbar KWD option ${enabled ? 'enabled' : 'disabled'} successfully.`);
+      setMessage(`[SUCCESS] Navbar KWD option ${enabled ? 'enabled' : 'disabled'} successfully.`);
       setTimeout(() => setMessage(''), 5000);
     } catch (error) {
       const errorText = error.response?.data?.message || error.message;
-      setMessage(`❌ Failed to update navbar option. ${errorText}`);
+      setMessage(`[ERROR] Failed to update navbar option. ${errorText}`);
       console.error('Error updating navbar option:', error);
     } finally {
       setLoading(false);
@@ -148,7 +148,7 @@ export default function CurrencyManagement() {
     const enabled = e.target.checked;
 
     if (!token) {
-      setMessage('❌ Admin token missing. Please login again.');
+      setMessage('[ERROR] Admin token missing. Please login again.');
       return;
     }
 
@@ -169,11 +169,11 @@ export default function CurrencyManagement() {
 
       setCurrentSettings(newSettings);
       setCurrencySettings(newSettings);
-      setMessage(`✅ New Arrivals navbar link ${enabled ? 'enabled' : 'disabled'} successfully.`);
+      setMessage(`[SUCCESS] New Arrivals navbar link ${enabled ? 'enabled' : 'disabled'} successfully.`);
       setTimeout(() => setMessage(''), 5000);
     } catch (error) {
       const errorText = error.response?.data?.message || error.message;
-      setMessage(`❌ Failed to update New Arrivals navbar link. ${errorText}`);
+      setMessage(`[ERROR] Failed to update New Arrivals navbar link. ${errorText}`);
       console.error('Error updating New Arrivals navbar link:', error);
     } finally {
       setLoading(false);
@@ -188,7 +188,7 @@ export default function CurrencyManagement() {
       </div>
 
       {message && (
-        <div className={`message ${message.includes('✅') ? 'success' : 'error'}`}>
+        <div className={`message ${message.includes('[SUCCESS]') ? 'success' : 'error'}`}>
           {message}
         </div>
       )}

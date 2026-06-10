@@ -63,7 +63,7 @@ const Home = () => {
       try {
         setBannerLoading(true);
         const response = await axios.get(`${API_URL}/settings`);
-        // console.log('✅ Banner settings API response:', response.data);
+        // console.log('[SUCCESS] Banner settings API response:', response.data);
         const desktop = response.data.homeBannerImageUrl || response.data.bannerImageUrl || '';
         const mobile = response.data.homeBannerMobileImageUrl || response.data.mobileBannerImageUrl || '';
         // console.log('📱 Desktop Banner URL:', desktop);
@@ -71,7 +71,7 @@ const Home = () => {
         setBannerImageUrl(desktop);
         setMobileBannerImageUrl(mobile);
       } catch (error) {
-        console.error('❌ Error fetching banner settings:', error);
+        console.error('[ERROR] Error fetching banner settings:', error);
       } finally {
         setBannerLoading(false);
       }
@@ -146,11 +146,11 @@ const Home = () => {
               loading="lazy"
               className="img-fluid w-100 rounded shadow-sm custom-banner-img"
               onError={(e) => {
-                console.error('❌ Banner image failed to load:', e.target.src);
+                console.error('[ERROR] Banner image failed to load:', e.target.src);
                 e.target.style.display = 'none';
               }}
               onLoad={() => {
-                // console.log('✅ Banner image loaded successfully');
+                // console.log('[SUCCESS] Banner image loaded successfully');
               }}
             />
           </picture>

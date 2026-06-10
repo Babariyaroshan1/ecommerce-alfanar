@@ -361,7 +361,7 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
     }));
   };
 
-  // 🔥 NEW: EyeDropper tool for selecting color from anywhere on screen
+  // NEW: EyeDropper tool for selecting color from anywhere on screen
   const handleEyeDropper = async (index) => {
     if (!window.EyeDropper) {
       alert("Your browser does not support the EyeDropper API (Try Chrome or Edge)");
@@ -411,7 +411,7 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
     }));
   };
 
-  // 🔥 NEW: File upload handler
+  // NEW: File upload handler
   const handleFileUpload = async (files, isMainImage = false) => {
     const validFiles = Array.from(files).filter(file => {
       const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
@@ -459,7 +459,7 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
     }
   };
 
-  // 🔥 NEW: Drag & drop handlers
+  // NEW: Drag & drop handlers
   const handleDragOver = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -983,7 +983,7 @@ return (
                       <span className="toggle-slider"></span>
                     </label>
                     <span className="toggle-label">
-                      {editValues.allowReplacement ? '✅ Repl' : '🚫 No Repl'}
+                      {editValues.allowReplacement ? <><i className="fa-solid fa-check"></i> Repl</> : <><i className="fa-solid fa-ban"></i> No Repl</>}
                     </span>
                   </div>
                 </div>
@@ -1551,17 +1551,17 @@ return (
 
                 <div className="preview-detail-row">
                   <span className="label">Return:</span>
-                  <span className="value">{detailedPreviewProduct.allowReturn ? '✅ Yes' : '❌ No'}</span>
+                  <span className="value">{detailedPreviewProduct.allowReturn ? <><i className="fa-solid fa-check"></i> Yes</> : <><i className="fa-solid fa-x"></i> No</>}</span>
                 </div>
 
                 <div className="preview-detail-row">
                   <span className="label">Replacement:</span>
-                  <span className="value">{detailedPreviewProduct.allowReplacement ? '✅ Yes' : '❌ No'}</span>
+                  <span className="value">{detailedPreviewProduct.allowReplacement ? <><i className="fa-solid fa-check"></i> Yes</> : <><i className="fa-solid fa-x"></i> No</>}</span>
                 </div>
 
                 <div className="preview-detail-row">
                   <span className="label">Featured:</span>
-                  <span className="value">{normalizeFeatured(detailedPreviewProduct.isFeaturedOnHome) ? '⭐ Yes' : 'No'}</span>
+                  <span className="value">{normalizeFeatured(detailedPreviewProduct.isFeaturedOnHome) ? <><i className="fa-solid fa-star"></i> Yes</> : 'No'}</span>
                 </div>
 
                 {detailedPreviewProduct.description && (

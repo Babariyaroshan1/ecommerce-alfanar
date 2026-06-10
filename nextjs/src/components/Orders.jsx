@@ -75,7 +75,7 @@ export default function Orders() {
 
       {orders.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-icon">📦</div>
+          <div className="empty-icon"><i className="fa-solid fa-box"></i></div>
           <h2>No orders yet</h2>
           <p>Looks like you haven't made any purchases yet.</p>
           <button className="continue-btn" onClick={() => router.push('/')}>

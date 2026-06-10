@@ -31,7 +31,7 @@ export default function ProductFAQManagement() {
       setFaqs(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error('Error fetching product FAQs:', error);
-      setMessage('❌ Failed to load FAQs');
+      setMessage('[ERROR] Failed to load FAQs');
       setFaqs([]);
     }
   };
@@ -45,18 +45,18 @@ export default function ProductFAQManagement() {
         await axios.put(`${API_URL}/product-faqs/${editingFaq._id}`, formData, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        setMessage('✅ FAQ updated successfully');
+        setMessage('[SUCCESS] FAQ updated successfully');
       } else {
         await axios.post(`${API_URL}/product-faqs`, formData, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        setMessage('✅ FAQ created successfully');
+        setMessage('[SUCCESS] FAQ created successfully');
       }
 
       fetchProductFAQs();
       resetForm();
     } catch (error) {
-      setMessage('❌ Failed to save FAQ');
+      setMessage('[ERROR] Failed to save FAQ');
       console.error('Error saving FAQ:', error);
     } finally {
       setLoading(false);
@@ -81,10 +81,10 @@ export default function ProductFAQManagement() {
       await axios.delete(`${API_URL}/product-faqs/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setMessage('✅ FAQ deleted successfully');
+      setMessage('[SUCCESS] FAQ deleted successfully');
       fetchProductFAQs();
     } catch (error) {
-      setMessage('❌ Failed to delete FAQ');
+      setMessage('[ERROR] Failed to delete FAQ');
       console.error('Error deleting FAQ:', error);
     }
   };
@@ -94,10 +94,10 @@ export default function ProductFAQManagement() {
       await axios.patch(`${API_URL}/product-faqs/${id}/toggle`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setMessage('✅ FAQ status updated');
+      setMessage('[SUCCESS] FAQ status updated');
       fetchProductFAQs();
     } catch (error) {
-      setMessage('❌ Failed to update FAQ status');
+      setMessage('[ERROR] Failed to update FAQ status');
       console.error('Error toggling FAQ status:', error);
     }
   };
@@ -121,7 +121,7 @@ export default function ProductFAQManagement() {
       </div>
 
       {message && (
-        <div className={`message ${message.includes('✅') ? 'success' : 'error'}`}>
+        <div className={`message ${message.includes('[SUCCESS]') ? 'success' : 'error'}`}>
           {message}
         </div>
       )}

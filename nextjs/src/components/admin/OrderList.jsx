@@ -269,7 +269,7 @@ export default function OrderList({ showOnlyRequests = false }) {
   return (
     <div className="order-list">
       
-      {/* 🚀 CENTERED GLOBAL REFRESH LOADER */}
+      {/* CENTERED GLOBAL REFRESH LOADER */}
       {isRefreshing && (
         <div className="global-refresh-overlay">
           <div className="global-spinner"></div>

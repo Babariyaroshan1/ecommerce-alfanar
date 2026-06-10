@@ -477,7 +477,7 @@ export default function Checkout() {
     );
   };
 
-  // 🔥 Triggered from inside the modal
+  // Triggered from inside the modal
   const executePayment = async (selectedMethod) => {
     // Validate UPI if selected
     if (selectedMethod === 'upi') {
@@ -770,7 +770,7 @@ export default function Checkout() {
                 fontSize: '13px',
                 color: '#92400e'
               }}>
-                <strong>⚠️ {unavailableItems.length} item(s) not available</strong>
+                <strong><i className="fa-solid fa-triangle-exclamation"></i> {unavailableItems.length} item(s) not available</strong>
                 <p style={{margin: '6px 0 0 0', fontSize: '12px'}}>
                   These products are not available in {selectedCurrency === 'KWD' ? 'Kuwait' : 'India'}. Please remove them or change country to continue.
                 </p>
@@ -1121,7 +1121,7 @@ export default function Checkout() {
         </div>
       )}
 
-      {/* 🔥 PAYMENT MODAL / BOTTOM SHEET */}
+      {/* PAYMENT MODAL / BOTTOM SHEET */}}
       {showPaymentModal && (
         <div className="payment-overlay" onClick={() => {
           setShowPaymentModal(false);
@@ -1153,7 +1153,7 @@ export default function Checkout() {
                 onClick={() => handlePaymentMethodSelect('upi')}
               >
                 <div className="pay-method-title">
-                  <span>⚡</span> {t("UPI Payment")}
+                  <span><i className="fa-solid fa-bolt"></i></span> {t("UPI Payment")}}
                 </div>
                 <div className="upi-apps">
                   <div className="upi-app-icon">

@@ -27,7 +27,7 @@ export default function ProductReviewsManagement() {
       setReviews(response.data || []);
     } catch (error) {
       console.error('Error fetching reviews:', error);
-      setMessage('❌ Failed to load reviews');
+      setMessage('[ERROR] Failed to load reviews');
     } finally {
       setLoading(false);
     }
@@ -50,12 +50,12 @@ export default function ProductReviewsManagement() {
       await axios.put(`${API_URL}/reviews/${editingReview._id}`, formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setMessage('✅ Review updated successfully');
+      setMessage('[SUCCESS] Review updated successfully');
       setEditingReview(null);
       fetchReviews();
     } catch (error) {
       console.error('Error updating review:', error);
-      setMessage('❌ Failed to update review');
+      setMessage('[ERROR] Failed to update review');
     }
 
     setTimeout(() => setMessage(''), 5000);
@@ -67,11 +67,11 @@ export default function ProductReviewsManagement() {
       await axios.delete(`${API_URL}/reviews/${reviewId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setMessage('✅ Review deleted');
+      setMessage('[SUCCESS] Review deleted');
       fetchReviews();
     } catch (error) {
       console.error('Error deleting review:', error);
-      setMessage('❌ Failed to delete review');
+      setMessage('[ERROR] Failed to delete review');
     }
 
     setTimeout(() => setMessage(''), 5000);
@@ -82,11 +82,11 @@ export default function ProductReviewsManagement() {
       await axios.put(`${API_URL}/reviews/${review._id}`, { approved: !review.approved }, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setMessage(`✅ Review ${review.approved ? 'unapproved' : 'approved'}`);
+      setMessage(`[SUCCESS] Review ${review.approved ? 'unapproved' : 'approved'}`);
       fetchReviews();
     } catch (error) {
       console.error('Error toggling approval:', error);
-      setMessage('❌ Failed to update review approval');
+      setMessage('[ERROR] Failed to update review approval');
     }
 
     setTimeout(() => setMessage(''), 5000);
@@ -105,7 +105,7 @@ export default function ProductReviewsManagement() {
       </div>
 
       {message && (
-        <div className={`message ${message.includes('✅') ? 'success' : 'error'}`}>{message}</div>
+        <div className={`message ${message.includes('[SUCCESS]') ? 'success' : 'error'}`}>{message}</div>
       )}
 
       {editingReview && (

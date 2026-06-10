@@ -110,19 +110,19 @@
 
       const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
       if (!validTypes.includes(file.type)) {
-        console.error('❌ Invalid file type:', file.type);
+        console.error('[ERROR] Invalid file type:', file.type);
         throw new Error(`Invalid file type: ${file.type}. Allowed: JPG, PNG, WebP, GIF`);
       }
 
       if (file.size > 5 * 1024 * 1024) {
-        console.error('❌ File too large:', file.size);
+        console.error('[ERROR] File too large:', file.size);
         throw new Error('File too large. Max 5MB allowed.');
       }
 
       const uploadForm = new FormData();
       uploadForm.append('file', file);
 
-      console.log('🚀 DEBUG - Sending file to backend');
+      console.log('[DEBUG] Sending file to backend');
 
       try {
         const response = await axios.post(`${API_URL}/upload`, uploadForm, {
@@ -130,7 +130,7 @@
           timeout: 30000 // 30 second timeout
         });
 
-        console.log('✅ DEBUG - Upload response:', {
+        console.log('[SUCCESS] Upload response:', {
           status: response.status,
           url: response.data.url,
           message: response.data.message
@@ -147,7 +147,7 @@
           fullResponse: error.response?.data
         };
 
-        console.error('❌ Upload failed for', file.name, ':', errorDetails);
+        console.error('[ERROR] Upload failed for', file.name, ':', errorDetails);
         
         // Show the actual backend error
         const backendError = error.response?.data?.message || error.response?.data?.error || error.message;
@@ -170,7 +170,7 @@
         setNotificationOpen(true);
       } catch (error) {
         const errorMsg = error.message || 'Main image upload failed';
-        console.error('❌ Main image upload error:', errorMsg);
+        console.error('[ERROR] Main image upload error:', errorMsg);
         setErrorMessage(errorMsg);
         setNotificationType('error');
         setNotificationOpen(true);
@@ -198,7 +198,7 @@
         setNotificationOpen(true);
       } catch (error) {
         const errorMsg = error.message || 'Main image upload failed';
-        console.error('❌ Main image drag-drop error:', errorMsg);
+        console.error('[ERROR] Main image drag-drop error:', errorMsg);
         setErrorMessage(errorMsg);
         setNotificationType('error');
         setNotificationOpen(true);
@@ -234,11 +234,11 @@
           
           try {
             const url = await uploadImageFile(file);
-            console.log(`✅ DEBUG - Image ${i + 1} uploaded:`, url);
+            console.log(`[SUCCESS] Image ${i + 1} uploaded:`, url);
             uploadedUrls.push(url);
           } catch (error) {
             const errorMsg = error.message || 'Unknown error';
-            console.error(`❌ DEBUG - Image ${i + 1} failed:`, errorMsg);
+            console.error(`[ERROR] Image ${i + 1} failed:`, errorMsg);
             failedUploads.push({ filename: file.name, error: errorMsg });
           }
         }
@@ -269,7 +269,7 @@
           setNotificationOpen(true);
         }
       } catch (error) {
-        console.error('❌ DEBUG - Batch upload error:', error);
+        console.error('[ERROR] Batch upload error:', error);
         setErrorMessage(`Upload error: ${error.message}`);
         setNotificationType('error');
         setNotificationOpen(true);
@@ -321,7 +321,7 @@
           setNotificationOpen(true);
         }
       } catch (error) {
-        console.error('❌ Quick images drag-drop error:', error);
+        console.error('[ERROR] Quick images drag-drop error:', error);
         setErrorMessage(`Upload error: ${error.message}`);
         setNotificationType('error');
         setNotificationOpen(true);
@@ -498,7 +498,7 @@
         return;
       }
 
-      // 🔥 DEBUG: Log what we're about to submit
+      // DEBUG: Log what we're about to submit
       const imagesToSubmit = formData.images.filter(Boolean);
       console.log('🔍 DEBUG - Images to submit:', {
         totalImages: formData.images.length,
@@ -558,13 +558,13 @@
             .filter(Boolean),
         };
 
-        console.log('🚀 DEBUG - Submitting to backend:', submitPayload);
+        console.log('[DEBUG] Submitting to backend:', submitPayload);
 
         const response = await axios.post(`${API_URL}/products`, submitPayload, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        console.log('✅ DEBUG - Backend response:', response.data);
+        console.log('[SUCCESS] Backend response:', response.data);
 
         setSuccessMessage('Product added successfully!');
         setNotificationType('success');
@@ -572,7 +572,7 @@
         resetForm();
         setTimeout(() => setSuccessMessage(''), 3000);
       } catch (error) {
-        console.error('❌ DEBUG - Backend error:', error.response?.data || error.message);
+        console.error('[ERROR] Backend error:', error.response?.data || error.message);
         
         const localProduct = {
           _id: Date.now().toString(),
@@ -594,7 +594,7 @@
           resetForm();
           setTimeout(() => setSuccessMessage(''), 3000);
         } catch (localError) {
-          console.error('❌ DEBUG - Local add error:', localError);
+          console.error('[ERROR] Local add error:', localError);
           setErrorMessage(error.response?.data?.message || 'Failed to add product');
           setNotificationType('error');
           setNotificationOpen(true);
@@ -865,7 +865,7 @@
                       <span className="toggle-switch-ord "></span>
                     </label>
                     <span className="toggle-label">
-                      {formData.isNew ? '🌟 Marked as New Arrival' : 'Mark as New Arrival'}
+                      {formData.isNew ? <><i className="fa-solid fa-star"></i> Marked as New Arrival</> : 'Mark as New Arrival'}
                     </span>
                   </div>
 
@@ -884,7 +884,7 @@
                       <span className="toggle-switch-ord "></span>
                     </label>
                     <span className="toggle-label">
-                      {formData.isFeaturedOnHome ? '⭐ Featured on Home Page' : 'Feature on Home Page'}
+                      {formData.isFeaturedOnHome ? <><i className="fa-solid fa-star"></i> Featured on Home Page</> : 'Feature on Home Page'}
                     </span>
                   </div>
 
@@ -904,7 +904,7 @@
                     </label>
                     <span className="toggle-label">
                       {formData.showSimilarProductButton
-                        ? '🎨 Show Same Color Button'
+                        ? <><i className="fa-solid fa-palette"></i> Show Same Color Button</>
                         : 'Hide Same Color Button'}
                     </span>
                   </div>

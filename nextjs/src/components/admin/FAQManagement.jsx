@@ -31,7 +31,7 @@ export default function FAQManagement() {
       setFaqs(response.data);
     } catch (error) {
       console.error('Error fetching FAQs:', error);
-      setMessage('❌ Failed to load FAQs');
+      setMessage('[ERROR] Failed to load FAQs');
     }
   };
 
@@ -44,18 +44,18 @@ export default function FAQManagement() {
         await axios.put(`${API_URL}/faqs/${editingFaq._id}`, formData, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        setMessage('✅ FAQ updated successfully');
+        setMessage('[SUCCESS] FAQ updated successfully');
       } else {
         await axios.post(`${API_URL}/faqs`, formData, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        setMessage('✅ FAQ created successfully');
+        setMessage('[SUCCESS] FAQ created successfully');
       }
 
       fetchFAQs();
       resetForm();
     } catch (error) {
-      setMessage('❌ Failed to save FAQ');
+      setMessage('[ERROR] Failed to save FAQ');
       console.error('Error saving FAQ:', error);
     } finally {
       setLoading(false);
@@ -80,10 +80,10 @@ export default function FAQManagement() {
       await axios.delete(`${API_URL}/faqs/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setMessage('✅ FAQ deleted successfully');
+      setMessage('[SUCCESS] FAQ deleted successfully');
       fetchFAQs();
     } catch (error) {
-      setMessage('❌ Failed to delete FAQ');
+      setMessage('[ERROR] Failed to delete FAQ');
       console.error('Error deleting FAQ:', error);
     }
   };
@@ -110,7 +110,7 @@ export default function FAQManagement() {
       </div>
 
       {message && (
-        <div className={`message ${message.includes('✅') ? 'success' : 'error'}`}>
+        <div className={`message ${message.includes('[SUCCESS]') ? 'success' : 'error'}`}>
           {message}
         </div>
       )}

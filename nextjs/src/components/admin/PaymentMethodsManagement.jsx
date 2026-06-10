@@ -31,7 +31,7 @@ export default function PaymentMethodsManagement() {
       setEnabledMethods(response.data.enabledPaymentMethods || ['upi', 'card', 'netbanking', 'cod']);
     } catch (error) {
       console.error('Error fetching payment methods:', error);
-      setMessage('❌ Failed to load payment methods. Using defaults.');
+      setMessage('[ERROR] Failed to load payment methods. Using defaults.');
     } finally {
       setIsInitializing(false);
     }
@@ -42,7 +42,7 @@ export default function PaymentMethodsManagement() {
       if (prev.includes(methodId)) {
         // Remove method if all methods are enabled and this is the last one
         if (prev.length === 1) {
-          setMessage('❌ At least one payment method must be enabled.');
+          setMessage('[ERROR] At least one payment method must be enabled.');
           return prev;
         }
         return prev.filter((m) => m !== methodId);
@@ -54,12 +54,12 @@ export default function PaymentMethodsManagement() {
 
   const handleSaveChanges = async () => {
     if (!token) {
-      setMessage('❌ Admin token missing. Please login again.');
+      setMessage('[ERROR] Admin token missing. Please login again.');
       return;
     }
 
     if (enabledMethods.length === 0) {
-      setMessage('❌ At least one payment method must be enabled.');
+      setMessage('[ERROR] At least one payment method must be enabled.');
       return;
     }
 
@@ -73,11 +73,11 @@ export default function PaymentMethodsManagement() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      setMessage('✅ Payment methods updated successfully!');
+      setMessage('[SUCCESS] Payment methods updated successfully!');
       setTimeout(() => setMessage(''), 5000);
     } catch (error) {
       const errorText = error.response?.data?.message || error.message;
-      setMessage(`❌ Failed to update payment methods. ${errorText}`);
+      setMessage(`[ERROR] Failed to update payment methods. ${errorText}`);
       console.error('Error updating payment methods:', error);
     } finally {
       setLoading(false);
@@ -96,7 +96,7 @@ export default function PaymentMethodsManagement() {
       </div>
 
       {message && (
-        <div className={`message ${message.includes('✅') ? 'success' : 'error'}`}>
+        <div className={`message ${message.includes('[SUCCESS]') ? 'success' : 'error'}`}>
           {message}
         </div>
       )}

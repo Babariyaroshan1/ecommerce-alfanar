@@ -57,9 +57,9 @@ export default function BannerSettings() {
 
     try {
       const uploadedUrl = await uploadImageFile(file);
-      console.log('✅ Uploaded URL:', uploadedUrl);
+      console.log('[SUCCESS] Uploaded URL:', uploadedUrl);
       setUrl(uploadedUrl);
-      setMessage(`✅ Image uploaded to Cloudinary. URL: ${uploadedUrl.substring(0, 50)}...`);
+      setMessage(`[SUCCESS] Image uploaded to Cloudinary. URL: ${uploadedUrl.substring(0, 50)}...`);
     } catch (error) {
       console.error('Upload error:', error);
       setMessage(error.response?.data?.message || 'Image upload failed.');
@@ -70,7 +70,7 @@ export default function BannerSettings() {
 
   const handleSave = async () => {
     if (!bannerUrl.trim()) {
-      setMessage('❌ Desktop banner URL is required.');
+      setMessage('[ERROR] Desktop banner URL is required.');
       return;
     }
 
@@ -80,7 +80,7 @@ export default function BannerSettings() {
     const isFullUrl = bannerUrl.startsWith('http://') || bannerUrl.startsWith('https://');
 
     if (!isCloudinary && !isFullUrl) {
-      setMessage('❌ Error: Only upload images using the button OR use full URLs (https://...). Relative paths like /banner.png do NOT work on Vercel/live server. Please use the Upload button.');
+      setMessage('[ERROR] Error: Only upload images using the button OR use full URLs (https://...). Relative paths like /banner.png do NOT work on Vercel/live server. Please use the Upload button.');
       return;
     }
 
@@ -94,7 +94,7 @@ export default function BannerSettings() {
       );
       setSavedUrl(bannerUrl);
       setSavedMobileUrl(mobileBannerUrl);
-      setMessage('✅ Banner settings saved successfully.');
+      setMessage('[SUCCESS] Banner settings saved successfully.');
     } catch (error) {
       console.error('Error saving banner URL:', error);
       setMessage(error.response?.data?.message || 'Unable to save banner URL.');
@@ -216,9 +216,9 @@ export default function BannerSettings() {
               <strong>How to use:</strong>
             </p>
             <ul style={{ fontSize: '0.95rem', color: '#6b7280', marginLeft: '16px' }}>
-              <li>✅ <strong>Best option:</strong> Use "Upload" buttons → Images go to Cloudinary (reliable & fast)</li>
-              <li>⚠️ Manual URL entry: Must be a full URL (https://example.com/banner.png) or file path in public folder (/banner.png)</li>
-              <li>❌ Don't use relative paths like "/banner.png" unless the file actually exists in your public directory</li>
+              <li><i className="fa-solid fa-check"></i> <strong>Best option:</strong> Use "Upload" buttons → Images go to Cloudinary (reliable & fast)</li>
+              <li><i className="fa-solid fa-triangle-exclamation"></i> Manual URL entry: Must be a full URL (https://example.com/banner.png) or file path in public folder (/banner.png)</li>
+              <li><i className="fa-solid fa-x"></i> Don't use relative paths like "/banner.png" unless the file actually exists in your public directory</li>
             </ul>
           </div>
         </>
