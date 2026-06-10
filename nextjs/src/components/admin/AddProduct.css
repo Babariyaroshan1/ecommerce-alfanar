@@ -270,8 +270,13 @@
   border-radius: 14px;
 }
 
+
+/* =========================================
+   FIXED TOGGLE SWITCH CSS
+   ========================================= */
 .toggle-switch {
   position: relative;
+  display: inline-block;
   width: 50px;
   height: 28px;
   flex-shrink: 0;
@@ -282,54 +287,45 @@
   width: 0;
   height: 0;
 }
+
+/* Background of the toggle (Grey by default) */
 .toggle-switch-ord {
-  position: relative;
-  width: 50px;
-  height: 28px;
-  border-radius: 999px;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  padding: 3px;
-  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-sizing: border-box;
-}
-.toggle-switch-ord.off .toggle-thumb {
-  transform: translateX(0);
-}
-
-.toggle-switch-ord.on .toggle-thumb {
-  transform: translateX(22px); 
-}
-.toggle-switch-ord.off {
-  background-color: #cbd5e1;
-}
-
-/* ON State (Emerald Green) */
-.toggle-switch-ord.on {
-  background-color: #10b981; 
-}
-
-.toggle-slider::before {
-  content: "";
   position: absolute;
-  width: 18px;
-  height: 18px;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #cbd5e1; /* Grey color when OFF */
+  border-radius: 28px;
+  transition: background-color 0.3s ease;
+}
+
+/* White Circle (Thumb) */
+.toggle-switch-ord::before {
+  position: absolute;
+  content: "";
+  height: 22px;
+  width: 22px;
   left: 3px;
-  top: 3px;
-  background: #fff;
+  bottom: 3px;
+  background-color: white;
   border-radius: 50%;
-  transition: 0.25s;
+  transition: transform 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); /* Slight shadow to make circle pop */
 }
 
-.toggle-switch input:checked + .toggle-slider-add {
-  background: #2563eb;
+/* Background when ON (Green) */
+.toggle-switch input:checked + .toggle-switch-ord {
+  background-color: #10b981; /* Emerald Green color */
 }
 
-.toggle-switch input:checked + .toggle-slider::before {
+/* Circle moves to right when ON */
+.toggle-switch input:checked + .toggle-switch-ord::before {
   transform: translateX(22px);
 }
+/* ========================================= */
+
 
 .toggle-label {
   font-size: 14px;
