@@ -822,7 +822,7 @@ const AddProduct = () => {
                         }))
                       }
                     />
-                    <span className="toggle-slider-add "></span>
+                    <span className="toggle-switch-ord "></span>
                   </label>
                   <span className="toggle-label">
                     {formData.allowReturn ? '↩ Return Available' : '↩ Return Not Available'}
@@ -841,7 +841,7 @@ const AddProduct = () => {
                         }))
                       }
                     />
-                    <span className="toggle-slider-add "></span>
+                    <span className="toggle-switch-ord "></span>
                   </label>
                   <span className="toggle-label">
                     {formData.allowReplacement
@@ -862,7 +862,7 @@ const AddProduct = () => {
                         }))
                       }
                     />
-                    <span className="toggle-slider-add "></span>
+                    <span className="toggle-switch-ord "></span>
                   </label>
                   <span className="toggle-label">
                     {formData.isNew ? '🌟 Marked as New Arrival' : 'Mark as New Arrival'}
@@ -881,7 +881,7 @@ const AddProduct = () => {
                         }))
                       }
                     />
-                    <span className="toggle-slider-add "></span>
+                    <span className="toggle-switch-ord "></span>
                   </label>
                   <span className="toggle-label">
                     {formData.isFeaturedOnHome ? '⭐ Featured on Home Page' : 'Feature on Home Page'}
@@ -900,7 +900,7 @@ const AddProduct = () => {
                         }))
                       }
                     />
-                    <span className="toggle-slider-add "></span>
+                    <span className="toggle-switch-ord "></span>
                   </label>
                   <span className="toggle-label">
                     {formData.showSimilarProductButton

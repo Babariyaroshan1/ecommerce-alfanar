@@ -282,14 +282,33 @@
   width: 0;
   height: 0;
 }
-
-.toggle-slider-add {
-  position: absolute;
-  inset: 0;
-  background: #cbd5e1;
+.toggle-switch-ord {
+  position: relative;
+  width: 50px;
+  height: 28px;
   border-radius: 999px;
+  border: none;
   cursor: pointer;
-  transition: 0.25s;
+  display: flex;
+  align-items: center;
+  padding: 3px;
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-sizing: border-box;
+}
+.toggle-switch-ord.off .toggle-thumb {
+  transform: translateX(0);
+}
+
+.toggle-switch-ord.on .toggle-thumb {
+  transform: translateX(22px); 
+}
+.toggle-switch-ord.off {
+  background-color: #cbd5e1;
+}
+
+/* ON State (Emerald Green) */
+.toggle-switch-ord.on {
+  background-color: #10b981; 
 }
 
 .toggle-slider::before {
