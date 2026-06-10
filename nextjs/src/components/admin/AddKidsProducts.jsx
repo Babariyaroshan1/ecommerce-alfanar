@@ -50,8 +50,8 @@ export default function AddKidsProducts() {
     colors: [],
     sizes: [],
     stock: {},
-    allowReturn: true,
-    allowReplacement: true,
+    allowReturn: false,
+    allowReplacement: false,
   });
 
   const [colors, setColors] = useState(['']);
@@ -272,8 +272,8 @@ export default function AddKidsProducts() {
       colors: [],
       sizes: [],
       stock: {},
-      allowReturn: true,
-      allowReplacement: true,
+      allowReturn: false,
+      allowReplacement: false,
     });
 
     setColors(['']);
