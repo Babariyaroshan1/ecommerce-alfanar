@@ -86,6 +86,21 @@ router.get('/', async (req, res) => {
     }
 });
 
+// Get all product categories
+router.get('/categories', async (req, res) => {
+    try {
+        const categories = await Product.distinct('category', { category: { $exists: true, $ne: '' } });
+        const sortedCategories = categories
+            .filter((category) => category && category.toString().trim())
+            .map((category) => category.toString())
+            .sort((a, b) => a.localeCompare(b));
+
+        res.json(sortedCategories);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
 // Get single product
 router.get('/:id', async (req, res) => {
     try {

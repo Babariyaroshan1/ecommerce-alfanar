@@ -26,7 +26,7 @@
     return Number((Number(amount) / rate).toFixed(2));
   };
 
-  const DEFAULT_CATEGORIES = ['Kurti', 'Gown', 'Midi', 'Maxi'];
+  const DEFAULT_CATEGORIES = ['Midi', 'Maxi','Pajamas','Kurti', 'Gown'];
   const SIZES = ['S', 'M', 'L', 'XL', 'XXL', 'Free'];
 
   const AddProduct = () => {
