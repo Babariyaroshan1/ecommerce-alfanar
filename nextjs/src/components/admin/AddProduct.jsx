@@ -717,39 +717,10 @@ const AddProduct = () => {
             </div>
           </div>
         )}
-        {/* ==================================================== 
-            NEW LAYOUT FOR STOCK INLINE ROW
-            ==================================================== */}
-        <div className="form-section full-width">
-          <h3>Stock Per Size</h3>
-          <div className="stock-per-size-row">
-            {formData.sizes.map((size) => (
-              <div key={size} className="stock-input-inline">
-                <label>{size}</label>
-                <input
-                  type="number"
-                  value={formData.stock[size] ?? ''}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    setFormData((prev) => ({
-                      ...prev,
-                      stock: {
-                        ...prev.stock,
-                        [size]: value === '' ? '' : Number(value),
-                      },
-                    }));
-                  }}
-                  placeholder="0"
-                  min="0"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
 
         <div className="form-section full-width">
           <div className="form-actions">
-            <button type="submit" className="submit-btn" disabled={loading}>
+            <button type="submit"style={{backgroundColor: 'black'}} className="submit-btn" disabled={loading}>
               {loading ? 'Adding Product...' : 'Add Product'}
             </button>
             <button
