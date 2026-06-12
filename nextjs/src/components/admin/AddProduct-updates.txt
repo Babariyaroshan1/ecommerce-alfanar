@@ -1,0 +1,64 @@
+CHANGES NEEDED FOR AddProduct.jsx:
+
+1. In handleDeleteCategory function - add localStorage save logic
+
+2. Find this section and replace:
+   <div className="form-group">
+     <label>Description</label>
+     <textarea
+       name="description"
+       value={formData.description}
+       onChange={handleChange}
+       placeholder="Enter product description"
+       rows="5"
+     />
+   </div>
+   </div>
+
+   WITH:
+   <div className="form-group">
+     <label>Description</label>
+     <textarea
+       name="description"
+       value={formData.description}
+       onChange={handleChange}
+       placeholder="Enter product description"
+       rows="5"
+     />
+   </div>
+
+   <div className="form-grid two-col">
+     <div className="form-group">
+       <label>Material & Care (Optional)</label>
+       <textarea
+         name="materialAndCare"
+         value={formData.materialAndCare}
+         onChange={handleChange}
+         placeholder="e.g., 100% Cotton. Wash in cold water. Do not bleach."
+         rows="3"
+       />
+     </div>
+
+     <div className="form-group">
+       <label>Country of Origin (Optional)</label>
+       <input
+         type="text"
+         name="countryOfOrigin"
+         value={formData.countryOfOrigin}
+         onChange={handleChange}
+         placeholder="e.g., India"
+       />
+     </div>
+   </div>
+   </div>
+
+3. For the handleDeleteCategory - add this code after filtering:
+   const isCustom = !DEFAULT_CATEGORIES.includes(category);
+   if (isCustom) {
+     const customCats = updated.filter(cat => !DEFAULT_CATEGORIES.includes(cat));
+     try {
+       localStorage.setItem(CUSTOM_CATEGORIES_STORAGE_KEY, JSON.stringify(customCats));
+     } catch (e) {
+       console.error('Error saving categories:', e);
+     }
+   }

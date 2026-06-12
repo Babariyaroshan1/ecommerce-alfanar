@@ -1,0 +1,59 @@
+// UPDATE FOR ProductList.jsx - Add after line 23 (after DEFAULT_CATEGORIES):
+
+const CUSTOM_CATEGORIES_STORAGE_KEY = 'noor_custom_categories';
+
+// ADD this helper function after line 80 (before ProductList component):
+
+const loadSavedCategories = () => {
+  try {
+    const saved = localStorage.getItem(CUSTOM_CATEGORIES_STORAGE_KEY);
+    return saved ? JSON.parse(saved) : [];
+  } catch (e) {
+    console.error('Error loading saved categories:', e);
+    return [];
+  }
+};
+
+// UPDATE the ProductList component to use state with saved categories:
+// Change this line (around line 82):
+//const ProductList = ({ role = 'admin', permissions = [] }) => {
+//  const fetchProducts = useProductStore((state) => state.fetchProducts);
+//  ...
+//  const [editingProductId, setEditingProductId] = useState(null);
+
+// TO:
+//const ProductList = ({ role = 'admin', permissions = [] }) => {
+//  const fetchProducts = useProductStore((state) => state.fetchProducts);
+//  ...
+//  const [editingProductId, setEditingProductId] = useState(null);
+//  const [defaultCategories, setDefaultCategories] = useState(() => [
+//    ...DEFAULT_CATEGORIES,
+//    ...loadSavedCategories()
+//  ]);
+
+// THEN in the handleEditClick function, find this line (around line 787):
+//  {DEFAULT_CATEGORIES.map((cat) => (
+
+// REPLACE WITH:
+//  {defaultCategories.map((cat) => (
+
+// FOR SAVING CUSTOM CATEGORIES ON EDIT - find the handleSaveEdit function
+// and in the try block, after successful product update, add:
+//
+// // Save custom category if it's new
+// const finalCategory = editValues.showCustomCategory ? editValues.customCategory : editValues.category;
+// if (!DEFAULT_CATEGORIES.includes(finalCategory)) {
+//   setDefaultCategories(prev => {
+//     if (!prev.includes(finalCategory)) {
+//       const updated = [...prev, finalCategory];
+//       const customCats = updated.filter(cat => !DEFAULT_CATEGORIES.includes(cat));
+//       try {
+//         localStorage.setItem(CUSTOM_CATEGORIES_STORAGE_KEY, JSON.stringify(customCats));
+//       } catch (e) {
+//         console.error('Error saving categories:', e);
+//       }
+//       return updated;
+//     }
+//     return prev;
+//   });
+// }

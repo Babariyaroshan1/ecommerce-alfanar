@@ -20,7 +20,19 @@ const PREDEFINED_COLORS =[
   { name: 'Orange', hex: '#FFA500' },
 ];
 
-const DEFAULT_CATEGORIES = ['Kurti', 'Gown', 'Caps', 'Shirt', 'Pants', 'Accessories', 'Midi', 'Maxi'];
+const DEFAULT_CATEGORIES = ['Kurti', 'Gown','Pajamas', 'Midi', 'Maxi'];
+const CUSTOM_CATEGORIES_STORAGE_KEY = 'noor_custom_categories';
+
+const loadSavedCategories = () => {
+  try {
+    const saved = localStorage.getItem(CUSTOM_CATEGORIES_STORAGE_KEY);
+    return saved ? JSON.parse(saved) : [];
+  } catch (e) {
+    console.error('Error loading saved categories:', e);
+    return [];
+  }
+};
+
 const SIZES = ['S', 'M', 'L', 'XL', 'XXL', 'Free'];
 const KIDS_SIZES = [
   '2Y',
@@ -88,6 +100,12 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterMode, setFilterMode] = useState('all');
   const [editingProductId, setEditingProductId] = useState(null);
+  
+  // Load saved custom categories
+  const [defaultCategories, setDefaultCategories] = useState(() => [
+    ...DEFAULT_CATEGORIES,
+    ...loadSavedCategories()
+  ]);
   
   // Granular permission checks
   const isAdmin = role === 'admin';
@@ -632,6 +650,24 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
         showSameColorButton: savedProduct.showSameColorButton === true || savedProduct.showSameColorButton === 'true'
       });
 
+      // Save custom category if it's new
+      const finalCategory = editValues.showCustomCategory ? editValues.customCategory : editValues.category;
+      if (!DEFAULT_CATEGORIES.includes(finalCategory)) {
+        setDefaultCategories(prev => {
+          if (!prev.includes(finalCategory)) {
+            const updated = [...prev, finalCategory];
+            const customCats = updated.filter(cat => !DEFAULT_CATEGORIES.includes(cat));
+            try {
+              localStorage.setItem(CUSTOM_CATEGORIES_STORAGE_KEY, JSON.stringify(customCats));
+            } catch (e) {
+              console.error('Error saving categories:', e);
+            }
+            return updated;
+          }
+          return prev;
+        });
+      }
+
       setSuccessMessage('Product updated successfully!');
       await fetchProducts();
       setEditingProductId(null);
@@ -784,7 +820,7 @@ return (
                   }}
                 >
                   <option value="">Select a category</option>
-                  {DEFAULT_CATEGORIES.map((cat) => (
+                  {defaultCategories.map((cat) => (
                     <option key={cat} value={cat}>
                       {cat}
                     </option>
@@ -1297,7 +1333,7 @@ return (
             </div>
 
             <div className="edit-form-row full-width">
-              <label>Material & Care</label>
+              <label>Material & Care (Optional)</label>
               <textarea
                 value={editValues.materialAndCare}
                 onChange={(e) =>
@@ -1311,7 +1347,7 @@ return (
             </div>
 
             <div className="edit-form-row">
-              <label>Country of Origin</label>
+              <label>Country of Origin (Optional)</label>
               <input
                 type="text"
                 value={editValues.countryOfOrigin}
