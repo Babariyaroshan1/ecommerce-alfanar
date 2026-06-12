@@ -309,13 +309,25 @@ const AddProduct = () => {
   const handleAddColor = () => setFormData((prev) => ({ ...prev, colors: [...prev.colors, ''] }));
   const handleRemoveColor = (index) => setFormData((prev) => ({ ...prev, colors: prev.colors.filter((_, idx) => idx !== index) }));
 
-  const handleSizeChange = (size) => {
-    setFormData((prev) => ({
-      ...prev,
-      sizes: prev.sizes.includes(size)
+ const handleSizeChange = (size) => {
+    setFormData((prev) => {
+      const isSelected = prev.sizes.includes(size);
+      const newSizes = isSelected
         ? prev.sizes.filter((s) => s !== size)
-        : [...prev.sizes, size],
-    }));
+        : [...prev.sizes, size];
+
+      // Unselect karne par purana stock data clear kar dega
+      const newStock = { ...prev.stock };
+      if (isSelected) {
+        delete newStock[size];
+      }
+
+      return {
+        ...prev,
+        sizes: newSizes,
+        stock: newStock
+      };
+    });
   };
 
   const handleImageUrlChange = (index, value) => {
@@ -613,8 +625,9 @@ const AddProduct = () => {
             ==================================================== */}
         <div className="form-section full-width">
           <h3>Colors & Sizes</h3>
-          <div className="form-grid two-column-layout">
+          <div className="form-grid two-col">
             
+            {/* Left Column: Colors */}
             <div className="form-group colors-group">
               <label>Product Colors</label>
               <div className="color-rows">
@@ -653,19 +666,19 @@ const AddProduct = () => {
               </div>
             </div>
 
+            {/* Right Column: Sizes (As Fillable Buttons) */}
             <div className="form-group sizes-group">
               <label>Available Sizes</label>
-              <div className="sizes-checkbox-container">
+              <div className="sizes-button-container">
                 {SIZES.map((size) => (
-                  <label key={size} className="custom-black-checkbox">
-                    <input
-                      type="checkbox"
-                      checked={formData.sizes.includes(size)}
-                      onChange={() => handleSizeChange(size)}
-                    />
-                    <span className="checkmark" aria-hidden="true"></span>
-                    <span className="size-label">{size}</span>
-                  </label>
+                  <button
+                    key={size}
+                    type="button"
+                    className={`custom-size-btn ${formData.sizes.includes(size) ? 'selected' : ''}`}
+                    onClick={() => handleSizeChange(size)}
+                  >
+                    {size}
+                  </button>
                 ))}
               </div>
             </div>
@@ -673,6 +686,37 @@ const AddProduct = () => {
           </div>
         </div>
 
+        {/* ==================================================== 
+            STOCK (SMALL & COMPACT) - ONLY SHOWS IF SIZES SELECTED
+            ==================================================== */}
+        {formData.sizes.length > 0 && (
+          <div className="form-section full-width">
+            <h3>Stock Per Size</h3>
+            <div className="stock-per-size-row-compact">
+              {formData.sizes.map((size) => (
+                <div key={size} className="compact-stock-input">
+                  <label>{size}</label>
+                  <input
+                    type="number"
+                    value={formData.stock[size] ?? ''}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setFormData((prev) => ({
+                        ...prev,
+                        stock: {
+                          ...prev.stock,
+                          [size]: value === '' ? '' : Number(value),
+                        },
+                      }));
+                    }}
+                    placeholder="0"
+                    min="0"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
         {/* ==================================================== 
             NEW LAYOUT FOR STOCK INLINE ROW
             ==================================================== */}
