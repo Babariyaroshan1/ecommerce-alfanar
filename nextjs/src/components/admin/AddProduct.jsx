@@ -1156,15 +1156,16 @@ const AddProduct = () => {
 
             <div className="form-group sizes-group">
               <label>Available Sizes</label>
-              <div className="sizes-checkboxes">
+              <div className="sizes-checkbox-container">
                 {SIZES.map((size) => (
-                  <label key={size} className="checkbox-label">
+                  <label key={size} className="custom-black-checkbox">
                     <input
                       type="checkbox"
                       checked={formData.sizes.includes(size)}
                       onChange={() => handleSizeChange(size)}
                     />
-                    {size}
+                    <span className="checkmark" aria-hidden="true"></span>
+                    <span className="size-label">{size}</span>
                   </label>
                 ))}
               </div>
@@ -1175,20 +1176,20 @@ const AddProduct = () => {
         <div className="form-section full-width">
           <h3>Stock Per Size</h3>
 
-          <div className="stock-grid">
+          <div className="stock-per-size-row">
             {formData.sizes.map((size) => (
-              <div key={size} className="stock-input-group">
-                <label>{size} Stock</label>
+              <div key={size} className="stock-input-inline">
+                <label>{size}</label>
                 <input
                   type="number"
-                  value={formData.stock[size] || ''}
+                  value={formData.stock[size] ?? ''}
                   onChange={(e) => {
                     const value = e.target.value;
                     setFormData((prev) => ({
                       ...prev,
                       stock: {
                         ...prev.stock,
-                        [size]: value === '' ? 0 : Number(value),
+                        [size]: value === '' ? '' : Number(value),
                       },
                     }));
                   }}

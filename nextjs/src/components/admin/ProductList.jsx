@@ -1221,84 +1221,33 @@ return (
               </div>
             )}
 
-            {/* COLORS AND SIZES IN ONE ROW */}
-            <div className="edit-form-row full-width two-column-layout">
-              {/* Left Side: Colors */}
-              <div className="colors-section">
-                <label>Available Colors</label>
-                <div className="color-rows">
-                  {editValues.colors.map((color, index) => (
-                    <div key={index} className="color-row-item">
-                      <input
-                        type="text"
-                        value={color}
-                        onChange={(e) => handleColorChange(index, e.target.value)}
-                        placeholder="e.g. Red, #FF0000"
-                      />
-                      <input
-                        type="color"
-                        value={color.startsWith('#') ? color : '#000000'}
-                        onChange={(e) => handleColorChange(index, e.target.value)}
-                        className="color-picker-input"
-                      />
-                      <button
-                        type="button"
-                        className="btn-eyedropper"
-                        onClick={() => handleEyeDropper(index)}
-                      >
-                        <i className="fa-solid fa-magnifying-glass"></i>
-                      </button>
-                      {editValues.colors.length > 1 && (
-                        <button
-                          type="button"
-                          className="btn-small btn-remove-icon"
-                          onClick={() => handleRemoveColor(index)}
-                        >
-                          ✖
-                        </button>
-                      )}
-                    </div>
-                  ))}
-
+            <div className="edit-form-row">
+              <label>Available Sizes</label>
+              <div className="sizes-selector-compact">
+                {getSizesForCategory(
+                  editValues.showCustomCategory
+                    ? editValues.customCategory
+                    : editValues.category
+                ).map((size) => (
                   <button
+                    key={size}
                     type="button"
-                    className="btn-small btn-add"
-                    onClick={handleAddColor}
+                    className={`size-btn-compact ${
+                      editValues.sizes.includes(size) ? 'selected' : ''
+                    }`}
+                    onClick={() => handleSizeToggle(size)}
                   >
-                    + Add Color
+                    {size}
                   </button>
-                </div>
-              </div>
-
-              {/* Right Side: Sizes with Black Checkboxes */}
-              <div className="sizes-section">
-                <label>Available Sizes</label>
-                <div className="sizes-checkbox-container">
-                  {getSizesForCategory(
-                    editValues.showCustomCategory
-                      ? editValues.customCategory
-                      : editValues.category
-                  ).map((size) => (
-                    <label key={size} className="custom-black-checkbox">
-                      <input
-                        type="checkbox"
-                        checked={editValues.sizes.includes(size)}
-                        onChange={() => handleSizeToggle(size)}
-                      />
-                      <span className="checkmark"></span>
-                      <span className="size-label">{size}</span>
-                    </label>
-                  ))}
-                </div>
+                ))}
               </div>
             </div>
 
-            {/* STOCK INPUTS IN A ROW */}
             <div className="edit-form-row full-width">
-              <label>Stock Per Size</label>
-              <div className="stock-per-size-row">
+              <label>Size Stock</label>
+              <div className="stock-per-size-edit">
                 {editValues.sizes.map((size) => (
-                  <div key={size} className="stock-input-inline">
+                  <div key={size} className="stock-input-group">
                     <label>{size}</label>
                     <input
                       type="number"
@@ -1316,6 +1265,56 @@ return (
                     />
                   </div>
                 ))}
+              </div>
+            </div>
+
+            <div className="edit-form-row full-width">
+              <label>Available Colors</label>
+
+              <div className="color-rows">
+                {editValues.colors.map((color, index) => (
+                  <div key={index} className="color-row-item">
+                    <input
+                      type="text"
+                      value={color}
+                      onChange={(e) => handleColorChange(index, e.target.value)}
+                      placeholder="e.g. Red, #FF0000"
+                    />
+
+                    <input
+                      type="color"
+                      value={color.startsWith('#') ? color : '#000000'}
+                      onChange={(e) => handleColorChange(index, e.target.value)}
+                      className="color-picker-input"
+                    />
+
+                    <button
+                      type="button"
+                      className="btn-eyedropper"
+                      onClick={() => handleEyeDropper(index)}
+                    >
+                      <i className="fa-solid fa-magnifying-glass"></i>
+                    </button>
+
+                    {editValues.colors.length > 1 && (
+                      <button
+                        type="button"
+                        className="btn-small btn-remove-icon"
+                        onClick={() => handleRemoveColor(index)}
+                      >
+                        ✖
+                      </button>
+                    )}
+                  </div>
+                ))}
+
+                <button
+                  type="button"
+                  className="btn-small btn-add"
+                  onClick={handleAddColor}
+                >
+                  + Add Color
+                </button>
               </div>
             </div>
 

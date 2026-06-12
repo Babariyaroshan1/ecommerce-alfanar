@@ -341,7 +341,7 @@
 .image-drop-zone,
 .quick-drop-zone {
   min-height: 160px !important;
-  border: 2px dashed #bfdbfe;
+  border: 2px dashed #000000; /* black dashed */
   border-radius: 14px;
   background: #f8fbff;
   display: flex;
@@ -361,8 +361,119 @@
 .quick-drop-zone:hover,
 .image-drop-zone.drag-active,
 .quick-drop-zone.drag-active {
-  border-color: #2563eb;
-  background: #eff6ff;
+  border-color: #000000;
+  background: #f1f5f9;
+}
+
+/* Two-column layout already provided by .form-grid.two-col — add helper if needed */
+.two-column-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+/* Sizes custom checkbox container */
+.sizes-checkbox-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.custom-black-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+}
+
+.custom-black-checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.custom-black-checkbox .checkmark {
+  height: 22px;
+  width: 22px;
+  background-color: #fff;
+  border: 2px solid #000000;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.custom-black-checkbox input:checked ~ .checkmark {
+  background-color: #000000;
+  border-color: #000000;
+}
+
+.custom-black-checkbox .checkmark:after {
+  content: "";
+  display: none;
+  width: 6px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  margin-bottom: 2px;
+}
+
+.custom-black-checkbox input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.custom-black-checkbox .size-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* Stock inline row */
+.stock-per-size-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.stock-input-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f8fafc;
+  padding: 8px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  flex: 1;
+  min-width: 120px;
+}
+
+.stock-input-inline label {
+  margin: 0;
+  font-weight: 700;
+  color: #000000;
+}
+
+.stock-input-inline input {
+  width: 100% !important;
+  padding: 6px 10px !important;
+  text-align: center;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
 }
 
 .drop-hint,
