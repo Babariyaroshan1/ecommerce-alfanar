@@ -177,7 +177,7 @@
 .remove-image-btn,
 .remove-color-btn {
   min-height: 42px;
-  padding: 0 3px;
+  padding: 0 16px;
   border-radius: 10px;
   font-weight: 700;
   cursor: pointer;
@@ -270,10 +270,6 @@
   border-radius: 14px;
 }
 
-
-/* =========================================
-   FIXED TOGGLE SWITCH CSS
-   ========================================= */
 .toggle-switch {
   position: relative;
   display: inline-block;
@@ -288,7 +284,6 @@
   height: 0;
 }
 
-/* Background of the toggle (Grey by default) */
 .toggle-switch-ord {
   position: absolute;
   cursor: pointer;
@@ -296,12 +291,11 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #cbd5e1; /* Grey color when OFF */
+  background-color: #cbd5e1;
   border-radius: 28px;
   transition: background-color 0.3s ease;
 }
 
-/* White Circle (Thumb) */
 .toggle-switch-ord::before {
   position: absolute;
   content: "";
@@ -312,36 +306,74 @@
   background-color: white;
   border-radius: 50%;
   transition: transform 0.3s ease;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); /* Slight shadow to make circle pop */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
 
-/* Background when ON (Green) */
 .toggle-switch input:checked + .toggle-switch-ord {
-  background-color: #10b981; /* Emerald Green color */
+  background-color: #10b981;
 }
 
-/* Circle moves to right when ON */
 .toggle-switch input:checked + .toggle-switch-ord::before {
   transform: translateX(22px);
 }
-/* ========================================= */
-
 
 .toggle-label {
   font-size: 14px;
   font-weight: 700;
   color: #334155;
-      margin-left: 10px;
+  margin-left: 10px;
 }
 
 .similar-products-input {
   margin-top: 14px;
 }
 
+/* ========================================================= 
+   ALL ORIGINAL AND NEW CUSTOM UI STYLES 
+   ========================================================= */
+
+/* Main Submit Button */
+.submit-btn {
+  width: 100%;
+  height: 48px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #2563eb, #4f46e5);
+  color: white;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Reset Button */
+.reset-btn {
+  width: 100%;
+  height: 48px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  background: #f3f4f6;
+  color: #374151;
+  font-size: 15px;
+  font-weight: 700;
+  margin-top: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reset-btn:hover:not(:disabled) {
+  background: #e5e7eb;
+}
+
+/* 1. Drag Drop Dashed Borders (Updated) */
 .image-drop-zone,
 .quick-drop-zone {
   min-height: 160px !important;
-  border: 2px dashed #000000; /* black dashed */
+  border: 2px dashed #000000; /* Black Dashed border as requested */
   border-radius: 14px;
   background: #f8fbff;
   display: flex;
@@ -363,117 +395,6 @@
 .quick-drop-zone.drag-active {
   border-color: #000000;
   background: #f1f5f9;
-}
-
-/* Two-column layout already provided by .form-grid.two-col — add helper if needed */
-.two-column-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  align-items: start;
-}
-
-/* Sizes custom checkbox container */
-.sizes-checkbox-container {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 12px;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-}
-
-.custom-black-checkbox {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  user-select: none;
-  position: relative;
-}
-
-.custom-black-checkbox input {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-  height: 0;
-  width: 0;
-}
-
-.custom-black-checkbox .checkmark {
-  height: 22px;
-  width: 22px;
-  background-color: #fff;
-  border: 2px solid #000000;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-}
-
-.custom-black-checkbox input:checked ~ .checkmark {
-  background-color: #000000;
-  border-color: #000000;
-}
-
-.custom-black-checkbox .checkmark:after {
-  content: "";
-  display: none;
-  width: 6px;
-  height: 10px;
-  border: solid white;
-  border-width: 0 2px 2px 0;
-  transform: rotate(45deg);
-  margin-bottom: 2px;
-}
-
-.custom-black-checkbox input:checked ~ .checkmark:after {
-  display: block;
-}
-
-.custom-black-checkbox .size-label {
-  font-size: 14px;
-  font-weight: 700;
-  color: #111827;
-}
-
-/* Stock inline row */
-.stock-per-size-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  padding: 12px;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-}
-
-.stock-input-inline {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: #f8fafc;
-  padding: 8px 12px;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  flex: 1;
-  min-width: 120px;
-}
-
-.stock-input-inline label {
-  margin: 0;
-  font-weight: 700;
-  color: #000000;
-}
-
-.stock-input-inline input {
-  width: 100% !important;
-  padding: 6px 10px !important;
-  text-align: center;
-  border: 1px solid #cbd5e1;
-  border-radius: 4px;
 }
 
 .drop-hint,
@@ -512,24 +433,157 @@
   border: 1px solid #e5e7eb;
 }
 
-.color-rows {
+/* 2. Side-by-side Two Column Layout (New) */
+.two-column-layout {
   display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+/* Colors Custom Input Row (Updated) */
+.color-rows {
+  display: flex;
+  flex-direction: column;
   gap: 12px;
 }
 
 .color-row-item {
   display: grid;
-  grid-template-columns: 1fr 48px auto;
+  grid-template-columns: 1fr 44px 44px;
   gap: 10px;
   align-items: center;
 }
 
 .color-picker-input {
-  width: 48px !important;
+  width: 44px !important;
   height: 44px !important;
   padding: 3px !important;
+  border: 1px solid #dbe3ef;
+  border-radius: 8px;
+  cursor: pointer;
+  background: white;
 }
 
+.remove-color-btn {
+  padding: 0;
+  height: 44px;
+  width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+/* 3. Sizes Custom Black Checkbox (New) */
+.sizes-checkbox-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.custom-black-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+}
+
+.custom-black-checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.custom-black-checkbox .checkmark {
+  height: 22px;
+  width: 22px;
+  background-color: #fff;
+  border: 2px solid #000000; /* Black Border */
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+/* Solid Black Fill when Checked */
+.custom-black-checkbox input:checked ~ .checkmark {
+  background-color: #000000;
+  border-color: #000000;
+}
+
+/* White Checkmark (Tick) */
+.custom-black-checkbox .checkmark:after {
+  content: "";
+  display: none;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  margin-bottom: 2px;
+}
+
+.custom-black-checkbox input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.custom-black-checkbox .size-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* 4. Stock Inline Horizontal Row (New) */
+.stock-per-size-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding: 16px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.stock-input-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f8fafc;
+  padding: 8px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  flex: 1;
+  min-width: 120px;
+}
+
+.stock-input-inline label {
+  margin: 0;
+  font-weight: 700;
+  color: #000000;
+  font-size: 14px;
+}
+
+.stock-input-inline input {
+  width: 100% !important;
+  padding: 8px 10px !important;
+  text-align: center;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+}
+
+/* ========================================================= 
+   RETAINED ORIGINAL CSS CLASSES (For safety in live site) 
+   ========================================================= */
 .sizes-selector {
   display: flex;
   flex-wrap: wrap;
@@ -573,26 +627,13 @@
   width: 90px;
 }
 
-.submit-btn {
-  width: 100%;
-  height: 48px;
-  border: none;
-  border-radius: 12px;
-  background: linear-gradient(90deg, #2563eb, #4f46e5);
-  color: white;
-  font-size: 15px;
-  font-weight: 800;
-  cursor: pointer;
-}
-
-.submit-btn:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
+/* ========================================================= 
+   RESPONSIVE DESIGN 
+   ========================================================= */
 @media (max-width: 992px) {
   .price-settings-row,
-  .form-grid.two-col {
+  .form-grid.two-col,
+  .two-column-layout {
     grid-template-columns: 1fr;
   }
 }
