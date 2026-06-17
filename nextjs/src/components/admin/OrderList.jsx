@@ -16,6 +16,10 @@ const formatPrice = (price, currencySymbol = '₹') => {
   return num.toFixed(decimals);
 };
 
+const hasValidRequest = (order) => {
+  return (order.returnRequest?.requestedAt) || (order.replacementRequest?.requestedAt);
+};
+
 export default function OrderList({ showOnlyRequests = false }) {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -76,6 +80,7 @@ export default function OrderList({ showOnlyRequests = false }) {
       console.log('Success response:', response.data);
       alert('Request updated successfully!');
       fetchOrders(true); // Auto refresh with loader after action
+      setSelectedRequest(null); // Close modal
     } catch (error) {
       console.error('Error updating order:', error);
       console.error('Response:', error.response?.data);
@@ -156,26 +161,34 @@ export default function OrderList({ showOnlyRequests = false }) {
   };
 
   const getRequestType = (order) => {
-    if (order.returnRequest?.status) return 'Return';
-    if (order.replacementRequest?.status) return 'Replacement';
+    if (order.returnRequest?.requestedAt) return 'Return';
+    if (order.replacementRequest?.requestedAt) return 'Replacement';
     return 'Request';
   };
 
   const getRequestStatus = (order) => {
-    if (order.orderStatus === 'refunded' || order.orderStatus === 'returned') {
-      return 'completed';
+    if (order.returnRequest?.requestedAt) {
+      return order.returnRequest.status || 'pending';
     }
-    return order.returnRequest?.status || order.replacementRequest?.status || 'none';
+    if (order.replacementRequest?.requestedAt) {
+      return order.replacementRequest.status || 'pending';
+    }
+    return 'none';
   };
 
   const getRequestDetails = (order) => {
-    return order.returnRequest || order.replacementRequest || {};
+    if (order.returnRequest?.requestedAt) {
+      return order.returnRequest;
+    }
+    if (order.replacementRequest?.requestedAt) {
+      return order.replacementRequest;
+    }
+    return {};
   };
 
   const handleRequestAction = (order, action) => {
-    // Determine which request type exists even if the request status is missing
-    const hasReturnRequest = Boolean(order.returnRequest);
-    const hasReplacementRequest = Boolean(order.replacementRequest);
+    const hasReturnRequest = Boolean(order.returnRequest?.requestedAt);
+    const hasReplacementRequest = Boolean(order.replacementRequest?.requestedAt);
 
     let requestType;
     if (hasReturnRequest) {
@@ -183,7 +196,8 @@ export default function OrderList({ showOnlyRequests = false }) {
     } else if (hasReplacementRequest) {
       requestType = 'replacement';
     } else {
-      alert('No active request found for this order.');
+      alert('No valid request found for this order. Request must have requestedAt timestamp.');
+      console.error('Invalid request state:', { returnRequest: order.returnRequest, replacementRequest: order.replacementRequest });
       return;
     }
 
@@ -230,7 +244,7 @@ export default function OrderList({ showOnlyRequests = false }) {
 
   if (loading) return <div className="loading">Loading Data...</div>;
 
-  const requestOrders = orders.filter(order => order.returnRequest?.status || order.replacementRequest?.status);
+  const requestOrders = orders.filter(order => hasValidRequest(order));
   
   const filteredRequestOrders = requestOrders.filter(order => {
     if (requestFilter === 'all') return true;
