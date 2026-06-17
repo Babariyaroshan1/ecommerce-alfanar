@@ -28,11 +28,13 @@ const orderSchema = new mongoose.Schema({
             default: true
         }
     }],
+    // Return request only exists when a customer/admin explicitly creates one.
+    // Do NOT default `status` to 'pending' so new orders don't appear as requests.
     returnRequest: {
         status: {
             type: String,
             enum: ['pending', 'approved', 'processing', 'completed', 'rejected', 'cancelled'],
-            default: 'pending'
+            default: null
         },
         requestedAt: Date,
         completedAt: Date,
@@ -52,11 +54,13 @@ const orderSchema = new mongoose.Schema({
         proofImages: [String],
         notes: String
     },
+    // Replacement request only exists when a customer/admin explicitly creates one.
+    // Do NOT default `status` to 'pending' so new orders don't appear as requests.
     replacementRequest: {
         status: {
             type: String,
             enum: ['pending', 'approved', 'processing', 'completed', 'rejected', 'cancelled'],
-            default: 'pending'
+            default: null
         },
         requestedAt: Date,
         completedAt: Date,

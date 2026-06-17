@@ -435,6 +435,31 @@ router.put('/:id/status', auth, async (req, res) => {
                 if (orderStatus === 'cancelled') {
                     updateData.cancelledBy = 'admin';
                 }
+
+                // If admin manually marks an order as returned or replacement-requested,
+                // create a corresponding request object so the order appears in the
+                // Return/Replacement Requests admin panel. Do not modify existing
+                // requests if they already exist.
+                if (orderStatus === 'returned' && !order.returnRequest?.requestedAt) {
+                    const refundDueDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+                    updateData.returnRequest = {
+                        status: 'pending',
+                        requestedAt: new Date(),
+                        paymentMethod: order.paymentMethod,
+                        refundAmount: order.totalAmount,
+                        refundDueDate,
+                        notes: 'Return marked by admin.'
+                    };
+                }
+
+                if (orderStatus === 'replacement-requested' && !order.replacementRequest?.requestedAt) {
+                    updateData.replacementRequest = {
+                        status: 'pending',
+                        requestedAt: new Date(),
+                        reason: 'Replacement marked by admin.',
+                        details: 'Replacement marked by admin.'
+                    };
+                }
             }
             if (trackingId) updateData.trackingId = trackingId;
             if (orderStatus === 'delivered' && order.paymentMethod === 'cod') {
