@@ -29,6 +29,7 @@ export default function OrderList({ showOnlyRequests = false }) {
   const [trackingModal, setTrackingModal] = useState({ orderId: null, trackingId: '' });
   const [requestFilter, setRequestFilter] = useState('all');
   const [selectedRequest, setSelectedRequest] = useState(null);
+  const [showRequestImages, setShowRequestImages] = useState(false);
   const [lastUpdate, setLastUpdate] = useState(new Date());
   const token = localStorage.getItem('adminToken');
 
@@ -123,6 +124,9 @@ export default function OrderList({ showOnlyRequests = false }) {
   const markDelivered = (orderId) => updateOrderStatus(orderId, 'delivered');
   const markReturned = (orderId) => {
     if (window.confirm('Mark this order as returned?')) updateOrderStatus(orderId, 'returned');
+  };
+  const markReplaced = (orderId) => {
+    if (window.confirm('Mark this order as replacement-requested?')) updateOrderStatus(orderId, 'replacement-requested');
   };
 
   const markRefunded = (order) => {
@@ -346,7 +350,7 @@ export default function OrderList({ showOnlyRequests = false }) {
                     )}
                   </div>
                   <div className="returned-order-actions">
-                    <button className="details-btn" onClick={() => setSelectedRequest(order)}>
+                    <button className="details-btn" onClick={() => { setSelectedRequest(order); setShowRequestImages(false); }}>
                       View Details
                     </button>
                   </div>
@@ -360,11 +364,11 @@ export default function OrderList({ showOnlyRequests = false }) {
 
       {/* MODAL SECTION */}
       {showOnlyRequests && selectedRequest && (
-        <div className="request-details-modal" onClick={() => setSelectedRequest(null)}>
+        <div className="request-details-modal" onClick={() => { setSelectedRequest(null); setShowRequestImages(false); }}>
           <div className="request-details-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h3>Request Details</h3>
-              <button type="button" className="modal-close" onClick={() => setSelectedRequest(null)}>×</button>
+              <button type="button" className="modal-close" onClick={() => { setSelectedRequest(null); setShowRequestImages(false); }}>×</button>
             </div>
             
             <div className="modal-body-scroll">
@@ -375,7 +379,37 @@ export default function OrderList({ showOnlyRequests = false }) {
               <p><strong>Status:</strong> <span className={`status-badge ${getRequestStatus(selectedRequest)}`}>{getRequestStatus(selectedRequest).toUpperCase()}</span></p>
               <p><strong>Reason:</strong> {getRequestDetails(selectedRequest).reason || getRequestDetails(selectedRequest).details || 'N/A'}</p>
               <p><strong>Proof count:</strong> {(getRequestDetails(selectedRequest).proofImages || []).length}</p>
-              
+              <button
+                type="button"
+                className="show-images-btn"
+                onClick={() => setShowRequestImages(prev => !prev)}
+                style={{ marginTop: '12px', marginBottom: '12px' }}
+              >
+                {showRequestImages ? 'Hide Images' : 'Show Images'}
+              </button>
+              {showRequestImages && (getRequestDetails(selectedRequest).proofImages || []).length > 0 && (
+                <div className="proof-images-row" style={{ display: 'flex', overflowX: 'auto', gap: '8px', paddingBottom: '8px' }}>
+                  {(getRequestDetails(selectedRequest).proofImages || []).map((src, index) => (
+                    <a
+                      key={index}
+                      href={src}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="proof-image-link"
+                      style={{ minWidth: '120px', maxWidth: '160px', display: 'inline-block' }}
+                    >
+                      <img
+                        src={src}
+                        alt={`proof-${index}`}
+                        style={{ width: '100%', height: '100px', objectFit: 'cover', borderRadius: '6px' }}
+                      />
+                    </a>
+                  ))}
+                </div>
+              )}
+              {showRequestImages && (getRequestDetails(selectedRequest).proofImages || []).length === 0 && (
+                <p style={{ marginTop: '8px', color: '#555' }}>No proof images available yet.</p>
+              )}
               {getRequestDetails(selectedRequest).bankDetails && (
                 <div className="bank-details-box">
                   <p><strong>Bank Name:</strong> {getRequestDetails(selectedRequest).bankDetails.bankName || 'N/A'}</p>
@@ -541,6 +575,7 @@ export default function OrderList({ showOnlyRequests = false }) {
                     <>
                       <span className="status-label">Delivered</span>
                       <button className="returned-btn" onClick={() => markReturned(order._id)}><i className="fa-solid fa-rotate-left"></i> Return</button>
+                      <button className="replacement-btn" onClick={() => markReplaced(order._id)}><i className="fa-solid fa-sync-alt"></i> Replace</button>
                     </>
                   )}
                   {shouldShowRefundButton(order) && (

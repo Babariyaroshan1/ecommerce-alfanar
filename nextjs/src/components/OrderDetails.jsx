@@ -38,7 +38,8 @@ export default function OrderDetails({ orderId }) {
     ifsc: '',
     bankName: ''
   });
-  const[showTrackingModal, setShowTrackingModal] = useState(false);
+  const [proofUpdateMode, setProofUpdateMode] = useState(false);
+  const [showTrackingModal, setShowTrackingModal] = useState(false);
 
   // LOGIC 1: Fetching Order
   useEffect(() => {
@@ -75,6 +76,16 @@ export default function OrderDetails({ orderId }) {
       setLoading(false);
     }
   };
+
+  const activeCustomerRequestType = order?.returnRequest?.requestedAt && !['rejected', 'completed'].includes(order.returnRequest.status)
+    ? 'return'
+    : order?.replacementRequest?.requestedAt && !['rejected', 'completed'].includes(order.replacementRequest.status)
+    ? 'replacement'
+    : null;
+
+  const activeCustomerRequest = activeCustomerRequestType === 'return' ? order?.returnRequest : activeCustomerRequestType === 'replacement' ? order?.replacementRequest : null;
+
+  const activeRequestMissingProofs = Boolean(activeCustomerRequestType && !(activeCustomerRequest?.proofImages?.length));
 
   const getRefundStatusLabel = () => {
     const requestStatus = order?.returnRequest?.status;
@@ -132,24 +143,90 @@ export default function OrderDetails({ orderId }) {
     setShowRequestForm(true);
   };
 
-  const readFileAsDataURL = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
+  const uploadFilesToCloudinary = async (files) => {
+    const uploadedUrls = [];
+    for (const file of files) {
+      const formData = new FormData();
+      formData.append('file', file);
+      try {
+        const response = await axios.post(
+          `${API_URL}/upload`,
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'multipart/form-data'
+            }
+          }
+        );
+        if (response.data?.url) {
+          uploadedUrls.push(response.data.url);
+        } else {
+          throw new Error('Cloudinary upload returned no URL');
+        }
+      } catch (error) {
+        console.error('Cloudinary upload failed:', error);
+        throw error;
+      }
+    }
+    return uploadedUrls;
   };
 
   const handleProofFiles = async (event) => {
-    const files = Array.from(event.target.files ||[]);
+    const files = Array.from(event.target.files || []);
     if (files.length === 0) {
       setRequestProofs([]);
       return;
     }
 
-    const images = await Promise.all(files.map(readFileAsDataURL));
-    setRequestProofs(images);
+    setActionLoading(true);
+    try {
+      const uploadedUrls = await uploadFilesToCloudinary(files);
+      setRequestProofs((prev) => [...prev, ...uploadedUrls]);
+    } catch (error) {
+      alert('Image upload failed. Please try again.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const submitProofUpdate = async () => {
+    if (!activeCustomerRequestType) return;
+    if (!requestProofs.length) {
+      alert('Please upload at least one proof image to continue.');
+      return;
+    }
+
+    if (activeCustomerRequestType === 'return' && order.paymentMethod === 'cod') {
+      if (!requestBankDetails.accountHolder || !requestBankDetails.accountNumber || !requestBankDetails.ifsc) {
+        alert('Please provide COD bank details to complete the return request update.');
+        return;
+      }
+    }
+
+    setActionLoading(true);
+    try {
+      await axios.put(
+        `${API_URL}/orders/${orderId}/status`,
+        {
+          requestType: activeCustomerRequestType,
+          requestAction: 'update_proofs',
+          proofImages: requestProofs,
+          bankDetails: activeCustomerRequestType === 'return' ? requestBankDetails : undefined,
+          notes: 'Customer uploaded proof images for existing request.'
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      fetchOrder();
+      setProofUpdateMode(false);
+      setRequestProofs([]);
+      setRequestBankDetails({ accountHolder: '', accountNumber: '', ifsc: '', bankName: '' });
+    } catch (error) {
+      console.error('Error updating request proofs:', error);
+      alert(error.response?.data?.message || 'Failed to update request proofs');
+    } finally {
+      setActionLoading(false);
+    }
   };
 
   const submitRequest = async () => {
@@ -607,6 +684,7 @@ export default function OrderDetails({ orderId }) {
                 <input
                   type="file"
                   accept="image/*"
+                  capture="environment"
                   multiple
                   onChange={handleProofFiles}
                   style={{display: 'block', marginTop: '4px'}}
@@ -780,6 +858,78 @@ export default function OrderDetails({ orderId }) {
                  )}
                </>
              )}
+          {activeRequestMissingProofs && (
+            <div className="od-card od-request-form" style={{ marginTop: '16px', border: '1px solid #dcdcdc' }}>
+              <h3>Complete Your Request</h3>
+              <p style={{ marginBottom: '12px', color: '#555' }}>
+                Your {activeCustomerRequestType === 'return' ? 'return' : 'replacement'} request is active but missing proof images. Please upload proof images now so the admin can continue processing it.
+              </p>
+              <div className="od-form-row" style={{ marginBottom: '12px' }}>
+                <label>Proof images</label>
+                <input
+                  type="file"
+                  capture="environment"
+                  accept="image/*"
+                  multiple
+                  onChange={handleProofFiles}
+                  style={{ display: 'block', marginTop: '4px' }}
+                />
+              </div>
+              {requestProofs.length > 0 && (
+                <div className="od-proof-preview" style={{ display: 'flex', gap: '8px', marginTop: '8px', overflowX: 'auto' }}>
+                  {requestProofs.map((src, idx) => (
+                    <img key={idx} src={src} alt={`proof-${idx}`} style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '4px' }} />
+                  ))}
+                </div>
+              )}
+              {activeCustomerRequestType === 'return' && order.paymentMethod === 'cod' && (
+                <div className="od-bank-details-grid" style={{ marginTop: '12px' }}>
+                  <div className="od-form-row" style={{ marginBottom: '8px' }}>
+                    <label>Bank Name</label>
+                    <input
+                      type="text"
+                      value={requestBankDetails.bankName}
+                      onChange={(e) => setRequestBankDetails(prev => ({ ...prev, bankName: e.target.value }))}
+                      placeholder="e.g. State Bank of India"
+                      style={{ width: '100%', padding: '8px', marginTop: '4px', border: '1px solid #ccc', borderRadius: '4px' }}
+                    />
+                  </div>
+                  <div className="od-form-row" style={{ marginBottom: '8px' }}>
+                    <label>Account Holder</label>
+                    <input
+                      type="text"
+                      value={requestBankDetails.accountHolder}
+                      onChange={(e) => setRequestBankDetails(prev => ({ ...prev, accountHolder: e.target.value }))}
+                      style={{ width: '100%', padding: '8px', marginTop: '4px', border: '1px solid #ccc', borderRadius: '4px' }}
+                    />
+                  </div>
+                  <div className="od-form-row" style={{ marginBottom: '8px' }}>
+                    <label>Account Number</label>
+                    <input
+                      type="text"
+                      value={requestBankDetails.accountNumber}
+                      onChange={(e) => setRequestBankDetails(prev => ({ ...prev, accountNumber: e.target.value }))}
+                      style={{ width: '100%', padding: '8px', marginTop: '4px', border: '1px solid #ccc', borderRadius: '4px' }}
+                    />
+                  </div>
+                  <div className="od-form-row" style={{ marginBottom: '8px' }}>
+                    <label>IFSC Code</label>
+                    <input
+                      type="text"
+                      value={requestBankDetails.ifsc}
+                      onChange={(e) => setRequestBankDetails(prev => ({ ...prev, ifsc: e.target.value }))}
+                      style={{ width: '100%', padding: '8px', marginTop: '4px', border: '1px solid #ccc', borderRadius: '4px' }}
+                    />
+                  </div>
+                </div>
+              )}
+              <div className="od-form-actions" style={{ marginTop: '16px', display: 'flex', gap: '12px' }}>
+                <button className="od-btn od-btn-primary" onClick={submitProofUpdate} disabled={actionLoading} style={{ background: '#007bff', color: 'white' }}>
+                  {actionLoading ? 'Submitting...' : 'Complete Request'}
+                </button>
+              </div>
+            </div>
+          )}
           </div>
         )}
 

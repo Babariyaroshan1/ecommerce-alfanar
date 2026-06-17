@@ -373,6 +373,33 @@ router.put('/:id/status', auth, async (req, res) => {
             } else {
                 return res.status(400).json({ message: 'Invalid request type' });
             }
+        } else if (!isAdminOrCoadmin && requestAction === 'update_proofs') {
+            if (requestType === 'return') {
+                if (!order.returnRequest?.requestedAt) {
+                    return res.status(400).json({ message: 'No return request found for this order' });
+                }
+                const currentRequest = order.returnRequest.toObject ? order.returnRequest.toObject() : order.returnRequest;
+                const incomingProofs = Array.isArray(proofImages) ? proofImages.filter(Boolean) : [];
+                updateData.returnRequest = {
+                    ...currentRequest,
+                    proofImages: [...(Array.isArray(currentRequest.proofImages) ? currentRequest.proofImages : []), ...incomingProofs],
+                    bankDetails: bankDetails ? { ...(currentRequest.bankDetails || {}), ...bankDetails } : currentRequest.bankDetails,
+                    notes: notes || currentRequest.notes
+                };
+            } else if (requestType === 'replacement') {
+                if (!order.replacementRequest?.requestedAt) {
+                    return res.status(400).json({ message: 'No replacement request found for this order' });
+                }
+                const currentRequest = order.replacementRequest.toObject ? order.replacementRequest.toObject() : order.replacementRequest;
+                const incomingProofs = Array.isArray(proofImages) ? proofImages.filter(Boolean) : [];
+                updateData.replacementRequest = {
+                    ...currentRequest,
+                    proofImages: [...(Array.isArray(currentRequest.proofImages) ? currentRequest.proofImages : []), ...incomingProofs],
+                    notes: notes || currentRequest.notes
+                };
+            } else {
+                return res.status(400).json({ message: 'Invalid request type' });
+            }
         } else if (!isAdminOrCoadmin) {
             if (orderStatus === 'cancelled') {
                 if (!['pending', 'confirmed', 'processing'].includes(order.orderStatus)) {
