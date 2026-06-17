@@ -651,7 +651,6 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
       });
 
       // Save custom category if it's new
-      const finalCategory = editValues.showCustomCategory ? editValues.customCategory : editValues.category;
       if (!DEFAULT_CATEGORIES.includes(finalCategory)) {
         setDefaultCategories(prev => {
           if (!prev.includes(finalCategory)) {
