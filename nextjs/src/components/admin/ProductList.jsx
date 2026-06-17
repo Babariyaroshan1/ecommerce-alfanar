@@ -199,10 +199,27 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
     return product.isKidsProduct === true || ['boys', 'girls'].includes(category);
   };
 
+  const availableCategoryFilters = [
+    'all',
+    'kids',
+    ...Array.from(
+      new Set(
+        [
+          ...defaultCategories,
+          ...dbProducts.map((product) => String(product.category || '').trim()),
+        ]
+          .filter(Boolean)
+          .map((category) => category)
+      )
+    ).filter((category) => category.toLowerCase() !== 'kids' && category.toLowerCase() !== 'all')
+  ];
+
   const filteredProducts = dbProducts
-    .filter((product) =>
-      filterMode === 'kids' ? isKidsProduct(product) : true
-    )
+    .filter((product) => {
+      if (filterMode === 'all') return true;
+      if (filterMode === 'kids') return isKidsProduct(product);
+      return String(product.category || '').toLowerCase() === String(filterMode).toLowerCase();
+    })
     .filter((product) =>
       product.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -735,20 +752,24 @@ return (
     </div>
 
     <div className="product-filter-toggle">
-      <button
-        type="button"
-        className={filterMode === 'all' ? 'active' : ''}
-        onClick={() => setFilterMode('all')}
-      >
-        All Products
-      </button>
-      <button
-        type="button"
-        className={filterMode === 'kids' ? 'active' : ''}
-        onClick={() => setFilterMode('kids')}
-      >
-        Kids Products
-      </button>
+      {availableCategoryFilters.map((category) => {
+        const label = category === 'all'
+          ? 'All Products'
+          : category === 'kids'
+            ? 'Kids Products'
+            : category;
+
+        return (
+          <button
+            key={category}
+            type="button"
+            className={filterMode === category ? 'active' : ''}
+            onClick={() => setFilterMode(category)}
+          >
+            {label}
+          </button>
+        );
+      })}
     </div>
 
     <div className="search-section">
