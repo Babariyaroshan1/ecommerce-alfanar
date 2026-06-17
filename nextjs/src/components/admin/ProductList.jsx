@@ -20,7 +20,7 @@ const PREDEFINED_COLORS =[
   { name: 'Orange', hex: '#FFA500' },
 ];
 
-const DEFAULT_CATEGORIES = ['Kurti', 'Gown','Pajamas', 'Midi', 'Maxi'];
+const DEFAULT_CATEGORIES = ['Pajamas', 'Midi', 'Maxi'];
 const CUSTOM_CATEGORIES_STORAGE_KEY = 'noor_custom_categories';
 
 const loadSavedCategories = () => {
