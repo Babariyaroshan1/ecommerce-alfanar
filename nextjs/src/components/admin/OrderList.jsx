@@ -48,13 +48,7 @@ export default function OrderList({ showOnlyRequests = false }) {
 
       // Auto accept pending orders if enabled
       if (autoAccept) {
-        const pendingOrders = res.data.filter(order => order.orderStatus === 'pending');
-        for (const order of pendingOrders) {
-          await updateOrderStatus(order._id, 'confirmed');
-        }
-        if (pendingOrders.length > 0) {
-          fetchOrders();
-        }
+        await processPendingOrders(res.data, false);
       }
 
       setLoading(false);
@@ -66,7 +60,7 @@ export default function OrderList({ showOnlyRequests = false }) {
     }
   };
 
-  const updateOrderStatus = async (orderId, status, additionalData = {}) => {
+  const updateOrderStatus = async (orderId, status, additionalData = {}, refreshAfterUpdate = true) => {
     try {
       const payload = { ...additionalData };
       if (status !== undefined) {
@@ -80,7 +74,9 @@ export default function OrderList({ showOnlyRequests = false }) {
       );
       console.log('Success response:', response.data);
       alert('Request updated successfully!');
-      fetchOrders(true); // Auto refresh with loader after action
+      if (refreshAfterUpdate) {
+        fetchOrders(true); // Auto refresh with loader after action
+      }
       setSelectedRequest(null); // Close modal
     } catch (error) {
       console.error('Error updating order:', error);
@@ -88,6 +84,27 @@ export default function OrderList({ showOnlyRequests = false }) {
       console.error('Status:', error.response?.status);
       const errorMsg = error.response?.data?.message || error.message || 'Unknown error';
       alert(`Error: ${errorMsg}`);
+    }
+  };
+
+  const processPendingOrders = async (ordersData = orders, refreshAfter = true) => {
+    const pendingOrders = (ordersData || orders).filter(order => order.orderStatus === 'pending');
+    if (pendingOrders.length === 0) return;
+
+    for (const order of pendingOrders) {
+      try {
+        await axios.put(
+          `${API_URL}/orders/${order._id}/status`,
+          { orderStatus: 'confirmed' },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+      } catch (err) {
+        console.error('Failed auto-confirm order', order._id, err);
+      }
+    }
+
+    if (refreshAfter) {
+      await fetchOrders(true);
     }
   };
 
@@ -235,6 +252,11 @@ export default function OrderList({ showOnlyRequests = false }) {
     const timer = setInterval(() => fetchOrders(false), 300000);
     return () => clearInterval(timer);
   }, [autoRefresh]);
+
+  useEffect(() => {
+    if (!autoAccept) return;
+    processPendingOrders();
+  }, [autoAccept]);
 
   const getTotalQuantity = (order) => order.items?.reduce((sum, item) => sum + (item.quantity || 0), 0) || 0;
 
