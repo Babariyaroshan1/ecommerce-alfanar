@@ -21,7 +21,7 @@
 .badge {
   display: inline-block;
   background: #111827;
-  color: #ffffff;
+  color: #ffffff !important;
   font-size: 0.85rem;
   font-weight: 700;
   padding: 0.6rem 1rem;
@@ -38,7 +38,7 @@
 .heroSection p {
   font-size: 1rem;
   line-height: 1.85;
-  color: #4b5563;
+  color: #313131;
   margin-bottom: 1.75rem;
 }
 
