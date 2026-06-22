@@ -219,6 +219,9 @@ export default function Navbar() {
                 {t('New Arrivals')}
               </Link>
             )}
+            <Link href="/blog" className="nav-link-custom text-dark">
+              Blog
+            </Link>
           </div>
 
           <div className="nav-center position-absolute start-50 translate-middle-x d-none d-lg-block">
@@ -262,6 +265,9 @@ export default function Navbar() {
                   {t('New Arrivals')}
                 </Link>
               )}
+              <Link href="/blog" className="nav-link-custom text-dark" onClick={closeMobileMenu}>
+                Blog
+              </Link>
             </div>
           </div>
 
