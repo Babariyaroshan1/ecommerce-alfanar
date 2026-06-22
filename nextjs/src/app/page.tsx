@@ -116,6 +116,15 @@ const Home = () => {
   const featuredProducts = homeProducts.filter((product) => Boolean(product.isFeaturedOnHome))
     .slice(0, 8);
   const displayProducts = featuredProducts.length > 0 ? featuredProducts : homeProducts.slice(0, 8);
+  // Kids featured section: show up to 4 products that are marked as kids products and featured in admin
+  const kidsFeatured = storeProducts
+    .filter((p) => p.isKidsProduct === true && Boolean(p.isFeaturedOnHome))
+    .slice(0, 4);
+  const kidsRef = useRef(null);
+  const scrollKids = (dir) => {
+    if (!kidsRef.current) return;
+    kidsRef.current.scrollBy({ left: dir * 320, behavior: 'smooth' });
+  };
 
   return (
     <div className="home-container container py-5">
@@ -195,6 +204,67 @@ const Home = () => {
           ))}
         </div>
       )}
+
+      {/* KIDS FEATURED SECTION (similar to Best selling) */}
+      <div className="mt-5">
+        <div className="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <span className="text-dark text-decoration-none fs-4 text-sm">Kids</span>
+            <p className="text-muted mb-0" style={{ fontSize: '0.95rem' }}>Featured kids collection</p>
+          </div>
+          <Link href="/kids" className="btn btn-outline-white bg-black text-white rounded-0">
+            Explore kids
+          </Link>
+        </div>
+
+        {kidsFeatured.length === 0 ? (
+          <div className="text-center mb-4">
+            <p className="text-muted">No featured kids products available.</p>
+          </div>
+        ) : (
+          <>
+            {/* Desktop: grid of up to 4 */}
+            <div className="d-none d-md-block">
+              <div className="row g-4">
+                {kidsFeatured.map((product) => (
+                  <div key={product._id || product.id} className="col-6 col-md-3">
+                    <ProductCard product={product} />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Mobile: horizontal slider with arrows */}
+            <div className="d-md-none position-relative">
+              <div
+                ref={kidsRef}
+                style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '8px', scrollSnapType: 'x mandatory' }}
+              >
+                {kidsFeatured.map((product) => (
+                  <div key={product._id || product.id} style={{ minWidth: '72%', scrollSnapAlign: 'center' }}>
+                    <ProductCard product={product} />
+                  </div>
+                ))}
+              </div>
+
+              <button
+                aria-label="Previous"
+                onClick={() => scrollKids(-1)}
+                style={{ position: 'absolute', left: 8, top: '40%', transform: 'translateY(-50%)', zIndex: 10, background: '#fff', border: '1px solid #e5e7eb', borderRadius: '999px', width: 36, height: 36 }}
+              >
+                ‹
+              </button>
+              <button
+                aria-label="Next"
+                onClick={() => scrollKids(1)}
+                style={{ position: 'absolute', right: 8, top: '40%', transform: 'translateY(-50%)', zIndex: 10, background: '#fff', border: '1px solid #e5e7eb', borderRadius: '999px', width: 36, height: 36 }}
+              >
+                ›
+              </button>
+            </div>
+          </>
+        )}
+      </div>
 
       {/* FAQ SECTION */}
       <div className="faq-section mt-5 pt-5">
