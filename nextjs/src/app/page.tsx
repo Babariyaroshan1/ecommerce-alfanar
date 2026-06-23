@@ -120,10 +120,10 @@ const Home = () => {
     }
   }, [storeLoading, storeProducts.length]);
 
-  const generalFeaturedProducts = homeProducts
+  const generalFeaturedProducts = storeProducts
     .filter((product) => Boolean(product.isFeaturedOnHome) && !isKidsCategory(product) && !isPajamasCategory(product))
     .slice(0, GENERAL_FEATURED_LIMIT);
-  const generalFallbackProducts = homeProducts
+  const generalFallbackProducts = storeProducts
     .filter((product) => !isKidsCategory(product) && !isPajamasCategory(product))
     .slice(0, GENERAL_FEATURED_LIMIT);
   const displayProducts = generalFeaturedProducts.length > 0 ? generalFeaturedProducts : generalFallbackProducts;

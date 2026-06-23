@@ -285,13 +285,14 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
 
       const currentlyFeatured = normalizeFeatured(product.isFeaturedOnHome);
     const totalFeaturedCount = products.filter((p) => normalizeFeatured(p.isFeaturedOnHome)).length;
-    const kidsFeaturedCount = products.filter((p) => normalizeFeatured(p.isFeaturedOnHome) && p.isKidsProduct).length;
+    const kidsFeaturedCount = products.filter((p) => normalizeFeatured(p.isFeaturedOnHome) && isKidsProduct(p)).length;
     const pajamasFeaturedCount = products.filter((p) => normalizeFeatured(p.isFeaturedOnHome) && isPajamasCategory(p)).length;
     const generalFeaturedCount = totalFeaturedCount - kidsFeaturedCount - pajamasFeaturedCount;
     const isPajamasProduct = isPajamasCategory(product);
+    const isKidsProductCategory = isKidsProduct(product);
 
     if (!currentlyFeatured) {
-      if (product.isKidsProduct && kidsFeaturedCount >= KIDS_FEATURED_LIMIT) {
+      if (isKidsProductCategory && kidsFeaturedCount >= KIDS_FEATURED_LIMIT) {
         alert(`You can only mark up to ${KIDS_FEATURED_LIMIT} kids products as featured. To increase this limit, update the code.`);
         return;
       }
@@ -632,13 +633,13 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
         (p) => p.isFeaturedOnHome === true || p.isFeaturedOnHome === 'true'
       ).length;
       const kidsFeaturedCount = products.filter(
-        (p) => (p.isFeaturedOnHome === true || p.isFeaturedOnHome === 'true') && p.isKidsProduct
+        (p) => (p.isFeaturedOnHome === true || p.isFeaturedOnHome === 'true') && isKidsProduct(p)
       ).length;
       const pajamasFeaturedCount = products.filter(
         (p) => (p.isFeaturedOnHome === true || p.isFeaturedOnHome === 'true') && isPajamasCategory(p)
       ).length;
       const generalFeaturedCount = totalFeaturedCount - kidsFeaturedCount - pajamasFeaturedCount;
-      const currentlyEditingIsKids = editValues.isKidsProduct;
+      const currentlyEditingIsKids = isKidsProduct(editValues);
       const currentlyEditingIsPajamas = isPajamasCategory(editValues);
       if (editValues.isFeaturedOnHome) {
         if (currentlyEditingIsKids) {

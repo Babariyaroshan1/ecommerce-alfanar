@@ -389,7 +389,7 @@ const AddProduct = () => {
       }
 
       const totalFeaturedCount = products.filter(p => p.isFeaturedOnHome === true || p.isFeaturedOnHome === 'true').length;
-      const kidsFeaturedCount = products.filter(p => (p.isFeaturedOnHome === true || p.isFeaturedOnHome === 'true') && p.isKidsProduct).length;
+      const kidsFeaturedCount = products.filter(p => (p.isFeaturedOnHome === true || p.isFeaturedOnHome === 'true') && (p.isKidsProduct === true || p.isKidsProduct === 'true' || isKidsCategory(p.category))).length;
       const pajamasFeaturedCount = products.filter(p => (p.isFeaturedOnHome === true || p.isFeaturedOnHome === 'true') && isPajamasCategory(p.category)).length;
       const generalFeaturedCount = totalFeaturedCount - kidsFeaturedCount - pajamasFeaturedCount;
       const isKidsNew = isKidsCategory(formData.category);
