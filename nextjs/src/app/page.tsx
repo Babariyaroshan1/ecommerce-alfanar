@@ -245,9 +245,10 @@ const Home = () => {
         ) : (
           <>
             {/* Desktop + Mobile slider */}
-            <div className="position-relative">
+            <div className="position-relative slider-wrapper">
               <div
                 ref={kidsRef}
+                className="home-slider"
                 style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '8px', scrollSnapType: 'x mandatory' }}
               >
                 {kidsFeatured.map((product) => (
@@ -296,9 +297,10 @@ const Home = () => {
             <p className="text-muted">No featured pajamas products available.</p>
           </div>
         ) : (
-          <div className="position-relative">
+          <div className="position-relative slider-wrapper">
             <div
               ref={pajamasRef}
+              className="home-slider"
               style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '8px', scrollSnapType: 'x mandatory' }}
             >
               {pajamasFeatured.map((product) => (
