@@ -6,6 +6,7 @@ import { useProductStore } from '../../store/productStore';
 import './ProductList.css';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'; // Set in nextjs/.env.local for development and in Vercel env for production
+const FEATURED_LIMIT = 12;
 
 const PREDEFINED_COLORS =[
   { name: 'Black', hex: '#000000' },
@@ -282,8 +283,8 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
     const currentlyFeatured = normalizeFeatured(product.isFeaturedOnHome);
     const featuredCount = products.filter((p) => normalizeFeatured(p.isFeaturedOnHome)).length;
 
-    if (!currentlyFeatured && featuredCount >= 8) {
-      alert('You can only mark up to 8 products as featured. To increase this limit, update the code.');
+    if (!currentlyFeatured && featuredCount >= FEATURED_LIMIT) {
+      alert(`You can only mark up to ${FEATURED_LIMIT} products as featured. To increase this limit, update the code.`);
       return;
     }
 
@@ -618,8 +619,8 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
         (p) => p.isFeaturedOnHome === true || p.isFeaturedOnHome === 'true'
       ).length;
       const currentFeaturedExcludingThis = currentFeaturedCount - (editValues.isFeaturedOnHome ? 1 : 0);
-      if (editValues.isFeaturedOnHome && currentFeaturedExcludingThis >= 8) {
-        setErrorMessage('You can only mark up to 8 products as featured. To increase this limit, update the code.');
+      if (editValues.isFeaturedOnHome && currentFeaturedExcludingThis >= FEATURED_LIMIT) {
+        setErrorMessage(`You can only mark up to ${FEATURED_LIMIT} products as featured. To increase this limit, update the code.`);
         setSavingId(null);
         return;
       }

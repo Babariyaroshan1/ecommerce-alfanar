@@ -7,6 +7,7 @@ import NotificationModal from '@/components/NotificationModal';
 import './AddProduct.css';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+const FEATURED_LIMIT = 12;
 
 const CURRENCIES = [
   { code: 'INR', symbol: '₹', name: 'Indian Rupee' },
@@ -385,8 +386,8 @@ const AddProduct = () => {
 
       const currentFeaturedCount = products.filter(p => p.isFeaturedOnHome === true || p.isFeaturedOnHome === 'true').length;
 
-      if (formData.isFeaturedOnHome && currentFeaturedCount >= 8) {
-        setErrorMessage('You can only mark up to 8 products as featured.');
+      if (formData.isFeaturedOnHome && currentFeaturedCount >= FEATURED_LIMIT) {
+        setErrorMessage(`You can only mark up to ${FEATURED_LIMIT} products as featured.`);
         setNotificationType('error'); setNotificationOpen(true); setLoading(false); return;
       }
 

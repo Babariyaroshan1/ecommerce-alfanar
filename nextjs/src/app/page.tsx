@@ -16,6 +16,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../Home.css';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'; // Set in nextjs/.env.local for development and in Vercel env for production
+const FEATURED_LIMIT = 12;
 
 const Home = () => {
   const { t } = useTranslation();
@@ -27,8 +28,8 @@ const Home = () => {
   const minSkeletonDuration = 500;
   const [homeProducts, setHomeProducts] = useState(() => {
     if (!storeProducts || storeProducts.length === 0) return [];
-    const featured = storeProducts.filter((product) => Boolean(product.isFeaturedOnHome)).slice(0, 8);
-    return featured.length > 0 ? featured : storeProducts.slice(0, 8);
+    const featured = storeProducts.filter((product) => Boolean(product.isFeaturedOnHome)).slice(0, FEATURED_LIMIT);
+    return featured.length > 0 ? featured : storeProducts.slice(0, FEATURED_LIMIT);
   });
   const [homeLoading, setHomeLoading] = useState(initialHomeLoad.current);
 
@@ -87,8 +88,8 @@ const Home = () => {
       return;
     }
 
-    const featured = storeProducts.filter((product) => Boolean(product.isFeaturedOnHome)).slice(0, 8);
-    setHomeProducts(featured.length > 0 ? featured : storeProducts.slice(0, 8));
+    const featured = storeProducts.filter((product) => Boolean(product.isFeaturedOnHome)).slice(0, FEATURED_LIMIT);
+    setHomeProducts(featured.length > 0 ? featured : storeProducts.slice(0, FEATURED_LIMIT));
 
     if (initialHomeLoad.current) {
       const elapsed = Date.now() - homeSkeletonStart.current;
@@ -114,8 +115,8 @@ const Home = () => {
   }, [storeLoading, storeProducts.length]);
 
   const featuredProducts = homeProducts.filter((product) => Boolean(product.isFeaturedOnHome))
-    .slice(0, 8);
-  const displayProducts = featuredProducts.length > 0 ? featuredProducts : homeProducts.slice(0, 8);
+    .slice(0, FEATURED_LIMIT);
+  const displayProducts = featuredProducts.length > 0 ? featuredProducts : homeProducts.slice(0, FEATURED_LIMIT);
   // Kids featured section: show up to 4 products that are marked as kids products and featured in admin
   const kidsFeatured = storeProducts
     .filter((p) => p.isKidsProduct === true && Boolean(p.isFeaturedOnHome))
@@ -186,7 +187,7 @@ const Home = () => {
 
       {/* Loading Indicator */}
       {homeLoading && (
-        <SkeletonGrid count={8} />
+        <SkeletonGrid count={FEATURED_LIMIT} />
       )}
 
       {/* Product Grid */}
