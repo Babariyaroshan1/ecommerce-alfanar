@@ -590,10 +590,11 @@
 
 .powered-by-link {
   display: inline-flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   text-decoration: none;
   margin: 0 5px;
+  gap: 10px;
 }
 
 .powered-logo {
@@ -601,8 +602,8 @@
   display: block;
 }
 .powered-logo {
-  width: 16px;
-  height: 16px;
+  width:20px;
+  height: 20px;
 }
 .powered-text {
   font-size: 14px;
