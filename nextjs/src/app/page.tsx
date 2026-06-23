@@ -258,22 +258,22 @@ const Home = () => {
                 ))}
               </div>
 
-              <button
-                aria-label="Previous"
-                className="kids-slider-button"
-                onClick={() => scrollKids(-1)}
-                style={{ position: 'absolute', left: 8, top: '40%', transform: 'translateY(-50%)', zIndex: 10, background: '#fff', border: '1px solid #e5e7eb', borderRadius: '999px', width: 36, height: 36 }}
-              >
-                ‹
-              </button>
-              <button
-                aria-label="Next"
-                className="kids-slider-button"
-                onClick={() => scrollKids(1)}
-                style={{ position: 'absolute', right: 8, top: '40%', transform: 'translateY(-50%)', zIndex: 10, background: '#fff', border: '1px solid #e5e7eb', borderRadius: '999px', width: 36, height: 36 }}
-              >
-                ›
-              </button>
+             <button
+              aria-label="Previous"
+              className="slider-nav-btn kids-nav-btn" // Added both classes
+              onClick={() => scrollKids(-1)}
+              style={{ left: 8 }} // Sirf position yahan rakhi hai
+            >
+              ‹
+            </button>
+            <button
+              aria-label="Next"
+              className="slider-nav-btn kids-nav-btn" // Added both classes
+              onClick={() => scrollKids(1)}
+              style={{ right: 8 }}
+            >
+              ›
+            </button>
             </div>
           </>
         )}
@@ -311,21 +311,21 @@ const Home = () => {
             </div>
 
             <button
-              aria-label="Previous Pajamas"
-              className="kids-slider-button"
-              onClick={() => scrollPajamas(-1)}
-              style={{ position: 'absolute', left: 8, top: '40%', transform: 'translateY(-50%)', zIndex: 10, background: '#fff', border: '1px solid #e5e7eb', borderRadius: '999px', width: 36, height: 36 }}
-            >
-              ‹
-            </button>
-            <button
-              aria-label="Next Pajamas"
-              className="kids-slider-button"
-              onClick={() => scrollPajamas(1)}
-              style={{ position: 'absolute', right: 8, top: '40%', transform: 'translateY(-50%)', zIndex: 10, background: '#fff', border: '1px solid #e5e7eb', borderRadius: '999px', width: 36, height: 36 }}
-            >
-              ›
-            </button>
+                aria-label="Previous Pajamas"
+                className="slider-nav-btn" // Sirf base class (Hamesha dikhegi)
+                onClick={() => scrollPajamas(-1)}
+                style={{ left: 8 }}
+              >
+                ‹
+              </button>
+              <button
+                aria-label="Next Pajamas"
+                className="slider-nav-btn" // Sirf base class (Hamesha dikhegi)
+                onClick={() => scrollPajamas(1)}
+                style={{ right: 8 }}
+              >
+                ›
+              </button>
           </div>
         )}
       </div>
