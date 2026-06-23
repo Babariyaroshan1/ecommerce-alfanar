@@ -99,7 +99,21 @@ export default function Footer() {
       {/* Footer Bottom */}
       <div className="footer-bottom">
         <div className="footer-bottom-content">
-          <p className="copyright-text">Powered By <a href="https://www.chaiandchill.info/" className="text-decoration-underline"> <img src="chai_and_chill_logo.jpg" alt="chaiandchillinfo" /> Chai and Chill</a>  © 2026 All Rights Reserved.</p>
+         <p className="copyright-text">
+            Powered By
+            <a
+              href="https://www.chaiandchill.info/"
+              className="powered-by-link"
+            >
+              <img
+                src="chai_and_chill_logo.jpg"
+                alt="chaiandchillinfo"
+                className="powered-logo"
+              />
+              <span className="powered-text">Chai and Chill</span>
+            </a>
+            © 2026 All Rights Reserved.
+          </p>
           <Link href="/orders" className="orders-link">Orders</Link>
         </div>
       </div>
