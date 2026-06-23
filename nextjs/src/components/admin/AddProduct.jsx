@@ -10,6 +10,9 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 const GENERAL_FEATURED_LIMIT = 8;
 const KIDS_FEATURED_LIMIT = 4;
 
+const isKidsCategory = (category) => String(category || '').toLowerCase().includes('kid');
+const isPajamasCategory = (category) => String(category || '').toLowerCase().includes('pajama');
+
 const CURRENCIES = [
   { code: 'INR', symbol: '₹', name: 'Indian Rupee' },
   { code: 'KWD', symbol: 'KWD', name: 'Kuwaiti Dinar' },
@@ -387,8 +390,10 @@ const AddProduct = () => {
 
       const totalFeaturedCount = products.filter(p => p.isFeaturedOnHome === true || p.isFeaturedOnHome === 'true').length;
       const kidsFeaturedCount = products.filter(p => (p.isFeaturedOnHome === true || p.isFeaturedOnHome === 'true') && p.isKidsProduct).length;
-      const generalFeaturedCount = totalFeaturedCount - kidsFeaturedCount;
-      const isKidsNew = String(formData.category || '').toLowerCase().includes('kid');
+      const pajamasFeaturedCount = products.filter(p => (p.isFeaturedOnHome === true || p.isFeaturedOnHome === 'true') && isPajamasCategory(p.category)).length;
+      const generalFeaturedCount = totalFeaturedCount - kidsFeaturedCount - pajamasFeaturedCount;
+      const isKidsNew = isKidsCategory(formData.category);
+      const isPajamasNew = isPajamasCategory(formData.category);
 
       if (formData.isFeaturedOnHome) {
         if (isKidsNew) {
@@ -396,7 +401,7 @@ const AddProduct = () => {
             setErrorMessage(`You can only mark up to ${KIDS_FEATURED_LIMIT} kids products as featured.`);
             setNotificationType('error'); setNotificationOpen(true); setLoading(false); return;
           }
-        } else {
+        } else if (!isPajamasNew) {
           if (generalFeaturedCount >= GENERAL_FEATURED_LIMIT) {
             setErrorMessage(`You can only mark up to ${GENERAL_FEATURED_LIMIT} products as featured.`);
             setNotificationType('error'); setNotificationOpen(true); setLoading(false); return;

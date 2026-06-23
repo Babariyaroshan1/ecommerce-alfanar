@@ -9,6 +9,8 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'; 
 const GENERAL_FEATURED_LIMIT = 8;
 const KIDS_FEATURED_LIMIT = 4;
 
+const isPajamasCategory = (product) => String(product?.category || '').toLowerCase().includes('pajama');
+
 const PREDEFINED_COLORS =[
   { name: 'Black', hex: '#000000' },
   { name: 'White', hex: '#FFFFFF' },
@@ -281,17 +283,19 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
   const handleToggleFeatured = async (product) => {
     console.log('[FEATURED] Clicked for:', product.name);
 
-    const currentlyFeatured = normalizeFeatured(product.isFeaturedOnHome);
+      const currentlyFeatured = normalizeFeatured(product.isFeaturedOnHome);
     const totalFeaturedCount = products.filter((p) => normalizeFeatured(p.isFeaturedOnHome)).length;
     const kidsFeaturedCount = products.filter((p) => normalizeFeatured(p.isFeaturedOnHome) && p.isKidsProduct).length;
-    const generalFeaturedCount = totalFeaturedCount - kidsFeaturedCount;
+    const pajamasFeaturedCount = products.filter((p) => normalizeFeatured(p.isFeaturedOnHome) && isPajamasCategory(p)).length;
+    const generalFeaturedCount = totalFeaturedCount - kidsFeaturedCount - pajamasFeaturedCount;
+    const isPajamasProduct = isPajamasCategory(product);
 
     if (!currentlyFeatured) {
       if (product.isKidsProduct && kidsFeaturedCount >= KIDS_FEATURED_LIMIT) {
         alert(`You can only mark up to ${KIDS_FEATURED_LIMIT} kids products as featured. To increase this limit, update the code.`);
         return;
       }
-      if (!product.isKidsProduct && generalFeaturedCount >= GENERAL_FEATURED_LIMIT) {
+      if (!product.isKidsProduct && !isPajamasProduct && generalFeaturedCount >= GENERAL_FEATURED_LIMIT) {
         alert(`You can only mark up to ${GENERAL_FEATURED_LIMIT} general products as featured. To increase this limit, update the code.`);
         return;
       }
@@ -630,8 +634,12 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
       const kidsFeaturedCount = products.filter(
         (p) => (p.isFeaturedOnHome === true || p.isFeaturedOnHome === 'true') && p.isKidsProduct
       ).length;
-      const generalFeaturedCount = totalFeaturedCount - kidsFeaturedCount;
+      const pajamasFeaturedCount = products.filter(
+        (p) => (p.isFeaturedOnHome === true || p.isFeaturedOnHome === 'true') && isPajamasCategory(p)
+      ).length;
+      const generalFeaturedCount = totalFeaturedCount - kidsFeaturedCount - pajamasFeaturedCount;
       const currentlyEditingIsKids = editValues.isKidsProduct;
+      const currentlyEditingIsPajamas = isPajamasCategory(editValues);
       if (editValues.isFeaturedOnHome) {
         if (currentlyEditingIsKids) {
           const kidsExcludingThis = kidsFeaturedCount - (editValues.isFeaturedOnHome ? 1 : 0);
@@ -640,7 +648,7 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
             setSavingId(null);
             return;
           }
-        } else {
+        } else if (!currentlyEditingIsPajamas) {
           const generalExcludingThis = generalFeaturedCount - (editValues.isFeaturedOnHome ? 1 : 0);
           if (generalExcludingThis >= GENERAL_FEATURED_LIMIT) {
             setErrorMessage(`You can only mark up to ${GENERAL_FEATURED_LIMIT} general products as featured. To increase this limit, update the code.`);
