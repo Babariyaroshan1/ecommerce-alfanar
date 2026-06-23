@@ -597,11 +597,13 @@
 }
 
 .powered-logo {
-  width: 80px;      /* logo chota */
   height: auto;
   display: block;
 }
-
+.powered-logo {
+  width: 16px;
+  height: 16px;
+}
 .powered-text {
   font-size: 14px;
   color: #888;      /* same color as footer text */
