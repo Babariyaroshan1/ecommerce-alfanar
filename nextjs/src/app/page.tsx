@@ -121,17 +121,19 @@ const Home = () => {
   }, [storeLoading, storeProducts.length]);
 
   const generalFeaturedProducts = homeProducts
-    .filter((product) => Boolean(product.isFeaturedOnHome) && !product.isKidsProduct)
+    .filter((product) => Boolean(product.isFeaturedOnHome) && !isKidsCategory(product) && !isPajamasCategory(product))
     .slice(0, GENERAL_FEATURED_LIMIT);
   const generalFallbackProducts = homeProducts
-    .filter((product) => !product.isKidsProduct)
+    .filter((product) => !isKidsCategory(product) && !isPajamasCategory(product))
     .slice(0, GENERAL_FEATURED_LIMIT);
   const displayProducts = generalFeaturedProducts.length > 0 ? generalFeaturedProducts : generalFallbackProducts;
 
   // Kids featured section: show up to 4 products that are marked as kids products and featured in admin
   const kidsFeatured = storeProducts
-    .filter((p) => p.isKidsProduct === true && Boolean(p.isFeaturedOnHome))
+    .filter((p) => isKidsCategory(p) && Boolean(p.isFeaturedOnHome))
     .slice(0, KIDS_FEATURED_LIMIT);
+  const pajamasFeatured = storeProducts
+    .filter((p) => isPajamasCategory(p) && Boolean(p.isFeaturedOnHome));
   const kidsRef = useRef(null);
   const pajamasRef = useRef(null);
   const scrollKids = (dir) => {
@@ -242,19 +244,8 @@ const Home = () => {
           </div>
         ) : (
           <>
-            {/* Desktop: grid of up to 4 */}
-            <div className="d-none d-md-block">
-              <div className="row g-4">
-                {kidsFeatured.map((product) => (
-                  <div key={product._id || product.id} className="col-6 col-md-3">
-                    <ProductCard product={product} />
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Mobile: horizontal slider with arrows */}
-            <div className="d-md-none position-relative">
+            {/* Desktop + Mobile slider */}
+            <div className="position-relative">
               <div
                 ref={kidsRef}
                 style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '8px', scrollSnapType: 'x mandatory' }}
@@ -282,6 +273,54 @@ const Home = () => {
               </button>
             </div>
           </>
+        )}
+      </div>
+
+      <div className="mt-5">
+        <div className="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <span className="text-dark text-decoration-none fs-4 text-sm">Pajamas</span>
+            <p className="text-muted mb-0" style={{ fontSize: '0.95rem' }}>Featured pajamas collection</p>
+          </div>
+          <Link href="/products" className="btn btn-outline-white bg-black text-white rounded-0">
+            Explore all
+          </Link>
+        </div>
+
+        {homeLoading ? (
+          <SkeletonGrid count={4} />
+        ) : pajamasFeatured.length === 0 ? (
+          <div className="text-center mb-4">
+            <p className="text-muted">No featured pajamas products available.</p>
+          </div>
+        ) : (
+          <div className="position-relative">
+            <div
+              ref={pajamasRef}
+              style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '8px', scrollSnapType: 'x mandatory' }}
+            >
+              {pajamasFeatured.map((product) => (
+                <div key={product._id || product.id} style={{ minWidth: '72%', scrollSnapAlign: 'center' }}>
+                  <ProductCard product={product} />
+                </div>
+              ))}
+            </div>
+
+            <button
+              aria-label="Previous Pajamas"
+              onClick={() => scrollPajamas(-1)}
+              style={{ position: 'absolute', left: 8, top: '40%', transform: 'translateY(-50%)', zIndex: 10, background: '#fff', border: '1px solid #e5e7eb', borderRadius: '999px', width: 36, height: 36 }}
+            >
+              ‹
+            </button>
+            <button
+              aria-label="Next Pajamas"
+              onClick={() => scrollPajamas(1)}
+              style={{ position: 'absolute', right: 8, top: '40%', transform: 'translateY(-50%)', zIndex: 10, background: '#fff', border: '1px solid #e5e7eb', borderRadius: '999px', width: 36, height: 36 }}
+            >
+              ›
+            </button>
+          </div>
         )}
       </div>
 
