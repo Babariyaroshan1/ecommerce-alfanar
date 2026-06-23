@@ -325,3 +325,11 @@ body {
 .home-slider::-webkit-scrollbar {
   display: none; 
 }
+/* Pehle aisa tha: .kids-nav-only-mobile */
+/* Ab aisa kar dein: */
+
+@media (min-width: 769px) {
+  .kids-nav-btn {
+    display: none !important;
+  }
+}

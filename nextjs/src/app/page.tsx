@@ -312,7 +312,7 @@ const Home = () => {
 
             <button
                 aria-label="Previous Pajamas"
-                className="slider-nav-btn" // Sirf base class (Hamesha dikhegi)
+                className="slider-nav-btn " // Sirf base class (Hamesha dikhegi)
                 onClick={() => scrollPajamas(-1)}
                 style={{ left: 8 }}
               >
