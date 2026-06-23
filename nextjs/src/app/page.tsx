@@ -259,6 +259,7 @@ const Home = () => {
 
               <button
                 aria-label="Previous"
+                className="kids-slider-button"
                 onClick={() => scrollKids(-1)}
                 style={{ position: 'absolute', left: 8, top: '40%', transform: 'translateY(-50%)', zIndex: 10, background: '#fff', border: '1px solid #e5e7eb', borderRadius: '999px', width: 36, height: 36 }}
               >
@@ -266,6 +267,7 @@ const Home = () => {
               </button>
               <button
                 aria-label="Next"
+                className="kids-slider-button"
                 onClick={() => scrollKids(1)}
                 style={{ position: 'absolute', right: 8, top: '40%', transform: 'translateY(-50%)', zIndex: 10, background: '#fff', border: '1px solid #e5e7eb', borderRadius: '999px', width: 36, height: 36 }}
               >
@@ -308,6 +310,7 @@ const Home = () => {
 
             <button
               aria-label="Previous Pajamas"
+              className="kids-slider-button"
               onClick={() => scrollPajamas(-1)}
               style={{ position: 'absolute', left: 8, top: '40%', transform: 'translateY(-50%)', zIndex: 10, background: '#fff', border: '1px solid #e5e7eb', borderRadius: '999px', width: 36, height: 36 }}
             >
@@ -315,6 +318,7 @@ const Home = () => {
             </button>
             <button
               aria-label="Next Pajamas"
+              className="kids-slider-button"
               onClick={() => scrollPajamas(1)}
               style={{ position: 'absolute', right: 8, top: '40%', transform: 'translateY(-50%)', zIndex: 10, background: '#fff', border: '1px solid #e5e7eb', borderRadius: '999px', width: 36, height: 36 }}
             >
