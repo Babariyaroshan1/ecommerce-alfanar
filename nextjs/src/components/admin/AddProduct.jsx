@@ -7,7 +7,8 @@ import NotificationModal from '@/components/NotificationModal';
 import './AddProduct.css';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-const FEATURED_LIMIT = 12;
+const GENERAL_FEATURED_LIMIT = 8;
+const KIDS_FEATURED_LIMIT = 4;
 
 const CURRENCIES = [
   { code: 'INR', symbol: '₹', name: 'Indian Rupee' },
@@ -384,11 +385,23 @@ const AddProduct = () => {
         }
       }
 
-      const currentFeaturedCount = products.filter(p => p.isFeaturedOnHome === true || p.isFeaturedOnHome === 'true').length;
+      const totalFeaturedCount = products.filter(p => p.isFeaturedOnHome === true || p.isFeaturedOnHome === 'true').length;
+      const kidsFeaturedCount = products.filter(p => (p.isFeaturedOnHome === true || p.isFeaturedOnHome === 'true') && p.isKidsProduct).length;
+      const generalFeaturedCount = totalFeaturedCount - kidsFeaturedCount;
+      const isKidsNew = String(formData.category || '').toLowerCase().includes('kid');
 
-      if (formData.isFeaturedOnHome && currentFeaturedCount >= FEATURED_LIMIT) {
-        setErrorMessage(`You can only mark up to ${FEATURED_LIMIT} products as featured.`);
-        setNotificationType('error'); setNotificationOpen(true); setLoading(false); return;
+      if (formData.isFeaturedOnHome) {
+        if (isKidsNew) {
+          if (kidsFeaturedCount >= KIDS_FEATURED_LIMIT) {
+            setErrorMessage(`You can only mark up to ${KIDS_FEATURED_LIMIT} kids products as featured.`);
+            setNotificationType('error'); setNotificationOpen(true); setLoading(false); return;
+          }
+        } else {
+          if (generalFeaturedCount >= GENERAL_FEATURED_LIMIT) {
+            setErrorMessage(`You can only mark up to ${GENERAL_FEATURED_LIMIT} products as featured.`);
+            setNotificationType('error'); setNotificationOpen(true); setLoading(false); return;
+          }
+        }
       }
 
       const submitPayload = {

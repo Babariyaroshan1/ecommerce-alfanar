@@ -16,7 +16,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../Home.css';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'; // Set in nextjs/.env.local for development and in Vercel env for production
-const FEATURED_LIMIT = 12;
+const GENERAL_FEATURED_LIMIT = 8;
+const KIDS_FEATURED_LIMIT = 4;
 
 const Home = () => {
   const { t } = useTranslation();
@@ -28,8 +29,8 @@ const Home = () => {
   const minSkeletonDuration = 500;
   const [homeProducts, setHomeProducts] = useState(() => {
     if (!storeProducts || storeProducts.length === 0) return [];
-    const featured = storeProducts.filter((product) => Boolean(product.isFeaturedOnHome)).slice(0, FEATURED_LIMIT);
-    return featured.length > 0 ? featured : storeProducts.slice(0, FEATURED_LIMIT);
+    const featured = storeProducts.filter((product) => Boolean(product.isFeaturedOnHome)).slice(0, GENERAL_FEATURED_LIMIT);
+    return featured.length > 0 ? featured : storeProducts.slice(0, GENERAL_FEATURED_LIMIT);
   });
   const [homeLoading, setHomeLoading] = useState(initialHomeLoad.current);
 
@@ -88,8 +89,8 @@ const Home = () => {
       return;
     }
 
-    const featured = storeProducts.filter((product) => Boolean(product.isFeaturedOnHome)).slice(0, FEATURED_LIMIT);
-    setHomeProducts(featured.length > 0 ? featured : storeProducts.slice(0, FEATURED_LIMIT));
+    const featured = storeProducts.filter((product) => Boolean(product.isFeaturedOnHome)).slice(0, GENERAL_FEATURED_LIMIT);
+    setHomeProducts(featured.length > 0 ? featured : storeProducts.slice(0, GENERAL_FEATURED_LIMIT));
 
     if (initialHomeLoad.current) {
       const elapsed = Date.now() - homeSkeletonStart.current;
@@ -116,16 +117,16 @@ const Home = () => {
 
   const generalFeaturedProducts = homeProducts
     .filter((product) => Boolean(product.isFeaturedOnHome) && !product.isKidsProduct)
-    .slice(0, FEATURED_LIMIT);
+    .slice(0, GENERAL_FEATURED_LIMIT);
   const generalFallbackProducts = homeProducts
     .filter((product) => !product.isKidsProduct)
-    .slice(0, FEATURED_LIMIT);
+    .slice(0, GENERAL_FEATURED_LIMIT);
   const displayProducts = generalFeaturedProducts.length > 0 ? generalFeaturedProducts : generalFallbackProducts;
 
   // Kids featured section: show up to 4 products that are marked as kids products and featured in admin
   const kidsFeatured = storeProducts
     .filter((p) => p.isKidsProduct === true && Boolean(p.isFeaturedOnHome))
-    .slice(0, 4);
+    .slice(0, KIDS_FEATURED_LIMIT);
   const kidsRef = useRef(null);
   const scrollKids = (dir) => {
     if (!kidsRef.current) return;
@@ -192,7 +193,7 @@ const Home = () => {
 
       {/* Loading Indicator */}
       {homeLoading && (
-        <SkeletonGrid count={FEATURED_LIMIT} />
+        <SkeletonGrid count={GENERAL_FEATURED_LIMIT} />
       )}
 
       {/* Product Grid */}

@@ -6,7 +6,8 @@ import { useProductStore } from '../../store/productStore';
 import './ProductList.css';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'; // Set in nextjs/.env.local for development and in Vercel env for production
-const FEATURED_LIMIT = 12;
+const GENERAL_FEATURED_LIMIT = 8;
+const KIDS_FEATURED_LIMIT = 4;
 
 const PREDEFINED_COLORS =[
   { name: 'Black', hex: '#000000' },
@@ -281,11 +282,19 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
     console.log('[FEATURED] Clicked for:', product.name);
 
     const currentlyFeatured = normalizeFeatured(product.isFeaturedOnHome);
-    const featuredCount = products.filter((p) => normalizeFeatured(p.isFeaturedOnHome)).length;
+    const totalFeaturedCount = products.filter((p) => normalizeFeatured(p.isFeaturedOnHome)).length;
+    const kidsFeaturedCount = products.filter((p) => normalizeFeatured(p.isFeaturedOnHome) && p.isKidsProduct).length;
+    const generalFeaturedCount = totalFeaturedCount - kidsFeaturedCount;
 
-    if (!currentlyFeatured && featuredCount >= FEATURED_LIMIT) {
-      alert(`You can only mark up to ${FEATURED_LIMIT} products as featured. To increase this limit, update the code.`);
-      return;
+    if (!currentlyFeatured) {
+      if (product.isKidsProduct && kidsFeaturedCount >= KIDS_FEATURED_LIMIT) {
+        alert(`You can only mark up to ${KIDS_FEATURED_LIMIT} kids products as featured. To increase this limit, update the code.`);
+        return;
+      }
+      if (!product.isKidsProduct && generalFeaturedCount >= GENERAL_FEATURED_LIMIT) {
+        alert(`You can only mark up to ${GENERAL_FEATURED_LIMIT} general products as featured. To increase this limit, update the code.`);
+        return;
+      }
     }
 
     try {
@@ -615,14 +624,30 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
         baseOriginalPrice = convertToINR(enteredOriginalPrice, activeCurrency);
       }
 
-      const currentFeaturedCount = products.filter(
+      const totalFeaturedCount = products.filter(
         (p) => p.isFeaturedOnHome === true || p.isFeaturedOnHome === 'true'
       ).length;
-      const currentFeaturedExcludingThis = currentFeaturedCount - (editValues.isFeaturedOnHome ? 1 : 0);
-      if (editValues.isFeaturedOnHome && currentFeaturedExcludingThis >= FEATURED_LIMIT) {
-        setErrorMessage(`You can only mark up to ${FEATURED_LIMIT} products as featured. To increase this limit, update the code.`);
-        setSavingId(null);
-        return;
+      const kidsFeaturedCount = products.filter(
+        (p) => (p.isFeaturedOnHome === true || p.isFeaturedOnHome === 'true') && p.isKidsProduct
+      ).length;
+      const generalFeaturedCount = totalFeaturedCount - kidsFeaturedCount;
+      const currentlyEditingIsKids = editValues.isKidsProduct;
+      if (editValues.isFeaturedOnHome) {
+        if (currentlyEditingIsKids) {
+          const kidsExcludingThis = kidsFeaturedCount - (editValues.isFeaturedOnHome ? 1 : 0);
+          if (kidsExcludingThis >= KIDS_FEATURED_LIMIT) {
+            setErrorMessage(`You can only mark up to ${KIDS_FEATURED_LIMIT} kids products as featured. To increase this limit, update the code.`);
+            setSavingId(null);
+            return;
+          }
+        } else {
+          const generalExcludingThis = generalFeaturedCount - (editValues.isFeaturedOnHome ? 1 : 0);
+          if (generalExcludingThis >= GENERAL_FEATURED_LIMIT) {
+            setErrorMessage(`You can only mark up to ${GENERAL_FEATURED_LIMIT} general products as featured. To increase this limit, update the code.`);
+            setSavingId(null);
+            return;
+          }
+        }
       }
 
       const finalKidsType = editValues.isKidsProduct && editValues.kidsType === 'custom' ? (editValues.customKidsType || 'custom') : editValues.kidsType;
