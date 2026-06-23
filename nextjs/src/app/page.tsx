@@ -251,7 +251,7 @@ const Home = () => {
                 style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '8px', scrollSnapType: 'x mandatory' }}
               >
                 {kidsFeatured.map((product) => (
-                  <div key={product._id || product.id} style={{ minWidth: '72%', scrollSnapAlign: 'center' }}>
+                  <div key={product._id || product.id} style={{ flex: '0 0 280px', width: '280px', maxWidth: '280px', scrollSnapAlign: 'center' }}>
                     <ProductCard product={product} />
                   </div>
                 ))}
@@ -300,7 +300,7 @@ const Home = () => {
               style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '8px', scrollSnapType: 'x mandatory' }}
             >
               {pajamasFeatured.map((product) => (
-                <div key={product._id || product.id} style={{ minWidth: '72%', scrollSnapAlign: 'center' }}>
+                <div key={product._id || product.id} style={{ flex: '0 0 280px', width: '280px', maxWidth: '280px', scrollSnapAlign: 'center' }}>
                   <ProductCard product={product} />
                 </div>
               ))}
