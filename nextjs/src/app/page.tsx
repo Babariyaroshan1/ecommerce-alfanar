@@ -24,6 +24,11 @@ const Home = () => {
   const storeProducts = useProductStore((state) => state.products);
   const storeLoading = useProductStore((state) => state.loading);
   const fetchProducts = useProductStore((state) => state.fetchProducts);
+
+  const isKidsCategory = (product) =>
+    product?.isKidsProduct === true || String(product?.category || '').toLowerCase().includes('kid');
+  const isPajamasCategory = (product) =>
+    String(product?.category || '').toLowerCase().includes('pajama');
   const initialHomeLoad = useRef(storeProducts.length === 0);
   const homeSkeletonStart = useRef(Date.now());
   const minSkeletonDuration = 500;
@@ -128,9 +133,14 @@ const Home = () => {
     .filter((p) => p.isKidsProduct === true && Boolean(p.isFeaturedOnHome))
     .slice(0, KIDS_FEATURED_LIMIT);
   const kidsRef = useRef(null);
+  const pajamasRef = useRef(null);
   const scrollKids = (dir) => {
     if (!kidsRef.current) return;
     kidsRef.current.scrollBy({ left: dir * 320, behavior: 'smooth' });
+  };
+  const scrollPajamas = (dir) => {
+    if (!pajamasRef.current) return;
+    pajamasRef.current.scrollBy({ left: dir * 320, behavior: 'smooth' });
   };
 
   return (
