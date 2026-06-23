@@ -138,11 +138,38 @@ const Home = () => {
   const pajamasRef = useRef(null);
   const scrollKids = (dir) => {
     if (!kidsRef.current) return;
-    kidsRef.current.scrollBy({ left: dir * 320, behavior: 'smooth' });
+    const { scrollLeft, scrollWidth, clientWidth } = kidsRef.current;
+    
+    // Check if we are at the end (with 10px buffer)
+    const isAtEnd = scrollLeft + clientWidth >= scrollWidth - 10;
+    const isAtStart = scrollLeft <= 0;
+
+    if (dir === 1 && isAtEnd) {
+      // Loop back to start
+      kidsRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+    } else if (dir === -1 && isAtStart) {
+      // Loop to the end
+      kidsRef.current.scrollTo({ left: scrollWidth, behavior: 'smooth' });
+    } else {
+      // Normal scroll
+      kidsRef.current.scrollBy({ left: dir * 300, behavior: 'smooth' });
+    }
   };
+
   const scrollPajamas = (dir) => {
     if (!pajamasRef.current) return;
-    pajamasRef.current.scrollBy({ left: dir * 320, behavior: 'smooth' });
+    const { scrollLeft, scrollWidth, clientWidth } = pajamasRef.current;
+    
+    const isAtEnd = scrollLeft + clientWidth >= scrollWidth - 10;
+    const isAtStart = scrollLeft <= 0;
+
+    if (dir === 1 && isAtEnd) {
+      pajamasRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+    } else if (dir === -1 && isAtStart) {
+      pajamasRef.current.scrollTo({ left: scrollWidth, behavior: 'smooth' });
+    } else {
+      pajamasRef.current.scrollBy({ left: dir * 300, behavior: 'smooth' });
+    }
   };
 
   return (
