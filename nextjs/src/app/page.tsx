@@ -114,9 +114,14 @@ const Home = () => {
     }
   }, [storeLoading, storeProducts.length]);
 
-  const featuredProducts = homeProducts.filter((product) => Boolean(product.isFeaturedOnHome))
+  const generalFeaturedProducts = homeProducts
+    .filter((product) => Boolean(product.isFeaturedOnHome) && !product.isKidsProduct)
     .slice(0, FEATURED_LIMIT);
-  const displayProducts = featuredProducts.length > 0 ? featuredProducts : homeProducts.slice(0, FEATURED_LIMIT);
+  const generalFallbackProducts = homeProducts
+    .filter((product) => !product.isKidsProduct)
+    .slice(0, FEATURED_LIMIT);
+  const displayProducts = generalFeaturedProducts.length > 0 ? generalFeaturedProducts : generalFallbackProducts;
+
   // Kids featured section: show up to 4 products that are marked as kids products and featured in admin
   const kidsFeatured = storeProducts
     .filter((p) => p.isKidsProduct === true && Boolean(p.isFeaturedOnHome))
@@ -218,7 +223,9 @@ const Home = () => {
           </Link>
         </div>
 
-        {kidsFeatured.length === 0 ? (
+        {homeLoading ? (
+        <SkeletonGrid count={4} />
+      ) : kidsFeatured.length === 0 ? (
           <div className="text-center mb-4">
             <p className="text-muted">No featured kids products available.</p>
           </div>
