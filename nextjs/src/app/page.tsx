@@ -271,36 +271,49 @@ const Home = () => {
           </div>
         ) : (
           <>
-            {/* Desktop + Mobile slider */}
-            <div className="position-relative slider-wrapper">
-              <div
-                ref={kidsRef}
-                className="home-slider"
-                style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '8px', scrollSnapType: 'x mandatory' }}
-              >
+            {/* Mobile: Slider */}
+            <div className="d-md-none">
+              <div className="position-relative slider-wrapper">
+                <div
+                  ref={kidsRef}
+                  className="home-slider"
+                  style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '8px', scrollSnapType: 'x mandatory' }}
+                >
+                  {kidsFeatured.map((product) => (
+                    <div key={product._id || product.id} style={{ flex: '0 0 280px', width: '280px', maxWidth: '280px', scrollSnapAlign: 'center' }}>
+                      <ProductCard product={product} />
+                    </div>
+                  ))}
+                </div>
+
+                <button
+                  aria-label="Previous"
+                  className="slider-nav-btn kids-nav-btn"
+                  onClick={() => scrollKids(-1)}
+                  style={{ left: 8 }}
+                >
+                  ‹
+                </button>
+                <button
+                  aria-label="Next"
+                  className="slider-nav-btn kids-nav-btn"
+                  onClick={() => scrollKids(1)}
+                  style={{ right: 8 }}
+                >
+                  ›
+                </button>
+              </div>
+            </div>
+
+            {/* Desktop: Grid */}
+            <div className="d-none d-md-block">
+              <div className="row g-4">
                 {kidsFeatured.map((product) => (
-                  <div key={product._id || product.id} style={{ flex: '0 0 280px', width: '280px', maxWidth: '280px', scrollSnapAlign: 'center' }}>
+                  <div key={product._id || product.id} className="col-6 col-sm-6 col-md-4 col-lg-3">
                     <ProductCard product={product} />
                   </div>
                 ))}
               </div>
-
-             <button
-              aria-label="Previous"
-              className="slider-nav-btn kids-nav-btn" // Added both classes
-              onClick={() => scrollKids(-1)}
-              style={{ left: 8 }} // Sirf position yahan rakhi hai
-            >
-              ‹
-            </button>
-            <button
-              aria-label="Next"
-              className="slider-nav-btn kids-nav-btn" // Added both classes
-              onClick={() => scrollKids(1)}
-              style={{ right: 8 }}
-            >
-              ›
-            </button>
             </div>
           </>
         )}
