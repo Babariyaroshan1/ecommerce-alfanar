@@ -70,7 +70,7 @@ const productSchema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
-    isNew: {
+    isNewArrival: {
         type: Boolean,
         default: false
     },
@@ -104,5 +104,14 @@ const productSchema = new mongoose.Schema({
         default: Date.now
     }
 });
+
+productSchema.virtual('isNew').get(function () {
+    return this.isNewArrival;
+}).set(function (value) {
+    this.isNewArrival = value;
+});
+
+productSchema.set('toJSON', { virtuals: true });
+productSchema.set('toObject', { virtuals: true });
 
 export default mongoose.model('Product', productSchema);

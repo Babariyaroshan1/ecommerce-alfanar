@@ -14,6 +14,12 @@ const getPriceValue = (prices, key) => {
     return prices[key];
 };
 
+const parseBooleanValue = (value) => {
+    if (typeof value === 'string') return value.toLowerCase() === 'true';
+    if (typeof value === 'number') return value !== 0;
+    return Boolean(value);
+};
+
 // Get all products
 router.get('/', async (req, res) => {
     try {
@@ -175,7 +181,7 @@ router.get('/:id', async (req, res) => {
 router.put('/:id', async (req, res) => {
     try {
         const { isKidsProduct } = req.body;
-        const isKidsProductBool = typeof isKidsProduct === 'string' ? isKidsProduct.toLowerCase() === 'true' : Boolean(isKidsProduct);
+        const isKidsProductBool = parseBooleanValue(isKidsProduct);
 
         // Determine required permission based on product type
         const requiredPermission = isKidsProductBool ? PERMISSIONS.MANAGE_KIDS_PRODUCTS : PERMISSIONS.MANAGE_PRODUCTS;
@@ -203,33 +209,16 @@ router.put('/:id', async (req, res) => {
             }
 
             if ('isNew' in updateData) {
-                if (typeof updateData.isNew === 'string') {
-                    updateData.isNew = updateData.isNew.toLowerCase() === 'true';
-                } else if (typeof updateData.isNew === 'number') {
-                    updateData.isNew = updateData.isNew !== 0;
-                } else {
-                    updateData.isNew = Boolean(updateData.isNew);
-                }
+                updateData.isNewArrival = parseBooleanValue(updateData.isNew);
+                delete updateData.isNew;
             }
 
             if ('isFeaturedOnHome' in updateData) {
-                if (typeof updateData.isFeaturedOnHome === 'string') {
-                    updateData.isFeaturedOnHome = updateData.isFeaturedOnHome.toLowerCase() === 'true';
-                } else if (typeof updateData.isFeaturedOnHome === 'number') {
-                    updateData.isFeaturedOnHome = updateData.isFeaturedOnHome !== 0;
-                } else {
-                    updateData.isFeaturedOnHome = Boolean(updateData.isFeaturedOnHome);
-                }
+                updateData.isFeaturedOnHome = parseBooleanValue(updateData.isFeaturedOnHome);
             }
 
             if ('isKidsProduct' in updateData) {
-                if (typeof updateData.isKidsProduct === 'string') {
-                    updateData.isKidsProduct = updateData.isKidsProduct.toLowerCase() === 'true';
-                } else if (typeof updateData.isKidsProduct === 'number') {
-                    updateData.isKidsProduct = updateData.isKidsProduct !== 0;
-                } else {
-                    updateData.isKidsProduct = Boolean(updateData.isKidsProduct);
-                }
+                updateData.isKidsProduct = parseBooleanValue(updateData.isKidsProduct);
             }
 
             if (updateData.images) {
@@ -364,7 +353,7 @@ router.put('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
     try {
         const { isKidsProduct } = req.body;
-        const isKidsProductBool = typeof isKidsProduct === 'string' ? isKidsProduct.toLowerCase() === 'true' : Boolean(isKidsProduct);
+        const isKidsProductBool = parseBooleanValue(isKidsProduct);
 
         // Determine required permission based on product type
         const requiredPermission = isKidsProductBool ? PERMISSIONS.MANAGE_KIDS_PRODUCTS : PERMISSIONS.MANAGE_PRODUCTS;
@@ -428,11 +417,11 @@ router.post('/', async (req, res) => {
                 stock,
                 allowReturn: allowReturn !== undefined ? allowReturn : true,
                 allowReplacement: allowReplacement !== undefined ? allowReplacement : true,
-                isNew: typeof isNew === 'string' ? isNew.toLowerCase() === 'true' : Boolean(isNew),
-                isFeaturedOnHome: typeof isFeaturedOnHome === 'string' ? isFeaturedOnHome.toLowerCase() === 'true' : Boolean(isFeaturedOnHome),
+                isNewArrival: parseBooleanValue(isNew),
+                isFeaturedOnHome: parseBooleanValue(isFeaturedOnHome),
                 isKidsProduct: isKidsProductBool,
                 kidsType: isKidsProductBool ? kidsType : null,
-                showSameColorButton: typeof showSameColorButton === 'string' ? showSameColorButton.toLowerCase() === 'true' : Boolean(showSameColorButton)
+                showSameColorButton: parseBooleanValue(showSameColorButton)
             });
 
             await product.save();
