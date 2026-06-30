@@ -195,6 +195,25 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
     fetchProducts();
   }, [fetchProducts]);
 
+  useEffect(() => {
+    if (!editingProductId) {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+      return;
+    }
+
+    const previousBodyOverflow = document.body.style.overflow;
+    const previousHtmlOverflow = document.documentElement.style.overflow;
+
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = previousBodyOverflow;
+      document.documentElement.style.overflow = previousHtmlOverflow;
+    };
+  }, [editingProductId]);
+
   // Filter only database products (those with _id)
   const dbProducts = products.filter(p => p._id);
   
