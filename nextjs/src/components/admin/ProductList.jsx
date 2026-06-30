@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useProductStore } from '../../store/productStore';
 import './ProductList.css';
@@ -195,6 +195,16 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
     fetchProducts();
   }, [fetchProducts]);
 
+  // Prevent scroll helper with useCallback
+  const preventScroll = useCallback((e) => {
+    // Allow scrolling inside the modal only
+    const editForm = document.querySelector('.edit-form');
+    if (editForm && editForm.contains(e.target)) {
+      return;
+    }
+    e.preventDefault();
+  }, []);
+
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -207,6 +217,12 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
       document.body.style.right = '';
       document.body.style.width = '';
       document.documentElement.style.overflow = '';
+      document.documentElement.style.height = '';
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      // Remove scroll lock listener
+      window.removeEventListener('wheel', preventScroll, { passive: false });
+      document.removeEventListener('touchmove', preventScroll, { passive: false });
       return;
     }
 
@@ -227,6 +243,13 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
     document.body.style.right = '0';
     document.body.style.width = '100%';
     document.documentElement.style.overflow = 'hidden';
+    document.documentElement.style.height = '100vh';
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+
+    // Add event listeners to prevent scrolling
+    window.addEventListener('wheel', preventScroll, { passive: false });
+    document.addEventListener('touchmove', preventScroll, { passive: false });
 
     return () => {
       document.body.classList.remove('product-edit-modal-open');
@@ -237,9 +260,12 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
       document.body.style.right = previousBodyRight;
       document.body.style.width = previousBodyWidth;
       document.documentElement.style.overflow = previousHtmlOverflow;
+      document.documentElement.style.height = '';
+      window.removeEventListener('wheel', preventScroll, { passive: false });
+      document.removeEventListener('touchmove', preventScroll, { passive: false });
       window.scrollTo(0, scrollY);
     };
-  }, [editingProductId]);
+  }, [editingProductId, preventScroll]);
 
   // Filter only database products (those with _id)
   const dbProducts = products.filter(p => p._id);
