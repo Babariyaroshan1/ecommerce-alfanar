@@ -14,6 +14,10 @@ const AdminHistory = () => {
   const [error, setError] = useState('');
   const [filterType, setFilterType] = useState('');
   const [filterAction, setFilterAction] = useState('');
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalRecords, setTotalRecords] = useState(0);
 
   const token = typeof window !== 'undefined' ? localStorage.getItem('adminToken') : null;
 
@@ -40,10 +44,48 @@ const AdminHistory = () => {
   // Filters change hone par list refresh karega (Only if Unlocked)
   useEffect(() => {
     if (unlocked) {
-      verifyAndFetch();
+      setPage(1);
+    }
+  }, [filterType, filterAction, unlocked]);
+
+  useEffect(() => {
+    if (unlocked) {
+      fetchHistory(page, pageSize);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterType, filterAction]);
+  }, [page, pageSize, filterType, filterAction, unlocked]);
+
+  const fetchHistory = async (requestedPage = 1, requestedPageSize = pageSize) => {
+    try {
+      setLoading(true);
+      setError('');
+      const res = await axios.post(
+        `${API_URL}/history/admin`,
+        {
+          password,
+          entityType: filterType || undefined,
+          actionType: filterAction || undefined,
+          page: requestedPage,
+          pageSize: requestedPageSize
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setHistory(res.data.history || []);
+      setPage(res.data.page || requestedPage);
+      setPageSize(res.data.pageSize || requestedPageSize);
+      setTotalRecords(res.data.totalRecords ?? (res.data.history || []).length);
+      setTotalPages(res.data.totalPages || 1);
+      setUnlocked(true);
+    } catch (err) {
+      console.error('History fetch failed:', err);
+      setError('Incorrect password! Please try again.');
+      setPassword('');
+      setUnlocked(false);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Main API Call (Check Password & Fetch Data)
   const verifyAndFetch = async () => {
@@ -51,27 +93,8 @@ const AdminHistory = () => {
       setError('Please enter passcode');
       return;
     }
-    try {
-      setLoading(true);
-      setError('');
-      const res = await axios.post(
-        `${API_URL}/history/admin`,
-        { password, entityType: filterType || undefined, actionType: filterAction || undefined },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      
-      // Agar password sahi hai:
-      setHistory(res.data.history || []);
-      setUnlocked(true);
-    } catch (err) {
-      console.error('History fetch failed:', err);
-      // Agar password galat hai (Error Handle):
-      setError('Incorrect password! Please try again.');
-      setPassword(''); // Password auto clear kardo
-      setUnlocked(false);
-    } finally {
-      setLoading(false);
-    }
+
+    await fetchHistory(1, pageSize);
   };
 
   const formatTimestamp = (value) => {
@@ -83,9 +106,26 @@ const AdminHistory = () => {
 
   const getClientInfo = (info) => {
     if (!info) return '-';
-    const parts = [info.platform, info.browserName, info.os, info.language].filter(Boolean);
-    if (parts.length === 0 && info.userAgent) return info.userAgent;
-    return parts.join(' | ');
+    const browser = info.browserName || info.vendor || '';
+    const platform = info.platform || info.os || '';
+    const memory = info.deviceMemory ? `${info.deviceMemory}GB` : '';
+    const language = info.language || '';
+    const userAgent = info.userAgent || '';
+    const parts = [browser, platform, memory, language].filter(Boolean);
+    if (parts.length > 0) return parts.join(' | ');
+    if (userAgent) return userAgent;
+    return '-';
+  };
+
+  const getVisiblePageNumbers = () => {
+    const maxButtons = 5;
+    const half = Math.floor(maxButtons / 2);
+    let start = Math.max(1, page - half);
+    let end = Math.min(totalPages, start + maxButtons - 1);
+    if (end - start + 1 < maxButtons) {
+      start = Math.max(1, end - maxButtons + 1);
+    }
+    return Array.from({ length: end - start + 1 }, (_, idx) => start + idx);
   };
 
   // On-Screen Keypad Handler
@@ -99,8 +139,8 @@ const AdminHistory = () => {
     <div className="admin-history-container">
       <div className="history-topbar">
         <div>
-          <h3 class="ad-his-main">Admin Change History</h3>
-          <p >Only main admin can unlock this view using the secret history password.</p>
+          <h3 className="ad-his-main">Admin Change History</h3>
+          <p>Only main admin can unlock this view using the secret history password.</p>
         </div>
       </div>
 
@@ -159,6 +199,11 @@ const AdminHistory = () => {
               <option value="cancel">Cancel</option>
               <option value="refund">Refund</option>
             </select>
+            <select value={pageSize} onChange={(e) => { setPageSize(Number(e.target.value)); setPage(1); }}>
+              <option value={10}>Show 10</option>
+              <option value={20}>Show 20</option>
+              <option value={50}>Show 50</option>
+            </select>
             <button type="button" className="refresh-history-btn" onClick={verifyAndFetch} disabled={loading}>
               {loading ? 'Loading...' : 'Refresh'}
             </button>
@@ -166,10 +211,15 @@ const AdminHistory = () => {
 
           {error && <p className="history-error">{error}</p>}
 
+          <div className="history-summary">
+            <span>{`Showing ${history.length} records of ${totalRecords}`}</span>
+          </div>
+
           <div className="history-table-wrapper">
             <table className="history-table">
               <thead>
                 <tr>
+                  <th>#</th>
                   <th>When</th>
                   <th>Type</th>
                   <th>Action</th>
@@ -183,11 +233,12 @@ const AdminHistory = () => {
               <tbody>
                 {history.length === 0 ? (
                   <tr>
-                    <td colSpan="8" className="history-empty">No history records found.</td>
+                    <td colSpan="9" className="history-empty">No history records found.</td>
                   </tr>
                 ) : (
-                  history.map((item) => (
-                    <tr key={item._id}>
+                  history.map((item, index) => (
+                    <tr key={item._id || index} className={index % 2 === 0 ? 'history-row-even' : 'history-row-odd'}>
+                      <td>{(page - 1) * pageSize + index + 1}</td>
                       <td>{formatTimestamp(item.createdAt)}</td>
                       <td>{item.entityType}</td>
                       <td>{item.actionType}</td>
@@ -201,6 +252,58 @@ const AdminHistory = () => {
                 )}
               </tbody>
             </table>
+          </div>
+
+          <div className="history-pagination">
+            <div className="pagination-info">
+              Page {page} of {totalPages}
+            </div>
+            <div className="pagination-buttons">
+              <button
+                type="button"
+                className="page-button"
+                onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                disabled={page === 1}
+              >
+                Prev
+              </button>
+              {Array.from({ length: totalPages }, (_, idx) => idx + 1).map((pageNumber) => (
+                <button
+                  key={pageNumber}
+                  type="button"
+                  className={`page-button ${pageNumber === page ? 'active' : ''}`}
+                  onClick={() => setPage(pageNumber)}
+                >
+                  {pageNumber}
+                </button>
+              ))}
+              <button
+                type="button"
+                className="page-button"
+                onClick={() => setPage(1)}
+                disabled={page === 1}
+              >
+                First
+              </button>
+              {getVisiblePageNumbers().map((pageNumber) => (
+                <button
+                  key={pageNumber}
+                  type="button"
+                  className={`page-button ${pageNumber === page ? 'active' : ''}`}
+                  onClick={() => setPage(pageNumber)}
+                >
+                  {pageNumber}
+                </button>
+              ))}
+              <button
+                type="button"
+                className="page-button"
+                onClick={() => setPage(totalPages)}
+                disabled={page === totalPages}
+              >
+                Last
+              </button>
+            </div>
           </div>
         </div>
       )}

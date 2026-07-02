@@ -12,6 +12,7 @@
 @media (mix-width:768px) {
     .admin-history-container {    
     padding-top: 0;
+    width: 100%;
     }
     .ad-his-main{
         font-size: 18px;
@@ -25,8 +26,28 @@
 }
 }
 @media (max-width: 768px) {
-    .coadmin-management-container {
-        padding: 15px !important;
+    .admin-history-container {
+        width: 100%;
+        padding: 20px;
+    }
+    .history-topbar {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .history-filters {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .history-filters select,
+    .refresh-history-btn {
+      width: 100%;
+    }
+    .history-table {
+      min-width: 100%;
+    }
+    .history-pagination {
+      flex-direction: column;
+      align-items: stretch;
     }
 }
 /* Topbar Styling */
@@ -308,12 +329,74 @@
   transition: background-color 0.15s ease;
 }
 
+.history-table tr.history-row-even td {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.history-table tr.history-row-odd td {
+  background: rgba(255, 255, 255, 0.06);
+}
+
 .history-table tr:hover td {
   background: #27272a; 
 }
 
 .history-table tr:last-child td {
   border-bottom: none;
+}
+
+.history-summary {
+  padding: 0 20px;
+  color: #cbd5e1;
+  font-size: 0.95rem;
+}
+
+.history-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: #09090b;
+  border-top: 1px solid #27272a;
+  border-radius: 0 0 16px 16px;
+}
+
+.pagination-info {
+  color: #a1a1aa;
+}
+
+.pagination-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.page-button {
+  padding: 10px 14px;
+  border: 1px solid #3f3f46;
+  border-radius: 10px;
+  background: #141417;
+  color: #e4e4e7;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.page-button:hover {
+  background: #1f2937;
+  border-color: #60a5fa;
+}
+
+.page-button.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+}
+
+.page-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .history-empty {

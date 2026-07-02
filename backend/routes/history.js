@@ -1,5 +1,6 @@
 import express from 'express';
 import { adminAuth } from '../middleware/auth.js';
+import ChangeHistory from '../models/ChangeHistory.js';
 import { getHistoryList } from '../utils/historyService.js';
 
 const router = express.Router();
@@ -22,7 +23,10 @@ router.post('/admin', adminAuth, async (req, res) => {
         const skip = (Number(page) - 1) * limit;
 
         const history = await getHistoryList({ filter, limit, skip });
-        res.json({ history, page: Number(page), pageSize: limit });
+        const totalRecords = await ChangeHistory.countDocuments(filter);
+        const totalPages = Math.max(1, Math.ceil(totalRecords / limit));
+
+        res.json({ history, page: Number(page), pageSize: limit, totalRecords, totalPages });
     } catch (error) {
         console.error('History fetch error:', error);
         res.status(500).json({ message: 'Failed to fetch history' });
