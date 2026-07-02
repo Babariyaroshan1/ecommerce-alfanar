@@ -262,7 +262,7 @@ export default function CoadminManagement() {
   return (
     <div className="coadmin-management-container">
       {!unlocked ? (
-        <div className="admin-history-container">
+        <div className="admin-coadmin-container">
           <div className="history-topbar">
             <h3><i className="fas fa-lock" style={{color:'#3b82f6', marginRight:'8px'}}></i> Security Lock</h3>
             <p>Enter passcode to manage settings</p>
