@@ -29,6 +29,7 @@ export default function CoadminManagement() {
   const [passwordMessage, setPasswordMessage] = useState('');
   const [passwordMessageType, setPasswordMessageType] = useState('');
 
+  // Create Admin form states
   const [newAdminName, setNewAdminName] = useState('');
   const [newAdminUsername, setNewAdminUsername] = useState('');
   const [newAdminEmail, setNewAdminEmail] = useState('');
@@ -85,7 +86,7 @@ export default function CoadminManagement() {
       setActiveTab('username');
     } catch (error) {
       console.error('Unlock failed:', error);
-      setUnlockError('Incorrect passcode or authentication failed. Please try again.');
+      setUnlockError('Incorrect passcode or auth failed. Please try again.');
       setPassword('');
       setUnlocked(false);
     } finally {
@@ -122,7 +123,7 @@ export default function CoadminManagement() {
 
     if (!/^[a-zA-Z0-9_]+$/.test(newUsername)) {
       setUsernameMessageType('error');
-      setUsernameMessage('Username can only contain letters, numbers, and underscores');
+      setUsernameMessage('Letters, numbers, and underscores only');
       return;
     }
 
@@ -131,25 +132,17 @@ export default function CoadminManagement() {
       const response = await axios.put(
         `${API_URL}/auth/admin/change-coadmin-username`,
         { newUsername },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
       setUsernameMessageType('success');
       setUsernameMessage(response.data.message || `Coadmin username changed to: ${response.data.username}`);
       setNewUsername('');
       setConfirmUsername('');
-      setTimeout(() => {
-        setUsernameMessage('');
-      }, 3000);
+      setTimeout(() => setUsernameMessage(''), 3000);
     } catch (error) {
       setUsernameMessageType('error');
-      setUsernameMessage(
-        error.response?.data?.message || 'Failed to change coadmin username'
-      );
+      setUsernameMessage(error.response?.data?.message || 'Failed to change coadmin username');
     } finally {
       setUsernameLoading(false);
     }
@@ -181,25 +174,17 @@ export default function CoadminManagement() {
       const response = await axios.put(
         `${API_URL}/auth/admin/change-coadmin-password`,
         { newPassword },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
       setPasswordMessageType('success');
       setPasswordMessage(response.data.message || 'Coadmin password changed successfully');
       setNewPassword('');
       setConfirmPassword('');
-      setTimeout(() => {
-        setPasswordMessage('');
-      }, 3000);
+      setTimeout(() => setPasswordMessage(''), 3000);
     } catch (error) {
       setPasswordMessageType('error');
-      setPasswordMessage(
-        error.response?.data?.message || 'Failed to change coadmin password'
-      );
+      setPasswordMessage(error.response?.data?.message || 'Failed to change coadmin password');
     } finally {
       setPasswordLoading(false);
     }
@@ -210,7 +195,7 @@ export default function CoadminManagement() {
 
     if (!newAdminName || !newAdminUsername || !newAdminPassword || !confirmAdminPassword) {
       setAdminMessageType('error');
-      setAdminMessage('All fields are required to create a new admin');
+      setAdminMessage('All fields are required');
       return;
     }
 
@@ -222,7 +207,7 @@ export default function CoadminManagement() {
 
     if (!/^[a-zA-Z0-9_]+$/.test(newAdminUsername.trim())) {
       setAdminMessageType('error');
-      setAdminMessage('Username can only contain letters, numbers, and underscores');
+      setAdminMessage('Letters, numbers, and underscores only');
       return;
     }
 
@@ -254,11 +239,7 @@ export default function CoadminManagement() {
           email: newAdminEmail.trim(),
           password: newAdminPassword
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
       setAdminMessageType('success');
@@ -268,14 +249,10 @@ export default function CoadminManagement() {
       setNewAdminEmail('');
       setNewAdminPassword('');
       setConfirmAdminPassword('');
-      setTimeout(() => {
-        setAdminMessage('');
-      }, 4000);
+      setTimeout(() => setAdminMessage(''), 4000);
     } catch (error) {
       setAdminMessageType('error');
-      setAdminMessage(
-        error.response?.data?.message || 'Failed to create admin user'
-      );
+      setAdminMessage(error.response?.data?.message || 'Failed to create admin');
       console.error('Create admin failed:', error);
     } finally {
       setAdminLoading(false);
@@ -287,21 +264,18 @@ export default function CoadminManagement() {
       {!unlocked ? (
         <div className="admin-history-container">
           <div className="history-topbar">
-            <div>
-              <h3>Co-Admin Management Lock</h3>
-              <p>Unlock with the same secret history passcode to manage co-admin username and password.</p>
-            </div>
+            <h3><i className="fas fa-lock" style={{color:'#3b82f6', marginRight:'8px'}}></i> Security Lock</h3>
+            <p>Enter passcode to manage settings</p>
           </div>
 
           <div className="ios-lock-wrapper">
-            <p className="ios-lock-title">Enter Passcode</p>
             <div className="passcode-dots">
               {Array.from({ length: Math.max(4, password.length) }).map((_, i) => (
                 <div key={i} className={`dot ${i < password.length ? 'filled' : ''}`}></div>
               ))}
             </div>
 
-            {unlockError && <p className="history-error shake">{unlockError}</p>}
+            {unlockError && <div className="alert alert-error" style={{justifyContent:'center'}}>{unlockError}</div>}
 
             <div className="keypad">
               {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
@@ -309,68 +283,40 @@ export default function CoadminManagement() {
                   {num}
                 </button>
               ))}
-              <button className="key-btn action-btn" onClick={() => { setPassword(''); setUnlockError(''); }}>
-                C
-              </button>
-              <button className="key-btn" onClick={() => { setPassword((prev) => prev + '0'); setUnlockError(''); }}>
-                0
-              </button>
-              <button className="key-btn action-btn" onClick={() => { setPassword((p) => p.slice(0, -1)); setUnlockError(''); }}>
-                ⌫
-              </button>
+              <button className="key-btn" onClick={() => { setPassword(''); setUnlockError(''); }}>C</button>
+              <button className="key-btn" onClick={() => { setPassword((prev) => prev + '0'); setUnlockError(''); }}>0</button>
+              <button className="key-btn" onClick={() => { setPassword((p) => p.slice(0, -1)); setUnlockError(''); }}>⌫</button>
             </div>
 
-            <button
-              id="coadmin-unlock-btn"
-              className="unlock-btn unlock-btn-wide"
-              onClick={verifyPassword}
-              disabled={unlockLoading}
-            >
-              {unlockLoading ? 'Verifying...' : 'Unlock'}
+            <button id="coadmin-unlock-btn" className="unlock-btn-wide" onClick={verifyPassword} disabled={unlockLoading}>
+              {unlockLoading ? <><i className="fas fa-spinner fa-spin"></i> Verifying...</> : 'Unlock'}
             </button>
           </div>
         </div>
       ) : (
         <>
           <h2 className="page-title">
-            <i className="fas fa-user-shield"></i> Co-Admin Management
+            <i className="fas fa-user-shield"></i> Management
           </h2>
 
-          {/* Tab Navigation */}
           <div className="tab-navigation">
-            <button
-              className={`tab-btn ${activeTab === 'username' ? 'active' : ''}`}
-              onClick={() => setActiveTab('username')}
-            >
-              <i className="fas fa-user-edit"></i>
-              <span>Change Username / ID</span>
+            <button className={`tab-btn ${activeTab === 'username' ? 'active' : ''}`} onClick={() => setActiveTab('username')}>
+              <i className="fas fa-user-edit"></i> <span>Username</span>
             </button>
-            <button
-              className={`tab-btn ${activeTab === 'password' ? 'active' : ''}`}
-              onClick={() => setActiveTab('password')}
-            >
-              <i className="fas fa-key"></i>
-              <span>Change Password</span>
+            <button className={`tab-btn ${activeTab === 'password' ? 'active' : ''}`} onClick={() => setActiveTab('password')}>
+              <i className="fas fa-key"></i> <span>Password</span>
             </button>
-            <button
-              className={`tab-btn ${activeTab === 'create-admin' ? 'active' : ''}`}
-              onClick={() => setActiveTab('create-admin')}
-            >
-              <i className="fas fa-user-plus"></i>
-              <span>Create Admin</span>
+            <button className={`tab-btn ${activeTab === 'create-admin' ? 'active' : ''}`} onClick={() => setActiveTab('create-admin')}>
+              <i className="fas fa-user-plus"></i> <span>Add Admin</span>
             </button>
           </div>
 
-          {/* Tab Content */}
           <div className="tab-content">
-            <div className={`tab-pane ${activeTab === 'username' ? 'visible' : 'hidden'}`}>
+            {/* Username Tab */}
+            <div className={`tab-pane ${activeTab === 'username' ? 'visible' : ''}`}>
               <div className="form-card">
-                <h3 className="form-title">
-                  <i className="fas fa-user-edit"></i> Change Co-Admin Username / ID
-                </h3>
-                <p className="form-subtitle">
-                  Update the login username for co-admin account
-                </p>
+                <h3 className="form-title"><i className="fas fa-user-edit"></i> Change Username</h3>
+                <p className="form-subtitle">Update login ID for co-admin account.</p>
 
                 {usernameMessage && (
                   <div className={`alert alert-${usernameMessageType}`}>
@@ -380,82 +326,45 @@ export default function CoadminManagement() {
                 )}
 
                 <form onSubmit={handleUsernameSubmit}>
-                  {/* New Username Field */}
                   <div className="form-group">
-                    <label htmlFor="newUsername">New Username / ID</label>
+                    <label>New Username</label>
                     <div className="input-wrapper">
                       <i className="fas fa-at"></i>
-                      <input
-                        type="text"
-                        id="newUsername"
-                        placeholder="Enter new username (min. 3 characters)"
-                        value={newUsername}
-                        onChange={(e) => setNewUsername(e.target.value.trim())}
-                        disabled={usernameLoading}
-                        required
-                      />
+                      <input type="text" placeholder="Enter new username" value={newUsername} onChange={(e) => setNewUsername(e.target.value.trim())} disabled={usernameLoading} required />
                     </div>
                   </div>
 
-                  {/* Confirm Username Field */}
                   <div className="form-group">
-                    <label htmlFor="confirmUsername">Confirm Username / ID</label>
+                    <label>Confirm Username</label>
                     <div className="input-wrapper">
                       <i className="fas fa-at"></i>
-                      <input
-                        type="text"
-                        id="confirmUsername"
-                        placeholder="Confirm new username"
-                        value={confirmUsername}
-                        onChange={(e) => setConfirmUsername(e.target.value.trim())}
-                        disabled={usernameLoading}
-                        required
-                      />
+                      <input type="text" placeholder="Confirm username" value={confirmUsername} onChange={(e) => setConfirmUsername(e.target.value.trim())} disabled={usernameLoading} required />
                     </div>
                   </div>
 
-                  {/* Submit Button */}
-                  <button
-                    type="submit"
-                    className="btn-submit"
-                    disabled={usernameLoading}
-                  >
-                    {usernameLoading ? (
-                      <>
-                        <i className="fas fa-spinner fa-spin"></i> Updating...
-                      </>
-                    ) : (
-                      <>
-                        <i className="fas fa-save"></i> Update Username
-                      </>
-                    )}
+                  <button type="submit" className="btn-submit" disabled={usernameLoading}>
+                    {usernameLoading ? <><i className="fas fa-spinner fa-spin"></i> Updating...</> : <><i className="fas fa-save"></i> Update</>}
                   </button>
                 </form>
 
                 <div className="info-box">
                   <i className="fas fa-info-circle"></i>
                   <div>
-                    <p><strong>Username Requirements:</strong></p>
+                    <p>Rules:</p>
                     <ul>
-                      <li>Minimum 3 characters</li>
-                      <li>Letters, numbers, and underscores only</li>
-                      <li>Usernames must match</li>
-                      <li>Cannot use "coadmin" (default username)</li>
-                      <li>Co-Admin will need to use new username to login</li>
+                      <li>Min 3 characters, matching fields.</li>
+                      <li>Letters, numbers & underscores only.</li>
                     </ul>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className={`tab-pane ${activeTab === 'password' ? 'visible' : 'hidden'}`}>
+            {/* Password Tab */}
+            <div className={`tab-pane ${activeTab === 'password' ? 'visible' : ''}`}>
               <div className="form-card">
-                <h3 className="form-title">
-                  <i className="fas fa-key"></i> Change Co-Admin Password
-                </h3>
-                <p className="form-subtitle">
-                  Only admin can change the co-admin's password
-                </p>
+                <h3 className="form-title"><i className="fas fa-key"></i> Change Password</h3>
+                <p className="form-subtitle">Update co-admin access password.</p>
 
                 {passwordMessage && (
                   <div className={`alert alert-${passwordMessageType}`}>
@@ -465,93 +374,38 @@ export default function CoadminManagement() {
                 )}
 
                 <form onSubmit={handlePasswordSubmit}>
-                  {/* New Password Field */}
                   <div className="form-group">
-                    <label htmlFor="newPassword">New Password</label>
+                    <label>New Password</label>
                     <div className="password-input-wrapper">
-                      <input
-                        type={showPassword ? 'text' : 'password'}
-                        id="newPassword"
-                        placeholder="Enter new password (min. 6 characters)"
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                        disabled={passwordLoading}
-                        required
-                      />
-                      <button
-                        type="button"
-                        className="toggle-password"
-                        onClick={() => setShowPassword(!showPassword)}
-                        disabled={passwordLoading}
-                      >
+                      <input type={showPassword ? 'text' : 'password'} placeholder="New password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} disabled={passwordLoading} required />
+                      <button type="button" className="toggle-password" onClick={() => setShowPassword(!showPassword)} disabled={passwordLoading}>
                         <i className={`fas fa-eye${showPassword ? '' : '-slash'}`}></i>
                       </button>
                     </div>
                   </div>
 
-                  {/* Confirm Password Field */}
                   <div className="form-group">
-                    <label htmlFor="confirmPassword">Confirm Password</label>
+                    <label>Confirm Password</label>
                     <div className="password-input-wrapper">
-                      <input
-                        type={showConfirmPassword ? 'text' : 'password'}
-                        id="confirmPassword"
-                        placeholder="Confirm new password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        disabled={passwordLoading}
-                        required
-                      />
-                      <button
-                        type="button"
-                        className="toggle-password"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        disabled={passwordLoading}
-                      >
+                      <input type={showConfirmPassword ? 'text' : 'password'} placeholder="Confirm password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} disabled={passwordLoading} required />
+                      <button type="button" className="toggle-password" onClick={() => setShowConfirmPassword(!showConfirmPassword)} disabled={passwordLoading}>
                         <i className={`fas fa-eye${showConfirmPassword ? '' : '-slash'}`}></i>
                       </button>
                     </div>
                   </div>
 
-                  <button
-                    type="submit"
-                    className="btn-submit"
-                    disabled={passwordLoading}
-                  >
-                    {passwordLoading ? (
-                      <>
-                        <i className="fas fa-spinner fa-spin"></i> Changing...
-                      </>
-                    ) : (
-                      <>
-                        <i className="fas fa-save"></i> Change Password
-                      </>
-                    )}
+                  <button type="submit" className="btn-submit" disabled={passwordLoading}>
+                    {passwordLoading ? <><i className="fas fa-spinner fa-spin"></i> Changing...</> : <><i className="fas fa-save"></i> Save</>}
                   </button>
                 </form>
-
-                <div className="info-box">
-                  <i className="fas fa-info-circle"></i>
-                  <div>
-                    <p><strong>Password Requirements:</strong></p>
-                    <ul>
-                      <li>Minimum 6 characters</li>
-                      <li>Passwords must match</li>
-                      <li>This action logs out the co-admin from all sessions</li>
-                    </ul>
-                  </div>
-                </div>
               </div>
             </div>
 
-            <div className={`tab-pane ${activeTab === 'create-admin' ? 'visible' : 'hidden'}`}>
+            {/* Create Admin Tab */}
+            <div className={`tab-pane ${activeTab === 'create-admin' ? 'visible' : ''}`}>
               <div className="form-card">
-                <h3 className="form-title">
-                  <i className="fas fa-user-plus"></i> Create Admin User
-                </h3>
-                <p className="form-subtitle">
-                  Create a new admin account with username and password.
-                </p>
+                <h3 className="form-title"><i className="fas fa-user-plus"></i> Create Admin</h3>
+                <p className="form-subtitle">Add a brand new administrator.</p>
 
                 {adminMessage && (
                   <div className={`alert alert-${adminMessageType}`}>
@@ -562,130 +416,56 @@ export default function CoadminManagement() {
 
                 <form onSubmit={handleCreateAdminSubmit}>
                   <div className="form-group">
-                    <label htmlFor="newAdminName">Admin Name</label>
+                    <label>Display Name</label>
                     <div className="input-wrapper">
                       <i className="fas fa-id-badge"></i>
-                      <input
-                        type="text"
-                        id="newAdminName"
-                        placeholder="Enter the admin's display name"
-                        value={newAdminName}
-                        onChange={(e) => setNewAdminName(e.target.value)}
-                        disabled={adminLoading}
-                        required
-                      />
+                      <input type="text" placeholder="Enter name" value={newAdminName} onChange={(e) => setNewAdminName(e.target.value)} disabled={adminLoading} required />
                     </div>
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="newAdminUsername">Admin Username / ID</label>
+                    <label>Username</label>
                     <div className="input-wrapper">
                       <i className="fas fa-user"></i>
-                      <input
-                        type="text"
-                        id="newAdminUsername"
-                        placeholder="Choose a username (letters, numbers, underscore)"
-                        value={newAdminUsername}
-                        onChange={(e) => setNewAdminUsername(e.target.value)}
-                        disabled={adminLoading}
-                        required
-                      />
+                      <input type="text" placeholder="Choose username" value={newAdminUsername} onChange={(e) => setNewAdminUsername(e.target.value)} disabled={adminLoading} required />
                     </div>
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="newAdminEmail">Admin Email (optional)</label>
+                    <label>Email (Optional)</label>
                     <div className="input-wrapper">
                       <i className="fas fa-envelope"></i>
-                      <input
-                        type="email"
-                        id="newAdminEmail"
-                        placeholder="Optional email for login or recovery"
-                        value={newAdminEmail}
-                        onChange={(e) => setNewAdminEmail(e.target.value)}
-                        disabled={adminLoading}
-                      />
+                      <input type="email" placeholder="Email address" value={newAdminEmail} onChange={(e) => setNewAdminEmail(e.target.value)} disabled={adminLoading} />
                     </div>
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="newAdminPassword">Password</label>
+                    <label>Password</label>
                     <div className="password-input-wrapper">
-                      <input
-                        type={showAdminPassword ? 'text' : 'password'}
-                        id="newAdminPassword"
-                        placeholder="Enter password (min. 6 characters)"
-                        value={newAdminPassword}
-                        onChange={(e) => setNewAdminPassword(e.target.value)}
-                        disabled={adminLoading}
-                        required
-                      />
-                      <button
-                        type="button"
-                        className="toggle-password"
-                        onClick={() => setShowAdminPassword(!showAdminPassword)}
-                        disabled={adminLoading}
-                      >
+                      <input type={showAdminPassword ? 'text' : 'password'} placeholder="Password" value={newAdminPassword} onChange={(e) => setNewAdminPassword(e.target.value)} disabled={adminLoading} required />
+                      <button type="button" className="toggle-password" onClick={() => setShowAdminPassword(!showAdminPassword)} disabled={adminLoading}>
                         <i className={`fas fa-eye${showAdminPassword ? '' : '-slash'}`}></i>
                       </button>
                     </div>
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="confirmAdminPassword">Confirm Password</label>
+                    <label>Confirm Password</label>
                     <div className="password-input-wrapper">
-                      <input
-                        type={showConfirmAdminPassword ? 'text' : 'password'}
-                        id="confirmAdminPassword"
-                        placeholder="Confirm password"
-                        value={confirmAdminPassword}
-                        onChange={(e) => setConfirmAdminPassword(e.target.value)}
-                        disabled={adminLoading}
-                        required
-                      />
-                      <button
-                        type="button"
-                        className="toggle-password"
-                        onClick={() => setShowConfirmAdminPassword(!showConfirmAdminPassword)}
-                        disabled={adminLoading}
-                      >
+                      <input type={showConfirmAdminPassword ? 'text' : 'password'} placeholder="Confirm password" value={confirmAdminPassword} onChange={(e) => setConfirmAdminPassword(e.target.value)} disabled={adminLoading} required />
+                      <button type="button" className="toggle-password" onClick={() => setShowConfirmAdminPassword(!showConfirmAdminPassword)} disabled={adminLoading}>
                         <i className={`fas fa-eye${showConfirmAdminPassword ? '' : '-slash'}`}></i>
                       </button>
                     </div>
                   </div>
 
-                  <button
-                    type="submit"
-                    className="btn-submit"
-                    disabled={adminLoading}
-                  >
-                    {adminLoading ? (
-                      <>
-                        <i className="fas fa-spinner fa-spin"></i> Creating...
-                      </>
-                    ) : (
-                      <>
-                        <i className="fas fa-user-plus"></i> Create Admin
-                      </>
-                    )}
+                  <button type="submit" className="btn-submit" disabled={adminLoading}>
+                    {adminLoading ? <><i className="fas fa-spinner fa-spin"></i> Creating...</> : <><i className="fas fa-plus"></i> Create</>}
                   </button>
                 </form>
-
-                <div className="info-box">
-                  <i className="fas fa-info-circle"></i>
-                  <div>
-                    <p><strong>New Admin Requirements:</strong></p>
-                    <ul>
-                      <li>Name and username are required</li>
-                      <li>Username must be at least 3 characters</li>
-                      <li>Letters, numbers, and underscores only</li>
-                      <li>Password must be at least 6 characters</li>
-                      <li>Email is optional; placeholder email will be assigned if left blank</li>
-                    </ul>
-                  </div>
-                </div>
               </div>
             </div>
+
           </div>
         </>
       )}
