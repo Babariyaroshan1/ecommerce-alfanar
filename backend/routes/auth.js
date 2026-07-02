@@ -106,37 +106,41 @@ router.post('/login', async (req, res) => {
 // Admin Login
 router.post('/admin/login', async (req, res) => {
     try {
-        const username = String(req.body.username || '').trim();
+        const usernameRaw = String(req.body.username || '').trim();
         const password = String(req.body.password || '').trim();
+        const username = usernameRaw.toLowerCase();
 
-        let role;
+        let role = 'admin';
         let adminUser;
 
-        // Check for admin login
-        if (username.toLowerCase() === 'admin') {
-            role = 'admin';
+        if (username === 'admin') {
             adminUser = await User.findOne({ email: 'admin@noor.com' });
+            role = 'admin';
+        } else if (username === 'coadmin') {
+            adminUser = await User.findOne({ email: 'coadmin@noor.com' });
+            role = 'coadmin';
         } else {
-            // For coadmin, check if username matches the stored username
-            const coadminUser = await User.findOne({ email: 'coadmin@noor.com' });
-            if (coadminUser && coadminUser.username && username.toLowerCase() === coadminUser.username.toLowerCase()) {
-                role = 'coadmin';
-                adminUser = coadminUser;
-            } else if (!coadminUser && username.toLowerCase() === 'coadmin') {
-                // Fallback to default username if coadmin user doesn't exist yet
-                role = 'coadmin';
-            } else {
+            adminUser = await User.findOne({
+                isAdmin: true,
+                $or: [
+                    { username: usernameRaw },
+                    { username: username },
+                    { email: username }
+                ]
+            });
+
+            if (!adminUser) {
                 return res.status(400).json({ message: 'Invalid credentials' });
             }
+            role = adminUser.role || 'admin';
         }
 
-        const adminEmail = role === 'admin' ? 'admin@noor.com' : 'coadmin@noor.com';
-        const adminName = role === 'admin' ? 'Admin' : 'Co-Admin';
-        const defaultPassword = role === 'admin' ? 'admin123' : 'coadmin123';
-        const defaultUsername = role === 'admin' ? 'admin' : 'coadmin';
-
         if (!adminUser) {
-            // Create user with hashed default password
+            const adminEmail = role === 'admin' ? 'admin@noor.com' : 'coadmin@noor.com';
+            const adminName = role === 'admin' ? 'Admin' : 'Co-Admin';
+            const defaultPassword = role === 'admin' ? 'admin123' : 'coadmin123';
+            const defaultUsername = role === 'admin' ? 'admin' : 'coadmin';
+
             adminUser = new User({
                 name: adminName,
                 email: adminEmail,
@@ -149,7 +153,6 @@ router.post('/admin/login', async (req, res) => {
             await adminUser.save();
         }
 
-        // Compare password with hashed password in database
         const isPasswordValid = await bcrypt.compare(password, adminUser.password);
         if (!isPasswordValid) {
             return res.status(400).json({ message: 'Invalid credentials' });
@@ -201,7 +204,7 @@ router.put('/profile', auth, async (req, res) => {
         res.json(user);
     } catch (error) {
         res.status(500).json({ message: error.message });
-    }   
+    }
 });
 
 // Forgot Password
@@ -346,6 +349,78 @@ router.put('/admin/change-coadmin-username', adminAuth, async (req, res) => {
         await coadminUser.save();
 
         res.json({ message: 'Coadmin username changed successfully', username: coadminUser.username });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Admin: Create additional admin user
+router.post('/admin/create-admin', adminAuth, async (req, res) => {
+    try {
+        const { name, username, email, password } = req.body;
+        const normalizedUsername = String(username || '').trim();
+        const normalizedName = String(name || '').trim();
+        const normalizedEmail = String(email || '').trim().toLowerCase();
+
+        if (!normalizedName || normalizedName.length < 2) {
+            return res.status(400).json({ message: 'Name must be at least 2 characters' });
+        }
+
+        if (!normalizedUsername || normalizedUsername.length < 3) {
+            return res.status(400).json({ message: 'Username must be at least 3 characters' });
+        }
+
+        if (!/^[a-zA-Z0-9_]+$/.test(normalizedUsername)) {
+            return res.status(400).json({ message: 'Username can only contain letters, numbers, and underscores' });
+        }
+
+        if (['admin', 'coadmin'].includes(normalizedUsername.toLowerCase())) {
+            return res.status(400).json({ message: 'Username cannot be reserved keywords' });
+        }
+
+        if (!password || password.length < 6) {
+            return res.status(400).json({ message: 'Password must be at least 6 characters' });
+        }
+
+        let adminEmail = normalizedEmail;
+        if (!adminEmail) {
+            const safeUsername = normalizedUsername.toLowerCase().replace(/[^a-z0-9_]/g, '');
+            adminEmail = `${safeUsername}@admin.noor.com`;
+        }
+
+        const existingUser = await User.findOne({
+            $or: [{ username: normalizedUsername }, { email: adminEmail }]
+        });
+
+        if (existingUser) {
+            return res.status(400).json({ message: 'Username or email already exists' });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const user = new User({
+            name: normalizedName,
+            email: adminEmail,
+            phone: '0000000000',
+            username: normalizedUsername,
+            password: hashedPassword,
+            role: 'admin',
+            isAdmin: true,
+            permissions: []
+        });
+
+        await user.save();
+
+        res.status(201).json({
+            message: 'Admin user created successfully',
+            user: {
+                id: user._id,
+                name: user.name,
+                username: user.username,
+                email: user.email,
+                role: user.role
+            }
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

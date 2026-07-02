@@ -29,6 +29,17 @@ export default function CoadminManagement() {
   const [passwordMessage, setPasswordMessage] = useState('');
   const [passwordMessageType, setPasswordMessageType] = useState('');
 
+  const [newAdminName, setNewAdminName] = useState('');
+  const [newAdminUsername, setNewAdminUsername] = useState('');
+  const [newAdminEmail, setNewAdminEmail] = useState('');
+  const [newAdminPassword, setNewAdminPassword] = useState('');
+  const [confirmAdminPassword, setConfirmAdminPassword] = useState('');
+  const [showAdminPassword, setShowAdminPassword] = useState(false);
+  const [showConfirmAdminPassword, setShowConfirmAdminPassword] = useState(false);
+  const [adminLoading, setAdminLoading] = useState(false);
+  const [adminMessage, setAdminMessage] = useState('');
+  const [adminMessageType, setAdminMessageType] = useState('');
+
   const token = typeof window !== 'undefined' ? localStorage.getItem('adminToken') : null;
 
   useEffect(() => {
@@ -194,6 +205,83 @@ export default function CoadminManagement() {
     }
   };
 
+  const handleCreateAdminSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!newAdminName || !newAdminUsername || !newAdminPassword || !confirmAdminPassword) {
+      setAdminMessageType('error');
+      setAdminMessage('All fields are required to create a new admin');
+      return;
+    }
+
+    if (newAdminUsername.trim().length < 3) {
+      setAdminMessageType('error');
+      setAdminMessage('Username must be at least 3 characters');
+      return;
+    }
+
+    if (!/^[a-zA-Z0-9_]+$/.test(newAdminUsername.trim())) {
+      setAdminMessageType('error');
+      setAdminMessage('Username can only contain letters, numbers, and underscores');
+      return;
+    }
+
+    if (['admin', 'coadmin'].includes(newAdminUsername.trim().toLowerCase())) {
+      setAdminMessageType('error');
+      setAdminMessage('Username cannot be reserved keywords');
+      return;
+    }
+
+    if (newAdminPassword.length < 6) {
+      setAdminMessageType('error');
+      setAdminMessage('Password must be at least 6 characters');
+      return;
+    }
+
+    if (newAdminPassword !== confirmAdminPassword) {
+      setAdminMessageType('error');
+      setAdminMessage('Passwords do not match');
+      return;
+    }
+
+    try {
+      setAdminLoading(true);
+      const response = await axios.post(
+        `${API_URL}/auth/admin/create-admin`,
+        {
+          name: newAdminName.trim(),
+          username: newAdminUsername.trim(),
+          email: newAdminEmail.trim(),
+          password: newAdminPassword
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      setAdminMessageType('success');
+      setAdminMessage(response.data.message || 'Admin user created successfully');
+      setNewAdminName('');
+      setNewAdminUsername('');
+      setNewAdminEmail('');
+      setNewAdminPassword('');
+      setConfirmAdminPassword('');
+      setTimeout(() => {
+        setAdminMessage('');
+      }, 4000);
+    } catch (error) {
+      setAdminMessageType('error');
+      setAdminMessage(
+        error.response?.data?.message || 'Failed to create admin user'
+      );
+      console.error('Create admin failed:', error);
+    } finally {
+      setAdminLoading(false);
+    }
+  };
+
   return (
     <div className="coadmin-management-container">
       {!unlocked ? (
@@ -263,6 +351,13 @@ export default function CoadminManagement() {
             >
               <i className="fas fa-key"></i>
               <span>Change Password</span>
+            </button>
+            <button
+              className={`tab-btn ${activeTab === 'create-admin' ? 'active' : ''}`}
+              onClick={() => setActiveTab('create-admin')}
+            >
+              <i className="fas fa-user-plus"></i>
+              <span>Create Admin</span>
             </button>
           </div>
 
@@ -418,7 +513,6 @@ export default function CoadminManagement() {
                     </div>
                   </div>
 
-                  {/* Submit Button */}
                   <button
                     type="submit"
                     className="btn-submit"
@@ -444,6 +538,149 @@ export default function CoadminManagement() {
                       <li>Minimum 6 characters</li>
                       <li>Passwords must match</li>
                       <li>This action logs out the co-admin from all sessions</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className={`tab-pane ${activeTab === 'create-admin' ? 'visible' : 'hidden'}`}>
+              <div className="form-card">
+                <h3 className="form-title">
+                  <i className="fas fa-user-plus"></i> Create Admin User
+                </h3>
+                <p className="form-subtitle">
+                  Create a new admin account with username and password.
+                </p>
+
+                {adminMessage && (
+                  <div className={`alert alert-${adminMessageType}`}>
+                    <i className={`fas fa-${adminMessageType === 'success' ? 'check-circle' : 'exclamation-circle'}`}></i>
+                    {adminMessage}
+                  </div>
+                )}
+
+                <form onSubmit={handleCreateAdminSubmit}>
+                  <div className="form-group">
+                    <label htmlFor="newAdminName">Admin Name</label>
+                    <div className="input-wrapper">
+                      <i className="fas fa-id-badge"></i>
+                      <input
+                        type="text"
+                        id="newAdminName"
+                        placeholder="Enter the admin's display name"
+                        value={newAdminName}
+                        onChange={(e) => setNewAdminName(e.target.value)}
+                        disabled={adminLoading}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="newAdminUsername">Admin Username / ID</label>
+                    <div className="input-wrapper">
+                      <i className="fas fa-user"></i>
+                      <input
+                        type="text"
+                        id="newAdminUsername"
+                        placeholder="Choose a username (letters, numbers, underscore)"
+                        value={newAdminUsername}
+                        onChange={(e) => setNewAdminUsername(e.target.value)}
+                        disabled={adminLoading}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="newAdminEmail">Admin Email (optional)</label>
+                    <div className="input-wrapper">
+                      <i className="fas fa-envelope"></i>
+                      <input
+                        type="email"
+                        id="newAdminEmail"
+                        placeholder="Optional email for login or recovery"
+                        value={newAdminEmail}
+                        onChange={(e) => setNewAdminEmail(e.target.value)}
+                        disabled={adminLoading}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="newAdminPassword">Password</label>
+                    <div className="password-input-wrapper">
+                      <input
+                        type={showAdminPassword ? 'text' : 'password'}
+                        id="newAdminPassword"
+                        placeholder="Enter password (min. 6 characters)"
+                        value={newAdminPassword}
+                        onChange={(e) => setNewAdminPassword(e.target.value)}
+                        disabled={adminLoading}
+                        required
+                      />
+                      <button
+                        type="button"
+                        className="toggle-password"
+                        onClick={() => setShowAdminPassword(!showAdminPassword)}
+                        disabled={adminLoading}
+                      >
+                        <i className={`fas fa-eye${showAdminPassword ? '' : '-slash'}`}></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="confirmAdminPassword">Confirm Password</label>
+                    <div className="password-input-wrapper">
+                      <input
+                        type={showConfirmAdminPassword ? 'text' : 'password'}
+                        id="confirmAdminPassword"
+                        placeholder="Confirm password"
+                        value={confirmAdminPassword}
+                        onChange={(e) => setConfirmAdminPassword(e.target.value)}
+                        disabled={adminLoading}
+                        required
+                      />
+                      <button
+                        type="button"
+                        className="toggle-password"
+                        onClick={() => setShowConfirmAdminPassword(!showConfirmAdminPassword)}
+                        disabled={adminLoading}
+                      >
+                        <i className={`fas fa-eye${showConfirmAdminPassword ? '' : '-slash'}`}></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="btn-submit"
+                    disabled={adminLoading}
+                  >
+                    {adminLoading ? (
+                      <>
+                        <i className="fas fa-spinner fa-spin"></i> Creating...
+                      </>
+                    ) : (
+                      <>
+                        <i className="fas fa-user-plus"></i> Create Admin
+                      </>
+                    )}
+                  </button>
+                </form>
+
+                <div className="info-box">
+                  <i className="fas fa-info-circle"></i>
+                  <div>
+                    <p><strong>New Admin Requirements:</strong></p>
+                    <ul>
+                      <li>Name and username are required</li>
+                      <li>Username must be at least 3 characters</li>
+                      <li>Letters, numbers, and underscores only</li>
+                      <li>Password must be at least 6 characters</li>
+                      <li>Email is optional; placeholder email will be assigned if left blank</li>
                     </ul>
                   </div>
                 </div>
