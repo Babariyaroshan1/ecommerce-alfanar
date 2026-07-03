@@ -116,15 +116,18 @@ const AdminHistory = () => {
     return '-';
   };
 
+  // Improved function to get safely max 5 pagination buttons
   const getVisiblePageNumbers = () => {
     const maxButtons = 5;
-    const half = Math.floor(maxButtons / 2);
-    let start = Math.max(1, page - half);
+    let start = Math.max(1, page - Math.floor(maxButtons / 2));
     let end = Math.min(totalPages, start + maxButtons - 1);
+    
+    // Adjust start if we are near the end
     if (end - start + 1 < maxButtons) {
       start = Math.max(1, end - maxButtons + 1);
     }
-    return Array.from({ length: end - start + 1 }, (_, idx) => start + idx);
+    
+    return Array.from({ length: Math.max(0, end - start + 1) }, (_, idx) => start + idx);
   };
 
   // On-Screen Keypad Handler
@@ -150,7 +153,6 @@ const AdminHistory = () => {
             
             {/* Dots Indicator */}
             <div className="ah-passcode-dots">
-              {/* Hamesha minimum 4 dots dikhayega, jaise jaise type hoga fill hoga */}
               {Array.from({ length: Math.max(4, password.length) }).map((_, i) => (
                 <div key={i} className={`ah-dot ${i < password.length ? 'filled' : ''}`}></div>
               ))}
@@ -256,11 +258,21 @@ const AdminHistory = () => {
             </table>
           </div>
 
+          {/* Corrected Clean Pagination */}
           <div className="ah-pagination-bar">
             <div className="ah-page-info">
               Page {page} of {totalPages}
             </div>
             <div className="ah-page-buttons">
+              <button
+                type="button"
+                className="ah-page-btn"
+                onClick={() => setPage(1)}
+                disabled={page === 1}
+              >
+                First
+              </button>
+
               <button
                 type="button"
                 className="ah-page-btn"
@@ -270,8 +282,8 @@ const AdminHistory = () => {
                 Prev
               </button>
               
-              {/* NOTE: Kept exactly as your original code logic */}
-              {Array.from({ length: totalPages }, (_, idx) => idx + 1).map((pageNumber) => (
+              {/* This will ONLY show maximum 5 buttons now */}
+              {getVisiblePageNumbers().map((pageNumber) => (
                 <button
                   key={pageNumber}
                   type="button"
@@ -281,27 +293,15 @@ const AdminHistory = () => {
                   {pageNumber}
                 </button>
               ))}
-              
+
               <button
                 type="button"
                 className="ah-page-btn"
-                onClick={() => setPage(1)}
-                disabled={page === 1}
+                onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+                disabled={page === totalPages}
               >
-                First
+                Next
               </button>
-              
-              {/* NOTE: Kept exactly as your original code logic */}
-              {getVisiblePageNumbers().map((pageNumber) => (
-                <button
-                  key={pageNumber + '_visible'}
-                  type="button"
-                  className={`ah-page-btn ${pageNumber === page ? 'active' : ''}`}
-                  onClick={() => setPage(pageNumber)}
-                >
-                  {pageNumber}
-                </button>
-              ))}
               
               <button
                 type="button"
@@ -313,6 +313,7 @@ const AdminHistory = () => {
               </button>
             </div>
           </div>
+          {/* End of Pagination */}
 
         </div>
       )}
