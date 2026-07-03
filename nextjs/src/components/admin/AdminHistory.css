@@ -142,7 +142,7 @@
 }
 
 .ah-key-btn.action-btn:hover {
-  color: #b5b5b5;
+  color: #ffffff;
 }
 
 .ah-unlock-btn {
@@ -274,7 +274,7 @@
 }
 
 /* ---------------------------------
-   Modern Table Design
+   Modern Table Design (FLICKER FIXED)
 -----------------------------------*/
 .ah-summary-text {
   color: #a1a1aa;
@@ -316,39 +316,33 @@
   white-space: nowrap;
 }
 
-.ah-table td {
-  color: #e4e4e7;
+/* FIXED FLICKERING AND HOVER */
+.ah-table tbody tr td {
+  transition: background-color 0.2s ease, color 0.2s ease;
+  color: #e4e4e7 !important;
   font-size: 0.95rem;
   vertical-align: middle;
 }
 
-/* Accent Column Colors */
-.ah-table td:nth-child(3) { color: #a78bfa; font-weight: 500; } /* Type */
-.ah-table td:nth-child(4) { color: #60a5fa; font-weight: 600; text-transform: capitalize; } /* Action */
-
-
-/* Table Rows & Hover Fix */
-.ah-table tbody tr {
-  transition: all 0.2s ease;
+.ah-table tbody tr.ah-row-even td {
+  background-color: transparent !important;
 }
 
-.ah-table tbody tr.ah-row-even td { 
-  background-color: transparent !important; 
+.ah-table tbody tr.ah-row-odd td {
+  background-color: rgba(255, 255, 255, 0.02) !important;
 }
 
-.ah-table tbody tr.ah-row-odd td { 
-  background-color: rgba(255, 255, 255, 0.02) !important; 
-}
-
-/* Ye hover par white hone se rokega aur premium dark grey dega */
 .ah-table tbody tr:hover td {
   background-color: #27272a !important; 
   color: #ffffff !important; 
 }
 
-/* Ensure accent colors still look good on hover */
-.ah-table tbody tr:hover td:nth-child(3) { color: #a78bfa !important; } 
-.ah-table tbody tr:hover td:nth-child(4) { color: #60a5fa !important; }
+/* Accent Column Colors */
+.ah-table tbody tr td:nth-child(3) { color: #a78bfa !important; font-weight: 500; }
+.ah-table tbody tr td:nth-child(4) { color: #60a5fa !important; font-weight: 600; text-transform: capitalize; }
+
+.ah-table tbody tr:hover td:nth-child(3) { color: #c4b5fd !important; }
+.ah-table tbody tr:hover td:nth-child(4) { color: #93c5fd !important; }
 
 .ah-table tr:last-child td {
   border-bottom: none;

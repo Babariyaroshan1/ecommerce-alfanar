@@ -21,14 +21,14 @@ const AdminHistory = () => {
 
   const token = typeof window !== 'undefined' ? localStorage.getItem('adminToken') : null;
 
-  // Keyboard Event Listener (For typing via Physical Keyboard)
+  // Keyboard Event Listener
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (unlocked) return; // Agar unlock ho chuka hai toh keyboard type na kare
+      if (unlocked) return;
 
       if (/^[0-9]$/.test(e.key)) {
         setPassword((prev) => prev + e.key);
-        setError(''); // Type karte hi error hata do
+        setError('');
       } else if (e.key === 'Backspace') {
         setPassword((prev) => prev.slice(0, -1));
         setError('');
@@ -41,7 +41,7 @@ const AdminHistory = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [unlocked]);
 
-  // Filters change hone par list refresh karega (Only if Unlocked)
+  // Filters change hone par list refresh karega
   useEffect(() => {
     if (unlocked) {
       setPage(1);
@@ -66,16 +66,24 @@ const AdminHistory = () => {
           entityType: filterType || undefined,
           actionType: filterAction || undefined,
           page: requestedPage,
-          pageSize: requestedPageSize
+          pageSize: requestedPageSize,
+          sortBy: 'createdAt', // <-- Backend ko instruction for Latest First
+          sortOrder: 'desc'    // <-- Backend ko instruction for Latest First
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      setHistory(res.data.history || []);
+      const historyData = res.data.history || [];
+      const totalRecs = res.data.totalRecords ?? historyData.length;
+      
+      // FIXED: Total pages dynamically limit ho jayenge based on total records
+      const calculatedPages = res.data.totalPages || Math.ceil(totalRecs / requestedPageSize) || 1;
+
+      setHistory(historyData);
       setPage(res.data.page || requestedPage);
       setPageSize(res.data.pageSize || requestedPageSize);
-      setTotalRecords(res.data.totalRecords ?? (res.data.history || []).length);
-      setTotalPages(res.data.totalPages || 1);
+      setTotalRecords(totalRecs);
+      setTotalPages(calculatedPages);
       setUnlocked(true);
     } catch (err) {
       console.error('History fetch failed:', err);
@@ -87,7 +95,6 @@ const AdminHistory = () => {
     }
   };
 
-  // Main API Call (Check Password & Fetch Data)
   const verifyAndFetch = async () => {
     if (!password) {
       setError('Please enter passcode');
@@ -103,34 +110,55 @@ const AdminHistory = () => {
     });
   };
 
+  // FIXED: Cleaner Device/Browser Name Extractor
   const getClientInfo = (info) => {
     if (!info) return '-';
-    const browser = info.browserName || info.vendor || '';
-    const platform = info.platform || info.os || '';
-    const memory = info.deviceMemory ? `${info.deviceMemory}GB` : '';
-    const language = info.language || '';
-    const userAgent = info.userAgent || '';
-    const parts = [browser, platform, memory, language].filter(Boolean);
-    if (parts.length > 0) return parts.join(' | ');
-    if (userAgent) return userAgent;
-    return '-';
+    const ua = info.userAgent || '';
+    
+    if (!ua) {
+      // Fallback agar backend sirf old data bhej raha hai
+      const browser = info.browserName || info.vendor || '';
+      const platform = info.platform || info.os || '';
+      return browser || platform ? `${browser} | ${platform}` : '-';
+    }
+
+    // Modern Parsing for Clean Names (e.g. "Chrome on Windows 11")
+    let browser = "Unknown Browser";
+    if (ua.includes("Firefox")) browser = "Firefox";
+    else if (ua.includes("Edg")) browser = "Edge";
+    else if (ua.includes("Chrome")) browser = "Chrome";
+    else if (ua.includes("Safari")) browser = "Safari";
+
+    let os = "Unknown OS";
+    if (ua.includes("Windows NT 10.0") || ua.includes("Windows NT 11.0")) os = "Windows 10/11";
+    else if (ua.includes("Windows NT 6.")) os = "Windows 7/8";
+    else if (ua.includes("Mac OS X")) os = "Mac OS";
+    else if (ua.includes("Linux")) os = "Linux";
+    else if (ua.includes("Android")) os = "Android";
+    else if (ua.includes("iPhone") || ua.includes("iPad")) os = "iOS";
+
+    return `${browser} on ${os}`;
   };
 
-  // Improved function to get safely max 5 pagination buttons
+  // FIXED: Strictly limits pagination to avoid extra blank pages
   const getVisiblePageNumbers = () => {
+    if (totalPages <= 1) return [1];
+    
     const maxButtons = 5;
     let start = Math.max(1, page - Math.floor(maxButtons / 2));
     let end = Math.min(totalPages, start + maxButtons - 1);
     
-    // Adjust start if we are near the end
+    // Adjust start if we are at the tail end of pages
     if (end - start + 1 < maxButtons) {
       start = Math.max(1, end - maxButtons + 1);
     }
     
+    // Safety check so start doesn't go below 1
+    start = Math.max(1, start);
+    
     return Array.from({ length: Math.max(0, end - start + 1) }, (_, idx) => start + idx);
   };
 
-  // On-Screen Keypad Handler
   const handleKeypadClick = (val) => {
     if (loading) return;
     setPassword((prev) => prev + val);
@@ -151,17 +179,14 @@ const AdminHistory = () => {
           <div className="ah-lock-card">
             <p className="ah-lock-title">Enter Passcode</p>
             
-            {/* Dots Indicator */}
             <div className="ah-passcode-dots">
               {Array.from({ length: Math.max(4, password.length) }).map((_, i) => (
                 <div key={i} className={`ah-dot ${i < password.length ? 'filled' : ''}`}></div>
               ))}
             </div>
 
-            {/* Error Message with Shake Animation */}
             {error && <p className="ah-error-msg ah-shake">{error}</p>}
 
-            {/* iOS Style Number Pad */}
             <div className="ah-keypad">
               {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
                 <button key={num} className="ah-key-btn" onClick={() => handleKeypadClick(num)}>
@@ -258,7 +283,6 @@ const AdminHistory = () => {
             </table>
           </div>
 
-          {/* Corrected Clean Pagination */}
           <div className="ah-pagination-bar">
             <div className="ah-page-info">
               Page {page} of {totalPages}
@@ -282,7 +306,7 @@ const AdminHistory = () => {
                 Prev
               </button>
               
-              {/* This will ONLY show maximum 5 buttons now */}
+              {/* Only rendering up to 5 buttons max */}
               {getVisiblePageNumbers().map((pageNumber) => (
                 <button
                   key={pageNumber}
@@ -313,7 +337,6 @@ const AdminHistory = () => {
               </button>
             </div>
           </div>
-          {/* End of Pagination */}
 
         </div>
       )}
