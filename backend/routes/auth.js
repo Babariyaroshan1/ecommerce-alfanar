@@ -113,6 +113,16 @@ router.post('/admin/login', async (req, res) => {
         let role = 'admin';
         let adminUser;
 
+        const query = {
+            role: { $in: ['admin', 'coadmin'] },
+            $or: [
+                { username: usernameRaw },
+                { username: username },
+                { email: username },
+                { email: usernameRaw }
+            ]
+        };
+
         if (username === 'admin') {
             adminUser = await User.findOne({ email: 'admin@noor.com' });
             role = 'admin';
@@ -120,24 +130,16 @@ router.post('/admin/login', async (req, res) => {
             adminUser = await User.findOne({ email: 'coadmin@noor.com' });
             role = 'coadmin';
         } else {
-            adminUser = await User.findOne({
-                role: { $in: ['admin', 'coadmin'] },
-                $or: [
-                    { username: usernameRaw },
-                    { username: username },
-                    { email: username }
-                ]
-            });
-
+            adminUser = await User.findOne(query);
             if (!adminUser) {
-                return res.status(400).json({ message: 'Invalid credentials' });
+                return res.status(400).json({ message: 'Invalid admin/coadmin username or email' });
             }
             role = adminUser.role || 'admin';
         }
 
         if (!adminUser) {
             if (username !== 'admin' && username !== 'coadmin') {
-                return res.status(400).json({ message: 'Invalid credentials' });
+                return res.status(400).json({ message: 'Invalid admin/coadmin username or email' });
             }
 
             const adminEmail = role === 'admin' ? 'admin@noor.com' : 'coadmin@noor.com';

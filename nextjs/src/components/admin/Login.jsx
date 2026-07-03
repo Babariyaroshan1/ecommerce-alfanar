@@ -25,7 +25,7 @@ export default function Login({ onLogin }) {
       localStorage.setItem('adminToken', res.data.token);
       onLogin();
     } catch (err) {
-      setError('Invalid credentials');
+      setError(err.response?.data?.message || 'Invalid credentials');
     }
   };
 
