@@ -33,7 +33,7 @@ const AdminHistory = () => {
         setPassword((prev) => prev.slice(0, -1));
         setError('');
       } else if (e.key === 'Enter') {
-        document.getElementById('unlock-btn')?.click();
+        document.getElementById('ah-unlock-btn')?.click();
       }
     };
 
@@ -93,7 +93,6 @@ const AdminHistory = () => {
       setError('Please enter passcode');
       return;
     }
-
     await fetchHistory(1, pageSize);
   };
 
@@ -136,61 +135,64 @@ const AdminHistory = () => {
   };
 
   return (
-    <div className="admin-history-container">
-      <div className="history-topbar">
+    <div className="ah-container">
+      <div className="ah-header">
         <div>
-          <h3 className="ad-his-main">Admin Change History</h3>
+          <h3>Admin Change History</h3>
           <p>Only main admin can unlock this view using the secret history password.</p>
         </div>
       </div>
 
       {!unlocked ? (
-        <div className="ios-lock-wrapper">
-          <p className="ios-lock-title">Enter Passcode</p>
-          
-          {/* Dots Indicator */}
-          <div className="passcode-dots">
-            {/* Hamesha minimum 4 dots dikhayega, jaise jaise type hoga fill hoga */}
-            {Array.from({ length: Math.max(4, password.length) }).map((_, i) => (
-              <div key={i} className={`dot ${i < password.length ? 'filled' : ''}`}></div>
-            ))}
-          </div>
+        <div className="ah-lock-screen">
+          <div className="ah-lock-card">
+            <p className="ah-lock-title">Enter Passcode</p>
+            
+            {/* Dots Indicator */}
+            <div className="ah-passcode-dots">
+              {/* Hamesha minimum 4 dots dikhayega, jaise jaise type hoga fill hoga */}
+              {Array.from({ length: Math.max(4, password.length) }).map((_, i) => (
+                <div key={i} className={`ah-dot ${i < password.length ? 'filled' : ''}`}></div>
+              ))}
+            </div>
 
-          {/* Error Message with Shake Animation */}
-          {error && <p className="history-error shake">{error}</p>}
+            {/* Error Message with Shake Animation */}
+            {error && <p className="ah-error-msg ah-shake">{error}</p>}
 
-          {/* iOS Style Number Pad */}
-          <div className="keypad">
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
-              <button key={num} className="key-btn" onClick={() => handleKeypadClick(num)}>
-                {num}
+            {/* iOS Style Number Pad */}
+            <div className="ah-keypad">
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
+                <button key={num} className="ah-key-btn" onClick={() => handleKeypadClick(num)}>
+                  {num}
+                </button>
+              ))}
+              <button className="ah-key-btn action-btn" onClick={() => { setPassword(''); setError(''); }}>
+                C
               </button>
-            ))}
-            <button className="key-btn action-btn" onClick={() => { setPassword(''); setError(''); }}>
-              C
-            </button>
-            <button className="key-btn" onClick={() => handleKeypadClick('0')}>
-              0
-            </button>
-            <button className="key-btn action-btn" onClick={() => { setPassword((p) => p.slice(0, -1)); setError(''); }}>
-              ⌫
+              <button className="ah-key-btn" onClick={() => handleKeypadClick('0')}>
+                0
+              </button>
+              <button className="ah-key-btn action-btn" onClick={() => { setPassword((p) => p.slice(0, -1)); setError(''); }}>
+                ⌫
+              </button>
+            </div>
+
+            <button id="ah-unlock-btn" className="ah-unlock-btn" onClick={verifyAndFetch} disabled={loading}>
+              {loading ? 'Verifying...' : 'Unlock'}
             </button>
           </div>
-
-          <button id="unlock-btn" className="unlock-btn unlock-btn-wide" onClick={verifyAndFetch} disabled={loading}>
-            {loading ? 'Verifying...' : 'Unlock'}
-          </button>
         </div>
       ) : (
-        <div className="history-content">
-          <div className="history-filters">
-            <select value={filterType} onChange={(e) => setFilterType(e.target.value)}>
+        <div className="ah-dashboard">
+          
+          <div className="ah-filters-bar">
+            <select className="ah-select" value={filterType} onChange={(e) => setFilterType(e.target.value)}>
               <option value="">All Types</option>
               <option value="Product">Product</option>
               <option value="Order">Order</option>
               <option value="User">User</option>
             </select>
-            <select value={filterAction} onChange={(e) => setFilterAction(e.target.value)}>
+            <select className="ah-select" value={filterAction} onChange={(e) => setFilterAction(e.target.value)}>
               <option value="">All Actions</option>
               <option value="create">Create</option>
               <option value="update">Update</option>
@@ -199,24 +201,24 @@ const AdminHistory = () => {
               <option value="cancel">Cancel</option>
               <option value="refund">Refund</option>
             </select>
-            <select value={pageSize} onChange={(e) => { setPageSize(Number(e.target.value)); setPage(1); }}>
+            <select className="ah-select" value={pageSize} onChange={(e) => { setPageSize(Number(e.target.value)); setPage(1); }}>
               <option value={10}>Show 10</option>
               <option value={20}>Show 20</option>
               <option value={50}>Show 50</option>
             </select>
-            <button type="button" className="refresh-history-btn" onClick={verifyAndFetch} disabled={loading}>
-              {loading ? 'Loading...' : 'Refresh'}
+            <button type="button" className="ah-btn-refresh" onClick={verifyAndFetch} disabled={loading}>
+              {loading ? 'Loading...' : 'Refresh History'}
             </button>
           </div>
 
-          {error && <p className="history-error">{error}</p>}
+          {error && <p className="ah-error-msg">{error}</p>}
 
-          <div className="history-summary">
+          <div className="ah-summary-text">
             <span>{`Showing ${history.length} records of ${totalRecords}`}</span>
           </div>
 
-          <div className="history-table-wrapper">
-            <table className="history-table">
+          <div className="ah-table-wrapper">
+            <table className="ah-table">
               <thead>
                 <tr>
                   <th>#</th>
@@ -233,11 +235,11 @@ const AdminHistory = () => {
               <tbody>
                 {history.length === 0 ? (
                   <tr>
-                    <td colSpan="9" className="history-empty">No history records found.</td>
+                    <td colSpan="9" className="ah-empty-state">No history records found.</td>
                   </tr>
                 ) : (
                   history.map((item, index) => (
-                    <tr key={item._id || index} className={index % 2 === 0 ? 'history-row-even' : 'history-row-odd'}>
+                    <tr key={item._id || index} className={index % 2 === 0 ? 'ah-row-even' : 'ah-row-odd'}>
                       <td>{(page - 1) * pageSize + index + 1}</td>
                       <td>{formatTimestamp(item.createdAt)}</td>
                       <td>{item.entityType}</td>
@@ -254,50 +256,56 @@ const AdminHistory = () => {
             </table>
           </div>
 
-          <div className="history-pagination">
-            <div className="pagination-info">
+          <div className="ah-pagination-bar">
+            <div className="ah-page-info">
               Page {page} of {totalPages}
             </div>
-            <div className="pagination-buttons">
+            <div className="ah-page-buttons">
               <button
                 type="button"
-                className="page-button"
+                className="ah-page-btn"
                 onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
                 disabled={page === 1}
               >
                 Prev
               </button>
+              
+              {/* NOTE: Kept exactly as your original code logic */}
               {Array.from({ length: totalPages }, (_, idx) => idx + 1).map((pageNumber) => (
                 <button
                   key={pageNumber}
                   type="button"
-                  className={`page-button ${pageNumber === page ? 'active' : ''}`}
+                  className={`ah-page-btn ${pageNumber === page ? 'active' : ''}`}
                   onClick={() => setPage(pageNumber)}
                 >
                   {pageNumber}
                 </button>
               ))}
+              
               <button
                 type="button"
-                className="page-button"
+                className="ah-page-btn"
                 onClick={() => setPage(1)}
                 disabled={page === 1}
               >
                 First
               </button>
+              
+              {/* NOTE: Kept exactly as your original code logic */}
               {getVisiblePageNumbers().map((pageNumber) => (
                 <button
-                  key={pageNumber}
+                  key={pageNumber + '_visible'}
                   type="button"
-                  className={`page-button ${pageNumber === page ? 'active' : ''}`}
+                  className={`ah-page-btn ${pageNumber === page ? 'active' : ''}`}
                   onClick={() => setPage(pageNumber)}
                 >
                   {pageNumber}
                 </button>
               ))}
+              
               <button
                 type="button"
-                className="page-button"
+                className="ah-page-btn"
                 onClick={() => setPage(totalPages)}
                 disabled={page === totalPages}
               >
@@ -305,6 +313,7 @@ const AdminHistory = () => {
               </button>
             </div>
           </div>
+
         </div>
       )}
     </div>

@@ -1,259 +1,232 @@
-/* Container & Base - Deep Black Theme */
-.admin-history-container {
+/* =========================================
+   Premium Dark Theme - Admin History UI
+   ========================================= */
+
+.ah-container {
   padding: 30px;
-  background: #09090b; 
-  border-radius: 20px;
-  width:1200px;
+  background: #09090b; /* Deep zinc background */
+  border-radius: 24px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-  border: 1px solid #27272a;
-  color: #e4e4e7;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  color: #f8fafc;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
 }
-@media (mix-width:768px) {
-    .admin-history-container {    
-    padding-top: 0;
-    width: 100%;
-    }
-    .ad-his-main{
-        font-size: 18px;
-    }
-    .history-topbar p {
-  font-size: 12px;
-}
-.keypad {
-    gap: 20px;
-    margin-bottom: 20px;
-}
-}
-@media (max-width: 768px) {
-    .admin-history-container {
-        width: 100%;
-        padding: 20px;
-    }
-    .history-topbar {
-      flex-direction: column;
-      align-items: stretch;
-    }
-    .history-filters {
-      flex-direction: column;
-      align-items: stretch;
-    }
-    .history-filters select,
-    .refresh-history-btn {
-      width: 100%;
-    }
-    .history-table {
-      min-width: 100%;
-    }
-    .history-pagination {
-      flex-direction: column;
-      align-items: stretch;
-    }
-}
-/* Topbar Styling */
-.history-topbar {
+
+/* ---------------------------------
+   Header
+-----------------------------------*/
+.ah-header {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 20px;
-  margin-bottom: 20px;
-  padding-bottom: 0px;
-  border-bottom: 1px solid #27272a;
 }
 
-.history-topbar h2 {
-  margin: 0;
-  font-size: 1.8rem;
-  color: #fafafa;
-  font-weight: 700;
+.ah-header h3 {
+  margin: 0 0 8px 0;
+  font-size: 2rem;
+  color: #ffffff;
+  font-weight: 600;
   letter-spacing: -0.5px;
 }
 
-.history-topbar p {
-  margin-top: 8px;
+.ah-header p {
+  margin: 0;
   color: #a1a1aa;
   font-size: 0.95rem;
 }
 
 /* ---------------------------------
-   iOS Style Lock Screen UI
+   Premium iOS Style Lock Screen
 -----------------------------------*/
-.ios-lock-wrapper {
+.ah-lock-screen {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 0px 20px;
-  background: #09090b;
+  flex: 1;
+  padding: 40px 20px;
+  animation: ahFadeIn 0.5s ease-out;
 }
 
-.ios-lock-title {
+.ah-lock-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 50px;
+  background: #111115;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 28px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+  width: 100%;
+  max-width: 400px;
+}
+
+.ah-lock-title {
   color: #fafafa;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 500;
   margin-bottom: 25px;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
-.passcode-dots {
+.ah-passcode-dots {
   display: flex;
-  gap: 16px;
-  margin-bottom: 30px;
+  gap: 18px;
+  margin-bottom: 40px;
   height: 20px;
   align-items: center;
 }
 
-.dot {
+.ah-dot {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  border: 2px solid #52525b;
-  transition: all 0.2s ease-in-out;
+  border: 1.5px solid #3b82f6;
+  background: transparent;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Jese hi number type hoga dot fill ho jayega aur glow karega */
-.dot.filled {
+.ah-dot.filled {
   background: #3b82f6; 
-  border-color: #3b82f6;
-  transform: scale(1.1); 
-  box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.6);
+  transform: scale(1.1);
 }
 
-.keypad {
+.ah-keypad {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 25px;
-  margin-bottom: 35px;
+  gap: 20px;
+  margin-bottom: 30px;
 }
 
-.key-btn {
-  width: 75px;
-  height: 75px;
+.ah-key-btn {
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
   border: none;
-  background: rgba(39, 39, 42, 0.6); /* Glassmorphism dark */
+  background: rgba(255, 255, 255, 0.04);
   color: #fafafa;
-  font-size: 1.8rem;
-  font-weight: 300;
+  font-size: 1.6rem;
+  font-weight: 400;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.15s ease;
-  backdrop-filter: blur(10px);
+  transition: all 0.2s ease;
 }
 
-.key-btn:hover {
-  background: rgba(63, 63, 70, 0.8);
+.ah-key-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
 }
 
-/* Click hone par white ho jana bilkul iOS jaisa */
-.key-btn:active {
-  background: #ffffff;
-  color: #000000;
-  transform: scale(0.9);
+.ah-key-btn:active {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(0.95);
 }
 
-/* Clear and Backspace buttons */
-.key-btn.action-btn {
+.ah-key-btn.action-btn {
   background: transparent;
   font-size: 1.2rem;
   font-weight: 500;
-  color: #a1a1aa;
+  color: #8b8b93;
 }
 
-.key-btn.action-btn:active {
-  background: rgba(255, 255, 255, 0.1);
+.ah-key-btn.action-btn:hover {
   color: #ffffff;
 }
 
-.unlock-btn-wide {
+.ah-unlock-btn {
   width: 100%;
-  max-width: 275px;
-  padding: 14px;
+  padding: 16px;
   font-size: 1rem;
   letter-spacing: 1px;
   text-transform: uppercase;
   border-radius: 12px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.ah-unlock-btn:hover:not(:disabled) {
+  background: #2563eb;
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+}
+
+.ah-unlock-btn:disabled {
+  background: #27272a;
+  color: #71717a;
+  cursor: not-allowed;
 }
 
 /* ---------------------------------
-   Error Display & Shake Animation (Red Color)
+   Error Display & Animations
 -----------------------------------*/
-.history-error {
-  color: #ef4444; /* Bright Red for Dark Theme */
+.ah-error-msg {
+  color: #ef4444; 
+  font-size: 0.9rem;
   font-weight: 500;
   margin-bottom: 20px;
   background: rgba(239, 68, 68, 0.1);
-  padding: 10px 20px;
-  border-radius: 8px;
+  padding: 12px 20px;
+  border-radius: 10px;
   border: 1px solid rgba(239, 68, 68, 0.2);
   text-align: center;
+  width: 100%;
 }
 
-/* Shake Animation Class */
-.shake {
-  animation: shake 0.4s ease-in-out;
+.ah-shake {
+  animation: ahShake 0.4s cubic-bezier(.36,.07,.19,.97) both;
 }
 
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  20%, 60% { transform: translateX(-10px); }
-  40%, 80% { transform: translateX(10px); }
+@keyframes ahShake {
+  10%, 90% { transform: translate3d(-2px, 0, 0); }
+  20%, 80% { transform: translate3d(4px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+  40%, 60% { transform: translate3d(6px, 0, 0); }
 }
 
+@keyframes ahFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
 /* ---------------------------------
-   Rest Topbar, Filters & Table Code
+   Dashboard (Filters & Table)
 -----------------------------------*/
-.unlock-btn,
-.refresh-history-btn {
-  padding: 12px 20px;
-  background: linear-gradient(135deg, #3b82f6, #2563eb); 
-  color: white;
-  border: none;
-  border-radius: 10px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
-}
-
-.unlock-btn:hover,
-.refresh-history-btn:hover {
-  transform: translateY(-2px);
-  background: linear-gradient(135deg, #60a5fa, #3b82f6);
-  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
-}
-
-.refresh-history-btn:disabled {
-  background: #3f3f46;
-  color: #a1a1aa;
-  cursor: not-allowed;
-  box-shadow: none;
-  transform: none;
-}
-
-.history-content {
+.ah-dashboard {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  animation: ahFadeIn 0.5s ease-out;
 }
 
-.history-filters {
+.ah-filters-bar {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
   align-items: center;
-  background: #18181b;
-  padding: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 20px;
   border-radius: 16px;
-  border: 1px solid #27272a;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.history-filters select {
+.ah-select {
   padding: 12px 16px;
-  border: 1px solid #3f3f46;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 10px;
   background: #09090b;
   color: #e4e4e7;
@@ -266,142 +239,210 @@
   background-position: right 14px top 50%;
   background-size: 10px auto;
   padding-right: 40px;
+  flex: 1;
+  min-width: 150px;
 }
 
-.history-filters select:focus {
+.ah-select:focus {
   outline: none;
   border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
 }
 
-.history-table-wrapper {
+.ah-btn-refresh {
+  padding: 12px 24px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.ah-btn-refresh:hover:not(:disabled) {
+  background: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+}
+
+.ah-btn-refresh:disabled {
+  background: #27272a;
+  color: #71717a;
+  cursor: not-allowed;
+}
+
+/* ---------------------------------
+   Modern Table Design
+-----------------------------------*/
+.ah-summary-text {
+  color: #a1a1aa;
+  font-size: 0.95rem;
+  padding: 0 5px;
+}
+
+.ah-table-wrapper {
   overflow-x: auto;
   border-radius: 16px;
-  background: #18181b;
-  border: 1px solid #27272a;
+  background: #111115;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.history-table-wrapper::-webkit-scrollbar {
-  height: 8px;
-}
-.history-table-wrapper::-webkit-scrollbar-track {
-  background: #09090b;
-  border-radius: 8px;
-}
-.history-table-wrapper::-webkit-scrollbar-thumb {
-  background: #3f3f46;
-  border-radius: 8px;
-}
+.ah-table-wrapper::-webkit-scrollbar { height: 8px; }
+.ah-table-wrapper::-webkit-scrollbar-track { background: #09090b; }
+.ah-table-wrapper::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 8px; }
 
-.history-table {
+.ah-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 1000px;
+  min-width: 1100px;
 }
 
-.history-table th,
-.history-table td {
-  padding: 18px 20px;
+.ah-table th,
+.ah-table td {
+  padding: 16px 20px;
   text-align: left;
-  border-bottom: 1px solid #27272a;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.history-table th {
+.ah-table th {
   font-weight: 600;
-  color: #a1a1aa;
-  background: #18181b;
+  color: #8b8b93;
+  background: rgba(255, 255, 255, 0.02);
   text-transform: uppercase;
   font-size: 0.8rem;
   letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
-.history-table td {
-  color: #d4d4d8;
+.ah-table td {
+  color: #e4e4e7;
   font-size: 0.95rem;
   vertical-align: middle;
 }
 
-.history-table td:nth-child(3) {
-  font-weight: 600;
-  color: #60a5fa;
+/* Accent Column Colors */
+.ah-table td:nth-child(3) { color: #a78bfa; font-weight: 500; } /* Type */
+.ah-table td:nth-child(4) { color: #60a5fa; font-weight: 600; text-transform: capitalize; } /* Action */
+
+.ah-table tr {
+  transition: background-color 0.2s ease;
 }
 
-.history-table tr {
-  transition: background-color 0.15s ease;
+.ah-row-even td { background: transparent; }
+.ah-row-odd td { background: rgba(255, 255, 255, 0.01); }
+
+.ah-table tr:hover td {
+  background: rgba(255, 255, 255, 0.04);
 }
 
-.history-table tr.history-row-even td {
-  background: rgba(255, 255, 255, 0.03);
-}
-
-.history-table tr.history-row-odd td {
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.history-table tr:hover td {
-  background: #27272a; 
-}
-
-.history-table tr:last-child td {
+.ah-table tr:last-child td {
   border-bottom: none;
 }
 
-.history-summary {
-  padding: 0 20px;
-  color: #cbd5e1;
-  font-size: 0.95rem;
+.ah-empty-state {
+  padding: 60px !important;
+  text-align: center;
+  color: #71717a !important;
+  font-size: 1.1rem;
 }
 
-.history-pagination {
+/* ---------------------------------
+   Pagination
+-----------------------------------*/
+.ah-pagination-bar {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  gap: 12px;
-  padding: 16px 20px;
-  background: #09090b;
-  border-top: 1px solid #27272a;
-  border-radius: 0 0 16px 16px;
+  gap: 16px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
 }
 
-.pagination-info {
+.ah-page-info {
   color: #a1a1aa;
+  font-size: 0.95rem;
 }
 
-.pagination-buttons {
+.ah-page-buttons {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
-.page-button {
-  padding: 10px 14px;
-  border: 1px solid #3f3f46;
-  border-radius: 10px;
-  background: #141417;
+.ah-page-btn {
+  padding: 8px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: #111115;
   color: #e4e4e7;
   cursor: pointer;
   transition: all 0.2s ease;
+  font-size: 0.9rem;
 }
 
-.page-button:hover {
-  background: #1f2937;
-  border-color: #60a5fa;
+.ah-page-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
-.page-button.active {
-  background: #2563eb;
-  border-color: #2563eb;
+.ah-page-btn.active {
+  background: #3b82f6;
+  border-color: #3b82f6;
   color: #ffffff;
 }
 
-.page-button:disabled {
+.ah-page-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.history-empty {
-  padding: 60px !important;
-  text-align: center;
-  color: #71717a !important;
-  font-size: 1.1rem;
+/* =========================================
+   Mobile Responsiveness
+   ========================================= */
+@media (max-width: 992px) {
+  .ah-filters-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .ah-pagination-bar {
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .ah-container {    
+    padding: 20px;
+    border-radius: 16px;
+  }
+  
+  .ah-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .ah-header h3 {
+    font-size: 1.6rem;
+  }
+
+  .ah-lock-card {
+    padding: 30px 20px;
+  }
+
+  .ah-keypad {
+    gap: 15px;
+  }
+  
+  .ah-key-btn {
+    width: 65px;
+    height: 65px;
+    font-size: 1.5rem;
+  }
 }
