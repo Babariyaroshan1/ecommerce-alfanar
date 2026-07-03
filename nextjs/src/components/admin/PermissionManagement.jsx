@@ -239,7 +239,7 @@ export default function PermissionManagement() {
   return (
     <div className="permission-management">
       {!unlocked ? (
-        <div className="admin-history-container">
+        <div className="admin-coadmin-container">
           <div className="history-topbar">
             <div>
               <h3>Permission Management Lock</h3>
