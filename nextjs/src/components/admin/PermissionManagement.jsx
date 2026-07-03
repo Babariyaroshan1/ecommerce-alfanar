@@ -151,19 +151,18 @@ export default function PermissionManagement() {
     }
   };
 
-  // Helper function to extract initials
   const getInitials = (name) => name ? name.charAt(0).toUpperCase() : 'U';
 
   return (
     <div className="permission-management">
       {!unlocked ? (
         <div className="admin-coadmin-container">
-          <div className="lock-header-text">
-            <h3>Admin Security Lock</h3>
-            <p>Enter your master passcode to access permission controls.</p>
-          </div>
-
           <div className="ios-lock-wrapper">
+            <div className="lock-header-text">
+              <h3>Permission Management Lock</h3>
+              <p>Unlock with the same admin history passcode to manage co-admin permissions.</p>
+            </div>
+
             <p className="ios-lock-title">Enter Passcode</p>
             <div className="passcode-dots">
               {Array.from({ length: Math.max(4, password.length) }).map((_, i) => (
@@ -191,15 +190,15 @@ export default function PermissionManagement() {
             </div>
 
             <button id="permission-unlock-btn" className="unlock-btn-wide" onClick={verifyPassword} disabled={unlockLoading}>
-              {unlockLoading ? 'Verifying...' : 'Unlock Permissions'}
+              {unlockLoading ? 'VERIFYING...' : 'UNLOCK'}
             </button>
           </div>
         </div>
       ) : (
         <div className="permission-dashboard">
           <div className="permission-header-main">
-            <h2>Permission Control</h2>
-            <p>Manage access levels and capabilities for your co-administrators.</p>
+            <h2>Permission Management</h2>
+            <p>Control what features co-admins can access. Only main admin can modify permissions.</p>
           </div>
 
           {message && (
@@ -212,7 +211,7 @@ export default function PermissionManagement() {
           <div className="permission-layout-grid">
             {/* Sidebar List */}
             <div className="coadmin-sidebar">
-              <h3>Select Co-Admin</h3>
+              <h3>Co-Admins</h3>
               <div className="coadmin-list-scroll">
                 {coadmins.length === 0 ? (
                   <p style={{ color: '#94a3b8', fontSize: '0.9rem' }}>No co-admins found.</p>
@@ -228,10 +227,10 @@ export default function PermissionManagement() {
                       </div>
                       <div className="coadmin-details">
                         <h4>{coadmin.name}</h4>
-                        <p>{coadmin.permissions?.length || 0} permissions</p>
+                        <p>{coadmin.permissions?.length || 0} permissions granted</p>
                       </div>
                       {selectedCoadmin?._id === coadmin._id && (
-                        <i className="fa-solid fa-chevron-right" style={{ color: '#3b82f6' }}></i>
+                        <i className="fa-solid fa-check" style={{ color: '#3b82f6' }}></i>
                       )}
                     </div>
                   ))
@@ -245,8 +244,7 @@ export default function PermissionManagement() {
                 <>
                   <div className="permission-panel-header">
                     <div>
-                      <h3>Editing: {selectedCoadmin.name}</h3>
-                      <p style={{ margin: '4px 0 0', color: '#a1a1aa', fontSize: '0.9rem' }}>{selectedCoadmin.email}</p>
+                      <h3>Edit Permissions for {selectedCoadmin.name}</h3>
                     </div>
                     <button onClick={handleSavePermissions} disabled={loading} className="save-btn-modern">
                       <i className="fa-solid fa-save"></i>
@@ -259,23 +257,27 @@ export default function PermissionManagement() {
                       const isActive = permissions[permission.key];
                       return (
                         <div key={permission.key} className={`perm-card ${isActive ? 'active' : ''}`}>
-                          <div className="perm-card-top">
+                          
+                          {/* New Container to keep Icon & Text Side-by-Side */}
+                          <div className="perm-header">
                             <div className="perm-icon-wrapper">
                               <i className={`fa-solid ${permission.icon}`}></i>
                             </div>
-                            <label className="premium-toggle">
-                              <input
-                                type="checkbox"
-                                checked={isActive || false}
-                                onChange={() => handlePermissionToggle(permission.key)}
-                              />
-                              <span className="toggle-track"></span>
-                            </label>
+                            <div className="perm-info">
+                              <h4>{permission.label}</h4>
+                              <p>{permission.description}</p>
+                            </div>
                           </div>
-                          <div className="perm-info">
-                            <h4>{permission.label}</h4>
-                            <p>{permission.description}</p>
-                          </div>
+
+                          <label className="premium-toggle">
+                            <input
+                              type="checkbox"
+                              checked={isActive || false}
+                              onChange={() => handlePermissionToggle(permission.key)}
+                            />
+                            <span className="toggle-track"></span>
+                          </label>
+
                         </div>
                       );
                     })}
@@ -294,4 +296,4 @@ export default function PermissionManagement() {
       )}
     </div>
   );
-}
+} 
