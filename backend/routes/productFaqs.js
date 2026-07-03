@@ -7,7 +7,7 @@ const router = express.Router();
 
 // Public routes
 router.get('/', productFaqController.getProductFAQs);
-router.get('/admin', adminAuth, productFaqController.getAllProductFAQs);
+router.get('/admin', permissionAuth(PERMISSIONS.MANAGE_PRODUCT_FAQS), productFaqController.getAllProductFAQs);
 router.get('/:productId', productFaqController.getProductFAQs);
 
 // Admin/Coadmin routes with permission check
