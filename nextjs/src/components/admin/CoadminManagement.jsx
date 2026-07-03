@@ -232,7 +232,7 @@ export default function CoadminManagement() {
     try {
       setAdminLoading(true);
       const response = await axios.post(
-        `${API_URL}/auth/admin/create-admin`,
+        `${API_URL}/auth/admin/create-coadmin`,
         {
           name: newAdminName.trim(),
           username: newAdminUsername.trim(),
@@ -243,17 +243,18 @@ export default function CoadminManagement() {
       );
 
       setAdminMessageType('success');
-      setAdminMessage(response.data.message || 'Admin user created successfully');
+      setAdminMessage(response.data.message || 'Co-admin created successfully');
       setNewAdminName('');
       setNewAdminUsername('');
       setNewAdminEmail('');
       setNewAdminPassword('');
       setConfirmAdminPassword('');
+      fetchCoadmins();
       setTimeout(() => setAdminMessage(''), 4000);
     } catch (error) {
       setAdminMessageType('error');
-      setAdminMessage(error.response?.data?.message || 'Failed to create admin');
-      console.error('Create admin failed:', error);
+      setAdminMessage(error.response?.data?.message || 'Failed to create co-admin');
+      console.error('Create coadmin failed:', error);
     } finally {
       setAdminLoading(false);
     }
@@ -307,7 +308,7 @@ export default function CoadminManagement() {
               <i className="fas fa-key"></i> <span>Password</span>
             </button>
             <button className={`tab-btn ${activeTab === 'create-admin' ? 'active' : ''}`} onClick={() => setActiveTab('create-admin')}>
-              <i className="fas fa-user-plus"></i> <span>Add Admin</span>
+              <i className="fas fa-user-plus"></i> <span>Add Co-Admin</span>
             </button>
           </div>
 
@@ -404,8 +405,8 @@ export default function CoadminManagement() {
             {/* Create Admin Tab */}
             <div className={`tab-pane ${activeTab === 'create-admin' ? 'visible' : ''}`}>
               <div className="form-card">
-                <h3 className="form-title"><i className="fas fa-user-plus"></i> Create Admin</h3>
-                <p className="form-subtitle">Add a brand new administrator.</p>
+                <h3 className="form-title"><i className="fas fa-user-plus"></i> Add Co-Admin</h3>
+                <p className="form-subtitle">Create a new co-admin account with limited access.</p>
 
                 {adminMessage && (
                   <div className={`alert alert-${adminMessageType}`}>

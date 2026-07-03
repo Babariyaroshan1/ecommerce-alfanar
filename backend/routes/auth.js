@@ -426,6 +426,78 @@ router.post('/admin/create-admin', adminAuth, async (req, res) => {
     }
 });
 
+// Admin: Create additional co-admin user
+router.post('/admin/create-coadmin', adminAuth, async (req, res) => {
+    try {
+        const { name, username, email, password } = req.body;
+        const normalizedUsername = String(username || '').trim();
+        const normalizedName = String(name || '').trim();
+        const normalizedEmail = String(email || '').trim().toLowerCase();
+
+        if (!normalizedName || normalizedName.length < 2) {
+            return res.status(400).json({ message: 'Name must be at least 2 characters' });
+        }
+
+        if (!normalizedUsername || normalizedUsername.length < 3) {
+            return res.status(400).json({ message: 'Username must be at least 3 characters' });
+        }
+
+        if (!/^[a-zA-Z0-9_]+$/.test(normalizedUsername)) {
+            return res.status(400).json({ message: 'Username can only contain letters, numbers, and underscores' });
+        }
+
+        if (['admin', 'coadmin'].includes(normalizedUsername.toLowerCase())) {
+            return res.status(400).json({ message: 'Username cannot be reserved keywords' });
+        }
+
+        if (!password || password.length < 6) {
+            return res.status(400).json({ message: 'Password must be at least 6 characters' });
+        }
+
+        let coadminEmail = normalizedEmail;
+        if (!coadminEmail) {
+            const safeUsername = normalizedUsername.toLowerCase().replace(/[^a-z0-9_]/g, '');
+            coadminEmail = `${safeUsername}@coadmin.noor.com`;
+        }
+
+        const existingUser = await User.findOne({
+            $or: [{ username: normalizedUsername }, { email: coadminEmail }]
+        });
+
+        if (existingUser) {
+            return res.status(400).json({ message: 'Username or email already exists' });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const user = new User({
+            name: normalizedName,
+            email: coadminEmail,
+            phone: '0000000000',
+            username: normalizedUsername,
+            password: hashedPassword,
+            role: 'coadmin',
+            isAdmin: false,
+            permissions: []
+        });
+
+        await user.save();
+
+        res.status(201).json({
+            message: 'Co-admin user created successfully',
+            user: {
+                id: user._id,
+                name: user.name,
+                username: user.username,
+                email: user.email,
+                role: user.role
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
 // Admin: Get all users
 router.get('/admin/users', permissionAuth(PERMISSIONS.MANAGE_USERS), async (req, res) => {
     try {
