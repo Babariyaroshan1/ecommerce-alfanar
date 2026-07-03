@@ -121,7 +121,7 @@ router.post('/admin/login', async (req, res) => {
             role = 'coadmin';
         } else {
             adminUser = await User.findOne({
-                isAdmin: true,
+                role: { $in: ['admin', 'coadmin'] },
                 $or: [
                     { username: usernameRaw },
                     { username: username },
@@ -136,6 +136,10 @@ router.post('/admin/login', async (req, res) => {
         }
 
         if (!adminUser) {
+            if (username !== 'admin' && username !== 'coadmin') {
+                return res.status(400).json({ message: 'Invalid credentials' });
+            }
+
             const adminEmail = role === 'admin' ? 'admin@noor.com' : 'coadmin@noor.com';
             const adminName = role === 'admin' ? 'Admin' : 'Co-Admin';
             const defaultPassword = role === 'admin' ? 'admin123' : 'coadmin123';
