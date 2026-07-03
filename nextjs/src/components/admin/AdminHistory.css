@@ -326,16 +326,29 @@
 .ah-table td:nth-child(3) { color: #a78bfa; font-weight: 500; } /* Type */
 .ah-table td:nth-child(4) { color: #60a5fa; font-weight: 600; text-transform: capitalize; } /* Action */
 
-.ah-table tr {
-  transition: background-color 0.2s ease;
+
+/* Table Rows & Hover Fix */
+.ah-table tbody tr {
+  transition: all 0.2s ease;
 }
 
-.ah-row-even td { background: transparent; }
-.ah-row-odd td { background: rgba(255, 255, 255, 0.01); }
-
-.ah-table tr:hover td {
-  background: rgba(255, 255, 255, 0.04);
+.ah-table tbody tr.ah-row-even td { 
+  background-color: transparent !important; 
 }
+
+.ah-table tbody tr.ah-row-odd td { 
+  background-color: rgba(255, 255, 255, 0.02) !important; 
+}
+
+/* Ye hover par white hone se rokega aur premium dark grey dega */
+.ah-table tbody tr:hover td {
+  background-color: #27272a !important; 
+  color: #ffffff !important; 
+}
+
+/* Ensure accent colors still look good on hover */
+.ah-table tbody tr:hover td:nth-child(3) { color: #a78bfa !important; } 
+.ah-table tbody tr:hover td:nth-child(4) { color: #60a5fa !important; }
 
 .ah-table tr:last-child td {
   border-bottom: none;
