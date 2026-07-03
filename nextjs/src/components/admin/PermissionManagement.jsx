@@ -316,7 +316,7 @@ export default function PermissionManagement() {
                     >
                       <div className="coadmin-info">
                         <h4>{coadmin.name}</h4>
-                        <p>{coadmin.email}</p>
+                        <p>{coadmin.username || coadmin.email}</p>
                         <span className="permission-count">
                           {coadmin.permissions?.length || 0} permissions granted
                         </span>
