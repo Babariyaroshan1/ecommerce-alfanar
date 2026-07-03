@@ -190,6 +190,18 @@ export default function CoadminManagement() {
     }
   };
 
+  const fetchCoadmins = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/settings/coadmins`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching co-admins:', error.response?.data || error.message || error);
+      return null;
+    }
+  };
+
   const handleCreateAdminSubmit = async (e) => {
     e.preventDefault();
 
