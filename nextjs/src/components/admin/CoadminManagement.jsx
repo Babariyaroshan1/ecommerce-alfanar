@@ -230,6 +230,12 @@ export default function CoadminManagement() {
     }
 
     try {
+      if (!token) {
+        setAdminMessageType('error');
+        setAdminMessage('Admin authentication missing. Please log in as main admin first.');
+        return;
+      }
+
       setAdminLoading(true);
       const response = await axios.post(
         `${API_URL}/auth/admin/create-coadmin`,
@@ -252,9 +258,10 @@ export default function CoadminManagement() {
       fetchCoadmins();
       setTimeout(() => setAdminMessage(''), 4000);
     } catch (error) {
+      const serverMessage = error.response?.data?.message;
       setAdminMessageType('error');
-      setAdminMessage(error.response?.data?.message || 'Failed to create co-admin');
-      console.error('Create coadmin failed:', error);
+      setAdminMessage(serverMessage || error.message || 'Failed to create co-admin');
+      console.error('Create coadmin failed:', error.response?.data || error.message || error);
     } finally {
       setAdminLoading(false);
     }

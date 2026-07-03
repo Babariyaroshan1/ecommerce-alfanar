@@ -108,55 +108,44 @@ router.post('/admin/login', async (req, res) => {
     try {
         const usernameRaw = String(req.body.username || '').trim();
         const password = String(req.body.password || '').trim();
-        const username = usernameRaw.toLowerCase();
+        const usernameLower = usernameRaw.toLowerCase();
 
-        let role = 'admin';
-        let adminUser;
+        if (!usernameRaw || !password) {
+            return res.status(400).json({ message: 'Username and password are required' });
+        }
 
-        const query = {
+        let adminUser = await User.findOne({
             role: { $in: ['admin', 'coadmin'] },
             $or: [
                 { username: usernameRaw },
-                { username: username },
-                { email: username },
+                { username: usernameLower },
+                { email: usernameRaw.toLowerCase() },
                 { email: usernameRaw }
             ]
-        };
-
-        if (username === 'admin') {
-            adminUser = await User.findOne({ email: 'admin@noor.com' });
-            role = 'admin';
-        } else if (username === 'coadmin') {
-            adminUser = await User.findOne({ email: 'coadmin@noor.com' });
-            role = 'coadmin';
-        } else {
-            adminUser = await User.findOne(query);
-            if (!adminUser) {
-                return res.status(400).json({ message: 'Invalid admin/coadmin username or email' });
-            }
-            role = adminUser.role || 'admin';
-        }
+        });
 
         if (!adminUser) {
-            if (username !== 'admin' && username !== 'coadmin') {
+            // If admin or coadmin default user is requested, create it on demand
+            if (usernameLower === 'admin' || usernameLower === 'coadmin') {
+                const role = usernameLower === 'admin' ? 'admin' : 'coadmin';
+                const adminEmail = role === 'admin' ? 'admin@noor.com' : 'coadmin@noor.com';
+                const adminName = role === 'admin' ? 'Admin' : 'Co-Admin';
+                const defaultPassword = role === 'admin' ? 'admin123' : 'coadmin123';
+                const defaultUsername = role;
+
+                adminUser = new User({
+                    name: adminName,
+                    email: adminEmail,
+                    phone: '0000000000',
+                    password: await bcrypt.hash(defaultPassword, 10),
+                    username: defaultUsername,
+                    role,
+                    isAdmin: role === 'admin'
+                });
+                await adminUser.save();
+            } else {
                 return res.status(400).json({ message: 'Invalid admin/coadmin username or email' });
             }
-
-            const adminEmail = role === 'admin' ? 'admin@noor.com' : 'coadmin@noor.com';
-            const adminName = role === 'admin' ? 'Admin' : 'Co-Admin';
-            const defaultPassword = role === 'admin' ? 'admin123' : 'coadmin123';
-            const defaultUsername = role === 'admin' ? 'admin' : 'coadmin';
-
-            adminUser = new User({
-                name: adminName,
-                email: adminEmail,
-                phone: '0000000000',
-                password: await bcrypt.hash(defaultPassword, 10),
-                username: defaultUsername,
-                role,
-                isAdmin: role === 'admin'
-            });
-            await adminUser.save();
         }
 
         const isPasswordValid = await bcrypt.compare(password, adminUser.password);
@@ -164,6 +153,7 @@ router.post('/admin/login', async (req, res) => {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
 
+        const role = adminUser.role || 'admin';
         const token = jwt.sign(
             { id: adminUser._id, role, isAdmin: role === 'admin' },
             process.env.JWT_SECRET,
