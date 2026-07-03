@@ -438,7 +438,6 @@ export default function CoadminManagement() {
                   <div className="form-group">
                     <label>Display Name</label>
                     <div className="input-wrapper">
-                      <i className="fas fa-id-badge"></i>
                       <input type="text" placeholder="Enter name" value={newAdminName} onChange={(e) => setNewAdminName(e.target.value)} disabled={adminLoading} required />
                     </div>
                   </div>
@@ -446,7 +445,6 @@ export default function CoadminManagement() {
                   <div className="form-group">
                     <label>Username</label>
                     <div className="input-wrapper">
-                      <i className="fas fa-user"></i>
                       <input type="text" placeholder="Choose username" value={newAdminUsername} onChange={(e) => setNewAdminUsername(e.target.value)} disabled={adminLoading} required />
                     </div>
                   </div>
@@ -454,7 +452,6 @@ export default function CoadminManagement() {
                   <div className="form-group">
                     <label>Email (Optional)</label>
                     <div className="input-wrapper">
-                      <i className="fas fa-envelope"></i>
                       <input type="email" placeholder="Email address" value={newAdminEmail} onChange={(e) => setNewAdminEmail(e.target.value)} disabled={adminLoading} />
                     </div>
                   </div>
