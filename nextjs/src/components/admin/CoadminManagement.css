@@ -2,7 +2,7 @@
 .coadmin-management-container {
   padding: 24px;
   max-width: 469px; /* Made form compact */
-  margin: 40px auto;
+  margin: 0px auto;
   background: #111827; /* Deep modern dark */
   border-radius: 16px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
@@ -10,7 +10,13 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: #f3f4f6;
 }
-
+.history-topbar {
+    border-bottom: 1px solid #27272a;
+    align-items: flex-start;
+    padding-bottom: 0;
+    display: flex;
+    flex-direction: column;
+}
 /* Page Title */
 .coadmin-management-container .page-title {
   font-size: 1.4rem;
