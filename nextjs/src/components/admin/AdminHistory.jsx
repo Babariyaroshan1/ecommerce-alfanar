@@ -41,19 +41,14 @@ const AdminHistory = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [unlocked]);
 
-  // Filters change hone par list refresh karega
-  useEffect(() => {
-    if (unlocked) {
-      setPage(1);
-    }
-  }, [filterType, filterAction, unlocked]);
-
+  // FIXED: Removed the extra useEffect that was causing the infinite loop
+  // Changed dependencies to ONLY fetch when these specific states change
   useEffect(() => {
     if (unlocked) {
       fetchHistory(page, pageSize);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize, filterType, filterAction, unlocked]);
+  }, [page, pageSize, filterType, filterAction]); 
 
   const fetchHistory = async (requestedPage = 1, requestedPageSize = pageSize) => {
     try {
@@ -67,23 +62,24 @@ const AdminHistory = () => {
           actionType: filterAction || undefined,
           page: requestedPage,
           pageSize: requestedPageSize,
-          sortBy: 'createdAt', // <-- Backend ko instruction for Latest First
-          sortOrder: 'desc'    // <-- Backend ko instruction for Latest First
+          sortBy: 'createdAt',
+          sortOrder: 'desc'
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
       const historyData = res.data.history || [];
       const totalRecs = res.data.totalRecords ?? historyData.length;
-      
-      // FIXED: Total pages dynamically limit ho jayenge based on total records
       const calculatedPages = res.data.totalPages || Math.ceil(totalRecs / requestedPageSize) || 1;
 
       setHistory(historyData);
-      setPage(res.data.page || requestedPage);
-      setPageSize(res.data.pageSize || requestedPageSize);
-      setTotalRecords(totalRecs);
-      setTotalPages(calculatedPages);
+      
+      // FIXED: Wrapped in Number() to strictly prevent string/number infinite loop bouncing
+      setPage(Number(res.data.page || requestedPage));
+      setPageSize(Number(res.data.pageSize || requestedPageSize));
+      setTotalRecords(Number(totalRecs));
+      setTotalPages(Number(calculatedPages));
+      
       setUnlocked(true);
     } catch (err) {
       console.error('History fetch failed:', err);
@@ -110,19 +106,16 @@ const AdminHistory = () => {
     });
   };
 
-  // FIXED: Cleaner Device/Browser Name Extractor
   const getClientInfo = (info) => {
     if (!info) return '-';
     const ua = info.userAgent || '';
     
     if (!ua) {
-      // Fallback agar backend sirf old data bhej raha hai
       const browser = info.browserName || info.vendor || '';
       const platform = info.platform || info.os || '';
       return browser || platform ? `${browser} | ${platform}` : '-';
     }
 
-    // Modern Parsing for Clean Names (e.g. "Chrome on Windows 11")
     let browser = "Unknown Browser";
     if (ua.includes("Firefox")) browser = "Firefox";
     else if (ua.includes("Edg")) browser = "Edge";
@@ -140,7 +133,6 @@ const AdminHistory = () => {
     return `${browser} on ${os}`;
   };
 
-  // FIXED: Strictly limits pagination to avoid extra blank pages
   const getVisiblePageNumbers = () => {
     if (totalPages <= 1) return [1];
     
@@ -148,12 +140,10 @@ const AdminHistory = () => {
     let start = Math.max(1, page - Math.floor(maxButtons / 2));
     let end = Math.min(totalPages, start + maxButtons - 1);
     
-    // Adjust start if we are at the tail end of pages
     if (end - start + 1 < maxButtons) {
       start = Math.max(1, end - maxButtons + 1);
     }
     
-    // Safety check so start doesn't go below 1
     start = Math.max(1, start);
     
     return Array.from({ length: Math.max(0, end - start + 1) }, (_, idx) => start + idx);
@@ -213,13 +203,14 @@ const AdminHistory = () => {
         <div className="ah-dashboard">
           
           <div className="ah-filters-bar">
-            <select className="ah-select" value={filterType} onChange={(e) => setFilterType(e.target.value)}>
+            {/* FIXED: setPage(1) directly in onChange to avoid useEffect loop */}
+            <select className="ah-select" value={filterType} onChange={(e) => { setFilterType(e.target.value); setPage(1); }}>
               <option value="">All Types</option>
               <option value="Product">Product</option>
               <option value="Order">Order</option>
               <option value="User">User</option>
             </select>
-            <select className="ah-select" value={filterAction} onChange={(e) => setFilterAction(e.target.value)}>
+            <select className="ah-select" value={filterAction} onChange={(e) => { setFilterAction(e.target.value); setPage(1); }}>
               <option value="">All Actions</option>
               <option value="create">Create</option>
               <option value="update">Update</option>
@@ -306,7 +297,6 @@ const AdminHistory = () => {
                 Prev
               </button>
               
-              {/* Only rendering up to 5 buttons max */}
               {getVisiblePageNumbers().map((pageNumber) => (
                 <button
                   key={pageNumber}
