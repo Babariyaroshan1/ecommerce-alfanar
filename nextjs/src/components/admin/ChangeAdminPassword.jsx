@@ -138,7 +138,7 @@ export default function ChangeAdminPassword() {
   return (
     <div className="change-admin-password-container">
       {!unlocked ? (
-        <div className="admin-coadmin-container">
+        <div className="admin-coadmin-container-pass">
           <div className="history-topbar">
             <div>
               <h3>Admin Passcode Lock</h3>
