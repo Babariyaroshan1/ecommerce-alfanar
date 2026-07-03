@@ -349,7 +349,6 @@ export default function CoadminManagement() {
                   <div className="form-group">
                     <label>New Username</label>
                     <div className="input-wrapper">
-                      <i className="fas fa-at"></i>
                       <input type="text" placeholder="Enter new username" value={newUsername} onChange={(e) => setNewUsername(e.target.value.trim())} disabled={usernameLoading} required />
                     </div>
                   </div>
@@ -357,7 +356,6 @@ export default function CoadminManagement() {
                   <div className="form-group">
                     <label>Confirm Username</label>
                     <div className="input-wrapper">
-                      <i className="fas fa-at"></i>
                       <input type="text" placeholder="Confirm username" value={confirmUsername} onChange={(e) => setConfirmUsername(e.target.value.trim())} disabled={usernameLoading} required />
                     </div>
                   </div>
