@@ -138,7 +138,7 @@ export default function ChangeAdminPassword() {
   return (
     <div className="change-admin-password-container">
       {!unlocked ? (
-        <div className="admin-history-container">
+        <div className="admin-coadmin-container">
           <div className="history-topbar">
             <div>
               <h3>Admin Passcode Lock</h3>
@@ -203,7 +203,7 @@ export default function ChangeAdminPassword() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit}>  
             {/* Current Password Field */}
             <div className="form-group">
               <label htmlFor="currentPassword">Current Password</label>
