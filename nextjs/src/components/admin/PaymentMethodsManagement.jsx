@@ -85,60 +85,71 @@ export default function PaymentMethodsManagement() {
   };
 
   if (isInitializing) {
-    return <div className="payment-methods-loading">Loading payment methods...</div>;
+    return <div className="pm-loading-state">Loading payment methods...</div>;
   }
 
   return (
-    <div className="payment-methods-management">
-      <div className="payment-header">
+    <div className="pm-container">
+      <div className="pm-header-section">
         <h2>Payment Methods Management</h2>
         <p>Enable or disable payment methods available to customers. Only main admin can modify this setting.</p>
       </div>
 
       {message && (
-        <div className={`message ${message.includes('[SUCCESS]') ? 'success' : 'error'}`}>
+        <div className={`pm-message-alert ${message.includes('[SUCCESS]') ? 'success' : 'error'}`}>
           {message}
         </div>
       )}
 
-      <div className="payment-content">
-        <div className="payment-methods-list">
-          <h3>Available Payment Methods</h3>
-          <p className="subtitle">Toggle payment methods on/off for customers. At least one method must be enabled.</p>
+      <div className="pm-content-layout">
+        
+        {/* Left Side: Methods Settings */}
+        <div className="pm-main-panel">
+          <div>
+            <h3>Available Payment Methods</h3>
+            <p className="pm-subtitle">Toggle payment methods on/off for customers. At least one method must be enabled.</p>
+          </div>
 
-          <div className="methods-grid">
-            {PAYMENT_METHODS.map((method) => (
-              <div key={method.id} className="method-card">
-                <div className="method-header">
-                  <label className="toggle-switch">
+          <div className="pm-card-grid">
+            {PAYMENT_METHODS.map((method) => {
+              const isEnabled = enabledMethods.includes(method.id);
+              return (
+                <div key={method.id} className="pm-method-card">
+                  <div className="pm-method-info">
+                    <div className="pm-method-title">
+                      <span className="pm-method-label">{method.label}</span>
+                      <span className={`pm-status-badge ${isEnabled ? 'enabled' : 'disabled'}`}>
+                        {isEnabled ? 'Enabled' : 'Disabled'}
+                      </span>
+                    </div>
+                    <p className="pm-method-desc">{method.description}</p>
+                  </div>
+
+                  {/* PREMIUM TOGGLE SWITCH */}
+                  <label className="pm-premium-toggle">
                     <input
                       type="checkbox"
-                      checked={enabledMethods.includes(method.id)}
+                      checked={isEnabled}
                       onChange={() => handleMethodToggle(method.id)}
                       disabled={loading}
                     />
-                    <span className="toggle-slider"></span>
+                    <span className="pm-toggle-track"></span>
                   </label>
-                  <span className="method-label">{method.label}</span>
                 </div>
-                <p className="method-description">{method.description}</p>
-                <span className={`status-badge ${enabledMethods.includes(method.id) ? 'enabled' : 'disabled'}`}>
-                  {enabledMethods.includes(method.id) ? 'Enabled' : 'Disabled'}
-                </span>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
-          <div className="action-buttons">
+          <div className="pm-action-group">
             <button
-              className="btn-save"
+              className="pm-btn-primary"
               onClick={handleSaveChanges}
               disabled={loading || enabledMethods.length === 0}
             >
-              {loading ? 'Saving...' : 'Save Changes'}
+              {loading ? 'Saving Changes...' : 'Save Changes'}
             </button>
             <button
-              className="btn-reset"
+              className="pm-btn-secondary"
               onClick={() => {
                 setEnabledMethods(['upi', 'card', 'netbanking', 'cod']);
                 setMessage('');
@@ -150,16 +161,18 @@ export default function PaymentMethodsManagement() {
           </div>
         </div>
 
-        <div className="payment-info">
+        {/* Right Side: Information Panel */}
+        <div className="pm-info-sidebar">
           <h3>Important Notes</h3>
-          <ul>
-            <li>Customers will only see enabled payment methods during checkout</li>
-            <li>Disabled methods will not be available for new orders</li>
-            <li>At least one payment method must always be enabled</li>
-            <li>Changes take effect immediately for all users</li>
-            <li>This setting is admin-only and cannot be modified by co-admins</li>
+          <ul className="pm-info-list">
+            <li>Customers will only see enabled payment methods during checkout.</li>
+            <li>Disabled methods will not be available for new orders.</li>
+            <li>At least one payment method must always be enabled.</li>
+            <li>Changes take effect immediately for all users globally.</li>
+            <li>This setting is admin-only and cannot be modified by co-admins.</li>
           </ul>
         </div>
+        
       </div>
     </div>
   );
