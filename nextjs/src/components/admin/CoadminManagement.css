@@ -99,7 +99,7 @@
   border-radius: 12px;
 }
 
-.form-title {
+.form-title-coadmin {
   font-size: 1.1rem;
   font-weight: 600;
   color: #ffffff;
@@ -109,7 +109,7 @@
   gap: 8px;
 }
 
-.form-title i {
+.form-title-coadmin i {
   color: #3b82f6;
 }
 

@@ -335,7 +335,7 @@ export default function CoadminManagement() {
             {/* Username Tab */}
             <div className={`tab-pane ${activeTab === 'username' ? 'visible' : ''}`}>
               <div className="form-card">
-                <h3 className="form-title"><i className="fas fa-user-edit"></i> Change Username</h3>
+                <h3 className="form-title-coadmin"><i className="fas fa-user-edit"></i> Change Username</h3>
                 <p className="form-subtitle">Update login ID for co-admin account.</p>
 
                 {usernameMessage && (
@@ -381,7 +381,7 @@ export default function CoadminManagement() {
             {/* Password Tab */}
             <div className={`tab-pane ${activeTab === 'password' ? 'visible' : ''}`}>
               <div className="form-card">
-                <h3 className="form-title"><i className="fas fa-key"></i> Change Password</h3>
+                <h3 className="form-title-coadmin"><i className="fas fa-key"></i> Change Password</h3>
                 <p className="form-subtitle">Update co-admin access password.</p>
 
                 {passwordMessage && (
@@ -422,7 +422,7 @@ export default function CoadminManagement() {
             {/* Create Admin Tab */}
             <div className={`tab-pane ${activeTab === 'create-admin' ? 'visible' : ''}`}>
               <div className="form-card">
-                <h3 className="form-title"><i className="fas fa-user-plus"></i> Add Co-Admin</h3>
+                <h3 className="form-title-coadmin"><i className="fas fa-user-plus"></i> Add Co-Admin</h3>
                 <p className="form-subtitle">Create a new co-admin account with limited access.</p>
 
                 {adminMessage && (
