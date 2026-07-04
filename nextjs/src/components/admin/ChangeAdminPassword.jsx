@@ -27,7 +27,7 @@ export default function ChangeAdminPassword() {
       if (unlocked) return;
 
       if (/^[0-9]$/.test(e.key)) {
-        setLockPassword((prev) => prev + e.key);
+        setLockPassword((prev) => prev.length < 4 ? prev + e.key : prev);
         setUnlockError('');
       } else if (e.key === 'Backspace') {
         setLockPassword((prev) => prev.slice(0, -1));
@@ -161,7 +161,7 @@ export default function ChangeAdminPassword() {
                 <button
                   key={num}
                   className="key-btn"
-                  onClick={() => { setLockPassword((prev) => prev + num); setUnlockError(''); }}
+                  onClick={() => { setLockPassword((prev) => prev.length < 4 ? prev + num : prev); setUnlockError(''); }}
                 >
                   {num}
                 </button>
@@ -169,7 +169,7 @@ export default function ChangeAdminPassword() {
               <button className="key-btn action-btn" onClick={() => { setLockPassword(''); setUnlockError(''); }}>
                 C
               </button>
-              <button className="key-btn" onClick={() => { setLockPassword((prev) => prev + '0'); setUnlockError(''); }}>
+              <button className="key-btn" onClick={() => { setLockPassword((prev) => prev.length < 4 ? prev + '0' : prev); setUnlockError(''); }}>
                 0
               </button>
               <button className="key-btn action-btn" onClick={() => { setLockPassword((prev) => prev.slice(0, -1)); setUnlockError(''); }}>

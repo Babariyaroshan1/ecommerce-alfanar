@@ -1,455 +1,455 @@
-/* =========================================
-   Premium Dark Theme - Admin History UI
-   ========================================= */
-
-.ah-container {
-  padding: 30px;
-  background: #09090b; /* Deep zinc background */
-  border-radius: 24px;
-  width: 100%;
+.permission-management {
+  padding: 24px;
   max-width: 1200px;
   margin: 0 auto;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  color: #f8fafc;
+  color: #e2e8f0;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  min-height: 80vh;
-  display: flex;
-  flex-direction: column;
 }
 
-/* ---------------------------------
-   Header
------------------------------------*/
-.ah-header {
-  margin-bottom: 30px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 20px;
+.admin-coadmin-container {
+  padding: 32px;
+  max-width: 420px;
+  margin: 0 auto;
+  background: #09090b;
+  border: 1px solid #27272a;
+  border-radius: 20px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  color: #e4e4e7;
 }
 
-.ah-header h3 {
-  margin: 0 0 8px 0;
-  font-size: 2rem;
-  color: #ffffff;
-  font-weight: 600;
-  letter-spacing: -0.5px;
+.ios-lock-wrapper {
+  max-width: 320px;
+  margin: 0 auto;
+  text-align: center;
 }
 
-.ah-header p {
-  margin: 0;
-  color: #a1a1aa;
+.lock-header-text h3 {
+  margin: 0 0 8px;
+  font-size: 1.6rem;
+  color: #f8fafc;
+}
+
+.lock-header-text p {
+  margin: 0 0 20px;
+  color: #94a3b8;
+  line-height: 1.6;
+}
+
+.ios-lock-title {
   font-size: 0.95rem;
+  color: #cbd5e1;
+  margin-bottom: 18px;
 }
 
-/* ---------------------------------
-   Premium iOS Style Lock Screen
------------------------------------*/
-.ah-lock-screen {
+.passcode-dots {
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  flex: 1;
-  padding: 40px 20px;
-  animation: ahFadeIn 0.5s ease-out;
+  gap: 12px;
+  margin-bottom: 22px;
 }
 
-.ah-lock-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 40px 50px;
-  background: #111115;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 28px;
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
-  width: 100%;
-  max-width: 400px;
-}
-
-.ah-lock-title {
-  color: #fafafa;
-  font-size: 1.05rem;
-  font-weight: 500;
-  margin-bottom: 25px;
-  letter-spacing: 0.5px;
-}
-
-.ah-passcode-dots {
-  display: flex;
-  gap: 18px;
-  margin-bottom: 40px;
-  height: 20px;
-  align-items: center;
-}
-
-.ah-dot {
+.passcode-dots .dot {
   width: 14px;
   height: 14px;
   border-radius: 50%;
   border: 1.5px solid #3b82f6;
   background: transparent;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.ah-dot.filled {
-  background: #3b82f6; 
-  box-shadow: 0 0 12px rgba(59, 130, 246, 0.6);
-  transform: scale(1.1);
-}
-
-.ah-keypad {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  margin-bottom: 30px;
-}
-
-.ah-key-btn {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  border: none;
-  background: rgba(255, 255, 255, 0.04);
-  color: #fafafa;
-  font-size: 1.6rem;
-  font-weight: 400;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   transition: all 0.2s ease;
 }
 
-.ah-key-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.ah-key-btn:active {
-  background: rgba(255, 255, 255, 0.2);
-  transform: scale(0.95);
-}
-
-.ah-key-btn.action-btn {
-  background: transparent;
-  font-size: 1.2rem;
-  font-weight: 500;
-  color: #8b8b93;
-}
-
-.ah-key-btn.action-btn:hover {
-  color: #ffffff;
-}
-
-.ah-unlock-btn {
-  width: 100%;
-  padding: 16px;
-  font-size: 1rem;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  border-radius: 12px;
+.passcode-dots .dot.filled {
   background: #3b82f6;
-  color: white;
-  border: none;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.45);
 }
 
-.ah-unlock-btn:hover:not(:disabled) {
-  background: #2563eb;
-  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+.history-error {
+  margin: 0 auto 18px;
+  padding: 11px 14px;
+  background: rgba(248, 113, 113, 0.12);
+  color: #fecaca;
+  border: 1px solid rgba(248, 113, 113, 0.25);
+  border-radius: 12px;
+  max-width: 320px;
+  font-size: 0.95rem;
 }
 
-.ah-unlock-btn:disabled {
-  background: #27272a;
-  color: #71717a;
-  cursor: not-allowed;
+.shake {
+  animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
 }
 
-/* ---------------------------------
-   Error Display & Animations
------------------------------------*/
-.ah-error-msg {
-  color: #ef4444; 
-  font-size: 0.9rem;
-  font-weight: 500;
-  margin-bottom: 20px;
-  background: rgba(239, 68, 68, 0.1);
-  padding: 12px 20px;
-  border-radius: 10px;
-  border: 1px solid rgba(239, 68, 68, 0.2);
-  text-align: center;
-  width: 100%;
-}
-
-.ah-shake {
-  animation: ahShake 0.4s cubic-bezier(.36,.07,.19,.97) both;
-}
-
-@keyframes ahShake {
+@keyframes shake {
   10%, 90% { transform: translate3d(-2px, 0, 0); }
   20%, 80% { transform: translate3d(4px, 0, 0); }
   30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
   40%, 60% { transform: translate3d(6px, 0, 0); }
 }
 
-@keyframes ahFadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 22px;
 }
 
-/* ---------------------------------
-   Dashboard (Filters & Table)
------------------------------------*/
-.ah-dashboard {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  animation: ahFadeIn 0.5s ease-out;
-}
-
-.ah-filters-bar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.02);
-  padding: 20px;
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.ah-select {
-  padding: 12px 16px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  background: #09090b;
-  color: #e4e4e7;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  appearance: none;
-  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23a1a1aa%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-  background-repeat: no-repeat;
-  background-position: right 14px top 50%;
-  background-size: 10px auto;
-  padding-right: 40px;
-  flex: 1;
-  min-width: 150px;
-}
-
-.ah-select:focus {
-  outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
-}
-
-.ah-btn-refresh {
-  padding: 12px 24px;
-  background: #3b82f6;
-  color: white;
+.key-btn {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto;
+  border-radius: 50%;
   border: none;
-  border-radius: 10px;
-  font-weight: 600;
+  background: rgba(255, 255, 255, 0.06);
+  color: #f8fafc;
+  font-size: 1.25rem;
   cursor: pointer;
-  transition: all 0.3s ease;
-  white-space: nowrap;
-}
-
-.ah-btn-refresh:hover:not(:disabled) {
-  background: #2563eb;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
-}
-
-.ah-btn-refresh:disabled {
-  background: #27272a;
-  color: #71717a;
-  cursor: not-allowed;
-}
-
-/* ---------------------------------
-   Modern Table Design (FLICKER FIXED)
------------------------------------*/
-.ah-summary-text {
-  color: #a1a1aa;
-  font-size: 0.95rem;
-  padding: 0 5px;
-}
-
-.ah-table-wrapper {
-  overflow-x: auto;
-  border-radius: 16px;
-  background: #111115;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.ah-table-wrapper::-webkit-scrollbar { height: 8px; }
-.ah-table-wrapper::-webkit-scrollbar-track { background: #09090b; }
-.ah-table-wrapper::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 8px; }
-
-.ah-table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 1100px;
-}
-
-.ah-table th,
-.ah-table td {
-  padding: 16px 20px;
-  text-align: left;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.ah-table th {
-  font-weight: 600;
-  color: #8b8b93;
-  background: rgba(255, 255, 255, 0.02);
-  text-transform: uppercase;
-  font-size: 0.8rem;
-  letter-spacing: 0.5px;
-  white-space: nowrap;
-}
-
-/* FIXED FLICKERING AND HOVER */
-.ah-table tbody tr td {
-  transition: background-color 0.2s ease, color 0.2s ease;
-  color: #e4e4e7 !important;
-  font-size: 0.95rem;
-  vertical-align: middle;
-}
-
-.ah-table tbody tr.ah-row-even td {
-  background-color: transparent !important;
-}
-
-.ah-table tbody tr.ah-row-odd td {
-  background-color: rgba(255, 255, 255, 0.02) !important;
-}
-
-.ah-table tbody tr:hover td {
-  background-color: #27272a !important; 
-  color: #ffffff !important; 
-}
-
-/* Accent Column Colors */
-.ah-table tbody tr td:nth-child(3) { color: #a78bfa !important; font-weight: 500; }
-.ah-table tbody tr td:nth-child(4) { color: #60a5fa !important; font-weight: 600; text-transform: capitalize; }
-
-.ah-table tbody tr:hover td:nth-child(3) { color: #c4b5fd !important; }
-.ah-table tbody tr:hover td:nth-child(4) { color: #93c5fd !important; }
-
-.ah-table tr:last-child td {
-  border-bottom: none;
-}
-
-.ah-empty-state {
-  padding: 60px !important;
-  text-align: center;
-  color: #71717a !important;
-  font-size: 1.1rem;
-}
-
-/* ---------------------------------
-   Pagination
------------------------------------*/
-.ah-pagination-bar {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
   align-items: center;
-  gap: 16px;
-  padding: 20px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 16px;
+  justify-content: center;
+  transition: transform 0.15s ease, background 0.15s ease;
 }
 
-.ah-page-info {
-  color: #a1a1aa;
-  font-size: 0.95rem;
+.key-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
 }
 
-.ah-page-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+.key-btn:active {
+  transform: scale(0.96);
 }
 
-.ah-page-btn {
-  padding: 8px 14px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  background: #111115;
-  color: #e4e4e7;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 0.9rem;
+.key-btn.action-btn {
+  background: transparent;
+  color: #94a3b8;
+  font-weight: 600;
 }
 
-.ah-page-btn:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
-.ah-page-btn.active {
-  background: #3b82f6;
-  border-color: #3b82f6;
+.key-btn.action-btn:hover {
   color: #ffffff;
 }
 
-.ah-page-btn:disabled {
-  opacity: 0.5;
+.unlock-btn-wide {
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: none;
+  background: #3b82f6;
+  color: #ffffff;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.75px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.unlock-btn-wide:hover:not(:disabled) {
+  background: #2563eb;
+  transform: translateY(-1px);
+}
+
+.unlock-btn-wide:disabled {
+  background: #1e293b;
   cursor: not-allowed;
 }
 
-/* =========================================
-   Mobile Responsiveness
-   ========================================= */
-@media (max-width: 992px) {
-  .ah-filters-bar {
-    flex-direction: column;
-    align-items: stretch;
+.permission-dashboard {
+  padding-top: 24px;
+}
+
+.permission-header-main {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+
+.permission-header-main h2 {
+  margin: 0;
+  font-size: 2rem;
+  color: #f8fafc;
+}
+
+.permission-header-main p {
+  margin: 0;
+  color: #94a3b8;
+  line-height: 1.65;
+  max-width: 840px;
+}
+
+.modern-message {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  margin-bottom: 24px;
+  font-size: 0.95rem;
+}
+
+.modern-message.success {
+  background: rgba(34, 197, 94, 0.12);
+  color: #dcfce7;
+  border: 1px solid rgba(34, 197, 94, 0.25);
+}
+
+.modern-message.error {
+  background: rgba(239, 68, 68, 0.12);
+  color: #fecaca;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.modern-message i {
+  font-size: 1rem;
+}
+
+.permission-layout-grid {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.coadmin-sidebar {
+  background: #0f172a;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 20px;
+  padding: 18px;
+}
+
+.coadmin-sidebar h3 {
+  margin: 0 0 16px;
+  color: #f8fafc;
+  font-size: 1.05rem;
+}
+
+.coadmin-list-scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 560px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.coadmin-list-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.coadmin-list-scroll::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.2);
+  border-radius: 999px;
+}
+
+.coadmin-card-modern {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: #020617;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.coadmin-card-modern:hover {
+  background: #111827;
+  border-color: rgba(148, 163, 184, 0.18);
+}
+
+.coadmin-card-modern.selected {
+  background: linear-gradient(180deg, rgba(59, 130, 246, 0.14), rgba(15, 23, 42, 0.9));
+  border-color: #2563eb;
+}
+
+.coadmin-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1e293b;
+  color: #93c5fd;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.coadmin-details h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: #f8fafc;
+}
+
+.coadmin-details p {
+  margin: 4px 0 0;
+  font-size: 0.88rem;
+  color: #94a3b8;
+}
+
+.permission-main-panel {
+  background: #0f172a;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 20px;
+  padding: 24px;
+  min-height: 520px;
+}
+
+.permission-panel-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.permission-panel-header h3 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: 1.25rem;
+}
+
+.save-btn-modern {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.95rem 1.2rem;
+  background: #3b82f6;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+  font-weight: 600;
+}
+
+.save-btn-modern:hover:not(:disabled) {
+  background: #2563eb;
+}
+
+.permissions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.perm-card {
+  background: #020617;
+  border: 1px solid rgba(148, 163, 184, 0.08);
+  border-radius: 18px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.perm-card:hover {
+  transform: translateY(-1px);
+  border-color: rgba(59, 130, 246, 0.2);
+  box-shadow: 0 15px 30px rgba(15, 23, 42, 0.2);
+}
+
+.perm-card.active {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.15);
+}
+
+.perm-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.perm-icon-wrapper {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(59, 130, 246, 0.12);
+  color: #60a5fa;
+  font-size: 1rem;
+}
+
+.perm-info h4 {
+  margin: 0 0 6px;
+  color: #f8fafc;
+  font-size: 1rem;
+}
+
+.perm-info p {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 0.93rem;
+  line-height: 1.5;
+}
+
+.premium-toggle {
+  position: relative;
+  width: 52px;
+  height: 28px;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.12);
+  cursor: pointer;
+}
+
+.premium-toggle input {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  cursor: pointer;
+}
+
+.toggle-track {
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: #ffffff;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.15);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.premium-toggle input:checked + .toggle-track {
+  transform: translateX(24px);
+  background: #3b82f6;
+}
+
+.premium-toggle:hover {
+  background: rgba(59, 130, 246, 0.16);
+}
+
+@media (max-width: 920px) {
+  .permission-layout-grid {
+    grid-template-columns: 1fr;
   }
-  .ah-pagination-bar {
-    flex-direction: column;
-    justify-content: center;
-    text-align: center;
+
+  .permissions-grid {
+    grid-template-columns: 1fr;
   }
 }
 
-@media (max-width: 768px) {
-  .ah-container {    
-    padding: 20px;
-    border-radius: 16px;
+@media (max-width: 640px) {
+  .admin-coadmin-container {
+    padding: 24px;
   }
-  
-  .ah-header {
+
+  .keypad {
+    gap: 10px;
+  }
+
+  .key-btn {
+    width: 52px;
+    height: 52px;
+    font-size: 1.15rem;
+  }
+
+  .permission-panel-header {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-  
-  .ah-header h3 {
-    font-size: 1.6rem;
-  }
-
-  .ah-lock-card {
-    padding: 30px 20px;
-  }
-
-  .ah-keypad {
-    gap: 15px;
-  }
-  
-  .ah-key-btn {
-    width: 65px;
-    height: 65px;
-    font-size: 1.5rem;
+    align-items: stretch;
   }
 }

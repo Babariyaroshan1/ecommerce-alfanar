@@ -152,6 +152,8 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
   const[savingId, setSavingId] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
   const[successMessage, setSuccessMessage] = useState('');
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteProductId, setDeleteProductId] = useState(null);
   const [previewImageUrl, setPreviewImageUrl] = useState('');
   const [previewOpen, setPreviewOpen] = useState(false);
   const [detailedPreviewOpen, setDetailedPreviewOpen] = useState(false);
@@ -806,39 +808,51 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
     }
   };
 
-  const handleDelete = async (productId) => {
+  const openDeleteConfirmation = (productId) => {
     if (!canDeleteProducts) {
       alert('You do not have permission to delete products. Contact admin.');
       return;
     }
-    
-    if (window.confirm('Are you sure you want to delete this product?')) {
-      try {
-        const isLocalProduct = !/^[a-f\d]{24}$/i.test(productId);
+    setDeleteProductId(productId);
+    setDeleteDialogOpen(true);
+  };
 
-        if (isLocalProduct) {
-          console.log('Deleting local product:', productId);
-          deleteProduct(productId);
-          fetchProducts();
-          alert('Local product deleted successfully');
-          return;
-        }
+  const closeDeleteConfirmation = () => {
+    setDeleteDialogOpen(false);
+    setDeleteProductId(null);
+  };
 
-        const token = localStorage.getItem('adminToken');
-        console.log('Deleting database product ID:', productId);
+  const handleDelete = async () => {
+    if (!deleteProductId) return;
+
+    try {
+      const isLocalProduct = !/^[a-f\d]{24}$/i.test(deleteProductId);
+
+      if (isLocalProduct) {
+        console.log('Deleting local product:', deleteProductId);
+        deleteProduct(deleteProductId);
+        fetchProducts();
+        closeDeleteConfirmation();
+        alert('Local product deleted successfully');
+        return;
+      }
+
+      const token = localStorage.getItem('adminToken');
+      console.log('Deleting database product ID:', deleteProductId);
 
         if (!token) {
           alert('No admin token found. Please login again.');
           return;
         }
 
-        const response = await axios.delete(`${API_URL}/products/${productId}`, {
+        const response = await axios.delete(`${API_URL}/products/${deleteProductId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
 
         console.log('Delete response:', response);
-        deleteProduct(productId);
+        deleteProduct(deleteProductId);
         fetchProducts();
+        closeDeleteConfirmation();
       } catch (error) {
         console.error('Delete error:', error);
         alert(`Failed to delete product: ${error.response?.data?.message || error.message}`);
@@ -1605,7 +1619,7 @@ return (
                   <i className="fa-solid fa-pen"></i> Edit
                 </button>
                 {canDeleteProducts && (
-                  <button className="delete-btn" onClick={() => handleDelete(product._id || product.id)}>
+                  <button className="delete-btn" onClick={() => openDeleteConfirmation(product._id || product.id)}>
                     <i className="fa-solid fa-trash"></i> Delete
                   </button>
                 )}
@@ -1623,6 +1637,23 @@ return (
               ×
             </button>
             <img src={previewImageUrl} alt="Product Preview" />
+          </div>
+        </div>
+      )}
+
+      {deleteDialogOpen && (
+        <div className="delete-confirmation-overlay" onClick={closeDeleteConfirmation}>
+          <div className="delete-confirmation-dialog" onClick={(e) => e.stopPropagation()}>
+            <h2>Confirm Delete</h2>
+            <p>Are you sure you want to delete this product? This action cannot be undone.</p>
+            <div className="delete-confirmation-actions">
+              <button className="cancel-btn" type="button" onClick={closeDeleteConfirmation}>
+                Cancel
+              </button>
+              <button className="delete-btn" type="button" onClick={handleDelete}>
+                OK
+              </button>
+            </div>
           </div>
         </div>
       )}

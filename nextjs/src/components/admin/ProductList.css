@@ -91,6 +91,55 @@ body.product-edit-modal-open {
   position: relative;
 }
 
+.delete-confirmation-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  padding: 18px;
+}
+
+.delete-confirmation-dialog {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 28px;
+  width: min(460px, 100%);
+  box-shadow: 0 30px 80px rgba(15, 23, 42, 0.18);
+  border: 1px solid rgba(229, 231, 235, 0.95);
+}
+
+.delete-confirmation-dialog h2 {
+  margin: 0 0 10px;
+  font-size: 1.25rem;
+  color: #111827;
+}
+
+.delete-confirmation-dialog p {
+  margin: 0 0 18px;
+  color: #4b5563;
+  line-height: 1.6;
+}
+
+.delete-confirmation-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.delete-confirmation-actions .cancel-btn,
+.delete-confirmation-actions .delete-btn {
+  min-width: 120px;
+}
+
+.delete-confirmation-actions .cancel-btn,
+.delete-confirmation-actions .delete-btn {
+  min-width: 120px;
+}
+
 .edit-modal-header {
   display: flex;
   align-items: center;

@@ -48,7 +48,7 @@ export default function CoadminManagement() {
       if (unlocked) return;
 
       if (/^[0-9]$/.test(e.key)) {
-        setPassword((prev) => prev + e.key);
+        setPassword((prev) => prev.length < 4 ? prev + e.key : prev);
         setUnlockError('');
       } else if (e.key === 'Backspace') {
         setPassword((prev) => prev.slice(0, -1));
@@ -299,12 +299,12 @@ export default function CoadminManagement() {
 
             <div className="keypad">
               {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
-                <button key={num} className="key-btn" onClick={() => { setPassword((prev) => prev + num); setUnlockError(''); }}>
+                <button key={num} className="key-btn" onClick={() => { setPassword((prev) => prev.length < 4 ? prev + num : prev); setUnlockError(''); }}>
                   {num}
                 </button>
               ))}
               <button className="key-btn" onClick={() => { setPassword(''); setUnlockError(''); }}>C</button>
-              <button className="key-btn" onClick={() => { setPassword((prev) => prev + '0'); setUnlockError(''); }}>0</button>
+              <button className="key-btn" onClick={() => { setPassword((prev) => prev.length < 4 ? prev + '0' : prev); setUnlockError(''); }}>0</button>
               <button className="key-btn" onClick={() => { setPassword((p) => p.slice(0, -1)); setUnlockError(''); }}>⌫</button>
             </div>
 

@@ -27,7 +27,7 @@ const AdminHistory = () => {
       if (unlocked) return;
 
       if (/^[0-9]$/.test(e.key)) {
-        setPassword((prev) => prev + e.key);
+        setPassword((prev) => prev.length < 4 ? prev + e.key : prev);
         setError('');
       } else if (e.key === 'Backspace') {
         setPassword((prev) => prev.slice(0, -1));
@@ -151,7 +151,7 @@ const AdminHistory = () => {
 
   const handleKeypadClick = (val) => {
     if (loading) return;
-    setPassword((prev) => prev + val);
+    setPassword((prev) => prev.length < 4 ? prev + val : prev);
     setError('');
   };
 
