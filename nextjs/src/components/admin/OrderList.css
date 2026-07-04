@@ -41,46 +41,60 @@
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-.toggle-switch-ord {
+.control-group-accept {
+  border-color: #34d399;
+}
+
+.control-group-refresh {
+  border-color: #60a5fa;
+}
+
+.toggle-switch {
   position: relative;
-  width: 50px;
-  height: 28px;
+  width: 52px;
+  height: 30px;
   border-radius: 999px;
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   padding: 3px;
-  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 0.3s ease;
   box-sizing: border-box;
 }
 
-/* OFF State (Professional Gray) - Agar aapko Red chahiye toh #cbd5e1 ki jagah #f87171 likh dein */
-.toggle-switch-ord.off {
-  background-color: #cbd5e1;
+.toggle-switch-accept.off {
+  background-color: #d1fae5;
 }
 
-/* ON State (Emerald Green) */
-.toggle-switch-ord.on {
-  background-color: #10b981; 
+.toggle-switch-accept.on {
+  background-color: #10b981;
+}
+
+.toggle-switch-refresh.off {
+  background-color: #dbeafe;
+}
+
+.toggle-switch-refresh.on {
+  background-color: #2563eb;
 }
 
 .toggle-thumb {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   background-color: #ffffff;
   border-radius: 50%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 0 1px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  display: block; /* Isse aapka white thumb properly dikhega */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+  transition: transform 0.3s ease;
+  display: block;
 }
 
 /* Thumb Movement */
-.toggle-switch-ord.off .toggle-thumb {
+.toggle-switch.off .toggle-thumb {
   transform: translateX(0);
 }
 
-.toggle-switch-ord.on .toggle-thumb {
+.toggle-switch.on .toggle-thumb {
   transform: translateX(22px); 
 }
 
@@ -208,6 +222,10 @@
   background-color: #f8f9fa;
 }
 
+.highlighted-row {
+  background-color: rgba(59, 130, 246, 0.16) !important;
+}
+
 .customer-phone {
   color: #666;
   font-size: 0.9rem;
@@ -219,6 +237,41 @@
   font-size: 0.9rem;
   line-height: 1.4;
   max-width: 360px;
+}
+
+.order-id-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.search-row-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #374151;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.search-row-btn:hover,
+.search-row-btn.active {
+  background: #eff6ff;
+  border-color: #3b82f6;
+  color: #1d4ed8;
+}
+
+.order-timeline {
+  margin-top: 8px;
+  font-size: 0.82rem;
+  color: #4b5563;
 }
 
 .order-details {
@@ -448,6 +501,93 @@
 
 .refund-btn:hover {
   background-color: #520dc2;
+}
+
+.order-items-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.order-item-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 12px;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+}
+
+.order-item-name {
+  font-size: 0.92rem;
+  color: #1f2937;
+  font-weight: 700;
+  width: 100%;
+}
+
+.order-item-image-btn {
+  background-color: #2563eb;
+  color: #ffffff;
+  border: none;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.order-item-image-btn:hover {
+  background-color: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.order-image-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  padding: 1rem;
+}
+
+.order-image-modal-content {
+  position: relative;
+  max-width: 95%;
+  max-height: 95%;
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.25);
+}
+
+.order-image-modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(17, 24, 39, 0.8);
+  color: #ffffff;
+  font-size: 1.25rem;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.order-image-preview-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 85vh;
+  object-fit: contain;
+  background: #0f172a;
 }
 
 .status-label {

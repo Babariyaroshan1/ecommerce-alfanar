@@ -30,6 +30,9 @@ export default function OrderList({ showOnlyRequests = false }) {
   const [requestFilter, setRequestFilter] = useState('all');
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [showRequestImages, setShowRequestImages] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [highlightedOrderId, setHighlightedOrderId] = useState(null);
   const [lastUpdate, setLastUpdate] = useState(new Date());
   const token = localStorage.getItem('adminToken');
 
@@ -111,6 +114,33 @@ export default function OrderList({ showOnlyRequests = false }) {
   const handleRefresh = () => {
     if (isRefreshing) return;
     fetchOrders(true);
+  };
+
+  const openItemImage = (imageUrl) => {
+    setPreviewImage(imageUrl || '/placeholder.png');
+    setShowImageModal(true);
+  };
+
+  const closeItemImage = () => {
+    setShowImageModal(false);
+    setPreviewImage(null);
+  };
+
+  const toggleHighlightRow = (orderId) => {
+    setHighlightedOrderId((prev) => (prev === orderId ? null : orderId));
+  };
+
+  const formatOrderTimeline = (createdAt) => {
+    if (!createdAt) return 'Order time unavailable';
+    const date = new Date(createdAt);
+    return date.toLocaleString('en-IN', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    });
   };
 
   const acceptOrder = (orderId) => updateOrderStatus(orderId, 'confirmed');
@@ -466,15 +496,15 @@ export default function OrderList({ showOnlyRequests = false }) {
             Last updated: {lastUpdate.toLocaleTimeString()}
           </div>
         <div className="order-controls">
-          <div className="control-group">
+          <div className="control-group control-group-accept">
             <span>Auto Accept</span>
-            <button type="button" className={`toggle-switch-ord ${autoAccept ? 'on' : 'off'}`} onClick={() => setAutoAccept(!autoAccept)}>
+            <button type="button" className={`toggle-switch toggle-switch-accept ${autoAccept ? 'on' : 'off'}`} onClick={() => setAutoAccept(!autoAccept)}>
               <span className="toggle-thumb" />
             </button>
           </div>
-          <div className="control-group">
+          <div className="control-group control-group-refresh">
             <span>Auto Refresh</span>
-            <button type="button" className={`toggle-switch-ord ${autoRefresh ? 'on' : 'off'}`} onClick={() => setAutoRefresh(!autoRefresh)}>
+            <button type="button" className={`toggle-switch toggle-switch-refresh ${autoRefresh ? 'on' : 'off'}`} onClick={() => setAutoRefresh(!autoRefresh)}>
               <span className="toggle-thumb" />
             </button>
           </div>
@@ -505,9 +535,21 @@ export default function OrderList({ showOnlyRequests = false }) {
           </thead>
           <tbody>
             {orders.map((order, index) => (
-              <tr key={order._id}>
+              <tr key={order._id} className={highlightedOrderId === order._id ? 'highlighted-row' : ''}>
                 <td>{index + 1}</td>
-                <td>{order.orderId}</td>
+                <td>
+                  <div className="order-id-row">
+                    <span>{order.orderId}</span>
+                    <button
+                      type="button"
+                      className={`search-row-btn ${highlightedOrderId === order._id ? 'active' : ''}`}
+                      onClick={() => toggleHighlightRow(order._id)}
+                      title="Highlight row"
+                    >
+                      <i className="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                  </div>
+                </td>
                 <td>
                   <div>{order.userId?.name || 'Guest'}</div>
                   <div className="customer-phone">{order.userId?.phone || order.shippingAddress?.phone || 'No phone'}</div>
@@ -549,11 +591,24 @@ export default function OrderList({ showOnlyRequests = false }) {
                 <td>{order.items?.length || 0}</td>
                 <td>{getTotalQuantity(order)}</td>
                 <td>
-                  <div className="order-details">
-                    {formatItemDetails(order.items).split('\n').map((line, idx) => (
-                      <div key={idx}>{line}</div>
-                    ))}
+                  <div className="order-items-preview">
+                    {(order.items || []).map((item, itemIndex) => {
+                      const imageUrl = item.image || '/placeholder.png';
+                      return (
+                        <div key={itemIndex} className="order-item-box">
+                          <div className="order-item-name">{item.name || 'Unnamed product'}</div>
+                          <button
+                            type="button"
+                            className="order-item-image-btn"
+                            onClick={() => openItemImage(imageUrl)}
+                          >
+                            View Image
+                          </button>
+                        </div>
+                      );
+                    })}
                   </div>
+                  <div className="order-timeline">Ordered: {formatOrderTimeline(order.createdAt)}</div>
                 </td>
                 <td style={{whiteSpace: 'nowrap'}}>{order.currencySymbol || '₹'}{formatPrice(order.totalAmount, order.currencySymbol)}</td>
                 <td>
@@ -612,6 +667,16 @@ export default function OrderList({ showOnlyRequests = false }) {
           </tbody>
         </table>
       </div>
+      )}
+      {showImageModal && (
+        <div className="order-image-modal" onClick={closeItemImage}>
+          <div className="order-image-modal-content" onClick={(e) => e.stopPropagation()}>
+            <button type="button" className="order-image-modal-close" onClick={closeItemImage}>
+              ×
+            </button>
+            <img src={previewImage} alt="Product preview" className="order-image-preview-img" />
+          </div>
+        </div>
       )}
     </div>
   );

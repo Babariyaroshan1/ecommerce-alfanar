@@ -1795,6 +1795,6 @@ return (
   </div>
 
 );
-};
+
 
 export default ProductList;
