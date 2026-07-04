@@ -63,12 +63,14 @@ export default function Dashboard({ onLogout }) {
     }
   };
 
-  // Helper function to check if user has a specific permission
   const hasPermission = (permissionKey) => {
-    // Admin has all permissions
     if (role === 'admin') return true;
-    // Coadmin needs to have the permission in their list
-    return permissions.includes(permissionKey);
+    if (permissions.includes(permissionKey)) return true;
+    if (permissionKey === 'view_products' || permissionKey === 'add_products') {
+      return permissions.includes('manage_products');
+    }
+    if (permissionKey === 'manage_orders' && permissions.includes('manage_orders')) return true;
+    return false;
   };
 
   const fetchStats = async () => {

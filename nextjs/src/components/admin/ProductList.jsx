@@ -113,10 +113,12 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
   
   // Granular permission checks
   const isAdmin = role === 'admin';
-  const canViewProducts = isAdmin || permissions.includes('view_products');
-  const canAddProducts = isAdmin || permissions.includes('add_products');
-  const canEditProducts = isAdmin || permissions.includes('edit_products');
-  const canDeleteProducts = isAdmin || permissions.includes('delete_products');
+  const hasManageProducts = permissions.includes('manage_products');
+  const hasManageKidsProducts = permissions.includes('manage_kids_products');
+  const canViewProducts = isAdmin || hasManageProducts || hasManageKidsProducts || permissions.includes('view_products');
+  const canAddProducts = isAdmin || hasManageProducts || permissions.includes('add_products');
+  const canEditProducts = isAdmin || hasManageProducts || permissions.includes('edit_products');
+  const canDeleteProducts = isAdmin || hasManageProducts || permissions.includes('delete_products');
   const isCoAdmin = role === 'coadmin';
   const isViewOnlyCoAdmin = isCoAdmin && canViewProducts && !canEditProducts && !canAddProducts && !canDeleteProducts;
   
@@ -405,12 +407,11 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
   };
 
   const handleEditClick = (product) => {
-    // Only admin can edit products
-    if (isCoAdmin) {
-      setErrorMessage('Co-admins can only view products. Contact admin for edit access.');
+    if (!canEditProducts) {
+      setErrorMessage('You do not have permission to edit products. Contact admin.');
       return;
     }
-    
+
     if (!product._id) {
       setErrorMessage('Cannot edit default products. Only database products can be edited.');
       return;
@@ -806,9 +807,8 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
   };
 
   const handleDelete = async (productId) => {
-    // Only admin can delete products
-    if (isCoAdmin) {
-      alert('Co-admins cannot delete products. Contact admin for deletion.');
+    if (!canDeleteProducts) {
+      alert('You do not have permission to delete products. Contact admin.');
       return;
     }
     

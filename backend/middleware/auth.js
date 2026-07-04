@@ -1,4 +1,17 @@
 import jwt from 'jsonwebtoken';
+import { PERMISSIONS } from '../utils/permissions.js';
+
+const PERMISSION_ALIASES = {
+    [PERMISSIONS.MANAGE_PRODUCTS]: [
+        PERMISSIONS.MANAGE_PRODUCTS,
+        'edit_products',
+        'delete_products',
+        'add_products'
+    ],
+    [PERMISSIONS.MANAGE_KIDS_PRODUCTS]: [
+        PERMISSIONS.MANAGE_KIDS_PRODUCTS
+    ]
+};
 
 export const auth = (req, res, next) => {
     try {
@@ -48,7 +61,8 @@ export const permissionAuth = (requiredPermission) => {
                     const { default: User } = await import('../models/User.js');
                     const user = await User.findById(req.userId);
                     if (user && user.permissions && Array.isArray(user.permissions)) {
-                        if (user.permissions.includes(requiredPermission)) {
+                        const allowedPermissions = PERMISSION_ALIASES[requiredPermission] || [requiredPermission];
+                        if (allowedPermissions.some((perm) => user.permissions.includes(perm))) {
                             return next();
                         }
                     }

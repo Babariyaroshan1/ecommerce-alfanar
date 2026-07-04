@@ -100,11 +100,23 @@ export default function PermissionManagement() {
     }
   };
 
+  const mapToBackendPermission = (permissionKey) => {
+    if (['edit_products', 'delete_products', 'add_products'].includes(permissionKey)) {
+      return 'manage_products';
+    }
+    return permissionKey;
+  };
+
   const handleCoadminSelect = (coadmin) => {
     setSelectedCoadmin(coadmin);
+    const hasManageProducts = coadmin.permissions?.includes('manage_products');
     setPermissions(
       AVAILABLE_PERMISSIONS.reduce((acc, perm) => {
-        acc[perm.key] = coadmin.permissions?.includes(perm.key) || false;
+        if (['edit_products', 'delete_products', 'add_products'].includes(perm.key)) {
+          acc[perm.key] = hasManageProducts || coadmin.permissions?.includes(perm.key);
+        } else {
+          acc[perm.key] = coadmin.permissions?.includes(perm.key) || false;
+        }
         return acc;
       }, {})
     );
@@ -123,12 +135,16 @@ export default function PermissionManagement() {
     setLoading(true);
     setMessage('');
 
-    const selectedPermissions = Object.keys(permissions).filter(key => permissions[key]);
+    const selectedPermissions = Object.keys(permissions)
+      .filter(key => permissions[key])
+      .map(mapToBackendPermission);
+
+    const uniquePermissions = Array.from(new Set(selectedPermissions));
 
     try {
       await axios.put(`${API_URL}/settings/coadmin-permissions`, {
         coadminId: selectedCoadmin._id,
-        permissions: selectedPermissions
+        permissions: uniquePermissions
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
