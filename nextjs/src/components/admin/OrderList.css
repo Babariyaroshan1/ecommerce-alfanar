@@ -3,74 +3,70 @@
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-      padding: 1rem !important;
+  padding: 1rem !important;
 }
 
-.order-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center; /* Changed to center for single line alignment */
-    gap:30px;
-    padding:20px 24px;
-    flex-wrap:nowrap;
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Dono (left and right side) ko center align karega */
+  gap: 20px;
+  padding: 20px 24px;
+  flex-wrap: wrap; /* Agar screen chhoti ho toh tootne nahi dega, manage karega */
 }
 
-.order-title-group{
-    display:flex;
-    flex-direction:row; /* Changed from column to row */
-    align-items:center; /* Changed to center */
-    justify-content:flex-start;
-    gap:16px; /* Increased gap slightly for side-by-side spacing */
+.order-title-group {
+  display: flex;
+  flex-direction: column; /* Upar 'Order management', niche 'Last updated' */
+  align-items: flex-start;
+  justify-content: center;
+  gap: 6px;
+  flex-shrink: 0;
 }
 
-.order-title-group h2{
-    margin: 0;
-    font-size: 34px;
-    font-weight: 700;
-}
-
-
-.order-header h2 {
+.order-title-group h2 {
   margin: 0;
+  font-size: 32px;
+  font-weight: 700;
   color: #2c3e50;
+  white-space: nowrap; /* Text ko 2 line mein break hone se rokega */
 }
 
-.order-toolbar{
-    display:flex;
-    align-items:center;
-    justify-content:flex-end;
-    gap:18px;
-    margin-left:auto;
-    flex-wrap:nowrap;
+.order-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-left: auto;
+  flex-wrap: wrap;
 }
 
-.order-search{
-    height:48px;
-    min-width:390px;
-    background:#fff;
-    border:1px solid #e5e7eb;
-    border-radius:30px;
-    overflow:hidden;
-    padding-left:18px;
+.order-search {
+  height: 48px;
+  min-width: 300px; /* Thoda kam kiya taaki sab ek line mein easily fit ho */
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 30px;
+  overflow: hidden;
+  padding-left: 18px;
+  display: flex;
+  align-items: center;
 }
 
-.order-search input{
-    flex:1;
-    height:100%;
-}
-
-.search-btn{
-    height:100%;
-    padding:0 28px;
-    border-radius:30px;
+.order-search input {
+  flex: 1;
+  height: 100%;
+  border: none;
+  outline: none;
 }
 
 .search-btn {
+  height: 100%;
+  padding: 0 28px;
+  border-radius: 30px;
   border: none;
   background: #2563eb;
   color: #fff;
-  border-radius: 999px;
-  padding: 0.55rem 0.9rem;
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
@@ -89,8 +85,8 @@
   gap: 0.75rem;
   flex-wrap: wrap;
 }
-/* --- Modern Toggle Switch UI --- */
 
+/* --- Modern Toggle Switch UI --- */
 .control-group {
   gap: 0.75rem;
   background: #ffffff;
@@ -100,13 +96,13 @@
   font-weight: 500;
   color: #374151;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  height: 48px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  white-space: nowrap; /* Text break nahi hoga */
 }
-.control-group{
-    height:48px;
-    padding:0 18px;
-    display:flex;
-    align-items:center;
-}
+
 .control-group-accept {
   border-color: #34d399;
 }
@@ -174,14 +170,12 @@
   box-shadow: 0 8px 18px rgba(37, 99, 235, 0.16);
   transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
   gap: 0.5rem;
-}
-.refresh-btn{
-    width:48px;
-    height:48px;
-    padding:0;
-    display:flex;
-    justify-content:center;
-    align-items:center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .refresh-btn:hover {
@@ -246,6 +240,7 @@
   gap: 0.5rem;
   cursor: pointer;
 }
+
 /* Zebra Striping for Better Visibility */
 .order-table tbody tr:nth-child(odd) {
   background-color: #f8f8f8;
@@ -255,11 +250,11 @@
   background-color: #ffffff;
 }
 
-
 .order-table-container {
   overflow-x: auto;
   padding-bottom: 0.5rem;
 }
+
 .order-table td {
   min-width: 100px;  
 }
@@ -267,6 +262,7 @@
 .order-table td:nth-child(4) {
   min-width: 250px;  /* Address column wider */
 }
+
 .order-table {
   width: 100%;
   min-width: 2000px;
@@ -874,6 +870,7 @@
   font-size: 1.2rem;
   color: #666;
 }
+
 .orders-table td {
   padding: 12px 15px;
 }
@@ -1022,23 +1019,20 @@
   }
 }
 
-.last-update{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    color:#6b7280;
-    font-size:15px;
-    font-weight:500;
-    margin:0; /* margin remove kar diya taaki same line me thik dikhe */
+.last-update {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #6b7280;
+  font-size: 15px;
+  font-weight: 500;
+  margin: 0;
+  white-space: nowrap; /* Taki time ek hi line mein rahe */
 }
 
-.last-update i{
-    color:#9ca3af;
+.last-update i {
+  color: #9ca3af;
 }
-.last-update{
-    font-size: 15px;
-}
-
 
 .status-badge {
   display: inline-block;
