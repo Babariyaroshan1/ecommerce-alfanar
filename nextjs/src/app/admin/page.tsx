@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import Login from '@/components/admin/Login';
 import Dashboard from '@/components/admin/Dashboard';
 
+export const dynamic = 'force-dynamic';
+
 export default function AdminPage() {
   const [authenticated, setAuthenticated] = useState(false);
   const [isMounted, setIsMounted] = useState(false);

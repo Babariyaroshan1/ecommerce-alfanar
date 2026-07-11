@@ -29,6 +29,7 @@ const CUSTOM_CATEGORIES_STORAGE_KEY = 'noor_custom_categories';
 
 const loadSavedCategories = () => {
   try {
+    if (typeof window === 'undefined') return [];
     const saved = localStorage.getItem(CUSTOM_CATEGORIES_STORAGE_KEY);
     return saved ? JSON.parse(saved) : [];
   } catch (e) {

@@ -33,8 +33,7 @@ const orderSchema = new mongoose.Schema({
     returnRequest: {
         status: {
             type: String,
-            enum: ['pending', 'approved', 'processing', 'completed', 'rejected', 'cancelled'],
-            default: null
+            enum: ['pending', 'approved', 'processing', 'completed', 'rejected', 'cancelled']
         },
         requestedAt: Date,
         completedAt: Date,
@@ -59,8 +58,7 @@ const orderSchema = new mongoose.Schema({
     replacementRequest: {
         status: {
             type: String,
-            enum: ['pending', 'approved', 'processing', 'completed', 'rejected', 'cancelled'],
-            default: null
+            enum: ['pending', 'approved', 'processing', 'completed', 'rejected', 'cancelled']
         },
         requestedAt: Date,
         completedAt: Date,
