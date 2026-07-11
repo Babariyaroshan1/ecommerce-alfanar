@@ -20,6 +20,39 @@ const hasValidRequest = (order) => {
   return (order.returnRequest?.requestedAt) || (order.replacementRequest?.requestedAt);
 };
 
+const ExpandableProductName = ({ name }) => {
+  const [expanded, setExpanded] = useState(false);
+  const safeName = name || 'Unnamed product';
+  const words = safeName.split(' ');
+
+  if (words.length <= 3) {
+    return <div className="order-item-name">{safeName}</div>;
+  }
+
+  return (
+    <div className="order-item-name">
+      {expanded ? safeName : words.slice(0, 3).join(' ') + '...'}
+      <button
+        type="button"
+        onClick={() => setExpanded(!expanded)}
+        style={{
+          background: 'transparent',
+          border: 'none',
+          padding: 0,
+          color: '#2563eb',
+          textDecoration: 'underline',
+          cursor: 'pointer',
+          fontSize: 'inherit',
+          fontFamily: 'inherit',
+          marginLeft: '5px'
+        }}
+      >
+        {expanded ? 'less' : 'view'}
+      </button>
+    </div>
+  );
+};
+
 export default function OrderList({ showOnlyRequests = false }) {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -643,7 +676,7 @@ export default function OrderList({ showOnlyRequests = false }) {
                       const imageUrl = item.image || '/placeholder.png';
                       return (
                         <div key={itemIndex} className="order-item-box">
-                          <div className="order-item-name">{item.name || 'Unnamed product'}</div>
+                          <ExpandableProductName name={item.name} />
                           <button
                             type="button"
                             className="order-item-image-btn"
