@@ -9,7 +9,7 @@
 .order-header{
     display:flex;
     justify-content:space-between;
-    align-items:flex-start;
+    align-items:center; /* Changed to center for single line alignment */
     gap:30px;
     padding:20px 24px;
     flex-wrap:nowrap;
@@ -17,10 +17,10 @@
 
 .order-title-group{
     display:flex;
-    flex-direction:column;
-    align-items:flex-start;
-    justify-content:center;
-    gap:8px;
+    flex-direction:row; /* Changed from column to row */
+    align-items:center; /* Changed to center */
+    justify-content:flex-start;
+    gap:16px; /* Increased gap slightly for side-by-side spacing */
 }
 
 .order-title-group h2{
@@ -1029,14 +1029,13 @@
     color:#6b7280;
     font-size:15px;
     font-weight:500;
-    margin:0;
+    margin:0; /* margin remove kar diya taaki same line me thik dikhe */
 }
 
 .last-update i{
     color:#9ca3af;
 }
 .last-update{
-    margin-top: 2px;
     font-size: 15px;
 }
 
