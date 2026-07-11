@@ -1,8 +1,17 @@
 'use client';
 
+import NextDynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
-import Login from '@/components/admin/Login';
-import Dashboard from '@/components/admin/Dashboard';
+
+const Login = NextDynamic(() => import('@/components/admin/Login'), {
+  ssr: false,
+  loading: () => <div className="min-h-screen flex items-center justify-center">Loading admin...</div>,
+});
+
+const Dashboard = NextDynamic(() => import('@/components/admin/Dashboard'), {
+  ssr: false,
+  loading: () => <div className="min-h-screen flex items-center justify-center">Loading admin...</div>,
+});
 
 export const dynamic = 'force-dynamic';
 
