@@ -10,13 +10,71 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
   padding: 1.5rem;
+  flex-wrap: wrap;
   /* border-bottom: 1px solid #eee; */
+}
+
+.order-title-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .order-header h2 {
   margin: 0;
   color: #2c3e50;
+}
+
+.order-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+.order-search {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  padding: 0.35rem 0.5rem 0.35rem 0.9rem;
+}
+
+.order-search input {
+  border: none;
+  outline: none;
+  background: transparent;
+  min-width: 220px;
+  font-size: 0.95rem;
+  color: #111827;
+}
+
+.order-search input::placeholder {
+  color: #9ca3af;
+}
+
+.search-btn {
+  border: none;
+  background: #2563eb;
+  color: #fff;
+  border-radius: 999px;
+  padding: 0.55rem 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.search-btn:hover {
+  background: #1d4ed8;
 }
 
 .order-controls {
@@ -246,26 +304,11 @@
   gap: 0.75rem;
 }
 
-.search-row-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 34px;
-  border: 1px solid #d1d5db;
-  border-radius: 10px;
-  background: #ffffff;
-  color: #374151;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.search-row-btn:hover,
-.search-row-btn.active {
-  background: #eff6ff;
-  border-color: #3b82f6;
-  color: #1d4ed8;
+.no-orders-found {
+  text-align: center;
+  color: #6b7280;
+  font-weight: 500;
+  padding: 1.25rem 0;
 }
 
 .order-timeline {
@@ -973,7 +1016,6 @@
   color: #6b7280;
   font-size: 0.875rem;
   font-weight: 500;
-  margin-left: auto;
 }
 
 .last-update i {

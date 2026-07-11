@@ -34,6 +34,8 @@ export default function OrderList({ showOnlyRequests = false }) {
   const [showImageModal, setShowImageModal] = useState(false);
   const [highlightedOrderId, setHighlightedOrderId] = useState(null);
   const [lastUpdate, setLastUpdate] = useState(new Date());
+  const [searchTerm, setSearchTerm] = useState('');
+  const [activeSearchTerm, setActiveSearchTerm] = useState('');
   const token = localStorage.getItem('adminToken');
 
   useEffect(() => {
@@ -128,6 +130,10 @@ export default function OrderList({ showOnlyRequests = false }) {
 
   const toggleHighlightRow = (orderId) => {
     setHighlightedOrderId((prev) => (prev === orderId ? null : orderId));
+  };
+
+  const handleSearch = () => {
+    setActiveSearchTerm(searchTerm.trim().toLowerCase());
   };
 
   const formatOrderTimeline = (createdAt) => {
@@ -306,6 +312,33 @@ export default function OrderList({ showOnlyRequests = false }) {
     if (requestFilter === 'all') return true;
     const currentStatus = getRequestStatus(order);
     return currentStatus === requestFilter;
+  });
+
+  const visibleOrders = orders.filter((order) => {
+    if (!activeSearchTerm) return true;
+
+    const searchableText = [
+      order.orderId,
+      order.userId?.name,
+      order.userId?.phone,
+      order.shippingAddress?.phone,
+      order.shippingAddress?.addressTitle,
+      order.shippingAddress?.area,
+      order.shippingAddress?.governorate,
+      order.shippingAddress?.city,
+      order.shippingAddress?.houseNumber,
+      order.shippingAddress?.street,
+      order.shippingAddress?.apartment,
+      order.orderStatus,
+      order.paymentStatus,
+      order.paymentMethod,
+      order.items?.map((item) => item.name).join(' '),
+    ]
+      .filter(Boolean)
+      .join(' ')
+      .toLowerCase();
+
+    return searchableText.includes(activeSearchTerm);
   });
 
   const formatShippingAddress = (address) => {
@@ -490,27 +523,45 @@ export default function OrderList({ showOnlyRequests = false }) {
       {/* Main Order Tables */}
       {!showOnlyRequests && (
       <div className="order-header">
-        <h2>Order Management</h2>
-        <div className="last-update">
+        <div className="order-title-group">
+          <h2>Order Management</h2>
+          <div className="last-update">
             <i className="fas fa-clock"></i>
             Last updated: {lastUpdate.toLocaleTimeString()}
           </div>
-        <div className="order-controls">
-          <div className="control-group control-group-accept">
-            <span>Auto Accept</span>
-            <button type="button" className={`toggle-switch toggle-switch-accept ${autoAccept ? 'on' : 'off'}`} onClick={() => setAutoAccept(!autoAccept)}>
-              <span className="toggle-thumb" />
+        </div>
+        <div className="order-toolbar">
+          <div className="order-search">
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+              placeholder="Search orders"
+              aria-label="Search orders"
+            />
+            <button type="button" className="search-btn" onClick={handleSearch}>
+              <i className="fa-solid fa-magnifying-glass"></i>
+              Search
             </button>
           </div>
-          <div className="control-group control-group-refresh">
-            <span>Auto Refresh</span>
-            <button type="button" className={`toggle-switch toggle-switch-refresh ${autoRefresh ? 'on' : 'off'}`} onClick={() => setAutoRefresh(!autoRefresh)}>
-              <span className="toggle-thumb" />
+          <div className="order-controls">
+            <div className="control-group control-group-accept">
+              <span>Auto Accept</span>
+              <button type="button" className={`toggle-switch toggle-switch-accept ${autoAccept ? 'on' : 'off'}`} onClick={() => setAutoAccept(!autoAccept)}>
+                <span className="toggle-thumb" />
+              </button>
+            </div>
+            <div className="control-group control-group-refresh">
+              <span>Auto Refresh</span>
+              <button type="button" className={`toggle-switch toggle-switch-refresh ${autoRefresh ? 'on' : 'off'}`} onClick={() => setAutoRefresh(!autoRefresh)}>
+                <span className="toggle-thumb" />
+              </button>
+            </div>
+            <button className="refresh-btn" onClick={handleRefresh} disabled={isRefreshing}>
+              {isRefreshing ? <i className="fas fa-spinner fa-spin"></i> : <i className="fas fa-sync-alt"></i>}
             </button>
           </div>
-          <button className="refresh-btn" onClick={handleRefresh} disabled={isRefreshing}>
-            {isRefreshing ? <i className="fas fa-spinner fa-spin"></i> : <i className="fas fa-sync-alt"></i>}
-          </button>
         </div>
       </div>
       )}
@@ -534,20 +585,16 @@ export default function OrderList({ showOnlyRequests = false }) {
             </tr>
           </thead>
           <tbody>
-            {orders.map((order, index) => (
+            {visibleOrders.length === 0 ? (
+              <tr>
+                <td colSpan="11" className="no-orders-found">No orders match the current search.</td>
+              </tr>
+            ) : visibleOrders.map((order, index) => (
               <tr key={order._id} className={highlightedOrderId === order._id ? 'highlighted-row' : ''}>
                 <td>{index + 1}</td>
                 <td>
                   <div className="order-id-row">
                     <span>{order.orderId}</span>
-                    <button
-                      type="button"
-                      className={`search-row-btn ${highlightedOrderId === order._id ? 'active' : ''}`}
-                      onClick={() => toggleHighlightRow(order._id)}
-                      title="Highlight row"
-                    >
-                      <i className="fa-solid fa-magnifying-glass"></i>
-                    </button>
                   </div>
                 </td>
                 <td>
