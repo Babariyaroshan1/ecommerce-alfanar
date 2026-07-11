@@ -841,27 +841,26 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
       const token = localStorage.getItem('adminToken');
       console.log('Deleting database product ID:', deleteProductId);
 
-        if (!token) {
-          alert('No admin token found. Please login again.');
-          return;
-        }
-
-        const response = await axios.delete(`${API_URL}/products/${deleteProductId}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-
-        console.log('Delete response:', response);
-        deleteProduct(deleteProductId);
-        fetchProducts();
-        closeDeleteConfirmation();
-      } catch (error) {
-        console.error('Delete error:', error);
-        alert(`Failed to delete product: ${error.response?.data?.message || error.message}`);
+      if (!token) {
+        alert('No admin token found. Please login again.');
+        return;
       }
+
+      const response = await axios.delete(`${API_URL}/products/${deleteProductId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      console.log('Delete response:', response);
+      deleteProduct(deleteProductId);
+      fetchProducts();
+      closeDeleteConfirmation();
+    } catch (error) {
+      console.error('Delete error:', error);
+      alert(`Failed to delete product: ${error.response?.data?.message || error.message}`);
     }
   };
 
-return (
+  return (
   <div className="product-list-container">
     <div className="product-list-header">
       <div>
@@ -1793,9 +1792,8 @@ return (
           <img src={fullScreenImageUrl} alt="Full size view" />
         </div>
       )}
-  </div>
-
-);
-
+    </div>
+  );
+};
 
 export default ProductList;
