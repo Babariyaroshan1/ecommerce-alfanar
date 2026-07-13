@@ -71,6 +71,10 @@ const orderSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    shippingAmount: {
+        type: Number,
+        default: 0
+    },
     paymentMethod: {
         type: String,
         enum: ['online', 'cod', 'upi'],

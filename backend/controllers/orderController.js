@@ -1,9 +1,16 @@
 const Order = require('../models/Order');
+const { getCurrentCurrencySettings } = require('../utils/currency');
 
 const orderController = {
     createOrder: async (req, res) => {
         try {
-            const { items, shippingAddress, totalAmount, paymentMethod, currency, currencySymbol } = req.body;
+            const { items, shippingAddress, totalAmount, shippingAmount, paymentMethod, currency, currencySymbol } = req.body;
+            const settings = await getCurrentCurrencySettings();
+            const resolvedCurrency = typeof currency === 'string' && currency.trim() ? currency : settings.currency;
+            const resolvedCurrencySymbol = currencySymbol || settings.symbol || '₹';
+            const resolvedShippingAmount = resolvedCurrency === 'INR'
+                ? Number(settings.shippingPriceINR ?? settings.shippingPrice ?? 5)
+                : Number(settings.shippingPriceKWD ?? settings.shippingPrice ?? 5);
 
             // Map cart items to order items format - ALWAYS save original price, not sale price
             const orderItems = items.map(item => ({
@@ -23,9 +30,10 @@ const orderController = {
                 items: orderItems,
                 shippingAddress,
                 totalAmount,
+                shippingAmount: resolvedShippingAmount,
                 paymentMethod,
-                currency: currency || 'INR',
-                currencySymbol: currencySymbol || '₹'
+                currency: resolvedCurrency,
+                currencySymbol: resolvedCurrencySymbol
             });
 
             await order.save();

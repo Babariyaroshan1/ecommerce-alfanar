@@ -24,6 +24,7 @@ export default function OrderDetails({ orderId }) {
   const router = useRouter();
   const { token } = useAuthStore();
   const selectedCurrency = useProductStore((state) => state.selectedCurrency);
+  const currencySettings = useProductStore((state) => state.currencySettings);
   const [order, setOrder] = useState(null);
   const[loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -75,6 +76,25 @@ export default function OrderDetails({ orderId }) {
       setOrder(null);
       setLoading(false);
     }
+  };
+
+  const getOrderShippingAmount = (orderData) => {
+    if (!orderData) return 0;
+    const rawAmount = orderData.shippingAmount;
+    if (rawAmount !== undefined && rawAmount !== null && rawAmount !== '') {
+      const parsed = Number(rawAmount);
+      if (Number.isFinite(parsed)) return parsed;
+    }
+
+    const orderCurrency = String(orderData.currency || '').toUpperCase();
+    const orderCurrencySymbol = orderData.currencySymbol || '';
+    const isInrOrder = orderCurrency === 'INR' || orderCurrencySymbol === '₹';
+
+    if (isInrOrder) {
+      return Number(currencySettings?.shippingPriceINR ?? currencySettings?.shippingPrice ?? 5);
+    }
+
+    return Number(currencySettings?.shippingPriceKWD ?? currencySettings?.shippingPrice ?? 5);
   };
 
   const activeCustomerRequestType = order?.returnRequest?.requestedAt && !['rejected', 'completed'].includes(order.returnRequest.status)
@@ -302,8 +322,8 @@ export default function OrderDetails({ orderId }) {
     const leftMargin = 40;
     let y = 40;
 
-    const subtotal = order.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const shipping = 5; // Replace with your actual shipping logic if needed
+    const subtotal = order.items.reduce((sum, item) => sum + (Number(item.price || 0) * Number(item.quantity || 1)), 0);
+    const shipping = getOrderShippingAmount(order);
     const total = order.totalAmount;
     const paymentMethodLabel = order.paymentMethod === 'cod' ? 'Cash on Delivery' : 'Online Payment';
     const paymentStatusLabel = order.paymentStatus || 'pending';
@@ -438,8 +458,8 @@ export default function OrderDetails({ orderId }) {
     );
   }
 
-  const subtotal = order.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const shipping = 5;
+  const subtotal = order.items.reduce((sum, item) => sum + (Number(item.price || 0) * Number(item.quantity || 1)), 0);
+  const shipping = getOrderShippingAmount(order);
   const total = order.totalAmount;
   const hasActiveReturnRequest = order.returnRequest?.requestedAt && !['rejected', 'completed'].includes(order.returnRequest.status);
   const hasActiveReplacementRequest = order.replacementRequest?.requestedAt && !['rejected', 'completed'].includes(order.replacementRequest.status);

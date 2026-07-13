@@ -4,6 +4,7 @@ import Order from '../models/Order.js';
 import Coupon from '../models/Coupon.js';
 import { auth, adminAuth, adminOrCoadminAuth, permissionAuth } from '../middleware/auth.js';
 import { PERMISSIONS } from '../utils/permissions.js';
+import { getCurrentCurrencySettings } from '../utils/currency.js';
 
 const router = express.Router();
 
@@ -91,14 +92,22 @@ router.post('/', auth, async (req, res) => {
             };
         });
 
+        const settings = await getCurrentCurrencySettings();
+        const resolvedCurrency = typeof currency === 'string' && currency.trim() ? currency : settings.currency;
+        const resolvedCurrencySymbol = currencySymbol || settings.symbol || '₹';
+        const shippingAmount = resolvedCurrency === 'INR'
+            ? Number(settings.shippingPriceINR ?? settings.shippingPrice ?? 5)
+            : Number(settings.shippingPriceKWD ?? settings.shippingPrice ?? 5);
+
         const orderData = {
             userId: req.userId,
             items: orderItems,
             shippingAddress,
             totalAmount,
+            shippingAmount,
             paymentMethod: paymentMethod === 'upi' ? 'online' : paymentMethod,
-            currency: currency || 'INR',
-            currencySymbol: currencySymbol || '₹',
+            currency: resolvedCurrency,
+            currencySymbol: resolvedCurrencySymbol,
             coupon: validatedCoupon
         };
 
