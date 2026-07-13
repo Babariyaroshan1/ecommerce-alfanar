@@ -91,14 +91,14 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  border: 1.5px solid #3b82f6;
+  border: 1.5px solid #62009d;
   background: transparent;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .ah-dot.filled {
-  background: #3b82f6; 
-  box-shadow: 0 0 12px rgba(59, 130, 246, 0.6);
+  background: #62009d; 
+  box-shadow: 0 0 12px rgba(98, 0, 157, 0.6);
   transform: scale(1.1);
 }
 
@@ -152,7 +152,7 @@
   letter-spacing: 1px;
   text-transform: uppercase;
   border-radius: 12px;
-  background: #3b82f6;
+  background: #62009d;
   color: white;
   border: none;
   font-weight: 600;
@@ -161,8 +161,8 @@
 }
 
 .ah-unlock-btn:hover:not(:disabled) {
-  background: #2563eb;
-  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+  background: #c100c1;
+  box-shadow: 0 8px 25px rgba(193, 0, 193, 0.3);
 }
 
 .ah-unlock-btn:disabled {
@@ -245,13 +245,13 @@
 
 .ah-select:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  border-color: #62009d;
+  box-shadow: 0 0 0 2px rgba(98, 0, 157, 0.2);
 }
 
 .ah-btn-refresh {
   padding: 12px 24px;
-  background: #3b82f6;
+  background: #62009d;
   color: white;
   border: none;
   border-radius: 10px;
@@ -262,9 +262,9 @@
 }
 
 .ah-btn-refresh:hover:not(:disabled) {
-  background: #2563eb;
+  background: #c100c1;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 6px 20px rgba(193, 0, 193, 0.3);
 }
 
 .ah-btn-refresh:disabled {
@@ -339,10 +339,10 @@
 
 /* Accent Column Colors */
 .ah-table tbody tr td:nth-child(3) { color: #a78bfa !important; font-weight: 500; }
-.ah-table tbody tr td:nth-child(4) { color: #60a5fa !important; font-weight: 600; text-transform: capitalize; }
+.ah-table tbody tr td:nth-child(4) { color: #c100c1 !important; font-weight: 600; text-transform: capitalize; }
 
 .ah-table tbody tr:hover td:nth-child(3) { color: #c4b5fd !important; }
-.ah-table tbody tr:hover td:nth-child(4) { color: #93c5fd !important; }
+.ah-table tbody tr:hover td:nth-child(4) { color: #d58fff !important; }
 
 .ah-table tr:last-child td {
   border-bottom: none;
@@ -398,8 +398,8 @@
 }
 
 .ah-page-btn.active {
-  background: #3b82f6;
-  border-color: #3b82f6;
+  background: #62009d;
+  border-color: #62009d;
   color: #ffffff;
 }
 

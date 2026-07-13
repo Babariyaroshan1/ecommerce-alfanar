@@ -69,8 +69,8 @@
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  border-color: #c100c1;
+  box-shadow: 0 0 0 3px rgba(193, 0, 193, 0.1);
 }
 
 .form-group textarea {
@@ -89,7 +89,7 @@
 .active-checkbox-group input[type="checkbox"] {
   width: 18px;
   height: 18px;
-  accent-color: #2563eb;
+  accent-color: #c100c1;
 }
 
 .active-checkbox-group label {
@@ -118,7 +118,7 @@
 }
 
 .submit-btn {
-  background: #2563eb;
+  background: #c100c1;
   color: white;
 }
 
@@ -247,7 +247,7 @@
 }
 
 .toggle-switch input:checked + .toggle-slider {
-  background-color: #3b82f6;
+  background-color: #62009d;
 }
 
 .toggle-switch input:checked + .toggle-slider:before {

@@ -197,7 +197,7 @@
 }
 
 .pm-premium-toggle input:checked + .pm-toggle-track {
-  background-color: #3b82f6; /* Modern Blue */
+  background-color: #62009d; /* Modern Blue */
 }
 
 .pm-premium-toggle input:checked + .pm-toggle-track:before {
@@ -236,15 +236,15 @@
 }
 
 .pm-btn-primary {
-  background: #3b82f6;
+  background: #62009d;
   color: white;
-  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 4px 15px rgba(98, 0, 157, 0.3);
 }
 
 .pm-btn-primary:hover:not(:disabled) {
-  background: #2563eb;
+  background: #c100c1;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 6px 20px rgba(98, 0, 157, 0.4);
 }
 
 .pm-btn-primary:disabled {
@@ -310,7 +310,7 @@
   min-width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #3b82f6;
+  background: #62009d;
   margin-top: 8px;
 }
 

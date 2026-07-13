@@ -53,8 +53,8 @@
 
 .search-input:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); /* Nice focus glow */
+  border-color: #62009d;
+  box-shadow: 0 0 0 3px rgba(98, 0, 157, 0.15); /* Nice focus glow */
 }
 
 /* Grid Layout */
@@ -117,7 +117,7 @@
 /* Button - Modernized */
 .view-orders-btn {
   background: #eff6ff; /* Light blue background initially */
-  color: #2563eb; /* Primary blue text */
+  color: #c100c1; /* Primary blue text */
   border: 1px solid transparent;
   padding: 8px 16px;
   border-radius: 6px;
@@ -129,9 +129,9 @@
 }
 
 .view-orders-btn:hover {
-  background: #2563eb;
+  background: #c100c1;
   color: white;
-  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+  box-shadow: 0 2px 4px rgba(193, 0, 193, 0.2);
 }
 
 /* Responsive */

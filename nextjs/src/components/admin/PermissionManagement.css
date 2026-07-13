@@ -52,14 +52,14 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  border: 1.5px solid #3b82f6;
+  border: 1.5px solid #62009d;
   background: transparent;
   transition: all 0.2s ease;
 }
 
 .passcode-dots .dot.filled {
-  background: #3b82f6;
-  box-shadow: 0 0 10px rgba(59, 130, 246, 0.45);
+  background: #62009d;
+  box-shadow: 0 0 10px rgba(98, 0, 157, 0.45);
 }
 
 .history-error {
@@ -130,7 +130,7 @@
   padding: 14px 18px;
   border-radius: 12px;
   border: none;
-  background: #3b82f6;
+  background: #62009d;
   color: #ffffff;
   font-weight: 700;
   text-transform: uppercase;
@@ -140,7 +140,7 @@
 }
 
 .unlock-btn-wide:hover:not(:disabled) {
-  background: #2563eb;
+  background: #c100c1;
   transform: translateY(-1px);
 }
 
@@ -255,7 +255,7 @@
 }
 
 .coadmin-card-modern.selected {
-  background: linear-gradient(180deg, rgba(59, 130, 246, 0.14), rgba(15, 23, 42, 0.9));
+  background: linear-gradient(180deg, rgba(98, 0, 157, 0.14), rgba(15, 23, 42, 0.9));
   border-color: #7a00ad;
 }
 
@@ -312,7 +312,7 @@
   align-items: center;
   gap: 10px;
   padding: 0.95rem 1.2rem;
-  background: #3b82f6;
+  background: #62009d;
   color: #ffffff;
   border: none;
   border-radius: 12px;
@@ -322,7 +322,7 @@
 }
 
 .save-btn-modern:hover:not(:disabled) {
-  background: #2563eb;
+  background: #c100c1;
 }
 
 .permissions-grid {
@@ -344,13 +344,13 @@
 
 .perm-card:hover {
   transform: translateY(-1px);
-  border-color: rgba(59, 130, 246, 0.2);
+  border-color: rgba(98, 0, 157, 0.2);
   box-shadow: 0 15px 30px rgba(15, 23, 42, 0.2);
 }
 
 .perm-card.active {
   border-color: #c100c1;
-  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.15);
+  box-shadow: 0 0 0 1px rgba(98, 0, 157, 0.15);
 }
 
 .perm-header {
@@ -366,8 +366,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(59, 130, 246, 0.12);
-  color: #60a5fa;
+  background: rgba(98, 0, 157, 0.12);
+  color: #c100c1;
   font-size: 1rem;
 }
 
@@ -420,8 +420,8 @@
   background: #ffffff;
 }
 
-.premium-toggle input:checked {
-  background: #c100c1;
+.premium-toggle:has(input:checked) {
+  background: #f900f2;
 }
 
 .premium-toggle:hover {

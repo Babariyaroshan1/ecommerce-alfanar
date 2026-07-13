@@ -26,7 +26,7 @@ body.product-edit-modal-open {
 .product-label {
   display: inline-block;
   margin-bottom: 0.75rem;
-  color: #2563eb;
+  color: #c100c1;
   font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -61,8 +61,8 @@ body.product-edit-modal-open {
 
 .search-input:focus {
   outline: none;
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+  border-color: #c100c1;
+  box-shadow: 0 0 0 3px rgba(98, 0, 157, 0.12);
 }
 
 /* Modal Overlay */
@@ -251,9 +251,9 @@ body.product-edit-modal-open {
 .edit-form-row textarea:focus,
 .edit-form-row select:focus {
   outline: none;
-  border-color: #2563eb;
+  border-color: #c100c1;
   background-color: #fff;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  box-shadow: 0 0 0 3px rgba(193, 0, 193, 0.1);
 }
 
 /* Currency Section */
@@ -366,7 +366,7 @@ body.product-edit-modal-open {
 }
 
 input:checked + .toggle-slider {
-  background-color: #3b82f6;
+  background-color: #62009d;
 }
 
 input:checked + .toggle-slider:before {
@@ -398,7 +398,7 @@ input:checked + .toggle-slider:before {
 }
 
 .image-drop-zone:hover {
-  border-color: #2563eb;
+  border-color: #c100c1;
   background-color: #eff6ff;
 }
 
@@ -418,7 +418,7 @@ input:checked + .toggle-slider:before {
 }
 
 .image-drop-zone:hover .file-input-label {
-  color: #2563eb;
+  color: #c100c1;
 }
 
 .image-preview-row {
@@ -546,8 +546,8 @@ input:checked + .toggle-slider:before {
 }
 
 .color-picker-input:hover {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+  border-color: #c100c1;
+  box-shadow: 0 0 0 2px rgba(193, 0, 193, 0.1);
 }
 
 .btn-eyedropper {
@@ -584,14 +584,14 @@ input:checked + .toggle-slider:before {
 
 .btn-add {
   background: #eff6ff;
-  color: #2563eb;
+  color: #c100c1;
   border-color: #bfdbfe;
   align-self: flex-start;
 }
 
 .btn-add:hover {
   background: #dbeafe;
-  border-color: #60a5fa;
+  border-color: #c100c1;
 }
 
 .btn-remove {
@@ -641,7 +641,7 @@ input:checked + .toggle-slider:before {
 }
 
 .size-btn-compact:hover {
-  border-color: #2563eb;
+  border-color: #c100c1;
   background-color: #eff6ff;
 }
 
@@ -756,7 +756,7 @@ input:checked + .toggle-slider:before {
   max-width: 50px;
   padding: 12px 6px;
   font-weight: 700;
-  color: #2563eb;
+  color: #c100c1;
 }
 
 .in-stock {
@@ -786,7 +786,7 @@ input:checked + .toggle-slider:before {
 }
 
 .edit-btn {
-  background: #3b82f6;
+  background: #62009d;
 }
 
 .delete-btn {
@@ -902,7 +902,7 @@ input:checked + .toggle-slider:before {
 
 .review-thumbnail:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.16);
+  box-shadow: 0 8px 20px rgba(193, 0, 193, 0.16);
 }
 
 .image-preview-overlay {
@@ -1061,9 +1061,9 @@ input:checked + .toggle-slider:before {
 }
 
 .preview-thumbnails .thumbnail:hover {
-  border-color: #2563eb;
+  border-color: #c100c1;
   transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(37, 99, 235, 0.16);
+  box-shadow: 0 8px 16px rgba(193, 0, 193, 0.16);
 }
 
 .preview-details-section {
@@ -1110,12 +1110,12 @@ input:checked + .toggle-slider:before {
   background: #f9fafb;
   padding: 12px;
   border-radius: 8px;
-  border-left: 3px solid #2563eb;
+  border-left: 3px solid #c100c1;
 }
 
 .preview-btn {
   padding: 8px 16px;
-  background: #2563eb;
+  background: #c100c1;
   color: white;
   border: none;
   border-radius: 8px;
@@ -1131,7 +1131,7 @@ input:checked + .toggle-slider:before {
 .preview-btn:hover {
   background: #1d4ed8;
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(37, 99, 235, 0.24);
+  box-shadow: 0 6px 12px rgba(193, 0, 193, 0.24);
 }
 
 /* Fullscreen Image Overlay */
