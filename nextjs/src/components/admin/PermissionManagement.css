@@ -256,7 +256,7 @@
 
 .coadmin-card-modern.selected {
   background: linear-gradient(180deg, rgba(59, 130, 246, 0.14), rgba(15, 23, 42, 0.9));
-  border-color: #2563eb;
+  border-color: #7a00ad;
 }
 
 .coadmin-avatar {
@@ -267,7 +267,7 @@
   align-items: center;
   justify-content: center;
   background: #1e293b;
-  color: #93c5fd;
+  color: #d58fff;
   font-weight: 700;
   font-size: 1rem;
 }
@@ -349,7 +349,7 @@
 }
 
 .perm-card.active {
-  border-color: #2563eb;
+  border-color: #c100c1;
   box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.15);
 }
 
@@ -389,8 +389,9 @@
   width: 52px;
   height: 28px;
   border-radius: 999px;
-  background: rgba(148, 163, 184, 0.12);
+  background: #62009d;
   cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
 .premium-toggle input {
@@ -411,16 +412,20 @@
   border-radius: 999px;
   background: #ffffff;
   box-shadow: 0 6px 16px rgba(15, 23, 42, 0.15);
-  transition: transform 0.2s ease, background 0.2s ease;
+  transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
 .premium-toggle input:checked + .toggle-track {
   transform: translateX(24px);
-  background: #3b82f6;
+  background: #ffffff;
+}
+
+.premium-toggle input:checked {
+  background: #c100c1;
 }
 
 .premium-toggle:hover {
-  background: rgba(59, 130, 246, 0.16);
+  background: #5a5a5a;
 }
 
 @media (max-width: 920px) {
