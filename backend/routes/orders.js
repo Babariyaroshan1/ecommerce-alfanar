@@ -8,6 +8,14 @@ import { getCurrentCurrencySettings } from '../utils/currency.js';
 
 const router = express.Router();
 
+const formatDecimalString = (value, currency = 'INR') => {
+    const numericValue = typeof value === 'string' ? parseFloat(value) : Number(value);
+    if (!Number.isFinite(numericValue)) {
+        return currency === 'KWD' ? '0.000' : '0.00';
+    }
+    return numericValue.toFixed(currency === 'KWD' ? 3 : 2);
+};
+
 // Create order
 router.post('/', auth, async (req, res) => {
     try {
@@ -27,7 +35,8 @@ router.post('/', auth, async (req, res) => {
             console.log('Validation failed: No items in order');
             return res.status(400).json({ message: 'No items in order' });
         }
-        if (!totalAmount || totalAmount <= 0) {
+        const numericTotalAmount = Number(totalAmount);
+        if (!Number.isFinite(numericTotalAmount) || numericTotalAmount <= 0) {
             console.log('Validation failed: Invalid total amount', totalAmount);
             return res.status(400).json({ message: 'Invalid total amount' });
         }
@@ -103,8 +112,8 @@ router.post('/', auth, async (req, res) => {
             userId: req.userId,
             items: orderItems,
             shippingAddress,
-            totalAmount,
-            shippingAmount,
+            totalAmount: formatDecimalString(totalAmount, resolvedCurrency),
+            shippingAmount: formatDecimalString(shippingAmount, resolvedCurrency),
             paymentMethod: paymentMethod === 'upi' ? 'online' : paymentMethod,
             currency: resolvedCurrency,
             currencySymbol: resolvedCurrencySymbol,

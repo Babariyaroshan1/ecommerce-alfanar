@@ -68,12 +68,12 @@ const orderSchema = new mongoose.Schema({
         replacementOrderId: mongoose.Schema.Types.ObjectId
     },
     totalAmount: {
-        type: Number,
+        type: String,
         required: true
     },
     shippingAmount: {
-        type: Number,
-        default: 0
+        type: String,
+        default: '0.00'
     },
     paymentMethod: {
         type: String,

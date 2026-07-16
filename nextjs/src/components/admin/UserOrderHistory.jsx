@@ -23,7 +23,7 @@ export default function UserOrderHistory({ user, onBack }) {
         headers: { Authorization: `Bearer ${token}` }
       });
       setOrders(res.data);
-      const total = res.data.reduce((sum, order) => sum + order.totalAmount, 0);
+      const total = res.data.reduce((sum, order) => sum + parseFloat(order.totalAmount || 0), 0);
       setTotalSpent(total);
       setLoading(false);
     } catch (error) {
@@ -121,7 +121,7 @@ export default function UserOrderHistory({ user, onBack }) {
 
               <div className="order-footer">
                 <div className="order-total">
-                  <strong>Total: ₹{order.totalAmount.toFixed(2)}</strong>
+                  <strong>Total: ₹{parseFloat(order.totalAmount || 0).toFixed(2)}</strong>
                 </div>
                 <div className="order-payment">
                   <span>Payment: {order.paymentMethod.toUpperCase()}</span>

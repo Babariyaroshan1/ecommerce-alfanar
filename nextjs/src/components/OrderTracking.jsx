@@ -7,6 +7,14 @@ import { useToastStore } from '../store/toastStore';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'; // Set in nextjs/.env.local for development and in Vercel env for production
 
+const formatPrice = (price, currencySymbol = '₹') => {
+  if (!price && price !== 0) return '0.00';
+  const num = typeof price === 'string' ? parseFloat(price) : Number(price);
+  if (Number.isNaN(num)) return '0.00';
+  const decimals = currencySymbol === 'KWD' ? 3 : 2;
+  return num.toFixed(decimals);
+};
+
 export default function OrderTracking({ orderId }) {
   const { token } = useAuthStore();
   const { addToast } = useToastStore();
@@ -198,8 +206,8 @@ export default function OrderTracking({ orderId }) {
                         {item.selectedSize ? `Size: ${item.selectedSize}` : ''}
                       </p>
                     ) : null}
-                    <p className="text-gray-600">{item.price} x {item.quantity}</p>
-                    <p className="text-green-600 font-bold">{item.price * item.quantity}</p>
+                    <p className="text-gray-600">{formatPrice(item.price, order.currencySymbol || '₹')} x {item.quantity}</p>
+                    <p className="text-green-600 font-bold">{formatPrice(item.price * item.quantity, order.currencySymbol || '₹')}</p>
                   </div>
                 </div>
               </div>
@@ -208,15 +216,15 @@ export default function OrderTracking({ orderId }) {
             <div className="border-t pt-4">
               <div className="flex justify-between mb-2">
                 <span>Subtotal:</span>
-                <span>{order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0)}</span>
+                <span>{formatPrice(order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0), order.currencySymbol || '₹')}</span>
               </div>
               <div className="flex justify-between mb-2">
                 <span>Shipping:</span>
-                <span>50</span>
+                <span>{formatPrice(order.shippingAmount || 0, order.currencySymbol || '₹')}</span>
               </div>
               <div className="flex justify-between font-bold">
                 <span>Total:</span>
-                <span>{order.totalAmount}</span>
+                <span>{formatPrice(order.totalAmount, order.currencySymbol || '₹')}</span>
               </div>
               <div className="mt-4 p-3 rounded" style={{
                 backgroundColor: order.paymentStatus === 'completed' ? '#d1fae5' : '#fee2e2'

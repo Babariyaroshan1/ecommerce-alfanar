@@ -497,7 +497,7 @@ export default function Checkout() {
     try {
       const orderData = {
         items: cart,
-        totalAmount: total,
+        totalAmount: total.toFixed(currencyDecimals),
         shippingAddress: formData,
         paymentMethod: selectedMethod === 'upi' ? 'online' : selectedMethod,
         currency: selectedCurrency || currencySettings?.currency || 'INR',
