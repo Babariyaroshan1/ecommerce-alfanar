@@ -146,10 +146,10 @@
   text-align: center;
 }
 
-.status-badge.pending { background: #fef3c7; color: #d97706; }
 .status-badge.confirmed { background: #e0e7ff; color: #4338ca; }
-.status-badge.dispatched { background: #dbeafe; color: #1d4ed8; }
-.status-badge.in-transit { background: #cffafe; color: #0891b2; }
+.status-badge.processing { background: #fef3c7; color: #ffc107; }
+.status-badge.shipped { background: #dbeafe; color: #1d93d8; }
+.status-badge.out-for-delivery { background: #cffafe; color: #1d4ed8; }
 .status-badge.delivered { background: #dcfce3; color: #15803d; }
 .status-badge.cancelled { background: #fee2e2; color: #b91c1c; }
 

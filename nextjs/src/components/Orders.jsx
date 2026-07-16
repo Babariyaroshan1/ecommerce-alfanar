@@ -52,11 +52,13 @@ export default function Orders() {
   const getStatusMessage = (status) => {
     switch (status) {
       case 'pending': return 'Waiting for Confirmation';
-      case 'confirmed': return 'Preparing for Shipment';
-      case 'dispatched': return 'Order Dispatched';
-      case 'in-transit': return 'Out for delivery';
+      case 'confirmed': return 'Your order has been confirmed';
+      case 'processing': return 'We are preparing your order';
+      case 'shipped': return 'Your order is successfully shipped';
+      case 'out-for-delivery': return 'Out for delivery';
       case 'delivered': return 'Delivered';
       case 'cancelled': return 'Cancelled';
+              
       default: return status;
     }
   };
