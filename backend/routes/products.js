@@ -221,12 +221,12 @@ router.put('/:id', async (req, res) => {
                 updateData.isKidsProduct = parseBooleanValue(updateData.isKidsProduct);
             }
 
-            if (updateData.images) {
+            const hasImagesField = Object.prototype.hasOwnProperty.call(updateData, 'images');
+
+            if (hasImagesField && updateData.images !== undefined) {
                 updateData.images = Array.isArray(updateData.images)
                     ? updateData.images.filter(img => img && typeof img === 'string' && img.trim().length > 0)
                     : [];
-            } else {
-                updateData.images = [];
             }
 
             if (updateData.colors) {
