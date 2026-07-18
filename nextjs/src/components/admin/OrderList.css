@@ -1,18 +1,21 @@
 .order-list {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  border-radius: 22px;
+  box-shadow: 0 14px 40px rgba(15, 23, 42, 0.06);
   overflow: hidden;
-  padding: 1rem !important;
+  padding: 1.25rem !important;
+  border: 1px solid #ECEEF4;
 }
 
 .order-header {
   display: flex;
   justify-content: space-between;
-  align-items: center; /* Dono (left and right side) ko center align karega */
+  align-items: center;
   gap: 20px;
-  padding: 20px 24px;
-  flex-wrap: wrap; /* Agar screen chhoti ho toh tootne nahi dega, manage karega */
+  padding: 18px 4px 22px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #F0F2F7;
+  margin-bottom: 16px;
 }
 
 .order-title-group {
@@ -26,10 +29,10 @@
 
 .order-title-group h2 {
   margin: 0;
-  font-size: 32px;
+  font-size: 1.45rem;
   font-weight: 700;
-  color: #2c3e50;
-  white-space: nowrap; /* Text ko 2 line mein break hone se rokega */
+  color: #1F2937;
+  white-space: nowrap;
 }
 
 .order-toolbar {
@@ -42,13 +45,13 @@
 }
 
 .order-search {
-  height: 48px;
-  min-width: 300px; /* Thoda kam kiya taaki sab ek line mein easily fit ho */
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 30px;
+  height: 46px;
+  min-width: 280px;
+  background: #F8FAFC;
+  border: 1px solid #E5E7EB;
+  border-radius: 999px;
   overflow: hidden;
-  padding-left: 18px;
+  padding-left: 16px;
   display: flex;
   align-items: center;
 }
@@ -62,10 +65,10 @@
 
 .search-btn {
   height: 100%;
-  padding: 0 28px;
-  border-radius: 30px;
+  padding: 0 22px;
+  border-radius: 999px;
   border: none;
-  background: #0d6efd;
+  background: #6C5CE7;
   color: #fff;
   display: inline-flex;
   align-items: center;
@@ -76,7 +79,7 @@
 }
 
 .search-btn:hover {
-  background: #1d4ed8;
+  background: #5646d2;
 }
 
 .order-controls {
@@ -161,17 +164,17 @@
 }
 
 .refresh-btn {
-  background-color: #c100c1;
+  background-color: #6C5CE7;
   color: white;
   border: none;
   border-radius: 999px;
   cursor: pointer;
   font-weight: 600;
-  box-shadow: 0 8px 18px rgba(193, 0, 193, 0.16);
+  box-shadow: 0 8px 18px rgba(108, 92, 231, 0.16);
   transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
   gap: 0.5rem;
-  width: 48px;
-  height: 48px;
+  width: 46px;
+  height: 46px;
   padding: 0;
   display: flex;
   justify-content: center;
@@ -179,7 +182,7 @@
 }
 
 .refresh-btn:hover {
-  background-color: #1d4ed8;
+  background-color: #5646d2;
   transform: translateY(-1px);
 }
 
@@ -243,11 +246,23 @@
 
 /* Zebra Striping for Better Visibility */
 .order-table tbody tr:nth-child(odd) {
-  background-color: #f8f8f8;
+  background-color: #FAFBFE;
 }
 
 .order-table tbody tr:nth-child(even) {
   background-color: #ffffff;
+}
+
+.order-table th {
+  background: #F8FAFC;
+  color: #6B7280;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.order-table td {
+  border-bottom: 1px solid #F1F5F9;
 }
 
 .order-table-container {
@@ -1163,6 +1178,7 @@
   max-height: 60px;
   overflow: hidden;
   display: -webkit-box;
+  line-clamp: 3;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
 }

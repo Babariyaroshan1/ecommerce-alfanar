@@ -1,7 +1,7 @@
 /* Container & Base Font (Use a modern font like Inter or Roboto if possible) */
 .user-list-container {
-  padding: 30px;
-  background-color: #f8fafc; /* Very light modern gray/blue background */
+  padding: 18px 0;
+  background-color: transparent;
   min-height: 100vh;
   font-family: system-ui, -apple-system, sans-serif;
 }
@@ -11,14 +11,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 25px;
+  margin-bottom: 18px;
+  padding: 1rem 0;
 }
 
 .user-list-header h2 {
   margin: 0;
-  color: #0f172a; /* Dark slate instead of pure black */
-  font-size: 24px;
-  font-weight: 600;
+  color: #1F2937;
+  font-size: 1.35rem;
+  font-weight: 700;
 }
 
 /* Search Bar (Modernized with icon space) */
@@ -37,9 +38,9 @@
 
 .search-input {
   width: 100%;
-  padding: 12px 16px 12px 42px; /* Extra left padding for icon */
-  border: 1px solid #e2e8f0;
-  border-radius: 8px; /* Softer corners */
+  padding: 11px 16px 11px 42px;
+  border: 1px solid #E5E7EB;
+  border-radius: 999px;
   font-size: 14px;
   color: #334155;
   background-color: #ffffff;
@@ -53,8 +54,8 @@
 
 .search-input:focus {
   outline: none;
-  border-color: #62009d;
-  box-shadow: 0 0 0 3px rgba(98, 0, 157, 0.15); /* Nice focus glow */
+  border-color: #6C5CE7;
+  box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15);
 }
 
 /* Grid Layout */
@@ -67,13 +68,13 @@
 /* User Card - Modernized */
 .user-card {
   background: white;
-  border-radius: 12px;
-  padding: 24px;
-  border: 1px solid #f1f5f9; /* Subtle border */
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05); /* Softer shadow */
+  border-radius: 18px;
+  padding: 20px;
+  border: 1px solid #F1F5F9;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.05);
   display: flex;
   justify-content: space-between;
-  align-items: center; /* Vertically centers the button with text */
+  align-items: center;
   transition: all 0.2s ease;
 }
 
@@ -116,22 +117,22 @@
 
 /* Button - Modernized */
 .view-orders-btn {
-  background: #eff6ff; /* Light blue background initially */
-  color: #c100c1; /* Primary blue text */
+  background: rgba(108, 92, 231, 0.1);
+  color: #6C5CE7;
   border: 1px solid transparent;
   padding: 8px 16px;
-  border-radius: 6px;
+  border-radius: 999px;
   cursor: pointer;
   font-size: 13.5px;
-  font-weight: 500;
+  font-weight: 600;
   transition: all 0.2s ease;
   white-space: nowrap;
 }
 
 .view-orders-btn:hover {
-  background: #c100c1;
+  background: #6C5CE7;
   color: white;
-  box-shadow: 0 2px 4px rgba(193, 0, 193, 0.2);
+  box-shadow: 0 8px 18px rgba(108, 92, 231, 0.18);
 }
 
 /* Responsive */

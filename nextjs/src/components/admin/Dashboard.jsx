@@ -130,55 +130,86 @@ export default function Dashboard({ onLogout }) {
     { id: 'change-admin-password', label: 'Admin Pass', icon: 'fa-solid fa-key', permission: 'manage_settings', adminOnly: true },
     { id: 'coadmin-management', label: 'Coadmin Mgmt', icon: 'fa-solid fa-user-shield', permission: 'manage_settings', adminOnly: true }
   ].filter(item => {
-    // Always show dashboard
     if (item.permission === null) return true;
-    // Admin-only items
     if (item.adminOnly && role !== 'admin') return false;
-    // Permission-based items
     return hasPermission(item.permission);
-  });      
+  });
+
+  const menuSections = [
+    {
+      title: 'Dashboard',
+      items: menuItems.filter(item => ['dashboard', 'analytics'].includes(item.id))
+    },
+    {
+      title: 'Management',
+      items: menuItems.filter(item => ['orders', 'products', 'requests', 'users', 'add-product', 'add-kids-product'].includes(item.id))
+    },
+    {
+      title: 'Marketing',
+      items: menuItems.filter(item => ['faqs', 'product-faqs', 'reviews', 'banner', 'coupons'].includes(item.id))
+    },
+    {
+      title: 'Configuration',
+      items: menuItems.filter(item => ['currency', 'payment-methods', 'history', 'permissions', 'change-admin-password', 'coadmin-management'].includes(item.id))
+    }
+  ].filter(section => section.items.length > 0);
 
   return (
     <div className="dashboard-wrapper">
-      {/* Header */}
       <header className="dashboard-header">
         <div className="header-content">
           <div className="header-left">
             <button className="sidebar-toggle" onClick={() => setSidebarOpen(!sidebarOpen)}>
               <span className="hamburger"></span>
             </button>
-            <div>
-              <h1 className="header-title">Admin Control Panel</h1>
-              <p className="role-label">Role: {role === 'admin' ? 'Admin' : 'Co-Admin'}</p>
+            <div className="header-badge">
+              <h1 className="header-title">Alfanar Admin</h1>
+              <p className="role-label">{role === 'admin' ? 'Admin workspace' : 'Co-admin workspace'} • Live operations</p>
             </div>
           </div>
-          <button className="logout-btn" onClick={onLogout}>Logout</button>
+          <div className="header-actions">
+            <div className="header-chip">
+              <i className="fa-solid fa-calendar-days"></i>
+              <span>Today</span>
+            </div>
+            <button className="header-action-btn" type="button" aria-label="Notifications">
+              <i className="fa-regular fa-bell"></i>
+            </button>
+            <div className="profile-pill">
+              <i className="fa-solid fa-user-circle"></i>
+              <span>{role === 'admin' ? 'Admin' : 'Co-Admin'}</span>
+            </div>
+            <button className="logout-btn" onClick={onLogout}>Logout</button>
+          </div>
         </div>
       </header>
 
       <div className="dashboard-layout">
-        {/* Sidebar */}
         <aside className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
           <nav className="sidebar-nav">
-            {menuItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => {
-                  setActiveTab(item.id);
-                  // Close sidebar on mobile after clicking
-                  if (window.innerWidth < 1024) {
-                    setSidebarOpen(false);
-                  }
-                }}
-                className={`nav-item ${activeTab === item.id ? 'active' : ''}`}
-                title={item.label}
-              >
-                <i className={`nav-icon ${item.icon}`} aria-hidden="true"></i>
-                <span className="nav-label">{item.label}</span>
-                {item.badge && item.badge > 0 && (
-                  <span className="badge-notification">{item.badge}</span>
-                )}
-              </button>
+            {menuSections.map((section) => (
+              <div key={section.title} className="sidebar-section">
+                <p className="sidebar-section-title">{section.title}</p>
+                {section.items.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => {
+                      setActiveTab(item.id);
+                      if (window.innerWidth < 1024) {
+                        setSidebarOpen(false);
+                      }
+                    }}
+                    className={`nav-item ${activeTab === item.id ? 'active' : ''}`}
+                    title={item.label}
+                  >
+                    <i className={`nav-icon ${item.icon}`} aria-hidden="true"></i>
+                    <span className="nav-label">{item.label}</span>
+                    {item.badge && item.badge > 0 && (
+                      <span className="badge-notification">{item.badge}</span>
+                    )}
+                  </button>
+                ))}
+              </div>
             ))}
           </nav>
         </aside>
@@ -187,11 +218,22 @@ export default function Dashboard({ onLogout }) {
         <main className="dashboard-content">
           {activeTab === 'dashboard' && (
             <div className="dashboard-main">
-              <h2 className="page-title">Dashboard Overview</h2>
+              <div className="page-header-card">
+                <div>
+                  <p className="section-eyebrow">Dashboard</p>
+                  <h2 className="page-title">Operations overview</h2>
+                  <p className="page-subtitle">Monitor orders, products, and admin activity from one streamlined view.</p>
+                </div>
+                <div className="page-header-pill">
+                  <i className="fa-solid fa-sparkles"></i>
+                  <span>Live update</span>
+                </div>
+              </div>
               <div className="stats-grid">
                 <div className="stat-card">
                   <div className="stat-header">
                     <h3 className="stat-title">Total Orders</h3>
+                    <i className="fa-solid fa-shopping-bag"></i>
                   </div>
                   <p className="stat-value">{stats.totalOrders}</p>
                   <p className="stat-label">orders placed</p>
@@ -199,6 +241,7 @@ export default function Dashboard({ onLogout }) {
                 <div className="stat-card">
                   <div className="stat-header">
                     <h3 className="stat-title">Total Products</h3>
+                    <i className="fa-solid fa-box-open"></i>
                   </div>
                   <p className="stat-value">{stats.totalProducts}</p>
                   <p className="stat-label">products listed</p>
@@ -206,6 +249,7 @@ export default function Dashboard({ onLogout }) {
                 <div className="stat-card">
                   <div className="stat-header">
                     <h3 className="stat-title">Cancelled Orders</h3>
+                    <i className="fa-solid fa-circle-xmark"></i>
                   </div>
                   <p className="stat-value">{stats.cancelledOrders}</p>
                   <p className="stat-label">orders cancelled</p>
@@ -213,6 +257,7 @@ export default function Dashboard({ onLogout }) {
                 <div className="stat-card">
                   <div className="stat-header">
                     <h3 className="stat-title">Total Revenue</h3>
+                    <i className="fa-solid fa-chart-pie"></i>
                   </div>
                   <p className="stat-value">KWD {Number(stats.totalRevenue).toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</p>
                   <p className="stat-label">total earned (KWD)</p>

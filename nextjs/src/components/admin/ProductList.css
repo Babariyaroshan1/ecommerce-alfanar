@@ -8,11 +8,11 @@ body.product-edit-modal-open {
 
 /* Container & Header */
 .product-list-container {
-  background: linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
-  border-radius: 20px;
-  padding: 2rem;
-  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
-  border: 1px solid rgba(115, 123, 147, 0.12);
+  background: linear-gradient(180deg, #ffffff 0%, #fafbff 100%);
+  border-radius: 22px;
+  padding: 1.4rem;
+  box-shadow: 0 14px 40px rgba(15, 23, 42, 0.06);
+  border: 1px solid #ECEEF4;
 }
 
 .product-list-header {
@@ -53,16 +53,17 @@ body.product-edit-modal-open {
   width: 100%;
   max-width: 420px;
   padding: 10px 14px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  transition: all 0.3s ease;
+  border: 1px solid #E5E7EB;
+  border-radius: 999px;
+  font-size: 0.92rem;
+  transition: all 0.2s ease;
+  background: #F8FAFC;
 }
 
 .search-input:focus {
   outline: none;
-  border-color: #c100c1;
-  box-shadow: 0 0 0 3px rgba(98, 0, 157, 0.12);
+  border-color: #6C5CE7;
+  box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.12);
 }
 
 /* Modal Overlay */
