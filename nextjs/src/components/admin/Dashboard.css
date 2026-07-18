@@ -260,6 +260,7 @@
   color: var(--text-main);
   box-shadow: 0 8px 18px rgba(108, 92, 231, 0.14);
   border-left: 3px solid var(--primary);
+  width:200px;
 }
 
 .badge-notification {
