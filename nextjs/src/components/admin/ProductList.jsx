@@ -324,6 +324,12 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
     return `${currencySymbol || '₹'}${numeric}`;
   };
 
+  const getImageCount = (product) => {
+    const imageList = [product?.image, ...(Array.isArray(product?.images) ? product.images : [])]
+      .filter(Boolean);
+    return imageList.length;
+  };
+
   const formatCurrencyInputValue = (value, currencyCode) => {
     if (value === undefined || value === null || value === '') return '';
     const numeric = Number(value);
@@ -1539,6 +1545,7 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
           <th>Price</th>
           <th>Stock</th>
           <th>Colors</th>
+          <th>Images</th>
           <th>Sizes</th>
           <th>Return</th>
           <th>Replacement</th>
@@ -1587,6 +1594,7 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
                 ))}
               </div>
             </td>
+            <td>{getImageCount(product)}</td>
             <td>{product.sizes?.join(', ')}</td>
             <td>{product.allowReturn ? 'Yes' : 'No'}</td>
             <td>{product.allowReplacement ? 'Yes' : 'No'}</td>
