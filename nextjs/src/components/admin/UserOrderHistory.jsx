@@ -1,142 +1,332 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import './UserOrderHistory.css';
-import './UserOrderHistory.css';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'; // Set in nextjs/.env.local for development and in Vercel env for production
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+
+const formatCurrency = (value, currencySymbol = '₹') => {
+  const numericValue = Number(value ?? 0);
+  if (!Number.isFinite(numericValue)) return `${currencySymbol}0.00`;
+  return `${currencySymbol}${numericValue.toFixed(2)}`;
+};
+
+const formatDateTime = (value) => {
+  if (!value) return 'Not available';
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return 'Not available';
+
+  return date.toLocaleDateString('en-IN', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+};
+
+const getStatusLabel = (status) => {
+  const normalized = String(status || '').toLowerCase();
+
+  switch (normalized) {
+    case 'pending':
+      return 'Pending';
+    case 'confirmed':
+      return 'Confirmed';
+    case 'processing':
+      return 'Processing';
+    case 'shipped':
+      return 'Shipped';
+    case 'out-for-delivery':
+      return 'Out for Delivery';
+    case 'delivered':
+      return 'Delivered';
+    case 'cancelled':
+      return 'Cancelled';
+    case 'returned':
+      return 'Returned';
+    case 'replacement-requested':
+      return 'Replacement Requested';
+    case 'return-approved':
+      return 'Return Approved';
+    case 'replacement-approved':
+      return 'Replacement Approved';
+    case 'refunded':
+      return 'Refunded';
+    default:
+      return 'Pending';
+  }
+};
+
+const getStatusClass = (status) => {
+  const normalized = String(status || '').toLowerCase();
+
+  switch (normalized) {
+    case 'delivered':
+      return 'status-delivered';
+    case 'cancelled':
+      return 'status-cancelled';
+    case 'returned':
+    case 'refunded':
+      return 'status-returned';
+    case 'confirmed':
+      return 'status-confirmed';
+    case 'processing':
+    case 'shipped':
+    case 'out-for-delivery':
+      return 'status-processing';
+    default:
+      return 'status-pending';
+  }
+};
+
+const getPaymentBadge = (paymentMethod, paymentStatus) => {
+  const normalizedMethod = String(paymentMethod || '').toLowerCase();
+  const normalizedStatus = String(paymentStatus || '').toLowerCase();
+
+  if (normalizedStatus === 'refunded') {
+    return { label: 'Refunded', className: 'payment-refunded' };
+  }
+
+  if (normalizedMethod === 'cod') {
+    return { label: 'COD', className: 'payment-cod' };
+  }
+
+  if (normalizedMethod === 'online' || normalizedStatus === 'paid') {
+    return { label: 'Paid', className: 'payment-paid' };
+  }
+
+  if (normalizedStatus === 'pending' || normalizedStatus === 'unpaid') {
+    return { label: 'Unpaid', className: 'payment-unpaid' };
+  }
+
+  return { label: 'Online', className: 'payment-paid' };
+};
 
 export default function UserOrderHistory({ user, onBack }) {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [totalSpent, setTotalSpent] = useState(0);
-  const token = localStorage.getItem('adminToken');
+  const token = typeof window !== 'undefined' ? localStorage.getItem('adminToken') : null;
 
   useEffect(() => {
+    let isMounted = true;
+
+    const fetchUserOrders = async () => {
+      if (!user?._id || !token) {
+        if (isMounted) {
+          setLoading(false);
+        }
+        return;
+      }
+
+      try {
+        const res = await axios.get(`${API_URL}/orders/admin/user/${user._id}/orders`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (!isMounted) return;
+
+        const fetchedOrders = Array.isArray(res.data) ? res.data : [];
+        setOrders(fetchedOrders);
+        const total = fetchedOrders.reduce((sum, order) => sum + Number(order.totalAmount || 0), 0);
+        setTotalSpent(total);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching user orders:', error);
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
     fetchUserOrders();
-  }, [user._id]);
 
-  const fetchUserOrders = async () => {
-    try {
-      const res = await axios.get(`${API_URL}/orders/admin/user/${user._id}/orders`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setOrders(res.data);
-      const total = res.data.reduce((sum, order) => sum + parseFloat(order.totalAmount || 0), 0);
-      setTotalSpent(total);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching user orders:', error);
-      setLoading(false);
-    }
-  };
+    return () => {
+      isMounted = false;
+    };
+  }, [token, user?._id]);
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'pending': return 'status-pending';
-      case 'confirmed': return 'status-confirmed';
-      case 'processing': return 'status-processing';
-      case 'shipped': return 'status-shipped';
-      case 'out-for-delivery': return 'status-out-for-delivery';
-      case 'delivered': return 'status-delivered';
-      case 'cancelled': return 'status-cancelled';
-      case 'returned': return 'status-returned';
-      case 'refunded': return 'status-refunded';
-      default: return 'status-default';
-    }
-  };
+  const summaryLocation = useMemo(() => {
+    const address = user?.address || user?.addresses?.[0] || user?.shippingAddress || user?.deliveryAddress;
+    if (!address || typeof address !== 'object') return 'Not Available';
+
+    const parts = [
+      address.area || address.block || address.street || address.houseNumber || address.apartment || address.floor || address.jadda,
+      address.governorate || address.city || address.state,
+      address.country
+    ].filter(Boolean);
+
+    return parts.join(', ') || 'Not Available';
+  }, [user]);
 
   return (
     <div className="user-order-history-container">
       <div className="order-history-header">
         <button className="back-btn" onClick={onBack}>
-          <i className="fa-solid fa-arrow-left"></i> Back to Users
+          <i className="fa-solid fa-arrow-left" /> Back to Users
         </button>
-        <div className="user-summary">
-          <h2>{user.name}'s Order History</h2>
-          <div className="user-details">
-            <p><strong>Email:</strong> {user.email}</p>
-            <p><strong>Phone:</strong> {user.phone}</p>
-            <p><strong>Total Orders:</strong> {orders.length}</p>
-            <p><strong>Total Spent:</strong> ₹{totalSpent.toFixed(2)}</p>
+
+        <div className="summary-card">
+          <div className="summary-card__header">
+            <div>
+              <p className="summary-eyebrow">Customer Profile</p>
+              <h2>{user?.name || 'Customer'}</h2>
+              <p className="summary-subtitle">A polished overview of recent purchases and customer details.</p>
+            </div>
+            <div className="summary-pill-row">
+              <span className="summary-pill">Orders {orders.length}</span>
+              <span className="summary-pill accent">Spent {formatCurrency(totalSpent, user?.currencySymbol || '₹')}</span>
+            </div>
+          </div>
+
+          <div className="summary-grid">
+            <div className="summary-item">
+              <span>Email</span>
+              <strong>{user?.email || 'Not available'}</strong>
+            </div>
+            <div className="summary-item">
+              <span>Phone</span>
+              <strong>{user?.phone || 'Not available'}</strong>
+            </div>
+            <div className="summary-item">
+              <span>Location</span>
+              <strong>{summaryLocation}</strong>
+            </div>
+            <div className="summary-item">
+              <span>Member Since</span>
+              <strong>{user?.createdAt ? formatDateTime(user.createdAt) : 'Not available'}</strong>
+            </div>
           </div>
         </div>
       </div>
 
       {loading ? (
-        <div className="loading">Loading orders...</div>
+        <div className="state-card">Loading orders...</div>
       ) : orders.length === 0 ? (
-        <div className="no-orders">No orders found for this user</div>
+        <div className="state-card empty-state-card">
+          <div className="empty-state-icon"><i className="fa-solid fa-box-open" /></div>
+          <h3>No orders yet</h3>
+          <p>This customer has not placed any orders with us yet.</p>
+        </div>
       ) : (
         <div className="orders-list">
-          {orders.map((order) => (
-            <div key={order._id} className="order-card">
-              <div className="order-header">
-                <div className="order-info">
-                  <h3>Order #{order.orderId}</h3>
-                  <p className="order-date">
-                    {new Date(order.createdAt).toLocaleDateString('en-IN', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    })}
-                  </p>
-                </div>
-                <div className="order-status">
-                  <span className={`status-badge ${getStatusColor(order.orderStatus)}`}>
-                    {order.orderStatus.replace('-', ' ').toUpperCase()}
-                  </span>
-                </div>
-              </div>
+          {orders.map((order) => {
+            const items = Array.isArray(order.items) ? order.items : [];
+            const currencySymbol = order?.currencySymbol || user?.currencySymbol || '₹';
+            const orderStatusText = getStatusLabel(order?.orderStatus);
+            const orderStatusClass = getStatusClass(order?.orderStatus);
+            const paymentBadge = getPaymentBadge(order?.paymentMethod, order?.paymentStatus);
+            const subtotalValue = order?.subtotalAmount ?? order?.subtotal ?? order?.subTotal ?? null;
+            const shippingValue = order?.shippingAmount ?? order?.shippingCost ?? order?.shippingCharge ?? null;
+            const discountValue = order?.coupon?.discount ?? order?.discountAmount ?? order?.discount ?? null;
+            const grandTotalValue = order?.totalAmount ?? order?.grandTotal ?? null;
 
-              <div className="order-items">
-                {order.items.map((item, index) => (
-                  <div key={index} className="order-item">
-                    <div className="item-image">
-                      <img
-                        src={item.image || '/placeholder-product.png'}
-                        alt={item.name}
-                        onError={(e) => {
-                          e.target.src = '/placeholder-product.png';
-                        }}
-                      />
-                    </div>
-                    <div className="item-details">
-                      <h4>{item.name}</h4>
-                      <div className="item-variations">
-                        {item.selectedColor && <span>Color: {item.selectedColor}</span>}
-                        {item.selectedSize && <span>Size: {item.selectedSize}</span>}
-                      </div>
-                      <div className="item-quantity-price">
-                        <span>Qty: {item.quantity}</span>
-                        <span>₹{item.price}</span>
-                      </div>
-                    </div>
+            return (
+              <div key={order._id} className="order-card">
+                <div className="order-card__header">
+                  <div>
+                    <p className="order-card__eyebrow">Order Overview</p>
+                    <h3>#{order?.orderId || order?._id?.slice(-6)}</h3>
+                    <p className="order-date">{formatDateTime(order?.createdAt)}</p>
                   </div>
-                ))}
-              </div>
+                  <div className="order-card__badges">
+                    <span className={`status-badge ${orderStatusClass}`}>{orderStatusText}</span>
+                    <span className={`payment-badge ${paymentBadge.className}`}>{paymentBadge.label}</span>
+                  </div>
+                </div>
 
-              <div className="order-footer">
-                <div className="order-total">
-                  <strong>Total: ₹{parseFloat(order.totalAmount || 0).toFixed(2)}</strong>
-                </div>
-                <div className="order-payment">
-                  <span>Payment: {order.paymentMethod.toUpperCase()}</span>
-                  <span className={`payment-status ${order.paymentStatus === 'paid' ? 'paid' : 'pending'}`}>
-                    {order.paymentStatus === 'paid' ? 'Paid' : 'Pending'}
-                  </span>
-                </div>
-                {order.trackingId && (
-                  <div className="tracking-info">
-                    <span>Tracking ID: {order.trackingId}</span>
+                <div className="order-card__meta">
+                  <div className="meta-pill">
+                    <span className="meta-label">Payment Method</span>
+                    <strong>{String(order?.paymentMethod || 'Not available').toUpperCase()}</strong>
                   </div>
-                )}
+                  <div className="meta-pill">
+                    <span className="meta-label">Items</span>
+                    <strong>{items.length}</strong>
+                  </div>
+                  <div className="meta-pill">
+                    <span className="meta-label">Ordered On</span>
+                    <strong>{formatDateTime(order?.createdAt)}</strong>
+                  </div>
+                </div>
+
+                <div className="order-items-list">
+                  {items.map((item, index) => {
+                    const itemSubtotal = Number(item?.price || 0) * Number(item?.quantity || 0);
+                    return (
+                      <div key={`${order?._id || index}-${item?.productId || index}`} className="order-product-row">
+                        <div className="product-media">
+                          <img
+                            src={item?.image || '/placeholder-product.png'}
+                            alt={item?.name || 'Product'}
+                            onError={(event) => {
+                              event.currentTarget.src = '/placeholder-product.png';
+                            }}
+                          />
+                        </div>
+                        <div className="product-details">
+                          <div className="product-title-row">
+                            <h4>{item?.name || 'Product'}</h4>
+                            <span className="quantity-pill">Qty {item?.quantity || 0}</span>
+                          </div>
+                          <div className="product-meta-row">
+                            {item?.selectedColor && <span>Color: {item.selectedColor}</span>}
+                            {item?.selectedSize && <span>Size: {item.selectedSize}</span>}
+                          </div>
+                        </div>
+                        <div className="product-price-block">
+                          <span className="price-label">Price</span>
+                          <strong>{formatCurrency(item?.price, currencySymbol)}</strong>
+                        </div>
+                        <div className="product-price-block">
+                          <span className="price-label">Subtotal</span>
+                          <strong>{formatCurrency(itemSubtotal, currencySymbol)}</strong>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="order-card__footer">
+                  <div className="order-totals">
+                    {subtotalValue !== null && subtotalValue !== undefined && (
+                      <div className="total-row">
+                        <span>Subtotal</span>
+                        <strong>{formatCurrency(subtotalValue, currencySymbol)}</strong>
+                      </div>
+                    )}
+                    {shippingValue !== null && shippingValue !== undefined && (
+                      <div className="total-row">
+                        <span>Shipping</span>
+                        <strong>{formatCurrency(shippingValue, currencySymbol)}</strong>
+                      </div>
+                    )}
+                    {discountValue !== null && discountValue !== undefined && (
+                      <div className="total-row">
+                        <span>Discount</span>
+                        <strong>-{formatCurrency(discountValue, currencySymbol)}</strong>
+                      </div>
+                    )}
+                    {grandTotalValue !== null && grandTotalValue !== undefined && (
+                      <div className="total-row total-row--grand">
+                        <span>Grand Total</span>
+                        <strong>{formatCurrency(grandTotalValue, currencySymbol)}</strong>
+                      </div>
+                    )}
+                    {(subtotalValue === null || subtotalValue === undefined) && (grandTotalValue !== null && grandTotalValue !== undefined) && (
+                      <div className="total-row total-row--grand">
+                        <span>Total</span>
+                        <strong>{formatCurrency(grandTotalValue, currencySymbol)}</strong>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

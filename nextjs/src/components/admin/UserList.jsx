@@ -7,8 +7,30 @@ import './UserList.css';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
+const getAddressValue = (address, keys) => {
+  return keys.reduce((value, key) => {
+    if (value) return value;
+    const item = address?.[key];
+    return item ? String(item).trim() : '';
+  }, '');
+};
+
+const getLocationFromAddress = (address) => {
+  if (!address || typeof address !== 'object') return '';
+
+  const parts = [
+    getAddressValue(address, ['area', 'block', 'street', 'houseNumber', 'apartment', 'floor', 'jadda']),
+    getAddressValue(address, ['governorate']),
+    getAddressValue(address, ['city', 'state']),
+    getAddressValue(address, ['country'])
+  ].filter(Boolean);
+
+  return parts.join(', ');
+};
+
 export default function UserList() {
   const [users, setUsers] = useState([]);
+  const [orderStats, setOrderStats] = useState({});
   const [loading, setLoading] = useState(true);
   const [selectedUser, setSelectedUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -17,16 +39,59 @@ export default function UserList() {
   useEffect(() => {
     let isMounted = true;
 
-    const fetchUsers = async () => {
-      try {
-        const res = await axios.get(`${API_URL}/auth/admin/users`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-
+    const fetchUsersAndOrders = async () => {
+      if (!token) {
         if (isMounted) {
-          setUsers(res.data || []);
+          setUsers([]);
+          setOrderStats({});
           setLoading(false);
         }
+        return;
+      }
+
+      try {
+        const [usersResponse, ordersResponse] = await Promise.all([
+          axios.get(`${API_URL}/auth/admin/users`, {
+            headers: { Authorization: `Bearer ${token}` }
+          }),
+          axios.get(`${API_URL}/orders/admin/all`, {
+            headers: { Authorization: `Bearer ${token}` }
+          })
+        ]);
+
+        if (!isMounted) return;
+
+        const usersData = usersResponse.data || [];
+        const ordersData = ordersResponse.data || [];
+        const stats = {};
+
+        ordersData.forEach((order) => {
+          const userId = order?.userId?._id || order?.userId || order?.user?.id;
+          if (!userId) return;
+
+          if (!stats[userId]) {
+            stats[userId] = {
+              totalOrders: 0,
+              latestOrderStatus: '',
+              location: ''
+            };
+          }
+
+          stats[userId].totalOrders += 1;
+
+          if (order?.orderStatus && !stats[userId].latestOrderStatus) {
+            stats[userId].latestOrderStatus = order.orderStatus;
+          }
+
+          const candidateLocation = getLocationFromAddress(order?.shippingAddress || order?.deliveryAddress || order?.address);
+          if (!stats[userId].location && candidateLocation) {
+            stats[userId].location = candidateLocation;
+          }
+        });
+
+        setUsers(usersData);
+        setOrderStats(stats);
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching users:', error);
         if (isMounted) {
@@ -35,7 +100,7 @@ export default function UserList() {
       }
     };
 
-    fetchUsers();
+    fetchUsersAndOrders();
 
     return () => {
       isMounted = false;
@@ -57,34 +122,35 @@ export default function UserList() {
     });
   }, [searchTerm, users]);
 
-  const getUserLocation = (user) => {
-    if (user?.address?.governorate) {
-      const area = user.address.area ? `${user.address.area}` : '';
-      const governorate = user.address.governorate ? `${user.address.governorate}` : '';
-      return [area, governorate].filter(Boolean).join(', ') || '—';
-    }
-
-    if (user?.address?.city || user?.address?.state) {
-      return [user.address.city, user.address.state].filter(Boolean).join(', ') || '—';
-    }
-
-    return '—';
+  const getUserLocation = (user, userStats) => {
+    const addressLocation = getLocationFromAddress(user?.address || user?.addresses?.[0] || user?.shippingAddress || user?.deliveryAddress);
+    const orderLocation = userStats?.location || '';
+    return orderLocation || addressLocation || 'Not Available';
   };
 
-  const getTotalOrders = (user) => {
+  const getTotalOrders = (user, userStats) => {
     if (typeof user?.totalOrders === 'number') return user.totalOrders;
     if (typeof user?.orderCount === 'number') return user.orderCount;
+    if (typeof userStats?.totalOrders === 'number') return userStats.totalOrders;
     if (Array.isArray(user?.orders)) return user.orders.length;
-    return '—';
+    return 0;
   };
 
-  const getStatusText = (user) => {
+  const getStatusText = (user, userStats) => {
     if (user?.status) return user.status;
     if (user?.accountStatus) return user.accountStatus;
     if (typeof user?.isActive === 'boolean') {
       return user.isActive ? 'Active' : 'Inactive';
     }
-    return '—';
+    if (user?.isBlocked || user?.blocked || user?.isAccountBlocked) {
+      return 'Blocked';
+    }
+
+    const totalOrders = getTotalOrders(user, userStats);
+    if (totalOrders > 1) return 'Returning Customer';
+    if (totalOrders === 1) return 'First Order';
+
+    return 'Unknown';
   };
 
   const handleViewOrders = (event, user) => {
@@ -144,12 +210,27 @@ export default function UserList() {
               </thead>
               <tbody>
                 {filteredUsers.map((user) => {
+                  const userId = user?._id || user?.id;
                   const initial = String(user?.name || 'U').trim().charAt(0).toUpperCase();
-                  const statusText = getStatusText(user);
+                  const userStats = orderStats[userId] || {};
+                  const statusText = getStatusText(user, userStats);
+                  const totalOrders = getTotalOrders(user, userStats);
+                  const locationText = getUserLocation(user, userStats);
+                  const statusClassName = statusText === 'Active'
+                    ? 'active'
+                    : statusText === 'Inactive'
+                      ? 'inactive'
+                      : statusText === 'Blocked'
+                        ? 'blocked'
+                        : statusText === 'Returning Customer'
+                          ? 'returning'
+                          : statusText === 'First Order'
+                            ? 'first-order'
+                            : 'neutral';
 
                   return (
                     <tr
-                      key={user?._id || user?.id}
+                      key={userId}
                       className="user-table-row"
                       onClick={() => setSelectedUser(user)}
                     >
@@ -168,18 +249,29 @@ export default function UserList() {
                               <span>{initial}</span>
                             )}
                           </div>
-                          <div>
-                            <div className="user-name">{user?.name || 'Unnamed User'}</div>
-                            <div className="user-meta">Customer</div>
+                          <div className="user-info-stack">
+                            <div className="user-name-row">
+                              <div className="user-name">{user?.name || 'Unnamed User'}</div>
+                              <span className="user-pill">Customer</span>
+                            </div>
+                            <div className="user-meta">Registered customer</div>
                           </div>
                         </div>
                       </td>
-                      <td>{user?.email || '—'}</td>
-                      <td>{user?.phone || '—'}</td>
-                      <td>{getUserLocation(user)}</td>
-                      <td>{getTotalOrders(user)}</td>
                       <td>
-                        <span className={`status-badge ${statusText === 'Active' ? 'active' : statusText === 'Inactive' ? 'inactive' : 'neutral'}`}>
+                        <div className="user-detail-text">{user?.email || '—'}</div>
+                      </td>
+                      <td>
+                        <div className="user-detail-text">{user?.phone || '—'}</div>
+                      </td>
+                      <td>
+                        <div className="user-location">{locationText}</div>
+                      </td>
+                      <td>
+                        <div className="user-order-count">{totalOrders}</div>
+                      </td>
+                      <td>
+                        <span className={`status-badge ${statusClassName}`}>
                           {statusText}
                         </span>
                       </td>
