@@ -205,7 +205,7 @@ export default function Dashboard({ onLogout }) {
           </div>
         </div>
       </header>
-      
+
       <div className="dashboard-layout">
         <aside className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
           <div className="sidebar-menu-scroll">
@@ -253,6 +253,7 @@ export default function Dashboard({ onLogout }) {
             <div className="sidebar-footer-actions">
               <button className="collapse-btn" onClick={() => setSidebarOpen((prev) => !prev)} type="button" aria-label="Toggle sidebar">
                 <i className={`fa-solid ${sidebarOpen ? 'fa-chevron-left' : 'fa-chevron-right'}`}></i>
+                {sidebarOpen && <span className="collapse-label">Collapse</span>}
               </button>
             </div>
 

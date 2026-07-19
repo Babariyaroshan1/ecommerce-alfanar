@@ -417,7 +417,8 @@
 }
 
 .collapse-btn {
-  width: 2rem;
+  width: auto;
+  min-width: 2rem;
   height: 2rem;
   border-radius: 999px;
   background: transparent;
@@ -427,6 +428,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.45rem;
+  padding: 0 0.65rem;
 }
 
 .collapse-btn:hover {
@@ -434,10 +437,23 @@
   color: var(--primary);
 }
 
+.collapse-label {
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
 .sidebar.closed .nav-label,
 .sidebar.closed .profile-meta,
-.sidebar.closed .profile-dropdown-toggle i:last-child {
+.sidebar.closed .profile-dropdown-toggle i:last-child,
+.sidebar.closed .collapse-label {
   display: none;
+}
+
+.sidebar.closed .collapse-btn {
+  width: 2rem;
+  padding: 0;
+  justify-content: center;
 }
 
 .sidebar.closed .profile-dropdown-toggle {
