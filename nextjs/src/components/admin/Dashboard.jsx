@@ -122,6 +122,14 @@ export default function Dashboard({ onLogout }) {
     loadAdminData();
   }, [fetchStats, fetchUserProfile, token]);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    localStorage.setItem('admin-theme', theme);
+    document.documentElement.setAttribute('data-theme', theme);
+    document.documentElement.style.colorScheme = theme;
+  }, [theme]);
+
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: 'fa-solid fa-tachometer-alt', permission: null },
     { id: 'analytics', label: 'Analytics', icon: 'fa-solid fa-chart-line', permission: 'view_analytics' },
@@ -238,6 +246,12 @@ export default function Dashboard({ onLogout }) {
           </div>
 
           <div className="sidebar-footer">
+            <div className="sidebar-footer-actions">
+              <button className="collapse-btn" onClick={() => setSidebarOpen((prev) => !prev)} type="button" aria-label="Toggle sidebar">
+                <i className={`fa-solid ${sidebarOpen ? 'fa-chevron-left' : 'fa-chevron-right'}`}></i>
+                {sidebarOpen && <span className="collapse-label">Collapse</span>}
+              </button>
+            </div>
             <button className="profile-dropdown-toggle" type="button" onClick={() => setProfileMenuOpen((prev) => !prev)}>
               <div className="profile-avatar">A</div>
               {sidebarOpen && (
@@ -250,12 +264,7 @@ export default function Dashboard({ onLogout }) {
               {sidebarOpen && <i className={`fa-solid ${profileMenuOpen ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>}
             </button>
 
-            <div className="sidebar-footer-actions">
-              <button className="collapse-btn" onClick={() => setSidebarOpen((prev) => !prev)} type="button" aria-label="Toggle sidebar">
-                <i className={`fa-solid ${sidebarOpen ? 'fa-chevron-left' : 'fa-chevron-right'}`}></i>
-                {sidebarOpen && <span className="collapse-label">Collapse</span>}
-              </button>
-            </div>
+            
 
             {profileMenuOpen && (
               <div className="profile-dropdown">
