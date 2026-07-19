@@ -197,9 +197,6 @@ export default function Dashboard({ onLogout }) {
             <button className="header-action-btn" type="button" aria-label="Notifications">
               <i className="fa-regular fa-bell"></i>
             </button>
-            <button className="header-action-btn" type="button" aria-label="Toggle theme" onClick={toggleTheme}>
-              <i className={`fa-solid ${theme === 'dark' ? 'fa-sun' : 'fa-moon'}`}></i>
-            </button>
             <div className="profile-pill">
               <i className="fa-solid fa-user-circle"></i>
               <span>{role === 'admin' ? 'Admin' : 'Co-Admin'}</span>
@@ -208,15 +205,9 @@ export default function Dashboard({ onLogout }) {
           </div>
         </div>
       </header>
-
+      
       <div className="dashboard-layout">
         <aside className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
-          <div className="sidebar-topbar">
-            <button className="collapse-btn" onClick={() => setSidebarOpen(!sidebarOpen)} type="button" aria-label="Toggle sidebar">
-              <i className={`fa-solid ${sidebarOpen ? 'fa-chevron-left' : 'fa-chevron-right'}`}></i>
-            </button>
-          </div>
-
           <div className="sidebar-menu-scroll">
             <nav className="sidebar-nav">
               {menuSections.map((section) => (
@@ -253,20 +244,31 @@ export default function Dashboard({ onLogout }) {
                 <div className="profile-meta">
                   <span className="profile-name">{role === 'admin' ? 'Admin' : 'Co-Admin'}</span>
                   <span className="profile-role">{role === 'admin' ? 'Administrator' : 'Operations'}</span>
+                  <span className="profile-version">v1.0.0</span>
                 </div>
               )}
-              <i className={`fa-solid ${profileMenuOpen ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>
+              {sidebarOpen && <i className={`fa-solid ${profileMenuOpen ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>}
             </button>
+
+            <div className="sidebar-footer-actions">
+              <button className="collapse-btn" onClick={() => setSidebarOpen((prev) => !prev)} type="button" aria-label="Toggle sidebar">
+                <i className={`fa-solid ${sidebarOpen ? 'fa-chevron-left' : 'fa-chevron-right'}`}></i>
+              </button>
+            </div>
 
             {profileMenuOpen && (
               <div className="profile-dropdown">
                 <button type="button" onClick={() => { setActiveTab('dashboard'); setProfileMenuOpen(false); }}>
                   <i className="fa-solid fa-house"></i>
-                  <span>Dashboard</span>
+                  <span>Profile</span>
                 </button>
                 <button type="button" onClick={() => { setActiveTab('change-admin-password'); setProfileMenuOpen(false); }}>
                   <i className="fa-solid fa-sliders"></i>
                   <span>Settings</span>
+                </button>
+                <button type="button" onClick={toggleTheme}>
+                  <i className={`fa-solid ${theme === 'dark' ? 'fa-sun' : 'fa-moon'}`}></i>
+                  <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
                 </button>
                 <button type="button" onClick={onLogout}>
                   <i className="fa-solid fa-right-from-bracket"></i>
