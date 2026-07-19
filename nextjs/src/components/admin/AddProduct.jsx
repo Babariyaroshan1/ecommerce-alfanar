@@ -37,6 +37,7 @@ const CUSTOM_CATEGORIES_STORAGE_KEY = 'noor_custom_categories';
 
 const AddProduct = () => {
   const addLocalProduct = useProductStore((state) => state.addLocalProduct);
+  const addBackendProduct = useProductStore((state) => state.addBackendProduct);
   const currencySettings = useProductStore((state) => state.currencySettings);
   const products = useProductStore((state) => state.products);
 
@@ -409,8 +410,10 @@ const AddProduct = () => {
         }
       }
 
+      const mainImageToSubmit = (formData.image || '').trim() || imagesToSubmit[0] || '';
       const submitPayload = {
         ...formData,
+        image: mainImageToSubmit,
         price: basePrice, prices: pricesPayload, originalPrice: baseOriginalPrice,
         colors: formData.colors.filter(Boolean), images: imagesToSubmit,
         isFeaturedOnHome: Boolean(formData.isFeaturedOnHome),
@@ -424,27 +427,47 @@ const AddProduct = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
+      const createdProduct = response?.data?.product || response?.data || {};
+      const normalizedProduct = {
+        ...submitPayload,
+        ...createdProduct,
+        _id: createdProduct?._id || createdProduct?.id || `temp-${Date.now()}`,
+        id: createdProduct?.id || createdProduct?._id || `temp-${Date.now()}`,
+        price: createdProduct?.price ?? basePrice,
+        originalPrice: createdProduct?.originalPrice ?? baseOriginalPrice,
+        prices: createdProduct?.prices || pricesPayload,
+        colors: createdProduct?.colors || formData.colors.filter(Boolean),
+        images: createdProduct?.images || imagesToSubmit,
+        sizes: createdProduct?.sizes || formData.sizes,
+        stock: createdProduct?.stock || formData.stock,
+        isFeaturedOnHome: Boolean(createdProduct?.isFeaturedOnHome ?? formData.isFeaturedOnHome),
+        showSameColorButton: Boolean(createdProduct?.showSameColorButton ?? formData.showSimilarProductButton),
+        similarProducts: createdProduct?.similarProducts ?? submitPayload.similarProducts,
+      };
+
+      addBackendProduct(normalizedProduct);
       setSuccessMessage('Product added successfully!');
       setNotificationType('success'); setNotificationOpen(true);
       resetForm();
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (error) {
-      const localProduct = {
-        _id: Date.now().toString(), ...formData,
-        price: Number(formData.price), originalPrice: formData.originalPrice ? Number(formData.originalPrice) : undefined,
-        colors: formData.colors.filter(Boolean), images: formData.images.filter(Boolean),
-        materialAndCare: formData.materialAndCare?.trim() || '', countryOfOrigin: formData.countryOfOrigin?.trim() || '',
-        createdAt: new Date().toISOString(),
-      };
+      const isRetryableError = !error.response || error.response?.status >= 500 || error.code === 'ECONNABORTED' || error.message === 'Network Error';
 
-      try {
+      if (isRetryableError) {
+        const localProduct = {
+          _id: Date.now().toString(), ...formData,
+          price: Number(formData.price), originalPrice: formData.originalPrice ? Number(formData.originalPrice) : undefined,
+          colors: formData.colors.filter(Boolean), images: formData.images.filter(Boolean),
+          materialAndCare: formData.materialAndCare?.trim() || '', countryOfOrigin: formData.countryOfOrigin?.trim() || '',
+          createdAt: new Date().toISOString(),
+        };
+
         addLocalProduct(localProduct);
-        setSuccessMessage('Product added locally. Backend unavailable.');
-        setNotificationType('success'); setNotificationOpen(true);
+        setErrorMessage('Backend unavailable. Product saved locally and will sync when the backend is reachable.');
+        setNotificationType('error'); setNotificationOpen(true);
         resetForm();
-        setTimeout(() => setSuccessMessage(''), 3000);
-      } catch (localError) {
-        setErrorMessage(error.response?.data?.message || 'Failed to add product');
+      } else {
+        setErrorMessage(error.response?.data?.message || error.response?.data?.error || 'Failed to add product');
         setNotificationType('error'); setNotificationOpen(true);
       }
     } finally {

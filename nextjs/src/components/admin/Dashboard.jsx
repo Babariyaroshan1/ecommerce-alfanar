@@ -158,8 +158,8 @@ export default function Dashboard({ onLogout }) {
 
   const menuSections = [
     {
-      title: 'Dashboard',
-      items: menuItems.filter(item => ['dashboard'].includes(item.id))
+      title: 'Reports',
+      items: menuItems.filter(item => ['dashboard', 'analytics'].includes(item.id))
     },
     {
       title: 'Management',
@@ -170,12 +170,12 @@ export default function Dashboard({ onLogout }) {
       items: menuItems.filter(item => ['faqs', 'product-faqs', 'reviews', 'banner', 'coupons'].includes(item.id))
     },
     {
-      title: 'Reports',
-      items: menuItems.filter(item => ['analytics'].includes(item.id))
+      title: 'Configuration',
+      items: menuItems.filter(item => ['currency', 'payment-methods'].includes(item.id))
     },
     {
-      title: 'Configuration',
-      items: menuItems.filter(item => ['currency', 'payment-methods', 'history', 'permissions', 'change-admin-password', 'coadmin-management'].includes(item.id))
+      title: 'Admin Tools',
+      items: menuItems.filter(item => ['history', 'permissions', 'change-admin-password', 'coadmin-management'].includes(item.id))
     }
   ].filter(section => section.items.length > 0);
 
@@ -268,21 +268,9 @@ export default function Dashboard({ onLogout }) {
 
             {profileMenuOpen && (
               <div className="profile-dropdown">
-                <button type="button" onClick={() => { setActiveTab('dashboard'); setProfileMenuOpen(false); }}>
-                  <i className="fa-solid fa-house"></i>
-                  <span>Profile</span>
-                </button>
-                <button type="button" onClick={() => { setActiveTab('change-admin-password'); setProfileMenuOpen(false); }}>
-                  <i className="fa-solid fa-sliders"></i>
-                  <span>Settings</span>
-                </button>
                 <button type="button" onClick={toggleTheme}>
                   <i className={`fa-solid ${theme === 'dark' ? 'fa-sun' : 'fa-moon'}`}></i>
                   <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
-                </button>
-                <button type="button" onClick={onLogout}>
-                  <i className="fa-solid fa-right-from-bracket"></i>
-                  <span>Logout</span>
                 </button>
               </div>
             )}

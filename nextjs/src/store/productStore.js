@@ -172,6 +172,32 @@ export const useProductStore = create((set, get) => ({
         });
     },
 
+    // Add or update a product from the backend in the shared store
+    addBackendProduct: (product) => {
+        const state = get();
+        const productId = String(product?._id || product?.id || `temp-${Date.now()}`);
+        const normalizedProduct = {
+            ...product,
+            _id: productId,
+            id: productId,
+        };
+
+        const existingBackendIndex = state.backendProducts.findIndex(
+            (p) => String(p?._id || p?.id) === productId
+        );
+
+        const nextBackendProducts = existingBackendIndex >= 0
+            ? state.backendProducts.map((p, index) =>
+                index === existingBackendIndex ? { ...p, ...normalizedProduct } : p
+            )
+            : [...state.backendProducts, normalizedProduct];
+
+        set({
+            backendProducts: nextBackendProducts,
+            products: [...nextBackendProducts, ...state.localProducts],
+        });
+    },
+
     // Delete product locally
     deleteProduct: (id) => {
         const state = get();

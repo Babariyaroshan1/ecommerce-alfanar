@@ -395,6 +395,10 @@ router.post('/', async (req, res) => {
             }
 
             const imagesArray = Array.isArray(images) ? images.filter(Boolean) : [];
+            const normalizedImage = typeof image === 'string' && image.trim()
+                ? image.trim()
+                : imagesArray[0]?.trim() || '';
+            const normalizedDescription = typeof description === 'string' ? description.trim() : '';
             console.log('📦 DEBUG - After filtering:', {
                 imagesFiltered: imagesArray,
                 filteredLength: imagesArray.length,
@@ -402,14 +406,14 @@ router.post('/', async (req, res) => {
 
             const product = new Product({
                 name,
-                description,
+                description: normalizedDescription,
                 materialAndCare,
                 countryOfOrigin,
                 price,
                 prices: prices || {},
                 originalPrice,
                 discount,
-                image,
+                image: normalizedImage,
                 images: imagesArray,
                 category,
                 colors,
