@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import OrderList from './OrderList';
 import ProductList from './ProductList';
@@ -17,7 +17,6 @@ import PaymentMethodsManagement from './PaymentMethodsManagement';
 import ChangeAdminPassword from './ChangeAdminPassword';
 import CoadminManagement from './CoadminManagement';
 import AdminHistory from './AdminHistory';
-import { useProductStore } from '../../store/productStore';
 import './Dashboard.css';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'; // Set in nextjs/.env.local for development and in Vercel env for production
@@ -42,17 +41,20 @@ export default function Dashboard({ onLogout }) {
     pendingRequests: 0
   });
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [role, setRole] = useState('admin');
   const [permissions, setPermissions] = useState([]);
+  const [theme, setTheme] = useState(() => {
+    if (typeof window === 'undefined') return 'light';
+
+    const savedTheme = localStorage.getItem('admin-theme');
+    if (savedTheme) return savedTheme;
+
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  });
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const token = typeof window !== 'undefined' ? localStorage.getItem('adminToken') : null;
+  const role = parseTokenRole(token);
 
-  useEffect(() => {
-    setRole(parseTokenRole(token));
-    fetchStats();
-    fetchUserProfile();
-  }, [token]);
-
-  const fetchUserProfile = async () => {
+  const fetchUserProfile = useCallback(async () => {
     try {
       const response = await axios.get(`${API_URL}/auth/profile`, {
         headers: { Authorization: `Bearer ${token}` }
@@ -61,19 +63,9 @@ export default function Dashboard({ onLogout }) {
     } catch (error) {
       console.error('Error fetching user profile:', error);
     }
-  };
+  }, [token]);
 
-  const hasPermission = (permissionKey) => {
-    if (role === 'admin') return true;
-    if (permissions.includes(permissionKey)) return true;
-    if (permissionKey === 'view_products' || permissionKey === 'add_products') {
-      return permissions.includes('manage_products');
-    }
-    if (permissionKey === 'manage_orders' && permissions.includes('manage_orders')) return true;
-    return false;
-  };
-
-  const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
     try {
       const ordersRes = await axios.get(`${API_URL}/orders/admin/all`, {
         headers: { Authorization: `Bearer ${token}` }
@@ -107,7 +99,28 @@ export default function Dashboard({ onLogout }) {
     } catch (error) {
       console.error('Error fetching stats:', error);
     }
+  }, [token]);
+
+  const hasPermission = (permissionKey) => {
+    if (role === 'admin') return true;
+    if (permissions.includes(permissionKey)) return true;
+    if (permissionKey === 'view_products' || permissionKey === 'add_products') {
+      return permissions.includes('manage_products');
+    }
+    if (permissionKey === 'manage_orders' && permissions.includes('manage_orders')) return true;
+    return false;
   };
+
+  useEffect(() => {
+    if (!token) return;
+
+    const loadAdminData = () => {
+      fetchStats();
+      fetchUserProfile();
+    };
+
+    loadAdminData();
+  }, [fetchStats, fetchUserProfile, token]);
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: 'fa-solid fa-tachometer-alt', permission: null },
@@ -138,7 +151,7 @@ export default function Dashboard({ onLogout }) {
   const menuSections = [
     {
       title: 'Dashboard',
-      items: menuItems.filter(item => ['dashboard', 'analytics'].includes(item.id))
+      items: menuItems.filter(item => ['dashboard'].includes(item.id))
     },
     {
       title: 'Management',
@@ -149,10 +162,18 @@ export default function Dashboard({ onLogout }) {
       items: menuItems.filter(item => ['faqs', 'product-faqs', 'reviews', 'banner', 'coupons'].includes(item.id))
     },
     {
+      title: 'Reports',
+      items: menuItems.filter(item => ['analytics'].includes(item.id))
+    },
+    {
       title: 'Configuration',
       items: menuItems.filter(item => ['currency', 'payment-methods', 'history', 'permissions', 'change-admin-password', 'coadmin-management'].includes(item.id))
     }
   ].filter(section => section.items.length > 0);
+
+  const toggleTheme = () => {
+    setTheme((currentTheme) => (currentTheme === 'dark' ? 'light' : 'dark'));
+  };
 
   return (
     <div className="dashboard-wrapper">
@@ -163,6 +184,7 @@ export default function Dashboard({ onLogout }) {
               <span className="hamburger"></span>
             </button>
             <div className="header-badge">
+              <p className="header-eyebrow">Operations</p>
               <h1 className="header-title">Alfanar Admin</h1>
               <p className="role-label">{role === 'admin' ? 'Admin workspace' : 'Co-admin workspace'} • Live operations</p>
             </div>
@@ -175,6 +197,9 @@ export default function Dashboard({ onLogout }) {
             <button className="header-action-btn" type="button" aria-label="Notifications">
               <i className="fa-regular fa-bell"></i>
             </button>
+            <button className="header-action-btn" type="button" aria-label="Toggle theme" onClick={toggleTheme}>
+              <i className={`fa-solid ${theme === 'dark' ? 'fa-sun' : 'fa-moon'}`}></i>
+            </button>
             <div className="profile-pill">
               <i className="fa-solid fa-user-circle"></i>
               <span>{role === 'admin' ? 'Admin' : 'Co-Admin'}</span>
@@ -186,32 +211,70 @@ export default function Dashboard({ onLogout }) {
 
       <div className="dashboard-layout">
         <aside className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
-          <nav className="sidebar-nav">
-            {menuSections.map((section) => (
-              <div key={section.title} className="sidebar-section">
-                <p className="sidebar-section-title">{section.title}</p>
-                {section.items.map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => {
-                      setActiveTab(item.id);
-                      if (window.innerWidth < 1024) {
-                        setSidebarOpen(false);
-                      }
-                    }}
-                    className={`nav-item ${activeTab === item.id ? 'active' : ''}`}
-                    title={item.label}
-                  >
-                    <i className={`nav-icon ${item.icon}`} aria-hidden="true"></i>
-                    <span className="nav-label">{item.label}</span>
-                    {item.badge && item.badge > 0 && (
-                      <span className="badge-notification">{item.badge}</span>
-                    )}
-                  </button>
-                ))}
+          <div className="sidebar-topbar">
+            <button className="collapse-btn" onClick={() => setSidebarOpen(!sidebarOpen)} type="button" aria-label="Toggle sidebar">
+              <i className={`fa-solid ${sidebarOpen ? 'fa-chevron-left' : 'fa-chevron-right'}`}></i>
+            </button>
+          </div>
+
+          <div className="sidebar-menu-scroll">
+            <nav className="sidebar-nav">
+              {menuSections.map((section) => (
+                <div key={section.title} className="sidebar-section">
+                  {sidebarOpen && <p className="sidebar-section-title">{section.title}</p>}
+                  {section.items.map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => {
+                        setActiveTab(item.id);
+                        if (window.innerWidth < 1024) {
+                          setSidebarOpen(false);
+                        }
+                      }}
+                      className={`nav-item ${activeTab === item.id ? 'active' : ''}`}
+                      title={item.label}
+                    >
+                      <i className={`nav-icon ${item.icon}`} aria-hidden="true"></i>
+                      {sidebarOpen && <span className="nav-label">{item.label}</span>}
+                      {item.badge && item.badge > 0 && (
+                        <span className="badge-notification">{item.badge}</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              ))}
+            </nav>
+          </div>
+
+          <div className="sidebar-footer">
+            <button className="profile-dropdown-toggle" type="button" onClick={() => setProfileMenuOpen((prev) => !prev)}>
+              <div className="profile-avatar">A</div>
+              {sidebarOpen && (
+                <div className="profile-meta">
+                  <span className="profile-name">{role === 'admin' ? 'Admin' : 'Co-Admin'}</span>
+                  <span className="profile-role">{role === 'admin' ? 'Administrator' : 'Operations'}</span>
+                </div>
+              )}
+              <i className={`fa-solid ${profileMenuOpen ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>
+            </button>
+
+            {profileMenuOpen && (
+              <div className="profile-dropdown">
+                <button type="button" onClick={() => { setActiveTab('dashboard'); setProfileMenuOpen(false); }}>
+                  <i className="fa-solid fa-house"></i>
+                  <span>Dashboard</span>
+                </button>
+                <button type="button" onClick={() => { setActiveTab('change-admin-password'); setProfileMenuOpen(false); }}>
+                  <i className="fa-solid fa-sliders"></i>
+                  <span>Settings</span>
+                </button>
+                <button type="button" onClick={onLogout}>
+                  <i className="fa-solid fa-right-from-bracket"></i>
+                  <span>Logout</span>
+                </button>
               </div>
-            ))}
-          </nav>
+            )}
+          </div>
         </aside>
 
         {/* Main Content */}

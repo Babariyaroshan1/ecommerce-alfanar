@@ -197,7 +197,7 @@
 }
 
 .pm-premium-toggle input:checked + .pm-toggle-track {
-  background-color: #62009d; /* Modern Blue */
+  background-color: #5646d2; /* Modern Blue */
 }
 
 .pm-premium-toggle input:checked + .pm-toggle-track:before {
@@ -236,15 +236,15 @@
 }
 
 .pm-btn-primary {
-  background: #62009d;
+  background: #5646d2;
   color: white;
-  box-shadow: 0 4px 15px rgba(98, 0, 157, 0.3);
+  box-shadow: 0 4px 15px rgba(86, 70, 210, 0.3);
 }
 
 .pm-btn-primary:hover:not(:disabled) {
-  background: #c100c1;
+  background: #5646d2;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(98, 0, 157, 0.4);
+  box-shadow: 0 6px 20px rgba(86, 70, 210, 0.4);
 }
 
 .pm-btn-primary:disabled {
@@ -310,7 +310,7 @@
   min-width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #62009d;
+  background: #5646d2;
   margin-top: 8px;
 }
 
