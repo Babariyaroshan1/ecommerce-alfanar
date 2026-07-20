@@ -398,6 +398,77 @@
   font-style: italic;
 }
 
+/* Scoped dark-mode fixes: override hardcoded light colors to match dashboard variables */
+[data-theme='dark'] .analytics-page {
+  background-color: var(--bg-body, #0F172A);
+  color: var(--text-main, #F8FAFC);
+}
+
+[data-theme='dark'] .date-filters,
+[data-theme='dark'] .chart-box,
+[data-theme='dark'] .metric-card,
+[data-theme='dark'] .top-products-section,
+[data-theme='dark'] .modern-table th,
+[data-theme='dark'] .modern-table td,
+[data-theme='dark'] .custom-tooltip {
+  background: var(--bg-card, #1E293B);
+  border-color: var(--border-color, rgba(255,255,255,0.08));
+  color: var(--text-main, #F8FAFC);
+}
+
+/* Replace pastel utility backgrounds with darker, subtle tones in dark mode */
+[data-theme='dark'] .metric-icon.bg-green  { background: rgba(34,197,94,0.12); color: var(--success-text, #6ee7b7); }
+[data-theme='dark'] .metric-icon.bg-blue   { background: rgba(79,70,229,0.12); color: var(--primary, #8b5cf6); }
+[data-theme='dark'] .metric-icon.bg-orange { background: rgba(234,88,12,0.08); color: #fb923c; }
+[data-theme='dark'] .metric-icon.bg-purple { background: rgba(147,51,234,0.10); color: var(--primary, #8b5cf6); }
+[data-theme='dark'] .metric-icon.bg-teal   { background: rgba(13,148,136,0.08); color: #34d399; }
+[data-theme='dark'] .metric-icon.bg-red    { background: rgba(220,38,38,0.08); color: #fb7185; }
+[data-theme='dark'] .metric-icon.bg-indigo { background: rgba(79,70,229,0.10); color: var(--primary, #8b5cf6); }
+[data-theme='dark'] .metric-icon.bg-yellow { background: rgba(217,119,6,0.06); color: #fbbf24; }
+
+[data-theme='dark'] .metric-content h3,
+[data-theme='dark'] .metric-value,
+[data-theme='dark'] .legend-item-img2 span,
+[data-theme='dark'] .filter-group label,
+[data-theme='dark'] .last-update {
+  color: var(--text-muted, #94a3b8);
+}
+
+[data-theme='dark'] .date-input {
+  background: var(--bg-surface, #111827);
+  color: var(--text-main, #F8FAFC);
+  border: 1px solid var(--border-color, rgba(255,255,255,0.08));
+}
+
+[data-theme='dark'] .currency-toggle {
+  background: linear-gradient(90deg, var(--primary) 0%, var(--primary-hover) 100%);
+  color: #fff !important;
+  border-color: transparent;
+}
+
+[data-theme='dark'] .modern-table th {
+  background: var(--table-header, #111827);
+  color: var(--text-muted, #94a3b8);
+  border-bottom-color: var(--border-color, rgba(255,255,255,0.06));
+}
+
+[data-theme='dark'] .modern-table td {
+  color: var(--text-main, #F8FAFC);
+  border-bottom-color: rgba(255,255,255,0.04);
+}
+
+[data-theme='dark'] .custom-tooltip {
+  background: rgba(7,12,23,0.85);
+  color: var(--text-main, #F8FAFC);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+[data-theme='dark'] .top-products-section h3,
+[data-theme='dark'] .product-name {
+  color: var(--text-main, #F8FAFC);
+}
+
+
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }

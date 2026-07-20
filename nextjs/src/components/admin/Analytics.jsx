@@ -334,15 +334,15 @@ export default function Analytics() {
                     <AreaChart data={analyticsData.dailyRevenue} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                       <defs>
                         <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
-                          <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
-                        </linearGradient>
+                            <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.8}/>
+                            <stop offset="95%" stopColor="var(--primary)" stopOpacity={0}/>
+                          </linearGradient>
                       </defs>
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                      <XAxis dataKey="date" tickFormatter={formatDate} tick={{fill: '#64748b', fontSize: 12}} axisLine={false} tickLine={false} />
-                      <YAxis tickFormatter={(val) => `${currencySymbols[analyticsCurrency] || currencySettings?.symbol || '₹'}${analyticsCurrency === 'KWD' ? Number(val).toFixed(3) : Number(val).toLocaleString()}`} tick={{fill: '#64748b', fontSize: 12}} axisLine={false} tickLine={false} />
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-color)" />
+                      <XAxis dataKey="date" tickFormatter={formatDate} tick={{fill: 'var(--text-muted)', fontSize: 12}} axisLine={false} tickLine={false} />
+                      <YAxis tickFormatter={(val) => `${currencySymbols[analyticsCurrency] || currencySettings?.symbol || '₹'}${analyticsCurrency === 'KWD' ? Number(val).toFixed(3) : Number(val).toLocaleString()}`} tick={{fill: 'var(--text-muted)', fontSize: 12}} axisLine={false} tickLine={false} />
                       <RechartsTooltip content={<CustomRevenueTooltip />} />
-                      <Area type="monotone" dataKey="revenue" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" />
+                      <Area type="monotone" dataKey="revenue" stroke="var(--primary)" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" />
                     </AreaChart>
                   </ResponsiveContainer>
                 </div>
@@ -364,7 +364,7 @@ export default function Analytics() {
                         data={[{ value: 1 }]}
                         cx="50%" cy="45%"
                         innerRadius={118} outerRadius={119}
-                        fill="#878787" stroke="none"
+                        fill="var(--border-color)" stroke="none"
                         isAnimationActive={false}
                         tooltipType="none"
                         legendType="none"
@@ -379,23 +379,23 @@ export default function Analytics() {
                         cy="45%"
                         innerRadius={0}
                         outerRadius={60}
-                        fill="#f1f5f9"
-                        stroke="#cbd5e1"
+                        fill="var(--table-header)"
+                        stroke="var(--border-color)"
                         strokeWidth={1}
                         isAnimationActive={false}
                         nameKey="name"
                         label={({ cx, cy }) => (
                           <>
-                            <text x={cx} y={cy - 10} textAnchor="middle" dominantBaseline="central" fontSize="16" fontWeight="700" fill="#374151">
+                            <text x={cx} y={cy - 10} textAnchor="middle" dominantBaseline="central" fontSize="16" fontWeight="700" fill="var(--text-main)">
                               {analyticsData.totalOrders}
                             </text>
-                            <text x={cx} y={cy + 12} textAnchor="middle" dominantBaseline="central" fontSize="10" fontWeight="600" fill="#6b7280">
+                            <text x={cx} y={cy + 12} textAnchor="middle" dominantBaseline="central" fontSize="10" fontWeight="600" fill="var(--text-muted)">
                               TOTAL PLACED ORDERS
                             </text>
                           </>
                         )}
                       >
-                        <Cell fill="#94a3b8" />
+                        <Cell fill="var(--text-muted)" />
                       </Pie>
 
                       {/* Main Data Ring with Lines and Labels */}
@@ -408,13 +408,13 @@ export default function Analytics() {
                         paddingAngle={2}
                         dataKey="count"
                         nameKey="status"
-                        stroke="#ffffff"
+                        stroke="var(--border-color)"
                         strokeWidth={2}
-                        labelLine={{ stroke: '#94a3b8', strokeWidth: 1, length1: 15, length2: 15 }}
+                        labelLine={{ stroke: 'var(--text-muted)', strokeWidth: 1, length1: 15, length2: 15 }}
                         label={renderCustomLabel}
                       >
                         {activeChartData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={STATUS_COLORS[entry.status] || '#cbd5e1'} className="pie-cell" />
+                          <Cell key={`cell-${index}`} fill={STATUS_COLORS[entry.status] || 'var(--border-color)'} className="pie-cell" />
                         ))}
                       </Pie>
 
