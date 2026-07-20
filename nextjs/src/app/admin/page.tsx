@@ -38,7 +38,7 @@ export default function AdminPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 p-6">
+    <main className="min-h-screen p-6" style={{ background: 'var(--bg-body, #F5F7FB)', color: 'var(--text-main, #0F172A)' }}>
       {authenticated ? (
         <Dashboard onLogout={handleLogout} />
       ) : (

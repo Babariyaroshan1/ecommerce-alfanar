@@ -10,12 +10,13 @@
   --secondary: #F5F7FB;
   --bg-body: #F5F7FB;
   --bg-card: #FFFFFF;
+  --bg-surface: #F8FAFC;
   --bg-sidebar: #FFFFFF;
   --bg-header: rgba(255, 255, 255, 0.92);
   --sidebar-bg: #F8F9FC;
   --sidebar-active: #FFFFFF;
-  --text-main: #1F2937;
-  --text-muted: #6B7280;
+  --text-main: #0F172A;
+  --text-muted: #64748B;
   --text-sidebar: #334155;
   --success-bg: #ECFDF3;
   --success-text: #047857;
@@ -29,7 +30,9 @@
   --shadow-md: 0 10px 30px rgba(15, 23, 42, 0.06);
   --shadow-lg: 0 18px 45px rgba(15, 23, 42, 0.08);
   --border-radius: 18px;
-  --border-color: #E5E7EB;
+  --border-color: #E2E8F0;
+  --table-header: #F8FAFC;
+  --table-row-hover: rgba(108, 92, 231, 0.06);
   --transition: all 0.25s ease;
 }
 
@@ -37,15 +40,16 @@
   --primary: #8b5cf6;
   --primary-hover: #7c3aed;
   --secondary: #111827;
-  --bg-body: #070b16;
-  --bg-card: #12172a;
-  --bg-sidebar: #0f1425;
+  --bg-body: #0F172A;
+  --bg-card: #1E293B;
+  --bg-surface: #111827;
+  --bg-sidebar: #111827;
   --bg-header: rgba(15, 20, 37, 0.9);
-  --sidebar-bg: #101729;
-  --sidebar-active: #17223d;
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --text-sidebar: #cbd5e1;
+  --sidebar-bg: #111827;
+  --sidebar-active: #334155;
+  --text-main: #F8FAFC;
+  --text-muted: #94A3B8;
+  --text-sidebar: #CBD5E1;
   --success-bg: rgba(6, 95, 70, 0.25);
   --success-text: #6ee7b7;
   --warning-bg: rgba(180, 83, 9, 0.24);
@@ -54,7 +58,9 @@
   --danger-text: #fda4af;
   --info-bg: rgba(30, 64, 175, 0.25);
   --info-text: #bfdbfe;
-  --border-color: rgba(148, 163, 184, 0.18);
+  --border-color: rgba(148, 163, 184, 0.24);
+  --table-header: #111827;
+  --table-row-hover: rgba(148, 163, 184, 0.16);
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.25);
   --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.3);
   --shadow-lg: 0 18px 45px rgba(0, 0, 0, 0.34);
@@ -526,34 +532,70 @@
 :root[data-theme='dark'] .dashboard-content .settings-card,
 :root[data-theme='dark'] .dashboard-content .faq-card,
 :root[data-theme='dark'] .dashboard-content .coupon-card,
-:root[data-theme='dark'] .dashboard-content .panel {
+:root[data-theme='dark'] .dashboard-content .panel,
+:root[data-theme='dark'] .dashboard-content .card,
+:root[data-theme='dark'] .dashboard-content .section-card,
+:root[data-theme='dark'] .dashboard-content .content-card,
+:root[data-theme='dark'] .dashboard-content .user-list-container,
+:root[data-theme='dark'] .dashboard-content .history-card,
+:root[data-theme='dark'] .dashboard-content .permission-card,
+:root[data-theme='dark'] .dashboard-content .payment-card,
+:root[data-theme='dark'] .dashboard-content .modal,
+:root[data-theme='dark'] .dashboard-content .modal-content,
+:root[data-theme='dark'] .dashboard-content .dropdown-menu,
+:root[data-theme='dark'] .dashboard-content .toast,
+:root[data-theme='dark'] .dashboard-content .alert,
+:root[data-theme='dark'] .dashboard-content div,
+:root[data-theme='dark'] .dashboard-content section,
+:root[data-theme='dark'] .dashboard-content article,
+:root[data-theme='dark'] .dashboard-content form,
+:root[data-theme='dark'] .dashboard-content ul,
+:root[data-theme='dark'] .dashboard-content ol,
+:root[data-theme='dark'] .dashboard-content li,
+:root[data-theme='dark'] .dashboard-content header,
+:root[data-theme='dark'] .dashboard-content footer,
+:root[data-theme='dark'] .dashboard-content main,
+:root[data-theme='dark'] .dashboard-content aside {
   background: var(--bg-card) !important;
   color: var(--text-main) !important;
   border-color: var(--border-color) !important;
   box-shadow: var(--shadow-sm) !important;
 }
 
+:root[data-theme='dark'] .dashboard-content table,
+:root[data-theme='dark'] .dashboard-content table thead,
+:root[data-theme='dark'] .dashboard-content table tbody,
+:root[data-theme='dark'] .dashboard-content table tr,
 :root[data-theme='dark'] .dashboard-content table th,
-:root[data-theme='dark'] .dashboard-content table td,
-:root[data-theme='dark'] .dashboard-content .stat-title,
-:root[data-theme='dark'] .dashboard-content .page-subtitle,
-:root[data-theme='dark'] .dashboard-content .section-eyebrow,
-:root[data-theme='dark'] .dashboard-content .stat-label,
-:root[data-theme='dark'] .dashboard-content .form-group label,
-:root[data-theme='dark'] .dashboard-content .page-title {
+:root[data-theme='dark'] .dashboard-content table td {
+  background-color: transparent;
+  color: var(--text-main);
+  border-color: var(--border-color);
+}
+
+:root[data-theme='dark'] .dashboard-content table thead th {
+  background: var(--table-header) !important;
   color: var(--text-main) !important;
 }
 
-:root[data-theme='dark'] .dashboard-content table th,
-:root[data-theme='dark'] .dashboard-content table td {
-  border-color: var(--border-color) !important;
+:root[data-theme='dark'] .dashboard-content table tbody tr:nth-child(odd) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+:root[data-theme='dark'] .dashboard-content table tbody tr:hover {
+  background: var(--table-row-hover);
 }
 
 :root[data-theme='dark'] .dashboard-content input,
 :root[data-theme='dark'] .dashboard-content textarea,
 :root[data-theme='dark'] .dashboard-content select,
-:root[data-theme='dark'] .dashboard-content .search-input {
-  background: var(--bg-card) !important;
+:root[data-theme='dark'] .dashboard-content .search-input,
+:root[data-theme='dark'] .dashboard-content .form-control,
+:root[data-theme='dark'] .dashboard-content .form-select,
+:root[data-theme='dark'] .dashboard-content .input,
+:root[data-theme='dark'] .dashboard-content .ant-picker,
+:root[data-theme='dark'] .dashboard-content .react-select__control {
+  background: var(--bg-surface) !important;
   color: var(--text-main) !important;
   border-color: var(--border-color) !important;
 }
@@ -561,6 +603,39 @@
 :root[data-theme='dark'] .dashboard-content .search-input::placeholder,
 :root[data-theme='dark'] .dashboard-content input::placeholder,
 :root[data-theme='dark'] .dashboard-content textarea::placeholder {
+  color: var(--text-muted) !important;
+}
+
+:root[data-theme='dark'] .dashboard-content button:not(.logout-btn):not(.header-action-btn):not(.nav-item):not(.collapse-btn):not(.profile-dropdown-toggle) {
+  color: var(--text-main);
+  border-color: var(--border-color);
+}
+
+:root[data-theme='dark'] .dashboard-content .stat-title,
+:root[data-theme='dark'] .dashboard-content .page-subtitle,
+:root[data-theme='dark'] .dashboard-content .section-eyebrow,
+:root[data-theme='dark'] .dashboard-content .stat-label,
+:root[data-theme='dark'] .dashboard-content .form-group label,
+:root[data-theme='dark'] .dashboard-content .page-title,
+:root[data-theme='dark'] .dashboard-content h1,
+:root[data-theme='dark'] .dashboard-content h2,
+:root[data-theme='dark'] .dashboard-content h3,
+:root[data-theme='dark'] .dashboard-content h4,
+:root[data-theme='dark'] .dashboard-content p,
+:root[data-theme='dark'] .dashboard-content span,
+:root[data-theme='dark'] .dashboard-content li,
+:root[data-theme='dark'] .dashboard-content label,
+:root[data-theme='dark'] .dashboard-content td,
+:root[data-theme='dark'] .dashboard-content th {
+  color: var(--text-main) !important;
+}
+
+:root[data-theme='dark'] .dashboard-content .page-subtitle,
+:root[data-theme='dark'] .dashboard-content .stat-label,
+:root[data-theme='dark'] .dashboard-content .role-label,
+:root[data-theme='dark'] .dashboard-content .subtext,
+:root[data-theme='dark'] .dashboard-content .text-muted,
+:root[data-theme='dark'] .dashboard-content .muted {
   color: var(--text-muted) !important;
 }
 

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import axios from 'axios';
 import OrderList from './OrderList';
 import ProductList from './ProductList';
@@ -122,7 +122,7 @@ export default function Dashboard({ onLogout }) {
     loadAdminData();
   }, [fetchStats, fetchUserProfile, token]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (typeof window === 'undefined') return;
 
     localStorage.setItem('admin-theme', theme);
