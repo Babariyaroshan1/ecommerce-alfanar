@@ -69,7 +69,7 @@
   flex: 1;
   padding: 10px 12px;
   border: 1px solid #cbd5e1;
-  background: #8b5cf6;
+  background: #8c5aff;
   color: #ffffff !important;
   font-weight: 600;
   border-radius: 10px;
@@ -79,7 +79,7 @@
 
 .currency-toggle.active,
 .currency-toggle:hover {
-  background: #814bff;
+  background: #7c44ff;
   border-color: #000000;
   color: #ffffff;
 }
@@ -401,6 +401,65 @@
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+/* Dark Mode */
+[data-theme='dark'] .analytics-page {
+  background-color: var(--bg-body, #0f172a);
+  color: var(--text-main, #f8fafc);
+}
+
+[data-theme='dark'] .analytics-page .date-filters,
+[data-theme='dark'] .analytics-page .metric-card,
+[data-theme='dark'] .analytics-page .chart-box,
+[data-theme='dark'] .analytics-page .top-products-section {
+  background: var(--bg-card, #1e293b);
+  color: var(--text-main, #f8fafc);
+  border-color: var(--border-color, rgba(148, 163, 184, 0.24));
+  box-shadow: var(--shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.25));
+}
+
+[data-theme='dark'] .analytics-page .header-title h2,
+[data-theme='dark'] .analytics-page .metric-value,
+[data-theme='dark'] .analytics-page .chart-box h3,
+[data-theme='dark'] .analytics-page .top-products-section h3,
+[data-theme='dark'] .analytics-page .product-name,
+[data-theme='dark'] .analytics-page .tooltip-value {
+  color: var(--text-main, #f8fafc);
+}
+
+[data-theme='dark'] .analytics-page .header-title p,
+[data-theme='dark'] .analytics-page .last-update,
+[data-theme='dark'] .analytics-page .metric-content h3,
+[data-theme='dark'] .analytics-page .legend-item-img2 span,
+[data-theme='dark'] .analytics-page .tooltip-date,
+[data-theme='dark'] .analytics-page .tooltip-status,
+[data-theme='dark'] .analytics-page .loading-container {
+  color: var(--text-muted, #94a3b8);
+}
+
+[data-theme='dark'] .analytics-page .date-input,
+[data-theme='dark'] .analytics-page .modern-table th,
+[data-theme='dark'] .analytics-page .modern-table td {
+  color: var(--text-main, #f8fafc);
+  border-color: var(--border-color, rgba(148, 163, 184, 0.24));
+}
+
+[data-theme='dark'] .analytics-page .date-input {
+  background: var(--bg-surface, #111827);
+}
+
+[data-theme='dark'] .analytics-page .modern-table th {
+  background: var(--table-header, #111827);
+}
+
+[data-theme='dark'] .analytics-page .modern-table tbody tr:hover {
+  background: var(--table-row-hover, rgba(148, 163, 184, 0.16));
+}
+
+[data-theme='dark'] .analytics-page .metric-icon,
+[data-theme='dark'] .analytics-page .metric-icon i {
+  color: inherit !important;
 }
 
 /* Responsive Design */

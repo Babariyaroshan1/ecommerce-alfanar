@@ -110,6 +110,56 @@
   }
 }
 
+/* Dark Mode */
+[data-theme='dark'] .user-list-container {
+  background: var(--bg-body, #0f172a);
+  color: var(--text-main, #f8fafc);
+}
+
+[data-theme='dark'] .user-list-header h2,
+[data-theme='dark'] .user-list-subtitle,
+[data-theme='dark'] .user-name,
+[data-theme='dark'] .user-detail-text,
+[data-theme='dark'] .user-location,
+[data-theme='dark'] .user-order-count,
+[data-theme='dark'] .user-meta,
+[data-theme='dark'] .user-list-subtitle {
+  color: var(--text-main, #f8fafc);
+}
+
+[data-theme='dark'] .user-list-container .user-list-subtitle,
+[data-theme='dark'] .user-list-container .user-meta,
+[data-theme='dark'] .user-list-container .search-icon {
+  color: var(--text-muted, #94a3b8);
+}
+
+[data-theme='dark'] .user-list-container .search-input,
+[data-theme='dark'] .user-list-container .loading-state,
+[data-theme='dark'] .user-list-container .empty-state,
+[data-theme='dark'] .user-list-container .table-shell {
+  background: var(--bg-card, #1e293b);
+  color: var(--text-main, #f8fafc);
+  border-color: var(--border-color, rgba(148, 163, 184, 0.24));
+}
+
+[data-theme='dark'] .user-list-container .search-input {
+  background: var(--bg-surface, #111827);
+}
+
+[data-theme='dark'] .user-list-container .user-table thead th {
+  background: var(--table-header, #111827);
+  color: var(--text-muted, #94a3b8);
+}
+
+[data-theme='dark'] .user-list-container .user-table tbody td {
+  color: var(--text-main, #f8fafc);
+  border-color: var(--border-color, rgba(148, 163, 184, 0.24));
+}
+
+[data-theme='dark'] .user-list-container .user-table-row:hover {
+  background-color: var(--table-row-hover, rgba(148, 163, 184, 0.16));
+}
+
 .table-shell {
   background: var(--bg-card, #ffffff);
   border: 1px solid var(--border-color, #e5e7eb);
