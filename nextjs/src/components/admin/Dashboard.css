@@ -883,7 +883,7 @@
 
 :root[data-theme='dark'] .dashboard-content .metric-icon,
 :root[data-theme='dark'] .dashboard-content .metric-icon i {
-  color: inherit !important;
+  color: currentColor !important;
 }
 
 :root[data-theme='dark'] .dashboard-content .custom-select-options,
