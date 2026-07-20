@@ -260,13 +260,13 @@
 .dashboard-layout {
   display: flex;
   flex: 1;
-  max-width: 1600px;
+  /* max-width: 1600px; */
   width: 100%;
   margin: 0 auto;
 }
 
 .sidebar {
-  width: 240px;
+  width: 225px;
   background: var(--sidebar-bg);
   color: var(--sidebar-text);
   transition: width 0.25s ease;
@@ -902,6 +902,17 @@
 .product-list-container, 
 .add-product-container {
   animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+:root[data-theme='dark'] .dashboard-main{
+    background: transparent !important;
+}
+
+:root[data-theme='dark'] .stats-grid{
+    background: transparent !important;
+}
+
+:root[data-theme='dark'] .dashboard-content{
+    background: var(--bg-body) !important;
 }
 
 @keyframes slideUp {

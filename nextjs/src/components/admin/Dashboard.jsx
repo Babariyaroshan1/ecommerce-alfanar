@@ -194,7 +194,7 @@ export default function Dashboard({ onLogout }) {
             <div className="header-badge">
               <p className="header-eyebrow">Operations</p>
               <h1 className="header-title">Alfanar Admin</h1>
-              <p className="role-label">{role === 'admin' ? 'Admin workspace' : 'Co-admin workspace'} • Live operations</p>
+              {/* <p className="role-label">{role === 'admin' ? 'Admin workspace' : 'Co-admin workspace'} • Live operations</p> */}
             </div>
           </div>
           <div className="header-actions">
