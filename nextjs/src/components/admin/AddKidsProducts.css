@@ -585,6 +585,59 @@
   transform: none;
 }
 
+/* Scoped dark mode */
+[data-theme='dark'] .add-kids-products-container {
+  background: var(--bg-card, #1e293b);
+  color: var(--text-main, #f8fafc);
+  border-color: var(--border-color, rgba(255, 255, 255, 0.12));
+}
+
+[data-theme='dark'] .add-kids-products-container .add-kids-header,
+[data-theme='dark'] .add-kids-products-container .form-section,
+[data-theme='dark'] .add-kids-products-container .sizes-selector,
+[data-theme='dark'] .add-kids-products-container .currency-prices-grid,
+[data-theme='dark'] .add-kids-products-container .stock-per-size,
+[data-theme='dark'] .add-kids-products-container .policy-box,
+[data-theme='dark'] .add-kids-products-container .quick-view-image-row {
+  background: var(--bg-card, #1e293b);
+  color: var(--text-main, #f8fafc);
+  border-color: var(--border-color, rgba(255, 255, 255, 0.12));
+}
+
+[data-theme='dark'] .add-kids-products-container .form-section label,
+[data-theme='dark'] .add-kids-products-container .stock-input-group label,
+[data-theme='dark'] .add-kids-products-container .checkbox-label,
+[data-theme='dark'] .add-kids-products-container .help-text,
+[data-theme='dark'] .add-kids-products-container .uploading-text {
+  color: var(--text-main, #f8fafc);
+}
+
+[data-theme='dark'] .add-kids-products-container input,
+[data-theme='dark'] .add-kids-products-container textarea,
+[data-theme='dark'] .add-kids-products-container select {
+  background: var(--bg-surface, #111827);
+  color: var(--text-main, #f8fafc);
+  border-color: var(--border-color, rgba(255, 255, 255, 0.12));
+}
+
+[data-theme='dark'] .add-kids-products-container .size-btn,
+[data-theme='dark'] .add-kids-products-container .manual-url-btn,
+[data-theme='dark'] .add-kids-products-container .remove-btn,
+[data-theme='dark'] .add-kids-products-container .add-color-btn,
+[data-theme='dark'] .add-kids-products-container .add-image-btn {
+  background: var(--bg-surface, #111827);
+  color: var(--text-main, #f8fafc);
+  border-color: var(--border-color, rgba(255, 255, 255, 0.12));
+}
+
+[data-theme='dark'] .add-kids-products-container .size-btn.selected,
+[data-theme='dark'] .add-kids-products-container .add-color-btn,
+[data-theme='dark'] .add-kids-products-container .add-image-btn {
+  background: #8b5cf6;
+  border-color: #8b5cf6;
+  color: #fff;
+}
+
 /* =========================================
    RESPONSIVE
 ========================================= */

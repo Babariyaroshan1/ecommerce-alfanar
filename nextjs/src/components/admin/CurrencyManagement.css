@@ -234,6 +234,40 @@
   line-height: 1.5;
 }
 
+/* Scoped dark mode */
+[data-theme='dark'] .currency-management {
+  background: var(--bg-body, #0f172a);
+  color: var(--text-main, #f8fafc);
+}
+
+[data-theme='dark'] .currency-management .current-settings,
+[data-theme='dark'] .currency-management .currency-selector,
+[data-theme='dark'] .currency-management .currency-info,
+[data-theme='dark'] .currency-management .preview {
+  background: var(--bg-card, #1e293b);
+  color: var(--text-main, #f8fafc);
+  border-color: var(--border-color, rgba(255, 255, 255, 0.12));
+}
+
+[data-theme='dark'] .currency-management .label,
+[data-theme='dark'] .currency-management .value,
+[data-theme='dark'] .currency-management .toggle-label,
+[data-theme='dark'] .currency-management .currency-info li,
+[data-theme='dark'] .currency-management .preview h4 {
+  color: var(--text-main, #f8fafc);
+}
+
+[data-theme='dark'] .currency-management .currency-info li {
+  color: var(--text-muted, #94a3b8);
+}
+
+[data-theme='dark'] .currency-management .country-select,
+[data-theme='dark'] .currency-management input {
+  background: var(--bg-surface, #111827);
+  color: var(--text-main, #f8fafc);
+  border-color: var(--border-color, rgba(255, 255, 255, 0.12));
+}
+
 @media (max-width: 768px) {
   .currency-content {
     grid-template-columns: 1fr;

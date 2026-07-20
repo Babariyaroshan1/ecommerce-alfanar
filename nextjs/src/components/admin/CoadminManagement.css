@@ -246,6 +246,43 @@
   cursor: not-allowed;
 }
 
+/* Scoped dark mode */
+[data-theme='dark'] .coadmin-management-container {
+  background: var(--bg-card, #1e293b);
+  color: var(--text-main, #f8fafc);
+  border-color: var(--border-color, rgba(255, 255, 255, 0.12));
+}
+
+[data-theme='dark'] .tab-navigation,
+[data-theme='dark'] .form-card,
+[data-theme='dark'] .info-box {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--border-color, rgba(255, 255, 255, 0.12));
+}
+
+[data-theme='dark'] .tab-btn {
+  color: var(--text-muted, #94a3b8);
+}
+
+[data-theme='dark'] .tab-btn.active,
+[data-theme='dark'] .tab-btn:hover {
+  color: var(--text-main, #f8fafc);
+}
+
+[data-theme='dark'] .form-group label,
+[data-theme='dark'] .form-title-coadmin,
+[data-theme='dark'] .form-subtitle,
+[data-theme='dark'] .info-box {
+  color: var(--text-main, #f8fafc);
+}
+
+[data-theme='dark'] .input-wrapper input,
+[data-theme='dark'] .password-input-wrapper input {
+  background: var(--bg-surface, #111827);
+  color: var(--text-main, #f8fafc);
+  border-color: var(--border-color, rgba(255, 255, 255, 0.12));
+}
+
 /* Info Box - Ultra Compact */
 .info-box {
   margin-top: 16px;

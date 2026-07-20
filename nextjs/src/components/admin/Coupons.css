@@ -191,6 +191,36 @@
   background: var(--table-row-hover, #f9fafb);
 }
 
+/* Scoped dark mode */
+[data-theme='dark'] .coupon-management-container {
+  background: var(--bg-card, #1e293b);
+  color: var(--text-main, #f8fafc);
+  border-color: var(--border-color, rgba(255, 255, 255, 0.1));
+}
+
+[data-theme='dark'] .coupon-management-container .coupon-form-section,
+[data-theme='dark'] .coupon-management-container .coupon-list-section,
+[data-theme='dark'] .coupon-management-container .coupon-table-container {
+  background: var(--bg-card, #1e293b);
+  color: var(--text-main, #f8fafc);
+  border-color: var(--border-color, rgba(255, 255, 255, 0.12));
+}
+
+[data-theme='dark'] .coupon-management-container .form-group input,
+[data-theme='dark'] .coupon-management-container .form-group select,
+[data-theme='dark'] .coupon-management-container .form-group textarea {
+  background: var(--bg-surface, #111827);
+  color: var(--text-main, #f8fafc);
+  border-color: var(--border-color, rgba(255, 255, 255, 0.12));
+}
+
+[data-theme='dark'] .coupon-management-container .active-checkbox-group label,
+[data-theme='dark'] .coupon-management-container .toggle-label,
+[data-theme='dark'] .coupon-management-container .coupon-table-container th,
+[data-theme='dark'] .coupon-management-container .coupon-table-container td {
+  color: var(--text-main, #f8fafc);
+}
+
 /* Status Column */
 .status-cell {
   display: flex;
