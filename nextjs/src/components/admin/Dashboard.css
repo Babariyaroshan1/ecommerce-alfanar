@@ -51,9 +51,15 @@
   --bg-surface: #111827;
   --bg-sidebar: #111827;
   --bg-header: rgba(15, 20, 37, 0.9);
-  --sidebar-bg: #111827;
-  --sidebar-active: #334155;
-  --text-main: #030303;
+  --sidebar-bg: #131927;
+  --sidebar-surface: #161B29;
+  --sidebar-active: #242B3D;
+  --sidebar-border: rgba(255, 255, 255, 0.06);
+  --sidebar-text: #8C93A7;
+  --sidebar-text-strong: #F3F4F6;
+  --sidebar-muted: #6F778C;
+  --sidebar-accent: #8B5CF6;
+  --text-main: #F8FAFC;
   --text-muted: #94A3B8;
   --text-sidebar: #CBD5E1;
   --success-bg: rgba(6, 95, 70, 0.25);
