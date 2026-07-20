@@ -1,10 +1,10 @@
 .order-list {
-  background: #ffffff;
+  background: var(--bg-card, #ffffff);
   border-radius: 22px;
   box-shadow: 0 14px 40px rgba(15, 23, 42, 0.06);
   overflow: hidden;
   padding: 1.25rem !important;
-  border: 1px solid #ECEEF4;
+  border: 1px solid var(--border-color, #ECEEF4);
 }
 
 .order-header {
@@ -14,7 +14,7 @@
   gap: 20px;
   padding: 18px 4px 22px;
   flex-wrap: wrap;
-  border-bottom: 1px solid #F0F2F7;
+  border-bottom: 1px solid var(--border-color, #F0F2F7);
   margin-bottom: 16px;
 }
 
@@ -31,7 +31,7 @@
   margin: 0;
   font-size: 1.45rem;
   font-weight: 700;
-  color: #1F2937;
+  color: var(--text-main, #1F2937);
   white-space: nowrap;
 }
 
@@ -47,8 +47,8 @@
 .order-search {
   height: 46px;
   min-width: 280px;
-  background: #F8FAFC;
-  border: 1px solid #E5E7EB;
+  background: var(--bg-surface, #F8FAFC);
+  border: 1px solid var(--border-color, #E5E7EB);
   border-radius: 999px;
   overflow: hidden;
   padding-left: 16px;
@@ -92,12 +92,12 @@
 /* --- Modern Toggle Switch UI --- */
 .control-group {
   gap: 0.75rem;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
+  background: var(--bg-card, #ffffff);
+  border: 1px solid var(--border-color, #e5e7eb);
   border-radius: 999px;
   font-size: 0.95rem;
   font-weight: 500;
-  color: #374151;
+  color: var(--text-main, #374151);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   height: 48px;
   padding: 0 18px;
@@ -294,14 +294,14 @@
 }
 
 .order-table th {
-  background-color: #f8f9fa;
+  background-color: var(--table-header, #f8f9fa);
   font-weight: bold;
-  color: #2c3e50;
+  color: var(--text-main, #2c3e50);
   text-align: center;
 }
 
 .order-table tr:hover {
-  background-color: #f8f9fa;
+  background-color: var(--table-row-hover, #f8f9fa);
 }
 
 .highlighted-row {
@@ -583,8 +583,8 @@
   align-items: flex-start;
   gap: 8px;
   padding: 10px 12px;
-  background: #f8fafc;
-  border: 1px solid #e5e7eb;
+  background: var(--bg-surface, #f8fafc);
+  border: 1px solid var(--border-color, #e5e7eb);
   border-radius: 10px;
 }
 
@@ -693,7 +693,7 @@
 }
 
 .request-details-content {
-  background: #ffffff;
+  background: var(--bg-card, #ffffff);
   width: min(100%, 520px);
   border-radius: 12px;
   max-height: calc(100vh - 3rem);

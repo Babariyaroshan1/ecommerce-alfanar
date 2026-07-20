@@ -8,11 +8,11 @@ body.product-edit-modal-open {
 
 /* Container & Header */
 .product-list-container {
-  background: linear-gradient(180deg, #ffffff 0%, #fafbff 100%);
+  background: var(--bg-card, #ffffff);
   border-radius: 22px;
   padding: 1.4rem;
   box-shadow: 0 14px 40px rgba(15, 23, 42, 0.06);
-  border: 1px solid #ECEEF4;
+  border: 1px solid var(--border-color, #ECEEF4);
 }
 
 .product-list-header {
@@ -26,7 +26,7 @@ body.product-edit-modal-open {
 .product-label {
   display: inline-block;
   margin-bottom: 0.75rem;
-  color: black;
+  color: var(--text-main, black);
   font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -35,12 +35,12 @@ body.product-edit-modal-open {
 
 .product-list-container h1 {
   margin-bottom: 0.5rem;
-  color: #111827;
+  color: var(--text-main, #111827);
   font-size: 2rem;
 }
 
 .product-subtitle {
-  color: #4b5563;
+  color: var(--text-muted, #4b5563);
   font-size: 0.95rem;
   line-height: 1.6;
 }
@@ -53,11 +53,11 @@ body.product-edit-modal-open {
   width: 100%;
   max-width: 420px;
   padding: 10px 14px;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--border-color, #E5E7EB);
   border-radius: 999px;
   font-size: 0.92rem;
   transition: all 0.2s ease;
-  background: #F8FAFC;
+  background: var(--bg-surface, #F8FAFC);
 }
 
 .search-input:focus {
@@ -80,11 +80,11 @@ body.product-edit-modal-open {
 }
 
 .edit-form {
-  background: white;
+  background: var(--bg-card, white);
   border-radius: 12px;
   padding: 22px;
   box-shadow: 0 20px 60px rgba(15, 23, 42, 0.15);
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border-color, #e5e7eb);
   max-width: 980px;
   width: 100%;
   max-height: 92vh;
@@ -104,12 +104,12 @@ body.product-edit-modal-open {
 }
 
 .delete-confirmation-dialog {
-  background: #ffffff;
+  background: var(--bg-card, #ffffff);
   border-radius: 16px;
   padding: 28px;
   width: min(460px, 100%);
   box-shadow: 0 30px 80px rgba(15, 23, 42, 0.18);
-  border: 1px solid rgba(229, 231, 235, 0.95);
+  border: 1px solid var(--border-color, rgba(229, 231, 235, 0.95));
 }
 
 .delete-confirmation-dialog h2 {
@@ -656,7 +656,7 @@ input:checked + .toggle-slider:before {
 .edit-form-actions {
   position: sticky;
   bottom: 0;
-  background: #fff;
+  background: var(--bg-card, #fff);
   display: flex;
   gap: 12px;
   margin-top: 2rem;
@@ -723,17 +723,17 @@ input:checked + .toggle-slider:before {
 }
 
 .products-table tbody tr {
-  background: #f8fafc;
+  background: var(--bg-surface, #f8fafc);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .products-table tbody tr:nth-child(odd) {
-  background: #e2e8f0;
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .products-table th {
-  color: #475569;
+  color: var(--text-main, #475569);
   padding: 12px;
   font-weight: 600;
   font-size: 0.85rem;
@@ -745,7 +745,7 @@ input:checked + .toggle-slider:before {
   padding: 12px;
   vertical-align: middle;
   font-size: 0.9rem;
-  color: #334155;
+  color: var(--text-main, #334155);
   text-align: center;
   border: 1px solid #f2f2f2;
 }

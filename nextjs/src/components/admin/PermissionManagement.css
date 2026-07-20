@@ -2,7 +2,7 @@
   padding: 24px;
   max-width: 1200px;
   margin: 0 auto;
-  color: #e2e8f0;
+  color: var(--text-main, #e2e8f0);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
@@ -10,8 +10,8 @@
   padding: 32px;
   max-width: 420px;
   margin: 0 auto;
-  background: #09090b;
-  border: 1px solid #27272a;
+  background: var(--bg-card, #09090b);
+  border: 1px solid var(--border-color, #27272a);
   border-radius: 20px;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
   color: #e4e4e7;
@@ -26,18 +26,18 @@
 .lock-header-text h3 {
   margin: 0 0 8px;
   font-size: 1.6rem;
-  color: #f8fafc;
+  color: var(--text-main, #f8fafc);
 }
 
 .lock-header-text p {
   margin: 0 0 20px;
-  color: #94a3b8;
+  color: var(--text-muted, #94a3b8);
   line-height: 1.6;
 }
 
 .ios-lock-title {
   font-size: 0.95rem;
-  color: #cbd5e1;
+  color: var(--text-muted, #cbd5e1);
   margin-bottom: 18px;
 }
 
@@ -163,12 +163,12 @@
 .permission-header-main h2 {
   margin: 0;
   font-size: 2rem;
-  color: #f8fafc;
+  color: var(--text-main, #f8fafc);
 }
 
 .permission-header-main p {
   margin: 0;
-  color: #94a3b8;
+  color: var(--text-muted, #94a3b8);
   line-height: 1.65;
   max-width: 840px;
 }
@@ -207,15 +207,15 @@
 }
 
 .coadmin-sidebar {
-  background: #0f172a;
-  border: 1px solid rgba(148, 163, 184, 0.12);
+  background: var(--bg-card, #0f172a);
+  border: 1px solid var(--border-color, rgba(148, 163, 184, 0.12));
   border-radius: 20px;
   padding: 18px;
 }
 
 .coadmin-sidebar h3 {
   margin: 0 0 16px;
-  color: #f8fafc;
+  color: var(--text-main, #f8fafc);
   font-size: 1.05rem;
 }
 
@@ -243,20 +243,20 @@
   gap: 12px;
   padding: 12px 14px;
   border-radius: 16px;
-  background: #020617;
+  background: var(--bg-surface, #020617);
   border: 1px solid transparent;
   cursor: pointer;
   transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .coadmin-card-modern:hover {
-  background: #111827;
+  background: var(--table-row-hover, #111827);
   border-color: rgba(148, 163, 184, 0.18);
 }
 
 .coadmin-card-modern.selected {
-  background: linear-gradient(180deg, rgba(98, 0, 157, 0.14), rgba(15, 23, 42, 0.9));
-  border-color: #7a00ad;
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.16), rgba(15, 23, 42, 0.9));
+  border-color: #10b981;
 }
 
 .coadmin-avatar {

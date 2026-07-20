@@ -639,6 +639,198 @@
   color: var(--text-muted) !important;
 }
 
+:root[data-theme='dark'] .dashboard-content .order-list,
+:root[data-theme='dark'] .dashboard-content .product-list-container,
+:root[data-theme='dark'] .dashboard-content .add-product-container,
+:root[data-theme='dark'] .dashboard-content .faq-management,
+:root[data-theme='dark'] .dashboard-content .review-management,
+:root[data-theme='dark'] .dashboard-content .coupon-management-container,
+:root[data-theme='dark'] .dashboard-content .permission-management,
+:root[data-theme='dark'] .dashboard-content .admin-settings-section,
+:root[data-theme='dark'] .dashboard-content .user-list-container,
+:root[data-theme='dark'] .dashboard-content .analytics-page,
+:root[data-theme='dark'] .dashboard-content .admin-coadmin-container,
+:root[data-theme='dark'] .dashboard-content .coadmin-sidebar,
+:root[data-theme='dark'] .dashboard-content .faq-form-container,
+:root[data-theme='dark'] .dashboard-content .faq-item,
+:root[data-theme='dark'] .dashboard-content .coupon-form-section,
+:root[data-theme='dark'] .dashboard-content .coupon-list-section,
+:root[data-theme='dark'] .dashboard-content .review-edit-form,
+:root[data-theme='dark'] .dashboard-content .table-shell,
+:root[data-theme='dark'] .dashboard-content .edit-form,
+:root[data-theme='dark'] .dashboard-content .delete-confirmation-dialog,
+:root[data-theme='dark'] .dashboard-content .request-details-content,
+:root[data-theme='dark'] .dashboard-content .order-image-modal-content,
+:root[data-theme='dark'] .dashboard-content .image-preview-dialog,
+:root[data-theme='dark'] .dashboard-content .detailed-preview-modal {
+  background: var(--bg-card) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-main) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+:root[data-theme='dark'] .dashboard-content .form-group input,
+:root[data-theme='dark'] .dashboard-content .form-group textarea,
+:root[data-theme='dark'] .dashboard-content .form-group select,
+:root[data-theme='dark'] .dashboard-content .edit-form-row input,
+:root[data-theme='dark'] .dashboard-content .edit-form-row textarea,
+:root[data-theme='dark'] .dashboard-content .edit-form-row select,
+:root[data-theme='dark'] .dashboard-content .coupon-form-section input,
+:root[data-theme='dark'] .dashboard-content .coupon-form-section select,
+:root[data-theme='dark'] .dashboard-content .coupon-form-section textarea,
+:root[data-theme='dark'] .dashboard-content .review-edit-form select,
+:root[data-theme='dark'] .dashboard-content .review-edit-form textarea,
+:root[data-theme='dark'] .dashboard-content .admin-settings-section input,
+:root[data-theme='dark'] .dashboard-content .admin-settings-section textarea,
+:root[data-theme='dark'] .dashboard-content .admin-settings-section select,
+:root[data-theme='dark'] .dashboard-content .product-list-container input,
+:root[data-theme='dark'] .dashboard-content .product-list-container textarea,
+:root[data-theme='dark'] .dashboard-content .product-list-container select,
+:root[data-theme='dark'] .dashboard-content .add-product-container input,
+:root[data-theme='dark'] .dashboard-content .add-product-container textarea,
+:root[data-theme='dark'] .dashboard-content .add-product-container select,
+:root[data-theme='dark'] .dashboard-content .add-kids-products-container input,
+:root[data-theme='dark'] .dashboard-content .add-kids-products-container textarea,
+:root[data-theme='dark'] .dashboard-content .add-kids-products-container select {
+  background: var(--bg-surface) !important;
+  color: var(--text-main) !important;
+  border-color: var(--border-color) !important;
+}
+
+:root[data-theme='dark'] .dashboard-content .toggle-switch-ord,
+:root[data-theme='dark'] .dashboard-content .toggle-slider,
+:root[data-theme='dark'] .dashboard-content .toggle-switch-accept.off,
+:root[data-theme='dark'] .dashboard-content .toggle-switch-refresh.off,
+:root[data-theme='dark'] .dashboard-content .toggle-switch-container .toggle-slider {
+  background-color: #64748B !important;
+}
+
+:root[data-theme='dark'] .dashboard-content .toggle-switch input:checked + .toggle-switch-ord,
+:root[data-theme='dark'] .dashboard-content .toggle-switch input:checked + .toggle-slider,
+:root[data-theme='dark'] .dashboard-content .toggle-switch-accept.on,
+:root[data-theme='dark'] .dashboard-content .toggle-switch-refresh.on {
+  background-color: #10b981 !important;
+}
+
+:root[data-theme='dark'] .dashboard-content .save-btn,
+:root[data-theme='dark'] .dashboard-content .submit-btn,
+:root[data-theme='dark'] .dashboard-content .accept-btn,
+:root[data-theme='dark'] .dashboard-content .delivered-btn,
+:root[data-theme='dark'] .dashboard-content .approve-btn.active,
+:root[data-theme='dark'] .dashboard-content .search-btn,
+:root[data-theme='dark'] .dashboard-content .refresh-btn,
+:root[data-theme='dark'] .dashboard-content .unlock-btn-wide,
+:root[data-theme='dark'] .dashboard-content .add-faq-btn,
+:root[data-theme='dark'] .dashboard-content .btn-add {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 18px rgba(16, 185, 129, 0.22) !important;
+}
+
+:root[data-theme='dark'] .dashboard-content .cancel-btn,
+:root[data-theme='dark'] .dashboard-content .delete-btn,
+:root[data-theme='dark'] .dashboard-content .delete-cat-dropdown-btn,
+:root[data-theme='dark'] .dashboard-content .remove-image-btn,
+:root[data-theme='dark'] .dashboard-content .remove-color-btn,
+:root[data-theme='dark'] .dashboard-content .delete-req-btn,
+:root[data-theme='dark'] .dashboard-content .reject-btn {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 18px rgba(239, 68, 68, 0.24) !important;
+}
+
+:root[data-theme='dark'] .dashboard-content .edit-btn,
+:root[data-theme='dark'] .dashboard-content .approve-toggle-btn,
+:root[data-theme='dark'] .dashboard-content .process-btn,
+:root[data-theme='dark'] .dashboard-content .ship-btn,
+:root[data-theme='dark'] .dashboard-content .delivery-btn,
+:root[data-theme='dark'] .dashboard-content .returned-btn,
+:root[data-theme='dark'] .dashboard-content .refund-btn,
+:root[data-theme='dark'] .dashboard-content .details-btn,
+:root[data-theme='dark'] .dashboard-content .show-images-btn,
+:root[data-theme='dark'] .dashboard-content .btn-small,
+:root[data-theme='dark'] .dashboard-content .custom-category-btn,
+:root[data-theme='dark'] .dashboard-content .add-category-btn,
+:root[data-theme='dark'] .dashboard-content .add-image-btn,
+:root[data-theme='dark'] .dashboard-content .add-color-btn,
+:root[data-theme='dark'] .dashboard-content .preview-btn {
+  background: linear-gradient(135deg, var(--primary) 0%, #6366f1 100%) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+}
+
+:root[data-theme='dark'] .dashboard-content .cancel-btn,
+:root[data-theme='dark'] .dashboard-content .edit-btn,
+:root[data-theme='dark'] .dashboard-content .delete-btn,
+:root[data-theme='dark'] .dashboard-content .approve-toggle-btn,
+:root[data-theme='dark'] .dashboard-content .process-btn,
+:root[data-theme='dark'] .dashboard-content .ship-btn,
+:root[data-theme='dark'] .dashboard-content .delivery-btn {
+  border: 1px solid transparent !important;
+}
+
+:root[data-theme='dark'] .dashboard-content .order-table th,
+:root[data-theme='dark'] .dashboard-content .products-table th,
+:root[data-theme='dark'] .dashboard-content .user-table thead th,
+:root[data-theme='dark'] .dashboard-content .reviews-table th,
+:root[data-theme='dark'] .dashboard-content .coupon-table-container th {
+  background: var(--table-header) !important;
+  color: var(--text-main) !important;
+  border-color: var(--border-color) !important;
+}
+
+:root[data-theme='dark'] .dashboard-content .order-table td,
+:root[data-theme='dark'] .dashboard-content .products-table td,
+:root[data-theme='dark'] .dashboard-content .user-table tbody td,
+:root[data-theme='dark'] .dashboard-content .reviews-table td,
+:root[data-theme='dark'] .dashboard-content .coupon-table-container td {
+  border-color: var(--border-color) !important;
+  color: var(--text-main) !important;
+}
+
+:root[data-theme='dark'] .dashboard-content .order-table tr:hover,
+:root[data-theme='dark'] .dashboard-content .products-table tbody tr:hover,
+:root[data-theme='dark'] .dashboard-content .user-table-row:hover,
+:root[data-theme='dark'] .dashboard-content .coupon-table-container tbody tr:hover,
+:root[data-theme='dark'] .dashboard-content .reviews-table tbody tr:hover {
+  background: var(--table-row-hover) !important;
+}
+
+:root[data-theme='dark'] .dashboard-content .status-badge.active {
+  background: rgba(16, 185, 129, 0.16) !important;
+  color: #6ee7b7 !important;
+}
+
+:root[data-theme='dark'] .dashboard-content .status-badge.inactive,
+:root[data-theme='dark'] .dashboard-content .status-badge.blocked {
+  background: rgba(239, 68, 68, 0.16) !important;
+  color: #fda4af !important;
+}
+
+:root[data-theme='dark'] .dashboard-content .status-badge.returning,
+:root[data-theme='dark'] .dashboard-content .status-badge.pending {
+  background: rgba(59, 130, 246, 0.16) !important;
+  color: #bfdbfe !important;
+}
+
+:root[data-theme='dark'] .dashboard-content .metric-icon,
+:root[data-theme='dark'] .dashboard-content .metric-icon i {
+  color: inherit !important;
+}
+
+:root[data-theme='dark'] .dashboard-content .custom-select-options,
+:root[data-theme='dark'] .dashboard-content .dropdown-menu {
+  background: var(--bg-card) !important;
+  border-color: var(--border-color) !important;
+}
+
+:root[data-theme='dark'] .dashboard-content .custom-select-option:hover,
+:root[data-theme='dark'] .dashboard-content .custom-select-option.active {
+  background: var(--table-row-hover) !important;
+}
+
 .dashboard-main, 
 .order-list, 
 .product-list-container, 

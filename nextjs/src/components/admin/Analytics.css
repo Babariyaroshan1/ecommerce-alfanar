@@ -1,7 +1,7 @@
 /* Container & Header */
 .analytics-page {
   padding: 30px;
-  background-color: #f1f5f9;
+  background-color: var(--bg-body, #f1f5f9);
   min-height: 100vh;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
@@ -18,12 +18,12 @@
 .header-title h2 {
   font-size: 28px;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--text-main, #0f172a);
   margin: 0 0 5px 0;
 }
 
 .header-title p {
-  color: #64748b;
+  color: var(--text-muted, #64748b);
   margin: 0;
   font-size: 15px;
 }
@@ -33,7 +33,7 @@
   align-items: center;
   gap: 8px;
   font-size: 14px;
-  color: #6b7280;
+  color: var(--text-muted, #6b7280);
   margin-top: 8px;
 }
 
@@ -43,7 +43,7 @@
   flex-wrap: wrap;
   gap: 15px;
   align-items: flex-end;
-  background: #ffffff;
+  background: var(--bg-card, #ffffff);
   padding: 15px 20px;
   border-radius: 12px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
@@ -144,7 +144,7 @@
 }
 
 .metric-card {
-  background: white;
+  background: var(--bg-card, white);
   border-radius: 16px;
   padding: 24px;
   display: flex;
@@ -180,7 +180,7 @@
 
 .metric-content h3 {
   font-size: 14px;
-  color: #64748b;
+  color: var(--text-muted, #64748b);
   margin: 0 0 5px 0;
   font-weight: 500;
 }
@@ -188,7 +188,7 @@
 .metric-value {
   font-size: 26px;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--text-main, #0f172a);
   margin: 0;
 }
 
@@ -201,7 +201,7 @@
 }
 
 .chart-box {
-  background: white;
+  background: var(--bg-card, white);
   border-radius: 16px;
   padding: 25px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
@@ -209,7 +209,7 @@
 
 .chart-box h3 {
   font-size: 18px;
-  color: #0f172a;
+  color: var(--text-main, #0f172a);
   margin: 0 0 20px 0;
   font-weight: 600;
 }

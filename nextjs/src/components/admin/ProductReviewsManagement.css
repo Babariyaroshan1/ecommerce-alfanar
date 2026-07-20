@@ -1,6 +1,6 @@
 .review-management {
   padding: 20px;
-  background: #ffffff;
+  background: var(--bg-card, #ffffff);
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
 }
@@ -8,12 +8,12 @@
 .review-header h2 {
   margin: 0 0 8px;
   font-size: 24px;
-  color: #111;
+  color: var(--text-main, #111);
 }
 
 .review-header p {
   margin: 0 0 20px;
-  color: #555;
+  color: var(--text-muted, #555);
   line-height: 1.6;
 }
 
@@ -36,10 +36,10 @@
 
 .review-edit-form {
   margin-bottom: 24px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border-color, #e5e7eb);
   border-radius: 12px;
   padding: 20px;
-  background: #f8fafc;
+  background: var(--bg-surface, #f8fafc);
 }
 
 .review-edit-form h3 {
@@ -70,26 +70,26 @@
 .review-edit-form textarea {
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border-color, #d1d5db);
   border-radius: 8px;
   font-size: 14px;
-  background: #fff;
-  color: #111;
+  background: var(--bg-surface, #fff);
+  color: var(--text-main, #111);
 }
 
 .approve-btn {
   padding: 10px 14px;
   border-radius: 8px;
-  border: 1px solid #d1d5db;
-  background: #fff;
-  color: #111;
+  border: 1px solid var(--border-color, #d1d5db);
+  background: var(--bg-surface, #fff);
+  color: var(--text-main, #111);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .approve-btn.active {
-  background: #111;
-  border-color: #111;
+  background: #10b981;
+  border-color: #10b981;
   color: #fff;
 }
 
@@ -112,19 +112,19 @@
 }
 
 .save-btn {
-  background: #111;
+  background: #10b981;
   color: white;
 }
 
 .cancel-btn {
-  background: #f3f4f6;
-  color: #111;
+  background: var(--bg-surface, #f3f4f6);
+  color: var(--text-main, #111);
 }
 
 .edit-btn,
 .approve-toggle-btn {
-  background: #f3f4f6;
-  color: #111;
+  background: var(--bg-surface, #f3f4f6);
+  color: var(--text-main, #111);
 }
 
 .delete-btn {
@@ -145,13 +145,13 @@
 .reviews-table th,
 .reviews-table td {
   padding: 14px 12px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border-color, #e5e7eb);
   text-align: left;
   vertical-align: top;
 }
 
 .reviews-table th {
-  background: #f8fafc;
+  background: var(--table-header, #f8fafc);
   font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 0.02em;

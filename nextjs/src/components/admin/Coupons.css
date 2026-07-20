@@ -1,15 +1,15 @@
 /* Coupon Management Styles */
 .coupon-management-container {
-  background: linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
+  background: var(--bg-card, #ffffff);
   border-radius: 20px;
   padding: 2rem;
   box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
-  border: 1px solid rgba(115, 123, 147, 0.12);
+  border: 1px solid var(--border-color, rgba(115, 123, 147, 0.12));
 }
 
 .coupon-management-container h2 {
   margin-bottom: 0.5rem;
-  color: #111827;
+  color: var(--text-main, #111827);
   font-size: 2rem;
   font-weight: 700;
 }
@@ -22,7 +22,7 @@
 
 /* Form Section */
 .coupon-form-section {
-  background: #fff;
+  background: var(--bg-card, #fff);
   padding: 1.5rem;
   border-radius: 20px;
   box-shadow: var(--shadow-sm);
@@ -30,7 +30,7 @@
 
 .coupon-form-section h3 {
   margin-bottom: 1rem;
-  color: #1e293b;
+  color: var(--text-main, #1e293b);
   font-size: 1.25rem;
   font-weight: 600;
 }
@@ -52,14 +52,14 @@
 .form-group label {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #374151;
+  color: var(--text-main, #374151);
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
   padding: 0.75rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border-color, #d1d5db);
   border-radius: 8px;
   font-size: 0.9rem;
   transition: border-color 0.2s, box-shadow 0.2s;
@@ -138,7 +138,7 @@
 
 /* Coupon List Section */
 .coupon-list-section {
-  background: #fff;
+  background: var(--bg-card, #fff);
   padding: 1.5rem;
   border-radius: 20px;
   box-shadow: var(--shadow-sm);
@@ -146,7 +146,7 @@
 
 .coupon-list-section h3 {
   margin-bottom: 1rem;
-  color: #1e293b;
+  color: var(--text-main, #1e293b);
   font-size: 1.25rem;
   font-weight: 600;
 }
@@ -155,7 +155,7 @@
 .coupon-table-container {
   overflow-x: auto;
   border-radius: 12px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border-color, #e5e7eb);
 }
 
 .coupon-table-container table {
@@ -164,31 +164,31 @@
 }
 
 .coupon-table-container thead {
-  background: #f9fafb;
+  background: var(--table-header, #f9fafb);
 }
 
 .coupon-table-container th,
 .coupon-table-container td {
   padding: 0.75rem 1rem;
   text-align: left;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
 }
 
 .coupon-table-container th {
   font-weight: 600;
-  color: #374151;
+  color: var(--text-main, #374151);
   font-size: 0.875rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .coupon-table-container td {
-  color: #4b5563;
+  color: var(--text-main, #4b5563);
   font-size: 0.9rem;
 }
 
 .coupon-table-container tbody tr:hover {
-  background: #f9fafb;
+  background: var(--table-row-hover, #f9fafb);
 }
 
 /* Status Column */
@@ -247,7 +247,7 @@
 }
 
 .toggle-switch input:checked + .toggle-slider {
-  background-color: #62009d;
+  background-color: #10b981;
 }
 
 .toggle-switch input:checked + .toggle-slider:before {
@@ -257,7 +257,7 @@
 .toggle-label {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #4b5563;
+  color: var(--text-main, #4b5563);
   margin-right: 10px;
   white-space: nowrap;
 }

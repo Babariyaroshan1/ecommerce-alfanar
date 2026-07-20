@@ -1,5 +1,8 @@
 .faq-management {
   padding: 20px;
+  background: var(--bg-card, #fff);
+  border-radius: 20px;
+  border: 1px solid var(--border-color, #dee2e6);
 }
 
 .faq-header {
@@ -11,7 +14,7 @@
 
 .faq-header h2 {
   margin: 0;
-  color: #333;
+  color: var(--text-main, #333);
 }
 
 .add-faq-btn {
@@ -48,17 +51,17 @@
 }
 
 .faq-form-container {
-  background: #f8f9fa;
+  background: var(--bg-surface, #f8f9fa);
   padding: 20px;
   border-radius: 8px;
   margin-bottom: 20px;
-  border: 1px solid #dee2e6;
+  border: 1px solid var(--border-color, #dee2e6);
 }
 
 .faq-form h3 {
   margin-top: 0;
   margin-bottom: 20px;
-  color: #333;
+  color: var(--text-main, #333);
 }
 
 .form-group {
@@ -69,14 +72,14 @@
   display: block;
   margin-bottom: 5px;
   font-weight: bold;
-  color: #555;
+  color: var(--text-main, #555);
 }
 
 .form-group input,
 .form-group textarea {
   width: 100%;
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color, #ddd);
   border-radius: 4px;
   font-size: 14px;
 }
@@ -131,7 +134,7 @@
 
 .faq-list-header h3 {
   margin: 0;
-  color: #333;
+  color: var(--text-main, #333);
 }
 
 .no-faqs {
@@ -148,8 +151,8 @@
 }
 
 .faq-item {
-  background: white;
-  border: 1px solid #dee2e6;
+  background: var(--bg-card, white);
+  border: 1px solid var(--border-color, #dee2e6);
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -157,13 +160,13 @@
 
 .faq-content h4 {
   margin: 0 0 10px 0;
-  color: #333;
+  color: var(--text-main, #333);
   font-size: 16px;
 }
 
 .faq-content p {
   margin: 0 0 15px 0;
-  color: #666;
+  color: var(--text-muted, #666);
   line-height: 1.5;
 }
 
