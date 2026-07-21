@@ -401,7 +401,7 @@
   font-weight: 500;
 }
 
-./* =========================================
+/* =========================================
    Sidebar Footer & New Collapse Box
 ========================================= */
 .sidebar-footer {
@@ -552,72 +552,168 @@
   margin: 0;
 }
 
+
+/* =========================================
+   Profile Dropdown (Speech Bubble with Arrow)
+========================================= */
 .profile-dropdown {
   position: absolute;
-  bottom: calc(55% + 10px);
-  left: 0.75rem;
+  bottom: 115%; /* profile button के ठीक ऊपर दिखाने के लिए */
+  left: 50%;
+  transform: translateX(-50%);
   width: calc(100% - 1.5rem);
+  min-width: 230px;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-
-  padding: 0.75rem;
+  gap: 0.75rem;
+  padding: 1rem;
   border-radius: 14px;
   background: var(--bg-card);
   border: 1px solid var(--border-color);
-  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.1);
-  z-index: 10;
+  box-shadow: var(--shadow-lg);
+  z-index: 110;
 }
 
-.profile-dropdown-header {
+/* Bottom Speech Bubble Arrow ('v' shape) */
+.profile-dropdown::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 8px 8px 0;
+  border-style: solid;
+  border-color: var(--bg-card) transparent;
+  display: block;
+  width: 0;
+  z-index: 112;
+}
+
+.profile-dropdown::before {
+  content: "";
+  position: absolute;
+  bottom: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 9px 9px 0;
+  border-style: solid;
+  border-color: var(--border-color) transparent;
+  display: block;
+  width: 0;
+  z-index: 111;
+}
+
+/* Sidebar closed होने पर भी dropdown को सही अलाइन रखने के लिए */
+.sidebar.closed .profile-dropdown {
+  left: 50%;
+  transform: translateX(-20%);
+  width: 230px;
+}
+
+.sidebar.closed .profile-dropdown::after,
+.sidebar.closed .profile-dropdown::before {
+  left: 20%;
+}
+
+/* Dropdown elements spacing */
+.profile-dropdown-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.profile-dropdown-info {
   display: flex;
   flex-direction: column;
-  gap: 0.15rem;
-  padding: 0 0.25rem;
+  gap: 0.2rem;
+  text-align: left;
 }
 
 .profile-dropdown-title {
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: var(--text-main);
   margin: 0;
 }
 
-.profile-dropdown-subtitle {
-  font-size: 0.75rem;
+.profile-dropdown-desc {
+  font-size: 0.78rem;
   color: var(--text-muted);
   margin: 0;
 }
 
-.profile-dropdown hr {
+/* Divider Line */
+.profile-dropdown-divider {
   border: none;
   height: 1px;
   background: var(--border-color);
-  margin: 0.25rem 0;
+  margin: 0.15rem 0;
 }
 
-.profile-dropdown-action {
+/* =========================================
+   Modern Theme Toggle Button (Square)
+========================================= */
+.theme-toggle-btn-square {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  border: none;
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  padding: 0.6rem 0.75rem;
-  border-radius: 10px;
-  border: 1px solid var(--border-color);
-  background: var(--bg-surface);
-  color: var(--text-main);
-  font-weight: 600;
+  justify-content: center;
   cursor: pointer;
-  font-size: 0.85rem;
-  transition: all 0.2s ease;
+  position: relative;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
 }
 
-.profile-dropdown-action i {
-  font-size: 0.85rem;
+.theme-toggle-btn-square:active {
+  transform: scale(0.95);
 }
 
-.profile-dropdown-action:hover {
-  background: var(--table-row-hover);
-  border-color: var(--primary);
+/* Light Theme Mode (Displays Moon icon with Purple glow outline) */
+.theme-toggle-btn-square.light {
+  background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+  color: #ffffff;
+  box-shadow: 0 0 0 2px var(--bg-card), 0 0 0 4px #a855f7;
+}
+
+/* Dark Theme Mode (Displays Sun icon with Orange glow outline) */
+.theme-toggle-btn-square.dark {
+  background: linear-gradient(135deg, #f97316 0%, #facc15 100%);
+  color: #ffffff;
+  box-shadow: 0 0 0 2px var(--bg-card), 0 0 0 4px #f97316;
+}
+
+.theme-toggle-btn-square i {
+  font-size: 1.15rem;
+}
+
+/* =========================================
+   Logout Button in Dropdown
+========================================= */
+.profile-dropdown-logout {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.4rem 0.2rem;
+  border: none;
+  background: transparent;
+  color: #dc2626;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  width: fit-content;
+  transition: opacity 0.2s ease;
+}
+
+.profile-dropdown-logout:hover {
+  opacity: 0.85;
+}
+
+.profile-dropdown-logout i {
+  font-size: 0.95rem;
 }
 
 /* =========================================
