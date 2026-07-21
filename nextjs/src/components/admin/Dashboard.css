@@ -377,6 +377,11 @@
   margin-left: auto;
 }
 
+/* hide badges when sidebar is collapsed */
+.sidebar.closed .badge-notification {
+  display: none !important;
+}
+
 .nav-icon {
   font-size: 14px;
   width: 18px;

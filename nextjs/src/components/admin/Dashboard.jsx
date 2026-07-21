@@ -235,7 +235,7 @@ export default function Dashboard({ onLogout }) {
                     >
                       <i className={`nav-icon ${item.icon}`} aria-hidden="true"></i>
                       {sidebarOpen && <span className="nav-label">{item.label}</span>}
-                      {item.badge && item.badge > 0 && (
+                      {item.badge > 0 && sidebarOpen && (
                         <span className="badge-notification">{item.badge}</span>
                       )}
                     </button>
