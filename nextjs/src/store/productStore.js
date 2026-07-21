@@ -281,4 +281,21 @@ export const useProductStore = create((set, get) => ({
             });
         }
     },
+
+    // Fetch filtered products from backend (with limit, category, featured, etc.)
+    fetchFilteredProducts: async (params) => {
+        // params = { limit: 8, featured: true, category: 'pajamas', isKidsProduct: true }
+        try {
+            const queryString = new URLSearchParams(params).toString();
+            const response = await fetch(`${API_URL}/products?${queryString}`);
+            if (response.ok) {
+                const data = await response.json();
+                return data.products || data;
+            }
+            return [];
+        } catch (error) {
+            console.error('Fetch error:', error);
+            return [];
+        }
+    },
 }));

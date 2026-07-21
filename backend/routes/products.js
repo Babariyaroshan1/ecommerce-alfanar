@@ -20,28 +20,40 @@ const parseBooleanValue = (value) => {
     return Boolean(value);
 };
 
-// Get all products
+// Get all products (With Filters and Limits)
 router.get('/', async (req, res) => {
     try {
-        // Try to get from cache first
-        const cachedProducts = await getCachedProducts();
-        if (cachedProducts && cachedProducts.length > 0) {
-            const currencySettings = await getCurrentCurrencySettings();
-            return res.json({
-                products: cachedProducts,
-                totalPages: 1,
-                currentPage: 1,
-                total: cachedProducts.length,
-                currencySettings,
-                cached: true
-            });
+        const { limit, category, featured, isKidsProduct } = req.query;
+
+        // Build Query
+        let query = {};
+        if (category) query.category = category;
+        if (featured === 'true') query.isFeaturedOnHome = true;
+        if (isKidsProduct === 'true') query.isKidsProduct = true;
+
+        // Agar koi filter nahi hai, tabhi cache check karein (Full list ke liye)
+        if (!limit && !category && !featured && !isKidsProduct) {
+            const cachedProducts = await getCachedProducts();
+            if (cachedProducts && cachedProducts.length > 0) {
+                const currencySettings = await getCurrentCurrencySettings();
+                return res.json({
+                    products: cachedProducts,
+                    totalPages: 1,
+                    currentPage: 1,
+                    total: cachedProducts.length,
+                    currencySettings,
+                    cached: true
+                });
+            }
         }
 
-        // If not in cache, fetch from database
-        const [products, currencySettings] = await Promise.all([
-            Product.find().lean(),
-            getCurrentCurrencySettings()
-        ]);
+        const currencySettings = await getCurrentCurrencySettings();
+
+        // Database query with Limit
+        let productsQuery = Product.find(query).lean();
+        if (limit) productsQuery = productsQuery.limit(parseInt(limit));
+
+        const products = await productsQuery;
 
         const productsWithCurrency = products.map(product => {
             let displayPrice = null;
@@ -76,13 +88,13 @@ router.get('/', async (req, res) => {
             };
         });
 
-        // Cache the products
-        await cacheProducts(productsWithCurrency);
+        // Only cache if we fetched full list (no filters)
+        if (!limit && !category && !featured && !isKidsProduct) {
+            await cacheProducts(productsWithCurrency);
+        }
 
         res.json({
             products: productsWithCurrency,
-            totalPages: 1,
-            currentPage: 1,
             total: productsWithCurrency.length,
             currencySettings,
             cached: false

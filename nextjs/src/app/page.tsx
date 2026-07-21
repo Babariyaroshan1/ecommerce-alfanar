@@ -21,23 +21,17 @@ const KIDS_FEATURED_LIMIT = 4;
 
 const Home = () => {
   const { t } = useTranslation();
-  const storeProducts = useProductStore((state) => state.products);
-  const storeLoading = useProductStore((state) => state.loading);
-  const fetchProducts = useProductStore((state) => state.fetchProducts);
+  const fetchFilteredProducts = useProductStore((state) => state.fetchFilteredProducts);
 
-  const isKidsCategory = (product) =>
-    product?.isKidsProduct === true || String(product?.category || '').toLowerCase().includes('kid');
-  const isPajamasCategory = (product) =>
-    String(product?.category || '').toLowerCase().includes('pajama');
-  const initialHomeLoad = useRef(storeProducts.length === 0);
-  const homeSkeletonStart = useRef(Date.now());
-  const minSkeletonDuration = 500;
-  const [homeProducts, setHomeProducts] = useState(() => {
-    if (!storeProducts || storeProducts.length === 0) return [];
-    const featured = storeProducts.filter((product) => Boolean(product.isFeaturedOnHome)).slice(0, GENERAL_FEATURED_LIMIT);
-    return featured.length > 0 ? featured : storeProducts.slice(0, GENERAL_FEATURED_LIMIT);
-  });
-  const [homeLoading, setHomeLoading] = useState(initialHomeLoad.current);
+  // States for different product sections
+  const [bestSellers, setBestSellers] = useState([]);
+  const [kidsProducts, setKidsProducts] = useState([]);
+  const [pajamasProducts, setPajamasProducts] = useState([]);
+  const [homeLoading, setHomeLoading] = useState(true);
+
+  // Refs for horizontal scrollers
+  const kidsRef = useRef(null);
+  const pajamasRef = useRef(null);
 
   // FAQ state
   const [activeFaq, setActiveFaq] = useState(null);
@@ -50,6 +44,35 @@ const Home = () => {
   const toggleFaq = (index) => {
     setActiveFaq(activeFaq === index ? null : index);
   };
+
+  // Load home data with parallel filtered requests
+  useEffect(() => {
+    const loadHomeData = async () => {
+      setHomeLoading(true);
+      
+      // Ek saath 3 calls (Parallel) - Sirf utne hi product aayenge jitne chahiye
+      try {
+        const [best, kids, pjs] = await Promise.all([
+          fetchFilteredProducts({ limit: 8, featured: 'true' }),
+          fetchFilteredProducts({ limit: 4, isKidsProduct: 'true', featured: 'true' }),
+          fetchFilteredProducts({ limit: 8, category: 'pajamas', featured: 'true' })
+        ]);
+
+        setBestSellers(best || []);
+        setKidsProducts(kids || []);
+        setPajamasProducts(pjs || []);
+      } catch (error) {
+        console.error('Error loading home products:', error);
+        setBestSellers([]);
+        setKidsProducts([]);
+        setPajamasProducts([]);
+      } finally {
+        setHomeLoading(false);
+      }
+    };
+
+    loadHomeData();
+  }, [fetchFilteredProducts]);
 
   // Fetch FAQs
   useEffect(() => {
@@ -88,54 +111,6 @@ const Home = () => {
     fetchSettings();
   }, []);
 
-  useEffect(() => {
-    if (storeProducts.length === 0) {
-      fetchProducts();
-      return;
-    }
-
-    const featured = storeProducts.filter((product) => Boolean(product.isFeaturedOnHome)).slice(0, GENERAL_FEATURED_LIMIT);
-    setHomeProducts(featured.length > 0 ? featured : storeProducts.slice(0, GENERAL_FEATURED_LIMIT));
-
-    if (initialHomeLoad.current) {
-      const elapsed = Date.now() - homeSkeletonStart.current;
-      const timer = setTimeout(
-        () => setHomeLoading(false),
-        Math.max(0, minSkeletonDuration - elapsed)
-      );
-      return () => clearTimeout(timer);
-    }
-
-    setHomeLoading(false);
-  }, [fetchProducts, storeLoading, storeProducts]);
-
-  useEffect(() => {
-    if (initialHomeLoad.current && !storeLoading && storeProducts.length === 0) {
-      const elapsed = Date.now() - homeSkeletonStart.current;
-      const timer = setTimeout(
-        () => setHomeLoading(false),
-        Math.max(0, minSkeletonDuration - elapsed)
-      );
-      return () => clearTimeout(timer);
-    }
-  }, [storeLoading, storeProducts.length]);
-
-  const generalFeaturedProducts = storeProducts
-    .filter((product) => Boolean(product.isFeaturedOnHome) && !isKidsCategory(product) && !isPajamasCategory(product))
-    .slice(0, GENERAL_FEATURED_LIMIT);
-  const generalFallbackProducts = storeProducts
-    .filter((product) => !isKidsCategory(product) && !isPajamasCategory(product))
-    .slice(0, GENERAL_FEATURED_LIMIT);
-  const displayProducts = generalFeaturedProducts.length > 0 ? generalFeaturedProducts : generalFallbackProducts;
-
-  // Kids featured section: show up to 4 products that are marked as kids products and featured in admin
-  const kidsFeatured = storeProducts
-    .filter((p) => isKidsCategory(p) && Boolean(p.isFeaturedOnHome))
-    .slice(0, KIDS_FEATURED_LIMIT);
-  const pajamasFeatured = storeProducts
-    .filter((p) => isPajamasCategory(p) && Boolean(p.isFeaturedOnHome));
-  const kidsRef = useRef(null);
-  const pajamasRef = useRef(null);
   const scrollKids = (dir) => {
     if (!kidsRef.current) return;
     const { scrollLeft, scrollWidth, clientWidth } = kidsRef.current;
@@ -236,14 +211,14 @@ const Home = () => {
       )}
 
       {/* Product Grid */}
-      {!homeLoading && displayProducts.length === 0 && (
+      {!homeLoading && bestSellers.length === 0 && (
         <div className="text-center mb-4">
           <p className="text-muted">No products are currently featured on the home page.</p>
         </div>
       )}
-      {!homeLoading && displayProducts.length > 0 && (
+      {!homeLoading && bestSellers.length > 0 && (
         <div className="row g-4">
-          {displayProducts.map(product => (
+          {bestSellers.map(product => (
             <div key={product._id || product.id} className="col-6 col-sm-6 col-md-4 col-lg-3">
               <ProductCard product={product} />
             </div>
@@ -265,7 +240,7 @@ const Home = () => {
 
         {homeLoading ? (
         <SkeletonGrid count={4} />
-      ) : kidsFeatured.length === 0 ? (
+      ) : kidsProducts.length === 0 ? (
           <div className="text-center mb-4">
             <p className="text-muted">No featured kids products available.</p>
           </div>
@@ -279,7 +254,7 @@ const Home = () => {
                   className="home-slider"
                   style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '8px', scrollSnapType: 'x mandatory' }}
                 >
-                  {kidsFeatured.map((product) => (
+                  {kidsProducts.map((product) => (
                     <div key={product._id || product.id} style={{ flex: '0 0 280px', width: '280px', maxWidth: '280px', scrollSnapAlign: 'center' }}>
                       <ProductCard product={product} />
                     </div>
@@ -308,7 +283,7 @@ const Home = () => {
             {/* Desktop: Grid */}
             <div className="d-none d-md-block">
               <div className="row g-4">
-                {kidsFeatured.map((product) => (
+                {kidsProducts.map((product) => (
                   <div key={product._id || product.id} className="col-6 col-sm-6 col-md-4 col-lg-3">
                     <ProductCard product={product} />
                   </div>
@@ -332,7 +307,7 @@ const Home = () => {
 
         {homeLoading ? (
           <SkeletonGrid count={4} />
-        ) : pajamasFeatured.length === 0 ? (
+        ) : pajamasProducts.length === 0 ? (
           <div className="text-center mb-4">
             <p className="text-muted">No featured pajamas products available.</p>
           </div>
@@ -343,7 +318,7 @@ const Home = () => {
               className="home-slider"
               style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '8px', scrollSnapType: 'x mandatory' }}
             >
-              {pajamasFeatured.map((product) => (
+              {pajamasProducts.map((product) => (
                 <div key={product._id || product.id} style={{ flex: '0 0 280px', width: '280px', maxWidth: '280px', scrollSnapAlign: 'center' }}>
                   <ProductCard product={product} />
                 </div>

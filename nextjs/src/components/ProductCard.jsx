@@ -589,6 +589,7 @@ export default function ProductCard({ product: initialProduct, directToProduct =
                         <img
                           src={src || 'https://via.placeholder.com/100x100?text=Image'}
                           alt={`${product.name} ${index + 1}`}
+                          loading="lazy"
                           onError={(e) => {
                             const target = e.target;
                             if (!target) return;
@@ -620,6 +621,7 @@ export default function ProductCard({ product: initialProduct, directToProduct =
                           src={quickViewImages[3] || 'https://via.placeholder.com/100x100?text=Image'}
                           alt="More images preview"
                           className="quickview-more-bg"
+                          loading="lazy"
                           onError={(e) => {
                             const target = e.target;
                             if (!target) return;
