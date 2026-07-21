@@ -422,7 +422,6 @@
   justify-content: center;
   border: 1px solid var(--sidebar-border);
   background: var(--bg-surface);
-  border-radius: 12px;
   padding: 0.6rem 0.55rem;
   transition: var(--transition);
 }
@@ -464,7 +463,6 @@
   align-items: center;
   gap: 0.7rem;
   padding: 0.6rem 0.55rem;
-  border-radius: 12px;
   background: var(--bg-surface);
   text-align: left;
   border: 1px solid var(--sidebar-border);
@@ -555,12 +553,17 @@
 /* =========================================
    Profile Dropdown (Speech Bubble with Arrow)
 ========================================= */
+.profile-dropdown-wrapper {
+  position: relative;
+  width: 100%;
+}
+
 .profile-dropdown {
   position: absolute;
-  bottom: 110%; /* Profile toggle के ठीक ऊपर प्लेस करने के लिए */
+  bottom: calc(100% + 0.75rem);
   left: 50%;
   transform: translateX(-50%);
-  width: calc(100% - 0.5rem);
+  width: 240px;
   min-width: 230px;
   display: flex;
   flex-direction: column;
@@ -602,16 +605,16 @@
   z-index: 121;
 }
 
-/* Sidebar closed होने पर dropdown पोजीशन अलाइनमेंट */
 .sidebar.closed .profile-dropdown {
   left: 50%;
-  transform: translateX(-20%);
-  width: 230px;
+  transform: translateX(-50%);
+  width: 240px;
 }
 
 .sidebar.closed .profile-dropdown::after,
 .sidebar.closed .profile-dropdown::before {
-  left: 20%;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .profile-dropdown-row {
