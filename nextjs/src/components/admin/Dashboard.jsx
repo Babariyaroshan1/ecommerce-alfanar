@@ -279,7 +279,7 @@ export default function Dashboard({ onLogout }) {
                 <hr />
                 <button type="button" className="profile-dropdown-action" onClick={toggleTheme}>
                   <i className={`fa-solid ${theme === 'dark' ? 'fa-sun' : 'fa-moon'}`} aria-hidden="true"></i>
-                  <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
+                  <span className="li-dr-mod">{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
                 </button>
               </div>
             )}
