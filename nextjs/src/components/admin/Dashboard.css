@@ -337,10 +337,10 @@
   color: var(--sidebar-text);
   cursor: pointer;
   transition: background 0.2s, color 0.2s, width 0.25s;
-  font-size: 15px;
+  font-size: 12px;
   font-weight: 500;
   text-align: left;
-  min-height: 44px;
+  min-height: 40px;
   width: 100%;
   line-height: 1;
 }
@@ -378,10 +378,10 @@
 }
 
 .nav-icon {
-  font-size: 17px;
-  width: 20px;
-  height: 20px;
-  min-width: 20px;
+  font-size: 14px;
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -390,7 +390,7 @@
 
 .nav-label {
   white-space: nowrap;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
 }
 
@@ -447,7 +447,7 @@
 }
 
 .profile-name {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--sidebar-text-strong);
 }
