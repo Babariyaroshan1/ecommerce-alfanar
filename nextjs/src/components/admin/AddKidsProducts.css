@@ -465,8 +465,8 @@
   gap: 14px;
   padding: 18px;
   border-radius: 18px;
-  background: #fafafa;
-  border: 1px solid #ececec;
+  background: var(--bg-surface, #fafafa);
+  border: 1px solid var(--border-color, #ececec);
 }
 
 .currency-prices-grid {
@@ -509,9 +509,9 @@
   min-height: 52px;
   padding: 13px 15px;
   border-radius: 15px;
-  background: #ffffff;
-  border: 1px solid #e5e5e5;
-  color: #111111;
+  background: var(--bg-surface, #ffffff);
+  border: 1px solid var(--border-color, #e5e5e5);
+  color: var(--text-main, #111111);
   font-size: 14px;
   font-weight: 800;
   cursor: pointer;
@@ -519,7 +519,7 @@
 }
 
 .checkbox-label:hover {
-  border-color: #000000;
+  border-color: var(--text-main, #000000);
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
 }
 
@@ -530,9 +530,7 @@
   cursor: pointer;
 }
 
-.checkbox-label span {
-  line-height: 1.25;
-}
+.checkbox-label span {\n  line-height: 1.25;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n}\n\n.policy-icon {\n  font-size: 16px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}
 
 /* =========================================
    HELPER / ERROR TEXT
@@ -604,9 +602,23 @@
   border-color: var(--border-color, rgba(255, 255, 255, 0.12));
 }
 
+[data-theme='dark'] .add-kids-products-container .checkbox-label {
+  background: var(--bg-surface, #111827);
+  border-color: var(--border-color, rgba(255, 255, 255, 0.12));
+  color: var(--text-main, #f8fafc);
+}
+
+[data-theme='dark'] .add-kids-products-container .checkbox-label:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme='dark'] .add-kids-products-container .checkbox-label input[type="checkbox"] {
+  accent-color: #8b5cf6;
+}
+
 [data-theme='dark'] .add-kids-products-container .form-section label,
 [data-theme='dark'] .add-kids-products-container .stock-input-group label,
-[data-theme='dark'] .add-kids-products-container .checkbox-label,
 [data-theme='dark'] .add-kids-products-container .help-text,
 [data-theme='dark'] .add-kids-products-container .uploading-text {
   color: var(--text-main, #f8fafc);

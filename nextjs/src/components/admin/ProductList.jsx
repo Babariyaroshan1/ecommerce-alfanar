@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
+import { FaBaby } from 'react-icons/fa';
 import { useProductStore } from '../../store/productStore';
 import './ProductList.css';
 
@@ -1021,7 +1022,10 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
                     }))
                   }
                 />
-                <span>👶 Mark as Kids Product</span>
+                <span>
+                  <FaBaby style={{ marginRight: '6px' }} />
+                  Mark as Kids Product
+                </span>
               </label>
             </div>
 

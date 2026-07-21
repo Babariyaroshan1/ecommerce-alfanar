@@ -265,8 +265,8 @@
   align-items: center;
   gap: 12px;
   padding: 13px 14px;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
+  background: var(--bg-surface, #ffffff);
+  border: 1px solid var(--border-color, #e5e7eb);
   border-radius: 14px;
 }
 

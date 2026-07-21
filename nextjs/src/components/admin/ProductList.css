@@ -246,17 +246,17 @@ body.product-edit-modal-open {
 .edit-form-row input[type="number"]:hover,
 .edit-form-row textarea:hover,
 .edit-form-row select:hover {
-  border-color: #d1d5db;
-  background-color: #fff;
+  border-color: var(--border-color, #d1d5db);
+  background-color: var(--bg-surface, #fff);
 }
 
 .edit-form-row input:focus,
 .edit-form-row textarea:focus,
 .edit-form-row select:focus {
   outline: none;
-  border-color: linear-gradient(90deg, var(--primary) 0%, #8b5cf6 100%);
-  background-color: #fff;
-  box-shadow: 0 0 0 3px rgba(193, 0, 193, 0.1);
+  border-color: var(--primary, #8b5cf6);
+  background-color: var(--bg-surface, #fff);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
 }
 
 /* Currency Section */
@@ -296,7 +296,7 @@ body.product-edit-modal-open {
 .currency-controls-under {
   margin-top: 16px;
   padding-top: 14px;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--border-color, #e5e7eb);
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 12px;
@@ -835,7 +835,7 @@ input:checked + .toggle-slider:before {
 }
 
 .product-filter-toggle button.active {
-  background-color: linear-gradient(90deg, var(--primary) 0%, #8b5cf6 100%) !important;
+  background: linear-gradient(90deg, var(--primary) 0%, #8b5cf6 100%) !important;
   color: #ffffff !important;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
 }
@@ -1051,13 +1051,20 @@ input:checked + .toggle-slider:before {
 }
 
 [data-theme='dark'] .product-filter-toggle button {
-  background: var(--bg-surface, #111827);
+  background: #000000;
   color: var(--text-main, #f8fafc);
   border-color: var(--text-main, #f8fafc);
 }
 
 [data-theme='dark'] .product-filter-toggle button:hover {
   background: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme='dark'] .product-filter-toggle button.active {
+  background: linear-gradient(90deg, var(--primary) 0%, #8b5cf6 100%) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
 }
 
 /* Responsive */
