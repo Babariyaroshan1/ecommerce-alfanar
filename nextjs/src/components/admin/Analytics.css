@@ -466,7 +466,7 @@
 }
 
 [data-theme='dark'] .currency-toggle {
-  background: linear-gradient(90deg, var(--primary) 0%, var(--primary-hover) 100%);
+  /* background: linear-gradient(90deg, var(--primary) 0%, var(--primary-hover) 100%); */
   color: #fff !important;
   border-color: transparent;
 }

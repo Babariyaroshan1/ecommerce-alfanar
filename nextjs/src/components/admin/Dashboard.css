@@ -897,7 +897,7 @@
 /* Dark mode: use dashboard variables instead of hard-coded white gradient */
 :root[data-theme='dark'] .page-header-card {
   background: linear-gradient(135deg, var(--bg-card, #1E293B) 0%, var(--bg-surface, #111827) 100%);
-  border: 1px solid var(--border-color, rgba(255,255,255,0.06));
+  border: 1px solid  #ffffffbf;
   box-shadow: var(--shadow-sm);
 }
 
