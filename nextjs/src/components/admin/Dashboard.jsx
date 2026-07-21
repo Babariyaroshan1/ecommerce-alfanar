@@ -245,45 +245,45 @@ export default function Dashboard({ onLogout }) {
             </nav>
           </div>
 
-          <div className="sidebar-footer">
-            <div className="sidebar-footer-actions">
-              <button className="collapse-btn" onClick={() => setSidebarOpen((prev) => !prev)} type="button" aria-label="Toggle sidebar">
-                <i className={`fa-solid ${sidebarOpen ? 'fa-chevron-left' : 'fa-chevron-right'}`}></i>
-                {sidebarOpen && <span className="collapse-label">Collapse</span>}
-              </button>
-            </div>
-            <button
-              className="profile-dropdown-toggle"
-              type="button"
-              aria-haspopup="true"
-              aria-expanded={profileMenuOpen}
-              onClick={() => setProfileMenuOpen((prev) => !prev)}
-            >
-              <div className="profile-avatar">A</div>
-              {sidebarOpen && (
-                <div className="profile-meta">
-                  <span className="profile-name">{role === 'admin' ? 'Admin' : 'Co-Admin'}</span>
-                  <span className="profile-role">{role === 'admin' ? 'Administrator' : 'Operations'}</span>
-                  <span className="profile-version">v1.0.0</span>
-                </div>
-              )}
-              {sidebarOpen && <i className={`fa-solid ${profileMenuOpen ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>}
-            </button>
+        <div className="sidebar-footer">
+  {/* 1. Naya Wrapper Collapse Button ke liye (Same style as profile-pill) */}
+  <div className="sidebar-top-action">
+    <button className="collapse-btn" onClick={() => setSidebarOpen((prev) => !prev)} type="button" aria-label="Toggle sidebar">
+      <i className={`fa-solid ${sidebarOpen ? 'fa-chevron-left' : 'fa-chevron-right'}`}></i>
+      {sidebarOpen && <span className="collapse-label">Collapse</span>}
+    </button>
+  </div>
 
-            {sidebarOpen && profileMenuOpen && (
-              <div className="profile-dropdown">
-                <div className="profile-dropdown-header">
-                  <p className="profile-dropdown-title">Appearance</p>
-                  <p className="profile-dropdown-subtitle">Toggle light / dark mode</p>
-                </div>
-                <hr />
-                <button type="button" className="profile-dropdown-action" onClick={toggleTheme}>
-                  <i className={`fa-solid ${theme === 'dark' ? 'fa-sun' : 'fa-moon'}`} aria-hidden="true"></i>
-                  <span className="li-dr-mod">{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
-                </button>
-              </div>
-            )}
-          </div>
+  {/* 2. Separator Line (HR) */}
+  <div className="sidebar-footer-divider"></div>
+
+  {/* 3. Profile Toggle (Already a box) */}
+  <button className="profile-dropdown-toggle" type="button" onClick={() => setProfileMenuOpen((prev) => !prev)}>
+    <div className="profile-avatar">A</div>
+    {sidebarOpen && (
+      <div className="profile-meta">
+        <span className="profile-name">{role === 'admin' ? 'Admin' : 'Co-Admin'}</span>
+        <span className="profile-role">{role === 'admin' ? 'Administrator' : 'Operations'}</span>
+        <span className="profile-version">v1.0.0</span>
+      </div>
+    )}
+    {sidebarOpen && <i className={`fa-solid ${profileMenuOpen ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>}
+  </button>
+
+  {profileMenuOpen && (
+    <div className="profile-dropdown">
+      <div className="profile-dropdown-header">
+        <span className="profile-dropdown-title">Appearance</span>
+        <span className="profile-dropdown-subtitle">Toggle light / dark mode</span>
+      </div>
+      <hr />
+      <button type="button" className="profile-dropdown-action" onClick={toggleTheme}>
+        <i className={`fa-solid ${theme === 'dark' ? 'fa-sun' : 'fa-moon'}`}></i>
+        <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
+      </button>
+    </div>
+  )}
+</div>
         </aside>
 
         {/* Main Content */}
