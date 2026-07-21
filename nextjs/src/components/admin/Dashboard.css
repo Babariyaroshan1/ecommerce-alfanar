@@ -607,7 +607,7 @@
 :root[data-theme='dark'] .dashboard-content .unlock-btn-wide,
 :root[data-theme='dark'] .dashboard-content .add-faq-btn,
 :root[data-theme='dark'] .dashboard-content .btn-add {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+  background:linear-gradient(90deg, var(--primary) 0%, #8b5cf6 100%) !important;
   color: #ffffff !important;
   border-color: transparent !important;
   box-shadow: 0 8px 18px rgba(16, 185, 129, 0.22) !important;
@@ -685,7 +685,7 @@
 
 :root[data-theme='dark'] .dashboard-content .status-badge.active {
   background: rgba(16, 185, 129, 0.16) !important;
-  color: #6ee7b7 !important;
+  color: green !important;
 }
 
 :root[data-theme='dark'] .dashboard-content .status-badge.inactive,
