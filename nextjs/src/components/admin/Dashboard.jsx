@@ -80,11 +80,11 @@ export default function Dashboard({ onLogout }) {
           return sum + itemsSum;
         }, 0);
 
-      // Count pending return/replacement requests
+      // Count pending return/replacement requests only when a real request exists
       const pendingRequests = ordersRes.data.filter(order => {
-        const returnStatus = order.returnRequest?.status;
-        const replacementStatus = order.replacementRequest?.status;
-        return (returnStatus && returnStatus === 'pending') || (replacementStatus && replacementStatus === 'pending');
+        const returnRequestPending = order.returnRequest?.requestedAt && String(order.returnRequest?.status).toLowerCase() === 'pending';
+        const replacementRequestPending = order.replacementRequest?.requestedAt && String(order.replacementRequest?.status).toLowerCase() === 'pending';
+        return returnRequestPending || replacementRequestPending;
       }).length;
 
       const cancelledOrders = ordersRes.data.filter(order => order.orderStatus === 'cancelled').length;
@@ -334,7 +334,7 @@ export default function Dashboard({ onLogout }) {
           {activeTab === 'requests' && <OrderList showOnlyRequests={true} />}
           {activeTab === 'products' && <ProductList role={role} permissions={permissions} />}
           {activeTab === 'users' && <UserList />}
-          {activeTab === 'add-product' && <AddProduct />}
+          {activeTab === 'add-product' && <AddProduct />} 
           {activeTab === 'add-kids-product' && <AddKidsProducts />}
           {activeTab === 'faqs' && <FAQManagement />}
           {activeTab === 'product-faqs' && <ProductFAQManagement />}
