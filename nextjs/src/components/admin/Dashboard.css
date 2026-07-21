@@ -539,7 +539,7 @@
 
 .profile-dropdown {
   position: absolute;
-  bottom: calc(100% + 8px);
+  bottom: calc(55% + 8px);
   left: 0;
   width: 100%;
   display: flex;
