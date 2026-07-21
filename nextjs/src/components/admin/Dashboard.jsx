@@ -269,31 +269,31 @@ export default function Dashboard({ onLogout }) {
   {sidebarOpen && <i className={`fa-solid ${profileMenuOpen ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>}
 </button>
 
-{profileMenuOpen && (
-  <div className="profile-dropdown">
-    <div className="profile-dropdown-row">
-      <div className="profile-dropdown-info">
-        <span className="profile-dropdown-title">Appearance</span>
-        <span className="profile-dropdown-desc">Toggle light / dark mode</span>
-      </div>
-      <button 
-        type="button" 
-        className={`theme-toggle-btn-square ${theme}`} 
-        onClick={toggleTheme}
-        aria-label="Toggle theme"
-      >
-        <i className={`fa-solid ${theme === 'dark' ? 'fa-sun' : 'fa-moon'}`}></i>
-      </button>
-    </div>
-    
-    <hr className="profile-dropdown-divider" />
-    
-    <button type="button" className="profile-dropdown-logout" onClick={onLogout}>
-      <i className="fa-solid fa-arrow-right-from-bracket"></i>
-      <span>Logout</span>
-    </button>
-  </div>
-)}
+      {profileMenuOpen && (
+        <div className="profile-dropdown">
+          <div className="profile-dropdown-row">
+            <div className="profile-dropdown-info">
+              <span className="profile-dropdown-title">Appearance</span>
+              <span className="profile-dropdown-desc">Toggle light / dark mode</span>
+            </div>
+            <button 
+              type="button" 
+              className={`theme-toggle-btn-square ${theme}`} 
+              onClick={toggleTheme}
+              aria-label="Toggle theme"
+            >
+              <i className={`fa-solid ${theme === 'dark' ? 'fa-sun' : 'fa-moon'}`}></i>
+            </button>
+          </div>
+          
+          <hr className="profile-dropdown-divider" />
+          
+          <button type="button" className="profile-dropdown-logout" onClick={onLogout}>
+            <i className="fa-solid fa-arrow-right-from-bracket"></i>
+            <span>Logout</span>
+          </button>
+        </div>
+      )}
         </aside>
 
         {/* Main Content */}
