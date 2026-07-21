@@ -255,22 +255,24 @@
 .hamburger::after { bottom: -6px; }
 
 /* =========================================
-   Layout & Sidebar
+   Layout & Sidebar (Fixed Light Mode)
 ========================================= */
 .dashboard-layout {
   display: flex;
   flex: 1;
-  /* max-width: 1600px; */
   width: 100%;
   margin: 0 auto;
 }
 
 .sidebar {
   width: 225px;
+  /* Yahan change karein: #FFFFFF ki jagah var(--sidebar-bg) use karein */
   background-color: var(--sidebar-bg);
+  /* Yahan change karein: #475569 ki jagah var(--sidebar-text) use karein */
   color: var(--sidebar-text);
   transition: width 0.25s ease;
   z-index: 99;
+  /* Yahan change karein: border-right ko bhi var(--sidebar-border) se link karein */
   border-right: 1px solid var(--sidebar-border);
   display: flex;
   flex-direction: column;
