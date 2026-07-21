@@ -252,7 +252,13 @@ export default function Dashboard({ onLogout }) {
                 {sidebarOpen && <span className="collapse-label">Collapse</span>}
               </button>
             </div>
-            <button className="profile-dropdown-toggle" type="button" onClick={() => setProfileMenuOpen((prev) => !prev)}>
+            <button
+              className="profile-dropdown-toggle"
+              type="button"
+              aria-haspopup="true"
+              aria-expanded={profileMenuOpen}
+              onClick={() => setProfileMenuOpen((prev) => !prev)}
+            >
               <div className="profile-avatar">A</div>
               {sidebarOpen && (
                 <div className="profile-meta">
@@ -264,12 +270,15 @@ export default function Dashboard({ onLogout }) {
               {sidebarOpen && <i className={`fa-solid ${profileMenuOpen ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>}
             </button>
 
-            
-
-            {profileMenuOpen && (
+            {sidebarOpen && profileMenuOpen && (
               <div className="profile-dropdown">
-                <button type="button" onClick={toggleTheme}>
-                  <i className={`fa-solid ${theme === 'dark' ? 'fa-sun' : 'fa-moon'}`}></i>
+                <div className="profile-dropdown-header">
+                  <p className="profile-dropdown-title">Appearance</p>
+                  <p className="profile-dropdown-subtitle">Toggle light / dark mode</p>
+                </div>
+                <hr />
+                <button type="button" className="profile-dropdown-action" onClick={toggleTheme}>
+                  <i className={`fa-solid ${theme === 'dark' ? 'fa-sun' : 'fa-moon'}`} aria-hidden="true"></i>
                   <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
                 </button>
               </div>
