@@ -27,9 +27,23 @@ router.get('/', async (req, res) => {
 
         // Build Query
         let query = {};
-        if (category) query.category = category;
-        if (featured === 'true') query.isFeaturedOnHome = true;
-        if (isKidsProduct === 'true') query.isKidsProduct = true;
+
+        // Category filter - case insensitive
+        if (category) {
+            query.category = { $regex: `^${category}$`, $options: 'i' };
+        }
+
+        // Featured filter - string to boolean
+        if (featured === 'true') {
+            query.isFeaturedOnHome = true;
+        }
+
+        // Kids product filter - handle both true and false
+        if (isKidsProduct === 'true') {
+            query.isKidsProduct = true;
+        } else if (isKidsProduct === 'false') {
+            query.isKidsProduct = false;
+        }
 
         // Agar koi filter nahi hai, tabhi cache check karein (Full list ke liye)
         if (!limit && !category && !featured && !isKidsProduct) {
@@ -38,11 +52,8 @@ router.get('/', async (req, res) => {
                 const currencySettings = await getCurrentCurrencySettings();
                 return res.json({
                     products: cachedProducts,
-                    totalPages: 1,
-                    currentPage: 1,
-                    total: cachedProducts.length,
-                    currencySettings,
-                    cached: true
+                    cached: true,
+                    currencySettings
                 });
             }
         }
@@ -54,6 +65,8 @@ router.get('/', async (req, res) => {
         if (limit) productsQuery = productsQuery.limit(parseInt(limit));
 
         const products = await productsQuery;
+
+        console.log(`[GET Products] Query: ${JSON.stringify(query)}, Params: limit=${limit}, category=${category}, featured=${featured}, isKidsProduct=${isKidsProduct}, Found: ${products.length}`);
 
         const productsWithCurrency = products.map(product => {
             let displayPrice = null;

@@ -53,9 +53,12 @@ const Home = () => {
       // Ek saath 3 calls (Parallel) - Sirf utne hi product aayenge jitne chahiye
       try {
         const [best, kids, pjs] = await Promise.all([
-          fetchFilteredProducts({ limit: 8, featured: 'true' }),
+          // Best Sellers: Featured products EXCLUDING kids
+          fetchFilteredProducts({ limit: 8, featured: 'true', isKidsProduct: 'false' }),
+          // Kids Featured: Kids products that are featured
           fetchFilteredProducts({ limit: 4, isKidsProduct: 'true', featured: 'true' }),
-          fetchFilteredProducts({ limit: 8, category: 'pajamas', featured: 'true' })
+          // Pajamas Featured: Pajama category products that are featured
+          fetchFilteredProducts({ limit: 8, category: 'Pajamas', featured: 'true' })
         ]);
 
         setBestSellers(best || []);
