@@ -530,7 +530,19 @@
   cursor: pointer;
 }
 
-.checkbox-label span {\n  line-height: 1.25;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n}\n\n.policy-icon {\n  font-size: 16px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}
+.checkbox-label span {
+  line-height: 1.25;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.policy-icon {
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 /* =========================================
    HELPER / ERROR TEXT
