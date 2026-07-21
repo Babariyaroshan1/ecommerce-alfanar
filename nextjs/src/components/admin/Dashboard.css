@@ -560,15 +560,15 @@
 
 .profile-dropdown {
   position: absolute;
-  bottom: calc(100% + 0.75rem);
-  left: 50%;
+  bottom: calc(95% + 0.75rem);
+  left: 54%;
   transform: translateX(-50%);
-  width: 240px;
-  min-width: 230px;
+  width: 220px;
+  min-width: 215px;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  padding: 1rem;
+  padding: 12px ;
   border-radius: 14px;
   background: var(--bg-card);
   border: 1px solid var(--border-color);
@@ -632,14 +632,14 @@
 }
 
 .profile-dropdown-title {
-  font-size: 0.95rem;
+  font-size: 13px;
   font-weight: 700;
   color: var(--text-main);
   margin: 0;
 }
 
 .profile-dropdown-desc {
-  font-size: 0.78rem;
+  font-size: 12px;
   color: var(--text-muted);
   margin: 0;
 }
@@ -676,14 +676,12 @@
 .theme-toggle-btn-square.light {
   background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
   color: #ffffff;
-  box-shadow: 0 0 0 2px var(--bg-card), 0 0 0 4px #a855f7;
 }
 
 /* Dark Mode (Sun Icon Button with Orange Glow Outline) */
 .theme-toggle-btn-square.dark {
   background: linear-gradient(135deg, #f97316 0%, #facc15 100%);
   color: #ffffff;
-  box-shadow: 0 0 0 2px var(--bg-card), 0 0 0 4px #f97316;
 }
 
 .theme-toggle-btn-square i {
