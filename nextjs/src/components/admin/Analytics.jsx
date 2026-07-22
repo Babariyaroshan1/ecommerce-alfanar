@@ -76,10 +76,10 @@ export default function Analytics() {
     try {
       const response = await axios.get(`${API_URL}/products`, {
         headers: { Authorization: `Bearer ${token}` },
-        params: { limit: 1 } // Just get total count
+        params: { limit: 10000 } // Get total count from all products
       });
       setProductsData({
-        totalProducts: response.data.total || 0
+        totalProducts: response.data.total || response.data.data?.length || 0
       });
       setLastUpdate(new Date());
     } catch (error) {
@@ -101,8 +101,25 @@ export default function Analytics() {
     const symbol = currencySymbols[analyticsCurrency] || currencySettings?.symbol || '₹';
     const value = Number(amount || 0);
     return analyticsCurrency === 'KWD'
-      ? `${symbol}${value.toFixed(3)}`
-      : `${symbol}${value.toLocaleString()}`;
+      ? `${symbol} ${value.toFixed(3)}`
+      : `${symbol} ${value.toLocaleString()}`;
+  };
+
+  const renderCurrencyValue = (amount) => {
+    const symbol = currencySymbols[analyticsCurrency] || currencySettings?.symbol || '₹';
+    const value = Number(amount || 0);
+    const formattedValue = analyticsCurrency === 'KWD'
+      ? value.toFixed(3)
+      : value.toLocaleString();
+    
+    if (analyticsCurrency === 'KWD') {
+      return (
+        <>
+          <span className="currency-code">{symbol}</span> {formattedValue}
+        </>
+      );
+    }
+    return `${symbol} ${formattedValue}`;
   };
 
   const formatDate = (dateString) => {
@@ -269,7 +286,7 @@ export default function Analytics() {
               <div className="metric-icon bg-green"><i className="fas fa-wallet"></i></div>
               <div className="metric-content">
                 <h3>Total Revenue</h3>
-                <p className="metric-value">{formatCurrency(analyticsData.totalRevenue)}</p>
+                <p className="metric-value">{renderCurrencyValue(analyticsData.totalRevenue)}</p>
               </div>
             </div>
             <div className="metric-card">
@@ -318,7 +335,7 @@ export default function Analytics() {
               <div className="metric-icon bg-yellow"><i className="fas fa-chart-line"></i></div>
               <div className="metric-content">
                 <h3>Avg Order Value</h3>
-                <p className="metric-value">{formatCurrency(analyticsData.averageOrderValue)}</p>
+                <p className="metric-value">{renderCurrencyValue(analyticsData.averageOrderValue)}</p>
               </div>
             </div>
           </div>
