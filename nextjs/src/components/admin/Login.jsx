@@ -67,8 +67,11 @@ export default function Login({ onLogin }) {
             onClick={toggleTheme}
             aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
           >
-            <span>{theme === 'dark' ? '☀️' : '🌙'}</span>
-            <span>{theme === 'dark' ? 'Light' : 'Dark'}</span>
+            {theme === 'dark' ? (
+              <i className="fa-solid fa-sun"></i>
+            ) : (
+              <i className="fa-solid fa-moon"></i>
+            )}
           </button>
         </div>
         <form onSubmit={handleSubmit}>
