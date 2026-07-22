@@ -358,7 +358,9 @@
   background: var(--sidebar-active);
   color: var(--sidebar-accent);
   border-radius: 12px;
+  border: 1px solid;
 }
+
 
 .nav-item.active .nav-icon {
   color: var(--sidebar-accent);
