@@ -313,12 +313,20 @@
   font-size: 0.9rem;
 }
 
+[data-theme='dark'] .customer-phone {
+  color: #cbd5e1;
+}
+
 .order-address {
   white-space: pre-line;
   color: #333;
   font-size: 0.9rem;
   line-height: 1.4;
   max-width: 360px;
+}
+
+[data-theme='dark'] .order-address {
+  color: #cbd5e1;
 }
 
 .order-id-row {
@@ -341,12 +349,20 @@
   color: #4b5563;
 }
 
+[data-theme='dark'] .order-timeline {
+  color: #94a3b8;
+}
+
 .order-details {
   white-space: pre-line;
   color: #555;
   font-size: 0.85rem;
   line-height: 1.5;
   max-width: 300px;
+}
+
+[data-theme='dark'] .order-details {
+  color: #cbd5e1;
 }
 
 /* Price cell styling - prevent truncation of decimal places */
@@ -593,6 +609,10 @@
   color: #1f2937;
   font-weight: 700;
   width: 100%;
+}
+
+[data-theme='dark'] .order-item-name {
+  color: #f1f5f9;
 }
 
 .order-item-image-btn {
