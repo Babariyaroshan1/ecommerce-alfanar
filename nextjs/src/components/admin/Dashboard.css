@@ -1133,8 +1133,15 @@ table tbody tr:hover {
   border-radius: 10px;
   font-size: 0.95rem;
   color: var(--text-main);
-  background: #F8FAFC;
+  background: var(--bg-card);
   transition: var(--transition);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder,
+.form-group select::placeholder,
+.search-input::placeholder {
+  color: var(--text-muted);
 }
 
 .form-group input:focus,
@@ -1143,7 +1150,7 @@ table tbody tr:hover {
 .search-input:focus {
   outline: none;
   border-color: var(--primary);
-  background: white;
+  background: var(--bg-card);
   box-shadow: 0 0 0 4px rgba(67, 24, 255, 0.1);
 }
 
@@ -1155,7 +1162,18 @@ table tbody tr:hover {
 
 .search-input {
   margin-bottom: 1.5rem;
-  background: white;
+  background: var(--bg-card);
+}
+
+.admin-settings-section {
+  color: var(--text-main);
+}
+
+.admin-settings-section .text-muted,
+.admin-settings-section p,
+.admin-settings-section li,
+.admin-settings-section span {
+  color: var(--text-main);
 }
 
 /* =========================================

@@ -52,7 +52,7 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  border: 1.5px solid linear-gradient(90deg, var(--primary) 0%, #8b5cf6 100%);
+  border: 1.5px solid var(--primary, #8b5cf6);
   background: transparent;
   transition: all 0.2s ease;
 }
@@ -60,6 +60,7 @@
 .passcode-dots .dot.filled {
   background: linear-gradient(90deg, var(--primary) 0%, #8b5cf6 100%);
   box-shadow: 0 0 10px rgba(98, 0, 157, 0.45);
+  border-color: transparent;
 }
 
 .history-error {
@@ -147,6 +148,27 @@
 .unlock-btn-wide:disabled {
   background: #1e293b;
   cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .admin-coadmin-container {
+    padding: 20px;
+    max-width: 100%;
+  }
+
+  .ios-lock-wrapper {
+    max-width: 100%;
+  }
+
+  .keypad {
+    gap: 10px;
+  }
+
+  .key-btn {
+    width: 56px;
+    height: 56px;
+    font-size: 1.1rem;
+  }
 }
 
 .permission-dashboard {

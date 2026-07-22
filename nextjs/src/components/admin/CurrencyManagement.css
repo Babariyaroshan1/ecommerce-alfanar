@@ -2,6 +2,8 @@
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
+  background: var(--bg-body, #f5f7fb);
+  color: var(--text-main, #0f172a);
 }
 
 .currency-header {
@@ -9,13 +11,13 @@
 }
 
 .currency-header h2 {
-  color: #333;
+  color: var(--text-main, #0f172a);
   margin-bottom: 10px;
   font-size: 24px;
 }
 
 .currency-header p {
-  color: #666;
+  color: var(--text-muted, #64748b);
   margin: 0;
 }
 
@@ -45,20 +47,21 @@
 }
 
 .current-settings,
-.currency-selector,
+.currency-settings,
 .currency-info {
-  background: white;
+  background: var(--bg-card, #ffffff);
+  border: 1px solid var(--border-color, #e2e8f0);
   border-radius: 8px;
   padding: 20px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: var(--shadow-sm, 0 2px 4px rgba(0,0,0,0.1));
 }
 
 .current-settings h3,
-.currency-selector h3,
+.currency-settings h3,
 .currency-info h3 {
   margin-top: 0;
   margin-bottom: 20px;
-  color: #333;
+  color: var(--text-main, #0f172a);
   font-size: 18px;
 }
 
@@ -82,21 +85,23 @@
 
 .label {
   font-weight: 600;
-  color: #555;
+  color: var(--text-main, #0f172a);
 }
 
 .value {
-  color: #333;
+  color: var(--text-main, #0f172a);
   font-weight: 500;
 }
 
 .country-select {
   width: 100%;
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color, #ddd);
   border-radius: 4px;
   font-size: 14px;
   margin-bottom: 20px;
+  background: var(--bg-card, #ffffff);
+  color: var(--text-main, #0f172a);
 }
 
 .navbar-toggle-group {
@@ -157,7 +162,7 @@
 
 .toggle-label {
   font-weight: 600;
-  color: #555;
+  color: var(--text-main, #0f172a);
 }
 
 .toggle-label.on {
@@ -169,7 +174,7 @@
 }
 
 .preview {
-  background: #f8f9fa;
+  background: var(--bg-surface, #f8f9fa);
   padding: 15px;
   border-radius: 6px;
   margin-bottom: 20px;
@@ -178,7 +183,7 @@
 .preview h4 {
   margin-top: 0;
   margin-bottom: 10px;
-  color: #333;
+  color: var(--text-main, #0f172a);
 }
 
 .preview-item {
@@ -230,7 +235,7 @@
 
 .currency-info li {
   margin-bottom: 8px;
-  color: #555;
+  color: var(--text-muted, #64748b);
   line-height: 1.5;
 }
 
@@ -241,7 +246,7 @@
 }
 
 [data-theme='dark'] .currency-management .current-settings,
-[data-theme='dark'] .currency-management .currency-selector,
+[data-theme='dark'] .currency-management .currency-settings,
 [data-theme='dark'] .currency-management .currency-info,
 [data-theme='dark'] .currency-management .preview {
   background: var(--bg-card, #1e293b);
@@ -249,14 +254,19 @@
   border-color: var(--border-color, rgba(255, 255, 255, 0.12));
 }
 
+[data-theme='dark'] .currency-management .currency-header h2,
+[data-theme='dark'] .currency-management .current-settings h3,
+[data-theme='dark'] .currency-management .currency-settings h3,
+[data-theme='dark'] .currency-management .currency-info h3,
 [data-theme='dark'] .currency-management .label,
 [data-theme='dark'] .currency-management .value,
 [data-theme='dark'] .currency-management .toggle-label,
-[data-theme='dark'] .currency-management .currency-info li,
-[data-theme='dark'] .currency-management .preview h4 {
+[data-theme='dark'] .currency-management .preview h4,
+[data-theme='dark'] .currency-management .help-text {
   color: var(--text-main, #f8fafc);
 }
 
+[data-theme='dark'] .currency-management .currency-header p,
 [data-theme='dark'] .currency-management .currency-info li {
   color: var(--text-muted, #94a3b8);
 }
@@ -266,6 +276,11 @@
   background: var(--bg-surface, #111827);
   color: var(--text-main, #f8fafc);
   border-color: var(--border-color, rgba(255, 255, 255, 0.12));
+}
+
+[data-theme='dark'] .currency-management .form-group label,
+[data-theme='dark'] .currency-management .form-group input::placeholder {
+  color: var(--text-main, #f8fafc);
 }
 
 @media (max-width: 768px) {

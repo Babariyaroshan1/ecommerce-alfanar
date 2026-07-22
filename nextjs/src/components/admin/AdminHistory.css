@@ -63,16 +63,16 @@
   flex-direction: column;
   align-items: center;
   padding: 40px 50px;
-  background: #111115;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--bg-card, #111115);
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.05));
   border-radius: 28px;
   box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
 }
 
 .ah-lock-title {
-  color: #fafafa;
+  color: var(--text-main, #fafafa);
   font-size: 1.05rem;
   font-weight: 500;
   margin-bottom: 25px;
@@ -81,6 +81,7 @@
 
 .ah-passcode-dots {
   display: flex;
+  justify-content: center;
   gap: 18px;
   margin-bottom: 40px;
   height: 20px;
@@ -91,22 +92,25 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  border: 1.5px solid linear-gradient(90deg, var(--primary) 0%, #8b5cf6 100%);
+  border: 1.5px solid var(--primary, #8b5cf6);
   background: transparent;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .ah-dot.filled {
-  background: linear-gradient(90deg, var(--primary) 0%, #8b5cf6 100%); 
+  background: linear-gradient(90deg, var(--primary) 0%, #8b5cf6 100%);
   box-shadow: 0 0 12px rgba(98, 0, 157, 0.6);
   transform: scale(1.1);
+  border-color: transparent;
 }
 
 .ah-keypad {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
   margin-bottom: 30px;
+  width: 100%;
+  max-width: 280px;
 }
 
 .ah-key-btn {
@@ -114,8 +118,8 @@
   height: 70px;
   border-radius: 50%;
   border: none;
-  background: rgba(255, 255, 255, 0.04);
-  color: #fafafa;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-main, #fafafa);
   font-size: 1.6rem;
   font-weight: 400;
   cursor: pointer;
@@ -123,6 +127,7 @@
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
+  margin: 0 auto;
 }
 
 .ah-key-btn:hover {
@@ -201,6 +206,28 @@
 @keyframes ahFadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 640px) {
+  .ah-container {
+    padding: 20px;
+  }
+
+  .ah-lock-card {
+    padding: 28px 18px;
+    max-width: 100%;
+  }
+
+  .ah-keypad {
+    gap: 12px;
+    max-width: 100%;
+  }
+
+  .ah-key-btn {
+    width: 62px;
+    height: 62px;
+    font-size: 1.35rem;
+  }
 }
 
 /* ---------------------------------

@@ -11,11 +11,24 @@
   color: #f3f4f6;
 }
 .history-topbar {
-    border-bottom: 1px solid #27272a;
-    align-items: flex-start;
-    padding-bottom: 0;
-    display: flex;
-    flex-direction: column;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  align-items: flex-start;
+  padding-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.history-topbar h3 {
+  margin: 0 0 6px;
+  font-size: 1.4rem;
+  color: var(--text-main, #f8fafc);
+}
+
+.history-topbar p {
+  font-size: 0.85rem;
+  color: var(--text-muted, #94a3b8);
+  margin: 0;
 }
 /* Page Title */
 .coadmin-management-container .page-title {
@@ -30,7 +43,7 @@
 }
 
 .coadmin-management-container .page-title i {
-  color:   linear-gradient(90deg, var(--primary) 0%, #8b5cf6 100%);
+  color: var(--primary, #8b5cf6);
   font-size: 1.5rem;
 }
 
@@ -146,7 +159,7 @@
 
 .alert-error {
   background: rgba(239, 68, 68, 0.1);
-  color: linear-gradient(90deg, var(--primary) 0%, #8b5cf6 100%);
+  color: #fca5a5;
   border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
@@ -195,7 +208,7 @@
 .input-wrapper input:focus,
 .password-input-wrapper input:focus {
   outline: none;
-  border-color: linear-gradient(90deg, var(--primary) 0%, #8b5cf6 100%);
+  border-color: var(--primary, #8b5cf6);
   background: rgba(98, 0, 157, 0.05);
   box-shadow: 0 0 0 2px rgba(98, 0, 157, 0.2);
 }
@@ -215,7 +228,7 @@
   justify-content: center;
 }
 
-.toggle-password:hover { color: linear-gradient(90deg, var(--primary) 0%, #8b5cf6 100%); }
+.toggle-password:hover { color: var(--primary, #8b5cf6); }
 
 /* Submit Button */
 .btn-submit {
@@ -347,7 +360,8 @@
   margin: 0 auto;
 }
 .ios-lock-title {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  color: var(--text-muted, #94a3b8);
   margin-bottom: 15px;
 }
 .passcode-dots {
@@ -360,10 +374,13 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  border: 1px solid  linear-gradient(90deg, var(--primary) 0%, #8b5cf6 100%);
+  border: 1px solid var(--primary, #8b5cf6);
+  background: transparent;
 }
+
 .passcode-dots .dot.filled {
   background: linear-gradient(90deg, var(--primary) 0%, #8b5cf6 100%);
+  border-color: transparent;
 }
 .keypad {
   display: grid;
