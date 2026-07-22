@@ -1214,6 +1214,20 @@
   background: #c100c1;
 }
 
+/* Dark Mode - Remove hover effect from table rows */
+[data-theme='dark'] .order-table tr:hover {
+  background-color: inherit;
+}
+
+
+[data-theme='dark'] .order-table tbody tr:nth-child(odd) {
+  background-color: inherit;
+}
+
+[data-theme='dark'] .order-table tbody tr:nth-child(even) {
+  background-color: inherit;
+}
+
 @media (max-width: 1024px) {
   .returned-orders-grid {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
