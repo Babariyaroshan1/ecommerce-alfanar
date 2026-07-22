@@ -69,7 +69,7 @@
   flex: 1;
   padding: 10px 12px;
   border: 1px solid #cbd5e1;
-  background: #8c5aff;
+  background: rgb(1, 1, 1);
   color: #ffffff !important;
   font-weight: 600;
   border-radius: 10px;
@@ -80,7 +80,7 @@
 .currency-toggle.active,
 .currency-toggle:hover {
   background: #7c44ff;
-  border-color: #000000;
+  border-color: #ffffff;
   color: #ffffff;
 }
 
@@ -553,10 +553,11 @@
   background: var(--table-row-hover, rgba(148, 163, 184, 0.16));
 }
 
-[data-theme='dark'] .analytics-page .metric-icon,
+/* Commented out to allow icon colors to show properly in dark mode */
+/* [data-theme='dark'] .analytics-page .metric-icon,
 [data-theme='dark'] .analytics-page .metric-icon i {
   color: inherit !important;
-}
+} */
 
 /* Responsive Design */
 @media (max-width: 1024px) {

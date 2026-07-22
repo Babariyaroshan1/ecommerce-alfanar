@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import axios from 'axios';
 import './OrderList.css';
 
@@ -70,10 +70,78 @@ export default function OrderList({ showOnlyRequests = false }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeSearchTerm, setActiveSearchTerm] = useState('');
   const token = localStorage.getItem('adminToken');
+  const lastSeenOrderIdsRef = useRef(new Set());
+  const audioContextRef = useRef(null);
+  const audioUnlockedRef = useRef(false);
+
+  const unlockAudio = useCallback(() => {
+    if (typeof window === 'undefined' || audioUnlockedRef.current) return;
+
+    try {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) return;
+
+      const audioContext = audioContextRef.current || new AudioContextClass();
+      audioContextRef.current = audioContext;
+
+      if (audioContext.state === 'suspended') {
+        void audioContext.resume();
+      }
+
+      audioUnlockedRef.current = true;
+    } catch (error) {
+      console.error('Failed to unlock audio context:', error);
+    }
+  }, []);
+
+  const playNewOrderAlert = useCallback(() => {
+    if (typeof window === 'undefined') return;
+
+    unlockAudio();
+
+    try {
+      const audioContext = audioContextRef.current;
+      if (!audioContext) return;
+
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+
+      oscillator.type = 'triangle';
+      oscillator.frequency.setValueAtTime(880, audioContext.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(1180, audioContext.currentTime + 0.15);
+
+      gainNode.gain.setValueAtTime(0.0001, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.16, audioContext.currentTime + 0.01);
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.25);
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      oscillator.start();
+      oscillator.stop(audioContext.currentTime + 0.25);
+    } catch (error) {
+      console.error('Failed to play new order alert sound:', error);
+    }
+  }, [unlockAudio]);
 
   useEffect(() => {
     fetchOrders();
   }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handleUserInteraction = () => unlockAudio();
+    window.addEventListener('click', handleUserInteraction, { once: true });
+    window.addEventListener('keydown', handleUserInteraction, { once: true });
+    window.addEventListener('touchstart', handleUserInteraction, { once: true });
+
+    return () => {
+      window.removeEventListener('click', handleUserInteraction);
+      window.removeEventListener('keydown', handleUserInteraction);
+      window.removeEventListener('touchstart', handleUserInteraction);
+    };
+  }, [unlockAudio]);
 
   const fetchOrders = async (manualRefresh = false) => {
     if (manualRefresh) setIsRefreshing(true);
@@ -81,12 +149,31 @@ export default function OrderList({ showOnlyRequests = false }) {
       const res = await axios.get(`${API_URL}/orders/admin/all`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setOrders(res.data);
+
+      const fetchedOrders = Array.isArray(res.data) ? res.data : [];
+      const currentOrderIds = new Set(fetchedOrders.map((order) => order?._id).filter(Boolean));
+
+      if (lastSeenOrderIdsRef.current.size > 0) {
+        const newOrders = fetchedOrders.filter((order) => order?._id && !lastSeenOrderIdsRef.current.has(order._id));
+        if (newOrders.length > 0) {
+          playNewOrderAlert();
+          const newOrderId = newOrders[0]?._id;
+          if (newOrderId) {
+            setHighlightedOrderId(newOrderId);
+            window.setTimeout(() => {
+              setHighlightedOrderId((currentId) => (currentId === newOrderId ? null : currentId));
+            }, 5000);
+          }
+        }
+      }
+
+      lastSeenOrderIdsRef.current = currentOrderIds;
+      setOrders(fetchedOrders);
       setLastUpdate(new Date());
 
       // Auto accept pending orders if enabled
       if (autoAccept) {
-        await processPendingOrders(res.data, false);
+        await processPendingOrders(fetchedOrders, false);
       }
 
       setLoading(false);

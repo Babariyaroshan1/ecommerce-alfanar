@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './Login.css';
 
@@ -11,6 +11,14 @@ export default function Login({ onLogin }) {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [theme, setTheme] = useState(() => {
+    if (typeof window === 'undefined') return 'light';
+
+    const savedTheme = localStorage.getItem('admin-login-theme');
+    if (savedTheme) return savedTheme;
+
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,14 +37,40 @@ export default function Login({ onLogin }) {
     }
   };
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    localStorage.setItem('admin-login-theme', theme);
+    document.documentElement.setAttribute('data-theme', theme);
+    document.documentElement.style.colorScheme = theme;
+  }, [theme]);
+
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
+  };
+
+  const toggleTheme = () => {
+    setTheme((currentTheme) => (currentTheme === 'dark' ? 'light' : 'dark'));
   };
 
   return (
     <div className="login-container">
       <div className="login-form">
-        <h2>Admin Login</h2>
+        <div className="login-card-header">
+          <div>
+            <p className="login-eyebrow">Secure Access</p>
+            <h2>Admin Login</h2>
+          </div>
+          <button
+            type="button"
+            className="theme-toggle-btn"
+            onClick={toggleTheme}
+            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          >
+            <span>{theme === 'dark' ? '☀️' : '🌙'}</span>
+            <span>{theme === 'dark' ? 'Light' : 'Dark'}</span>
+          </button>
+        </div>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Username:</label>

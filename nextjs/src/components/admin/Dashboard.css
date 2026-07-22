@@ -842,10 +842,11 @@
   color: #bfdbfe !important;
 }
 
-:root[data-theme='dark'] .dashboard-content .metric-icon,
+/* Commented out to allow icon colors to show properly in dark mode */
+/* :root[data-theme='dark'] .dashboard-content .metric-icon,
 :root[data-theme='dark'] .dashboard-content .metric-icon i {
   color: currentColor !important;
-}
+} */
 
 :root[data-theme='dark'] .dashboard-content .custom-select-options,
 :root[data-theme='dark'] .dashboard-content .dropdown-menu {
