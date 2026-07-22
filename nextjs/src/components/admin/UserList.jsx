@@ -177,14 +177,14 @@ export default function UserList() {
             <p className="user-list-subtitle">Manage registered users and customer information.</p>
           </div>
 
-          <div className="search-container">
-            <i className="fa-solid fa-magnifying-glass search-icon" />
+          <div className="user-search-container">
+            <i className="fa-solid fa-magnifying-glass user-search-icon" />
             <input
               type="text"
               placeholder="Search by name, email, or phone..."
               value={searchTerm}
               onChange={(event) => setSearchTerm(event.target.value)}
-              className="search-input"
+              className="user-search-input"
             />
           </div>
         </div>
