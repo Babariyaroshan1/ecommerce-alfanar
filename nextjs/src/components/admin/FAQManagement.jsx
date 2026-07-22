@@ -120,7 +120,7 @@ export default function FAQManagement() {
           <form onSubmit={handleSubmit} className="faq-form">
             <h3>{editingFaq ? 'Edit FAQ' : 'Add New FAQ'}</h3>
 
-            <div className="form-group">
+            <div className="faq-form-group">
               <label>Question *</label>
               <input
                 type="text"
@@ -131,7 +131,7 @@ export default function FAQManagement() {
               />
             </div>
 
-            <div className="form-group">
+            <div className="faq-form-group">
               <label>Answer *</label>
               <textarea
                 value={formData.answer}
@@ -142,7 +142,7 @@ export default function FAQManagement() {
               />
             </div>
 
-            <div className="form-actions">
+            <div className="faq-form-actions">
               <button type="submit" disabled={loading} className="save-btn">
                 {loading ? 'Saving...' : (editingFaq ? 'Update FAQ' : 'Create FAQ')}
               </button>

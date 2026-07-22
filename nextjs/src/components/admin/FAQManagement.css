@@ -64,32 +64,34 @@
   color: var(--text-main, #333);
 }
 
-.form-group {
+.faq-form-group {
   margin-bottom: 15px;
 }
 
-.form-group label {
+.faq-form-group label {
   display: block;
   margin-bottom: 5px;
   font-weight: bold;
   color: var(--text-main, #555);
 }
 
-.form-group input,
-.form-group textarea {
+.faq-form-group input,
+.faq-form-group textarea {
   width: 100%;
   padding: 10px;
   border: 1px solid var(--border-color, #ddd);
   border-radius: 4px;
   font-size: 14px;
+  background: var(--bg-surface, #fff);
+  color: var(--text-main, #111);
 }
 
-.form-group textarea {
+.faq-form-group textarea {
   resize: vertical;
   min-height: 100px;
 }
 
-.form-actions {
+.faq-form-actions {
   display: flex;
   gap: 10px;
   margin-top: 20px;
@@ -201,4 +203,45 @@
 
 .delete-btn:hover {
   background: #c82333;
+}
+
+:root[data-theme='dark'] .faq-management,
+:root[data-theme='dark'] .faq-form-container,
+:root[data-theme='dark'] .faq-item,
+:root[data-theme='dark'] .faq-form {
+  background: #0f172a;
+  color: #f8fafc;
+  border-color: rgba(148, 163, 184, 0.24);
+}
+
+:root[data-theme='dark'] .faq-header h2,
+:root[data-theme='dark'] .faq-form h3,
+:root[data-theme='dark'] .faq-list-header h3,
+:root[data-theme='dark'] .faq-content h4 {
+  color: #f8fafc;
+}
+
+:root[data-theme='dark'] .faq-content p,
+:root[data-theme='dark'] .no-faqs,
+:root[data-theme='dark'] .faq-form-group label {
+  color: #94a3b8;
+}
+
+:root[data-theme='dark'] .faq-form-group input,
+:root[data-theme='dark'] .faq-form-group textarea {
+  background: #111827;
+  color: #f8fafc;
+  border-color: rgba(148, 163, 184, 0.24);
+}
+
+:root[data-theme='dark'] .faq-form-group input::placeholder,
+:root[data-theme='dark'] .faq-form-group textarea::placeholder {
+  color: #94a3b8;
+}
+
+:root[data-theme='dark'] .faq-form-group input:focus,
+:root[data-theme='dark'] .faq-form-group textarea:focus {
+  background: #111827;
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
 }

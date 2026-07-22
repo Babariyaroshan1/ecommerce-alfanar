@@ -488,90 +488,90 @@ const AddProduct = () => {
         onClose={() => setNotificationOpen(false)}
       />
 
-      <form onSubmit={handleSubmit} className="product-form">
-        <div className="form-section full-width">
+      <form onSubmit={handleSubmit} className="add-product-form">
+        <div className="add-product-form-section add-product-full-width">
           <h3>Basic Details</h3>
-          <div className="form-grid two-col">
-            <div className="form-group">
+          <div className="add-product-form-grid add-product-two-col">
+            <div className="add-product-form-group">
               <label>Product Name *</label>
               <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Enter product name" required />
             </div>
 
-            <div className="form-group category-group">
+            <div className="add-product-form-group add-product-category-group">
               <label>Category *</label>
-              <div className="category-input-row">
-                <div className="custom-select-wrapper" ref={dropdownRef}>
-                  <div className={`custom-select-trigger ${!formData.category ? 'placeholder' : ''}`} onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+              <div className="add-product-category-input-row">
+                <div className="add-product-custom-select-wrapper" ref={dropdownRef}>
+                  <div className={`add-product-custom-select-trigger ${!formData.category ? 'placeholder' : ''}`} onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
                     {formData.category || 'Select Category'}
                     <span>▼</span>
                   </div>
                   {isDropdownOpen && (
-                    <div className="custom-select-options">
+                    <div className="add-product-custom-select-options">
                       {categories.map((category) => (
-                        <div key={category} className="custom-select-option">
+                        <div key={category} className="add-product-custom-select-option">
                           <span className="cat-text" onClick={() => { setFormData((prev) => ({ ...prev, category })); setShowCustomCategory(false); setIsDropdownOpen(false); }}>
                             {category}
                           </span>
-                          <button type="button" className="delete-cat-dropdown-btn" onClick={(e) => { e.stopPropagation(); handleDeleteCategory(category); }}>×</button>
+                          <button type="button" className="add-product-delete-cat-dropdown-btn" onClick={(e) => { e.stopPropagation(); handleDeleteCategory(category); }}>×</button>
                         </div>
                       ))}
-                      <div className="custom-select-option custom-option-add" onClick={() => { setShowCustomCategory(true); setFormData((prev) => ({ ...prev, category: '' })); setIsDropdownOpen(false); }}>
+                      <div className="add-product-custom-select-option add-product-custom-option-add" onClick={() => { setShowCustomCategory(true); setFormData((prev) => ({ ...prev, category: '' })); setIsDropdownOpen(false); }}>
                         + Custom Category
                       </div>
                     </div>
                   )}
                 </div>
-                <button type="button" className="custom-category-btn" onClick={() => { setShowCustomCategory(true); setFormData((prev) => ({ ...prev, category: '' })); }}>
+                <button type="button" className="add-product-custom-category-btn" onClick={() => { setShowCustomCategory(true); setFormData((prev) => ({ ...prev, category: '' })); }}>
                   Custom
                 </button>
               </div>
               {showCustomCategory && (
-                <div className="custom-category-row">
+                <div className="add-product-custom-category-row">
                   <input type="text" value={formData.category} onChange={(e) => setFormData((prev) => ({ ...prev, category: e.target.value }))} placeholder="Enter custom category" />
-                  <button type="button" className="add-category-btn" onClick={() => handleAddCategory(formData.category)}>Add</button>
+                  <button type="button" className="add-product-add-category-btn" onClick={() => handleAddCategory(formData.category)}>Add</button>
                 </div>
               )}
             </div>
           </div>
 
-          <div className="form-group">
+          <div className="add-product-form-group">
             <label>Description</label>
             <textarea name="description" value={formData.description} onChange={handleChange} placeholder="Enter product description" rows="5" />
           </div>
 
-          <div className="form-grid two-col">
-            <div className="form-group">
+          <div className="add-product-form-grid add-product-two-col">
+            <div className="add-product-form-group">
               <label>Material & Care (Optional)</label>
               <textarea name="materialAndCare" value={formData.materialAndCare} onChange={handleChange} placeholder="e.g., 100% Cotton. Wash in cold water. Do not bleach." rows="3" />
             </div>
-            <div className="form-group">
+            <div className="add-product-form-group">
               <label>Country of Origin (Optional)</label>
               <input type="text" name="countryOfOrigin" value={formData.countryOfOrigin} onChange={handleChange} placeholder="e.g., India" />
             </div>
           </div>
         </div>
 
-        <div className="form-section full-width">
+        <div className="add-product-form-section add-product-full-width">
           <h3>Price Details</h3>
-          <div className="form-grid two-col">
-            <div className="form-group">
+          <div className="add-product-form-grid add-product-two-col">
+            <div className="add-product-form-group">
               <label>Price ({currencySettings?.symbol || '₹'}) *</label>
               <input type="number" name="price" value={formData.price} onChange={handleChange} placeholder="0.000" step="0.001" min="0" required />
             </div>
-            <div className="form-group">
+            <div className="add-product-form-group">
               <label>Original Price ({currencySettings?.symbol || '₹'})</label>
               <input type="number" name="originalPrice" value={formData.originalPrice} onChange={handleChange} placeholder="Optional old price" step="0.001" min="0" />
             </div>
           </div>
         </div>
 
-        <div className="form-section full-width">
-          <div className="price-settings-row">
-            <div className="price-box">
+        <div className="add-product-form-section add-product-full-width">
+          <div className="add-product-price-settings-row">
+            <div className="add-product-price-box">
               <h3>Multi-Currency Prices Optional</h3>
-              <div className="compact-currency-grid">
+              <div className="add-product-compact-currency-grid">
                 {CURRENCIES.map((currency) => (
-                  <div key={currency.code} className="currency-card">
+                  <div key={currency.code} className="add-product-currency-card">
                     <label>{currency.symbol} {currency.name} Price</label>
                     <input type="number" value={formData.prices?.[currency.code] || ''} onChange={(e) => handlePriceChange(currency.code, e.target.value)} placeholder={`Price in ${currency.code}`} step="0.001" min="0" />
                     <label>{currency.symbol} {currency.name} Original Price</label>
@@ -581,47 +581,47 @@ const AddProduct = () => {
               </div>
             </div>
 
-            <div className="settings-box">
+            <div className="add-product-settings-box">
               <h3>Product Settings</h3>
-              <div className="compact-toggle-row">
-                <div className="toggle-switch-container">
-                  <label className="toggle-switch">
+              <div className="add-product-compact-toggle-row">
+                <div className="add-product-toggle-switch-container">
+                  <label className="add-product-toggle-switch">
                     <input type="checkbox" checked={formData.allowReturn} onChange={() => setFormData((prev) => ({ ...prev, allowReturn: !prev.allowReturn }))} />
-                    <span className="toggle-switch-ord "></span>
+                    <span className="add-product-toggle-switch-ord "></span>
                   </label>
-                  <span className="toggle-label">{formData.allowReturn ? '↩ Return Available' : '↩ Return Not Available'}</span>
+                  <span className="add-product-toggle-label">{formData.allowReturn ? '↩ Return Available' : '↩ Return Not Available'}</span>
                 </div>
-                <div className="toggle-switch-container">
-                  <label className="toggle-switch">
+                <div className="add-product-toggle-switch-container">
+                  <label className="add-product-toggle-switch">
                     <input type="checkbox" checked={formData.allowReplacement} onChange={() => setFormData((prev) => ({ ...prev, allowReplacement: !prev.allowReplacement }))} />
-                    <span className="toggle-switch-ord "></span>
+                    <span className="add-product-toggle-switch-ord "></span>
                   </label>
-                  <span className="toggle-label">{formData.allowReplacement ? <><i className="fa-solid fa-repeat"></i> Replacement Available</> : <><i className="fa-solid fa-repeat"></i> Replacement Not Available</>}</span>
+                  <span className="add-product-toggle-label">{formData.allowReplacement ? <><i className="fa-solid fa-repeat"></i> Replacement Available</> : <><i className="fa-solid fa-repeat"></i> Replacement Not Available</>}</span>
                 </div>
-                <div className="toggle-switch-container">
-                  <label className="toggle-switch">
+                <div className="add-product-toggle-switch-container">
+                  <label className="add-product-toggle-switch">
                     <input type="checkbox" checked={formData.isNew} onChange={() => setFormData((prev) => ({ ...prev, isNew: !prev.isNew }))} />
-                    <span className="toggle-switch-ord "></span>
+                    <span className="add-product-toggle-switch-ord "></span>
                   </label>
-                  <span className="toggle-label">{formData.isNew ? <><i className="fa-solid fa-star"></i> Marked as New Arrival</> : 'Mark as New Arrival'}</span>
+                  <span className="add-product-toggle-label">{formData.isNew ? <><i className="fa-solid fa-star"></i> Marked as New Arrival</> : 'Mark as New Arrival'}</span>
                 </div>
-                <div className="toggle-switch-container">
-                  <label className="toggle-switch">
+                <div className="add-product-toggle-switch-container">
+                  <label className="add-product-toggle-switch">
                     <input type="checkbox" checked={formData.isFeaturedOnHome} onChange={() => setFormData((prev) => ({ ...prev, isFeaturedOnHome: !prev.isFeaturedOnHome }))} />
-                    <span className="toggle-switch-ord "></span>
+                    <span className="add-product-toggle-switch-ord "></span>
                   </label>
-                  <span className="toggle-label">{formData.isFeaturedOnHome ? <><i className="fa-solid fa-star"></i> Featured on Home Page</> : 'Feature on Home Page'}</span>
+                  <span className="add-product-toggle-label">{formData.isFeaturedOnHome ? <><i className="fa-solid fa-star"></i> Featured on Home Page</> : 'Feature on Home Page'}</span>
                 </div>
-                <div className="toggle-switch-container">
-                  <label className="toggle-switch">
+                <div className="add-product-toggle-switch-container">
+                  <label className="add-product-toggle-switch">
                     <input type="checkbox" checked={formData.showSimilarProductButton} onChange={() => setFormData((prev) => ({ ...prev, showSimilarProductButton: !prev.showSimilarProductButton }))} />
-                    <span className="toggle-switch-ord "></span>
+                    <span className="add-product-toggle-switch-ord "></span>
                   </label>
-                  <span className="toggle-label">{formData.showSimilarProductButton ? <><i className="fa-solid fa-palette"></i> Show Same Color Button</> : 'Hide Same Color Button'}</span>
+                  <span className="add-product-toggle-label">{formData.showSimilarProductButton ? <><i className="fa-solid fa-palette"></i> Show Same Color Button</> : 'Hide Same Color Button'}</span>
                 </div>
               </div>
               {formData.showSimilarProductButton && (
-                <div className="form-group similar-products-input">
+                <div className="add-product-form-group add-product-similar-products-input">
                   <label>Similar Product IDs comma-separated</label>
                   <input type="text" name="similarProducts" value={formData.similarProducts} onChange={handleChange} placeholder="e.g., 64a1b2c3d4e5f6789" />
                 </div>
@@ -630,32 +630,32 @@ const AddProduct = () => {
           </div>
         </div>
 
-        <div className="form-section full-width">
+        <div className="add-product-form-section add-product-full-width">
           <h3>Images</h3>
-          <div className="form-grid two-col">
-            <div className="form-group">
+          <div className="add-product-form-grid add-product-two-col">
+            <div className="add-product-form-group">
               <label>Main Product Image</label>
-              <div className={`image-drop-zone ${mainDragActive ? 'drag-active' : ''}`} onDragOver={handleMainDragOver} onDragEnter={handleMainDragOver} onDragLeave={handleMainDragLeave} onDrop={handleMainDrop} onClick={() => mainImageInputRef.current?.click()}>
-                {imageUploading ? <div className="uploading-text">Uploading...</div> : formData.image ? <img src={imagePreview || formData.image} alt="Main Preview" className="main-image-preview" /> : <div className="drop-hint">Drag & drop main image here, or click to browse</div>}
+              <div className={`add-product-image-drop-zone ${mainDragActive ? 'drag-active' : ''}`} onDragOver={handleMainDragOver} onDragEnter={handleMainDragOver} onDragLeave={handleMainDragLeave} onDrop={handleMainDrop} onClick={() => mainImageInputRef.current?.click()}>
+                {imageUploading ? <div className="add-product-uploading-text">Uploading...</div> : formData.image ? <img src={imagePreview || formData.image} alt="Main Preview" className="add-product-main-image-preview" /> : <div className="add-product-drop-hint">Drag & drop main image here, or click to browse</div>}
                 <input ref={mainImageInputRef} type="file" accept="image/*" onChange={handleMainImageFileChange} style={{ display: 'none' }} />
               </div>
               <input type="text" name="image" value={formData.image} onChange={handleChange} placeholder="Or paste image URL here" />
             </div>
 
-            <div className="form-group">
+            <div className="add-product-form-group">
               <label>Quick View Images</label>
-              <div className="quick-view-images-inputs">
+              <div className="add-product-quick-view-images-inputs">
                 {formData.images.map((imageUrl, index) => (
-                  <div key={index} className="quick-view-image-row">
+                  <div key={index} className="add-product-quick-view-image-row">
                     <input type="text" value={imageUrl} onChange={(e) => handleImageUrlChange(index, e.target.value)} placeholder={`Image URL ${index + 1}`} />
-                    {imageUrl && <img src={imageUrl} alt={`Preview ${index + 1}`} className="quick-image-preview" />}
-                    <button type="button" className="remove-image-btn" onClick={() => handleRemoveImageUrl(index)}>Remove</button>
+                    {imageUrl && <img src={imageUrl} alt={`Preview ${index + 1}`} className="add-product-quick-image-preview" />}
+                    <button type="button" className="add-product-remove-image-btn" onClick={() => handleRemoveImageUrl(index)}>Remove</button>
                   </div>
                 ))}
-                <button type="button" className="add-image-btn" onClick={handleAddImageUrl}>+ Add Image URL</button>
+                <button type="button" className="add-product-add-image-btn" onClick={handleAddImageUrl}>+ Add Image URL</button>
               </div>
-              <div className={`quick-drop-zone ${quickDragActive ? 'drag-active' : ''}`} onDragOver={handleQuickDragOver} onDragEnter={handleQuickDragOver} onDragLeave={handleQuickDragLeave} onDrop={handleQuickDrop} onClick={() => quickImagesInputRef.current?.click()}>
-                {quickImagesUploading ? <div className="uploading-text">Uploading...</div> : <div className="drop-hint">Drag & drop image files here, or click to browse (Max 2 images per upload)</div>}
+              <div className={`add-product-quick-drop-zone ${quickDragActive ? 'drag-active' : ''}`} onDragOver={handleQuickDragOver} onDragEnter={handleQuickDragOver} onDragLeave={handleQuickDragLeave} onDrop={handleQuickDrop} onClick={() => quickImagesInputRef.current?.click()}>
+                {quickImagesUploading ? <div className="add-product-uploading-text">Uploading...</div> : <div className="add-product-drop-hint">Drag & drop image files here, or click to browse (Max 2 images per upload)</div>}
                 <input ref={quickImagesInputRef} type="file" multiple accept="image/*" onChange={handleQuickImageFilesChange} style={{ display: 'none' }} />
               </div>
             </div>
@@ -665,16 +665,16 @@ const AddProduct = () => {
         {/* ==================================================== 
             NEW LAYOUT FOR COLORS & SIZES 
             ==================================================== */}
-        <div className="form-section full-width">
+        <div className="add-product-form-section add-product-full-width">
           <h3>Colors & Sizes</h3>
-          <div className="form-grid two-col">
+          <div className="add-product-form-grid add-product-two-col">
             
             {/* Left Column: Colors */}
-            <div className="form-group colors-group">
+            <div className="add-product-form-group add-product-colors-group">
               <label>Product Colors</label>
-              <div className="color-rows">
+              <div className="add-product-color-rows">
                 {formData.colors.map((color, index) => (
-                  <div key={index} className="color-row-item">
+                  <div key={index} className="add-product-color-row-item">
                     <input
                       type="text"
                       value={color}
@@ -685,12 +685,12 @@ const AddProduct = () => {
                       type="color"
                       value={color.startsWith('#') ? color : '#000000'}
                       onChange={(e) => handleColorChange(index, e.target.value)}
-                      className="color-picker-input"
+                      className="add-product-color-picker-input"
                     />
                     {formData.colors.length > 1 && (
                       <button
                         type="button"
-                        className="remove-color-btn"
+                        className="add-product-remove-color-btn"
                         onClick={() => handleRemoveColor(index)}
                       >
                         ✖
@@ -700,7 +700,7 @@ const AddProduct = () => {
                 ))}
                 <button
                   type="button"
-                  className="add-color-btn"
+                  className="add-product-add-color-btn"
                   onClick={handleAddColor}
                 >
                   + Add Color
@@ -709,14 +709,14 @@ const AddProduct = () => {
             </div>
 
             {/* Right Column: Sizes (As Fillable Buttons) */}
-            <div className="form-group sizes-group">
+            <div className="add-product-form-group add-product-sizes-group">
               <label>Available Sizes</label>
-              <div className="sizes-button-container">
+              <div className="add-product-sizes-button-container">
                 {SIZES.map((size) => (
                   <button
                     key={size}
                     type="button"
-                    className={`custom-size-btn ${formData.sizes.includes(size) ? 'selected' : ''}`}
+                    className={`add-product-custom-size-btn ${formData.sizes.includes(size) ? 'selected' : ''}`}
                     onClick={() => handleSizeChange(size)}
                   >
                     {size}
@@ -732,11 +732,11 @@ const AddProduct = () => {
             STOCK (SMALL & COMPACT) - ONLY SHOWS IF SIZES SELECTED
             ==================================================== */}
         {formData.sizes.length > 0 && (
-          <div className="form-section full-width">
+          <div className="add-product-form-section add-product-full-width">
             <h3>Stock Per Size</h3>
-            <div className="stock-per-size-row-compact">
+            <div className="add-product-stock-per-size-row-compact">
               {formData.sizes.map((size) => (
-                <div key={size} className="compact-stock-input">
+                <div key={size} className="add-product-compact-stock-input">
                   <label>{size}</label>
                   <input
                     type="number"
@@ -760,8 +760,8 @@ const AddProduct = () => {
           </div>
         )}
 
-        <div className="form-section full-width">
-          <div className="form-actions">
+        <div className="add-product-form-section add-product-full-width">
+          <div className="add-product-form-actions">
             <button type="submit"style={{backgroundColor: 'black'}} className="submit-btn" disabled={loading}>
               {loading ? 'Adding Product...' : 'Add Product'}
             </button>
