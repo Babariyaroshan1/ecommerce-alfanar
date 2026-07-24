@@ -432,6 +432,30 @@
   background: var(--table-row-hover);
 }
 
+.sidebar-mobile-badge {
+  display: none;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 1rem 0.95rem;
+  border-bottom: 1px solid var(--sidebar-border);
+  margin-bottom: 0.75rem;
+}
+
+.sidebar-mobile-badge .header-eyebrow {
+  margin: 0;
+  color: var(--sidebar-muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.sidebar-mobile-badge .header-title {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--sidebar-text-strong);
+  line-height: 1.15;
+}
+
 .collapse-btn {
   width: 100%;
   background: transparent;
@@ -1330,4 +1354,7 @@ table tbody tr:hover {
   .logout-btn { padding: 0.5rem 0.8rem; font-size: 0.85rem; }
   .stat-value { font-size: 2rem; }
   .page-title { font-size: 1.5rem; }
+}@media (max-width: 768px) {
+  .header-badge { display: none; }
+  .sidebar-mobile-badge { display: flex; }
 }

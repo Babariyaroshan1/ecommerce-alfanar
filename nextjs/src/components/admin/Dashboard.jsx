@@ -194,7 +194,6 @@ export default function Dashboard({ onLogout }) {
             <div className="header-badge">
               <p className="header-eyebrow">Operations</p>
               <h1 className="header-title">Alfanar Admin</h1>
-              {/* <p className="role-label">{role === 'admin' ? 'Admin workspace' : 'Co-admin workspace'} • Live operations</p> */}
             </div>
           </div>
           <div className="header-actions">
@@ -205,6 +204,10 @@ export default function Dashboard({ onLogout }) {
 
       <div className="dashboard-layout">
         <aside className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
+          <div className="sidebar-mobile-badge">
+            <p className="header-eyebrow">Operations</p>
+            <h1 className="header-title">Alfanar Admin</h1>
+          </div>
           <div className="sidebar-menu-scroll">
             <nav className="sidebar-nav">
               {menuSections.map((section) => (
@@ -339,13 +342,7 @@ export default function Dashboard({ onLogout }) {
               </div>
             </div>
           )}
-          {activeTab === 'dashboard' && (
-            <div className="header-badge">
-              <p className="header-eyebrow">Operations</p>
-              <h1 className="header-title">Alfanar Admin</h1>
-              {/* <p className="role-label">{role === 'admin' ? 'Admin workspace' : 'Co-admin workspace'} • Live operations</p> */}
-            </div>
-          )}
+          
           {activeTab === 'analytics' && hasPermission('view_analytics') && <Analytics />}
           {activeTab === 'orders' && <OrderList />}
           {activeTab === 'requests' && <OrderList showOnlyRequests={true} />}
