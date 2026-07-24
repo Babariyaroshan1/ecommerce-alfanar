@@ -75,7 +75,8 @@
 .add-product-form-group input:focus,
 .add-product-form-group textarea:focus,
 .add-product-custom-select-trigger:focus {
-  border-color: #c100c1;
+  border-color: transparent;
+  border-image: linear-gradient(90deg, var(--primary) 0%, #8b5cf6 100%) 1;
   background: #fff;
   box-shadow: 0 0 0 4px rgba(193, 0, 193, 0.12);
 }
@@ -129,7 +130,7 @@
 }
 
 .add-product-custom-option-add {
-  color: #c100c1;
+  color: linear-gradient(90deg, var(--primary) 0%, #8b5cf6 100%);
   font-weight: 700;
 }
 
@@ -163,7 +164,11 @@
 .add-product-add-image-btn,
 .add-product-add-color-btn {
   background: #eff6ff;
-  color: #c100c1;
+  color: transparent;
+  background-image: linear-gradient(90deg, var(--primary) 0%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
   border-color: #bfdbfe;
 }
 
@@ -553,7 +558,7 @@
 .form-group input:focus,
 .form-group textarea:focus,
 .custom-select-trigger:focus {
-  border-color: #c100c1;
+  border-color: linear-gradient(90deg, var(--primary) 0%, #8b5cf6 100%);
   background: #fff;
   box-shadow: 0 0 0 4px rgba(193, 0, 193, 0.12);
 }
@@ -607,7 +612,7 @@
 }
 
 .custom-option-add {
-  color: #c100c1;
+  color: linear-gradient(90deg, var(--primary) 0%, #8b5cf6 100%);
   font-weight: 700;
 }
 
@@ -641,7 +646,11 @@
 .add-image-btn,
 .add-color-btn {
   background: #eff6ff;
-  color: #c100c1;
+  color: transparent;
+  background-image: linear-gradient(90deg, var(--primary) 0%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
   border-color: #bfdbfe;
 }
 
@@ -790,7 +799,7 @@
   height: 48px;
   border: none;
   border-radius: 12px;
-  background: linear-gradient(90deg, #c100c1, #4f46e5);
+  background: linear-gradient(90deg, var(--primary) 0%, #8b5cf6 100%);
   color: white;
   font-size: 15px;
   font-weight: 800;
@@ -1054,8 +1063,9 @@
 }
 
 .size-btn.selected {
-  background: #c100c1;
-  border-color: #c100c1;
+  background: linear-gradient(90deg, var(--primary) 0%, #8b5cf6 100%);
+  border-color: transparent;
+  border-image: linear-gradient(90deg, var(--primary) 0%, #8b5cf6 100%) 1;
   color: #fff;
 }
 
@@ -1087,13 +1097,18 @@
 }
 
 [data-theme='dark'] .add-product-container .form-section,
+[data-theme='dark'] .add-product-container .add-product-form-section,
 [data-theme='dark'] .add-product-container .toggle-switch-container,
 [data-theme='dark'] .add-product-container .sizes-checkbox-container,
 [data-theme='dark'] .add-product-container .stock-per-size-row,
 [data-theme='dark'] .add-product-container .stock-per-size-row-compact,
 [data-theme='dark'] .add-product-container .stock-per-size,
 [data-theme='dark'] .add-product-container .currency-card,
-[data-theme='dark'] .add-product-container .price-box {
+[data-theme='dark'] .add-product-container .price-box,
+[data-theme='dark'] .add-product-container .add-product-custom-select-options,
+[data-theme='dark'] .add-product-container .add-product-color-row-item,
+[data-theme='dark'] .add-product-container .add-product-quick-view-image-row,
+[data-theme='dark'] .add-product-container .add-product-custom-category-row {
   background: var(--bg-card, #1e293b);
   color: var(--text-main, #f8fafc);
   border-color: var(--border-color, rgba(255, 255, 255, 0.12));
@@ -1103,7 +1118,9 @@
 [data-theme='dark'] .add-product-container .toggle-label,
 [data-theme='dark'] .add-product-container .stock-input-inline label,
 [data-theme='dark'] .add-product-container .custom-black-checkbox .size-label,
-[data-theme='dark'] .add-product-container .compact-stock-input label {
+[data-theme='dark'] .add-product-container .compact-stock-input label,
+[data-theme='dark'] .add-product-container .add-product-form-group label,
+[data-theme='dark'] .add-product-container .add-product-custom-select-option {
   color: var(--text-main, #f8fafc);
 }
 
@@ -1112,7 +1129,8 @@
 [data-theme='dark'] .add-product-container select,
 [data-theme='dark'] .add-product-container .stock-input-inline input,
 [data-theme='dark'] .add-product-container .compact-stock-input input,
-[data-theme='dark'] .add-product-container .color-picker-input {
+[data-theme='dark'] .add-product-container .color-picker-input,
+[data-theme='dark'] .add-product-container .add-product-custom-select-trigger {
   background: var(--bg-surface, #111827);
   color: var(--text-main, #f8fafc);
   border-color: var(--border-color, rgba(255, 255, 255, 0.12));
@@ -1132,6 +1150,40 @@
   background: #8b5cf6;
   border-color: #8b5cf6;
   color: #fff;
+}
+
+[data-theme='dark'] .add-product-container .add-product-form,
+[data-theme='dark'] .add-product-container .add-product-form-section,
+[data-theme='dark'] .add-product-container .add-product-price-box,
+[data-theme='dark'] .add-product-container .add-product-settings-box,
+[data-theme='dark'] .add-product-container .add-product-currency-card,
+[data-theme='dark'] .add-product-container .add-product-custom-select-options,
+[data-theme='dark'] .add-product-container .add-product-custom-category-row,
+[data-theme='dark'] .add-product-container .add-product-color-row-item,
+[data-theme='dark'] .add-product-container .add-product-quick-view-image-row,
+[data-theme='dark'] .add-product-container .add-product-toggle-switch-container,
+[data-theme='dark'] .add-product-container .add-product-custom-category-btn,
+[data-theme='dark'] .add-product-container .add-product-add-category-btn,
+[data-theme='dark'] .add-product-container .add-product-add-image-btn,
+[data-theme='dark'] .add-product-container .add-product-add-color-btn,
+[data-theme='dark'] .add-product-container .add-product-remove-image-btn,
+[data-theme='dark'] .add-product-container .add-product-remove-color-btn,
+[data-theme='dark'] .add-product-container .add-product-compact-stock-input {
+  background: var(--bg-surface, #111827);
+  color: var(--text-main, #f8fafc);
+  border-color: var(--border-color, rgba(255, 255, 255, 0.12));
+}
+
+[data-theme='dark'] .add-product-container .add-product-form-group input:focus,
+[data-theme='dark'] .add-product-container .add-product-form-group textarea:focus,
+[data-theme='dark'] .add-product-container .add-product-custom-select-trigger:focus {
+  background: var(--bg-surface, #111827);
+  border-color: var(--border-color, rgba(255, 255, 255, 0.12));
+  box-shadow: 0 0 0 4px rgba(193, 0, 193, 0.12);
+}
+
+[data-theme='dark'] .add-product-container .add-product-custom-select-option:hover {
+  background: rgba(255, 255, 255, 0.06);
 }
 
 /* ========================================================= 
