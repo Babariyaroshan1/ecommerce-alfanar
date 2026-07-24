@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './CoadminManagement.css';
 import './AdminHistory.css';
+import './SecurityLock.css';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
@@ -283,34 +284,45 @@ export default function CoadminManagement() {
     <div className="coadmin-management-container">
       {!unlocked ? (
         <div className="admin-coadmin-container">
-          <div className="history-topbar">
-            <h3><i className="fas fa-lock" style={{color:'#3b82f6', marginRight:'8px'}}></i> Security Lock</h3>
-            <p>Enter passcode to manage settings</p>
-          </div>
+          <div className="secure-lock-overlay">
+            <div className="secure-lock-card">
+              <div className="secure-lock-header">
+                <div className="lock-icon-wrapper">
+                  <i className="fa-solid fa-lock"></i>
+                </div>
+                <h3>Enter Passcode</h3>
+                <p>Unlock to manage co-admin settings securely.</p>
+              </div>
 
-          <div className="ios-lock-wrapper">
-            <div className="passcode-dots">
-              {Array.from({ length: Math.max(4, password.length) }).map((_, i) => (
-                <div key={i} className={`dot ${i < password.length ? 'filled' : ''}`}></div>
-              ))}
-            </div>
+              <div className="secure-passcode-display">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className={`passcode-slot ${i < password.length ? 'filled' : ''}`}></div>
+                ))}
+              </div>
 
-            {unlockError && <div className="alert alert-error" style={{justifyContent:'center'}}>{unlockError}</div>}
+              {unlockError && <div className="secure-error-msg">{unlockError}</div>}
 
-            <div className="keypad">
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
-                <button key={num} className="key-btn" onClick={() => { setPassword((prev) => prev.length < 4 ? prev + num : prev); setUnlockError(''); }}>
-                  {num}
+              <div className="secure-keypad">
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
+                  <button key={num} className="secure-key-btn" onClick={() => { setPassword((prev) => prev.length < 4 ? prev + num : prev); setUnlockError(''); }}>
+                    {num}
+                  </button>
+                ))}
+                <button className="secure-key-btn action-btn" onClick={() => { setPassword(''); setUnlockError(''); }}>
+                  C
                 </button>
-              ))}
-              <button className="key-btn" onClick={() => { setPassword(''); setUnlockError(''); }}>C</button>
-              <button className="key-btn" onClick={() => { setPassword((prev) => prev.length < 4 ? prev + '0' : prev); setUnlockError(''); }}>0</button>
-              <button className="key-btn" onClick={() => { setPassword((p) => p.slice(0, -1)); setUnlockError(''); }}>⌫</button>
-            </div>
+                <button className="secure-key-btn" onClick={() => { setPassword((prev) => prev.length < 4 ? prev + '0' : prev); setUnlockError(''); }}>
+                  0
+                </button>
+                <button className="secure-key-btn action-btn" onClick={() => { setPassword((p) => p.slice(0, -1)); setUnlockError(''); }}>
+                  ⌫
+                </button>
+              </div>
 
-            <button id="coadmin-unlock-btn" className="unlock-btn-wide" onClick={verifyPassword} disabled={unlockLoading}>
-              {unlockLoading ? <><i className="fas fa-spinner fa-spin"></i> Verifying...</> : 'Unlock'}
-            </button>
+              <button id="coadmin-unlock-btn" className="secure-unlock-btn" onClick={verifyPassword} disabled={unlockLoading}>
+                {unlockLoading ? 'Verifying...' : 'Unlock'}
+              </button>
+            </div>
           </div>
         </div>
       ) : (

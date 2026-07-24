@@ -1,0 +1,204 @@
+/* Premium Universal Security Lock Screen */
+.secure-lock-overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 70vh;
+  padding: 20px;
+  animation: fadeIn 0.4s ease-out;
+}
+.secure-lock-card {
+  background: rgba(17, 24, 39, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
+  padding: 40px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  text-align: center;
+}
+.secure-lock-header {
+  margin-bottom: 30px;
+}
+.lock-icon-wrapper {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(98, 0, 157, 0.05));
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
+  animation: pulseGlow 2s infinite;
+}
+.lock-icon-wrapper i {
+  font-size: 1.5rem;
+  color: #a78bfa;
+}
+.secure-lock-header h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 8px;
+  letter-spacing: 0.5px;
+}
+.secure-lock-header p {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  margin: 0;
+}
+.secure-passcode-display {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 35px;
+}
+.passcode-slot {
+  width: 45px;
+  height: 55px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+.passcode-slot.filled {
+  border-color: #8b5cf6;
+  background: rgba(139, 92, 246, 0.1);
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+}
+.passcode-slot.filled::after {
+  content: '';
+  width: 12px;
+  height: 12px;
+  background: #a78bfa;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #a78bfa;
+  animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.secure-keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 25px;
+}
+.secure-key-btn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  color: #f8fafc;
+  font-size: 1.4rem;
+  font-weight: 500;
+  height: 64px;
+  border-radius: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+.secure-key-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+.secure-key-btn:active {
+  transform: translateY(2px) scale(0.95);
+  background: rgba(139, 92, 246, 0.2);
+  border-color: #8b5cf6;
+}
+.secure-key-btn.action-btn {
+  font-size: 1.1rem;
+  color: #94a3b8;
+  background: transparent;
+  border: none;
+}
+.secure-key-btn.action-btn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.05);
+}
+.secure-unlock-btn {
+  width: 100%;
+  padding: 16px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+  color: white;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 20px rgba(109, 40, 217, 0.3);
+}
+.secure-unlock-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 25px rgba(109, 40, 217, 0.4);
+}
+.secure-unlock-btn:disabled {
+  background: #334155;
+  color: #94a3b8;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+.secure-error-msg {
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.2);
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  margin-bottom: 20px;
+  animation: shake 0.4s ease-in-out;
+}
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4); }
+  70% { box-shadow: 0 0 0 15px rgba(139, 92, 246, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
+}
+@keyframes popIn {
+  0% { transform: scale(0); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (max-width: 480px) {
+  .secure-lock-card {
+    padding: 30px 20px;
+    border-radius: 24px;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+  }
+  .secure-lock-overlay {
+    padding: 10px;
+    background: #0f172a;
+  }
+  .passcode-slot {
+    width: 40px;
+    height: 50px;
+  }
+  .secure-keypad {
+    gap: 12px;
+  }
+  .secure-key-btn {
+    height: 58px;
+    border-radius: 14px;
+    font-size: 1.25rem;
+  }
+}

@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './AdminHistory.css';
+import './SecurityLock.css';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
@@ -165,36 +166,42 @@ const AdminHistory = () => {
       </div>
 
       {!unlocked ? (
-        <div className="ah-lock-screen">
-          <div className="ah-lock-card">
-            <p className="ah-lock-title">Enter Passcode</p>
-            
-            <div className="ah-passcode-dots">
-              {Array.from({ length: Math.max(4, password.length) }).map((_, i) => (
-                <div key={i} className={`ah-dot ${i < password.length ? 'filled' : ''}`}></div>
+        <div className="secure-lock-overlay">
+          <div className="secure-lock-card">
+            <div className="secure-lock-header">
+              <div className="lock-icon-wrapper">
+                <i className="fa-solid fa-lock"></i>
+              </div>
+              <h3>Enter Passcode</h3>
+              <p>Only authorized admins can unlock this history.</p>
+            </div>
+
+            <div className="secure-passcode-display">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className={`passcode-slot ${i < password.length ? 'filled' : ''}`}></div>
               ))}
             </div>
 
-            {error && <p className="ah-error-msg ah-shake">{error}</p>}
+            {error && <div className="secure-error-msg">{error}</div>}
 
-            <div className="ah-keypad">
+            <div className="secure-keypad">
               {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
-                <button key={num} className="ah-key-btn" onClick={() => handleKeypadClick(num)}>
+                <button key={num} className="secure-key-btn" onClick={() => handleKeypadClick(num)}>
                   {num}
                 </button>
               ))}
-              <button className="ah-key-btn action-btn" onClick={() => { setPassword(''); setError(''); }}>
+              <button className="secure-key-btn action-btn" onClick={() => { setPassword(''); setError(''); }}>
                 C
               </button>
-              <button className="ah-key-btn" onClick={() => handleKeypadClick('0')}>
+              <button className="secure-key-btn" onClick={() => handleKeypadClick('0')}>
                 0
               </button>
-              <button className="ah-key-btn action-btn" onClick={() => { setPassword((p) => p.slice(0, -1)); setError(''); }}>
+              <button className="secure-key-btn action-btn" onClick={() => { setPassword((p) => p.slice(0, -1)); setError(''); }}>
                 ⌫
               </button>
             </div>
 
-            <button id="ah-unlock-btn" className="ah-unlock-btn" onClick={verifyAndFetch} disabled={loading}>
+            <button id="ah-unlock-btn" className="secure-unlock-btn" onClick={verifyAndFetch} disabled={loading}>
               {loading ? 'Verifying...' : 'Unlock'}
             </button>
           </div>
