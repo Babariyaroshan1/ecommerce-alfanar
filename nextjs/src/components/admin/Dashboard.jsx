@@ -198,18 +198,7 @@ export default function Dashboard({ onLogout }) {
             </div>
           </div>
           <div className="header-actions">
-            <div className="header-chip">
-              <i className="fa-solid fa-calendar-days"></i>
-              <span>Today</span>
-            </div>
-            <button className="header-action-btn" type="button" aria-label="Notifications">
-              <i className="fa-regular fa-bell"></i>
-            </button>
-            <div className="profile-pill">
-              <i className="fa-solid fa-user-circle"></i>
-              <span>{role === 'admin' ? 'Admin' : 'Co-Admin'}</span>
-            </div>
-            <button className="logout-btn" onClick={onLogout}>Logout</button>
+             <button className="logout-btn" onClick={onLogout}>Logout</button>
           </div>
         </div>
       </header>
@@ -300,6 +289,11 @@ export default function Dashboard({ onLogout }) {
 
         {/* Main Content */}
         <main className="dashboard-content">
+           <div className="header-badge">
+              <p className="header-eyebrow">Operations</p>
+              <h1 className="header-title">Alfanar Admin</h1>
+              {/* <p className="role-label">{role === 'admin' ? 'Admin workspace' : 'Co-admin workspace'} • Live operations</p> */}
+            </div>
           {activeTab === 'dashboard' && (
             <div className="dashboard-main">
               <div className="page-header-card">
