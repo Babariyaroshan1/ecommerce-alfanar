@@ -283,7 +283,6 @@ export default function CoadminManagement() {
   return (
     <div className="coadmin-management-container">
       {!unlocked ? (
-        <div className="admin-coadmin-container">
           <div className="secure-lock-overlay">
             <div className="secure-lock-card">
               <div className="secure-lock-header">
@@ -324,7 +323,6 @@ export default function CoadminManagement() {
               </button>
             </div>
           </div>
-        </div>
       ) : (
         <>
           <h2 className="page-title">
