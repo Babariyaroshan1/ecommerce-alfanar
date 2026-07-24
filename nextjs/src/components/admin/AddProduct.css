@@ -175,9 +175,10 @@
 }
 
 .add-product-remove-image-btn,
+.add-product-remove-image-btn,
 .add-product-remove-color-btn {
   background: #fee2e2;
-  color: #dc2626;
+  color: #dc2626 !important;
   border-color: #fecaca;
 }
 
@@ -358,7 +359,7 @@
 
 .add-product-quick-view-image-row {
   display: grid;
-  grid-template-columns: 1fr 60px auto;
+  grid-template-columns: 1fr 133px;
   gap: 10px;
   align-items: center;
 }

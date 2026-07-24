@@ -644,6 +644,10 @@ const AddProduct = () => {
 
             <div className="add-product-form-group">
               <label>Quick View Images</label>
+               <div className={`add-product-quick-drop-zone ${quickDragActive ? 'drag-active' : ''}`} onDragOver={handleQuickDragOver} onDragEnter={handleQuickDragOver} onDragLeave={handleQuickDragLeave} onDrop={handleQuickDrop} onClick={() => quickImagesInputRef.current?.click()}>
+                {quickImagesUploading ? <div className="add-product-uploading-text">Uploading...</div> : <div className="add-product-drop-hint">Drag & drop image files here, or click to browse (Max 2 images per upload)</div>}
+                <input ref={quickImagesInputRef} type="file" multiple accept="image/*" onChange={handleQuickImageFilesChange} style={{ display: 'none' }} />
+              </div>
               <div className="add-product-quick-view-images-inputs">
                 {formData.images.map((imageUrl, index) => (
                   <div key={index} className="add-product-quick-view-image-row">
@@ -653,10 +657,6 @@ const AddProduct = () => {
                   </div>
                 ))}
                 <button type="button" className="add-product-add-image-btn" onClick={handleAddImageUrl}>+ Add Image URL</button>
-              </div>
-              <div className={`add-product-quick-drop-zone ${quickDragActive ? 'drag-active' : ''}`} onDragOver={handleQuickDragOver} onDragEnter={handleQuickDragOver} onDragLeave={handleQuickDragLeave} onDrop={handleQuickDrop} onClick={() => quickImagesInputRef.current?.click()}>
-                {quickImagesUploading ? <div className="add-product-uploading-text">Uploading...</div> : <div className="add-product-drop-hint">Drag & drop image files here, or click to browse (Max 2 images per upload)</div>}
-                <input ref={quickImagesInputRef} type="file" multiple accept="image/*" onChange={handleQuickImageFilesChange} style={{ display: 'none' }} />
               </div>
             </div>
           </div>
