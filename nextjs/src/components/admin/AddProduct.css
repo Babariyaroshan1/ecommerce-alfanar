@@ -165,12 +165,13 @@
 .add-product-add-image-btn,
 .add-product-add-color-btn {
   background: #eff6ff;
-  color: transparent;
-  background-image: linear-gradient(90deg, var(--primary) 0%, #8b5cf6 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #2563eb;
   border-color: #bfdbfe;
+}
+
+.add-product-add-image-btn,
+.add-product-add-color-btn {
+  min-width: 140px;
 }
 
 .add-product-remove-image-btn,
@@ -222,7 +223,7 @@
 .add-product-currency-card label {
   font-size: 13px;
   font-weight: 700;
-  color: #ac87ff;
+  color: #000000;
 }
 
 .add-product-currency-card input {
@@ -320,7 +321,7 @@
   text-align: center;
   cursor: pointer;
   padding: 16px;
-  transition: 0.25s;
+  transition: all 0.25s;
 }
 
 .add-product-quick-drop-zone {
@@ -412,7 +413,7 @@
 }
 
 .add-product-custom-size-btn.selected {
-  background: #000000;
+  background: #8b5cf6;
   border-color: #000000;
   color: #ffffff;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
@@ -431,6 +432,7 @@
   background: #ffffff;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
+  justify-content: flex-start;
 }
 
 .add-product-compact-stock-input {
@@ -441,8 +443,9 @@
   padding: 8px 12px;
   border: 1px solid #cbd5e1;
   border-radius: 6px;
-  flex: 1;
-  min-width: 120px;
+  flex: 0 1 auto;
+  min-width: 160px;
+  max-width: 260px;
 }
 
 .add-product-compact-stock-input label {
@@ -462,8 +465,16 @@
 
 .add-product-form-actions {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
   gap: 12px;
+  align-items: center;
+}
+
+.add-product-form-actions .submit-btn,
+.add-product-form-actions .reset-btn {
+  width: auto;
+  flex: 1 1 220px;
 }
 
 .add-product-header h1 {
@@ -1172,6 +1183,30 @@
   background: var(--bg-surface, #111827);
   color: var(--text-main, #f8fafc);
   border-color: var(--border-color, rgba(255, 255, 255, 0.12));
+}
+
+[data-theme='dark'] .add-product-container .add-product-toggle-label {
+  color: #f8fafc;
+}
+
+[data-theme='dark'] .add-product-container .add-product-currency-card label {
+  color: #f8fafc;
+}
+
+[data-theme='dark'] .add-product-container .add-product-image-drop-zone,
+[data-theme='dark'] .add-product-container .add-product-quick-drop-zone {
+  background: #000000;
+  border-color: #ffffff;
+  color: #f8fafc;
+}
+
+[data-theme='dark'] .add-product-container .add-product-add-image-btn,
+[data-theme='dark'] .add-product-container .add-product-add-color-btn {
+  background: var(--bg-surface, #111827) !important;
+  color: var(--text-main, #f8fafc) !important;
+  border-color: rgba(255,255,255,0.12) !important;
+  background-image: none !important;
+  -webkit-text-fill-color: initial !important;
 }
 
 [data-theme='dark'] .add-product-container .add-product-form-group input:focus,
