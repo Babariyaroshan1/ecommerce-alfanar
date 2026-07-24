@@ -1130,28 +1130,26 @@
 [data-theme='dark'] .add-product-container .stock-input-inline input,
 [data-theme='dark'] .add-product-container .compact-stock-input input,
 [data-theme='dark'] .add-product-container .color-picker-input,
+[data-theme='dark'] .add-product-container .add-product-color-picker-input,
+[data-theme='dark'] .add-product-container .add-product-form-group input,
+[data-theme='dark'] .add-product-container .add-product-form-group textarea,
+[data-theme='dark'] .add-product-container .form-group input,
+[data-theme='dark'] .add-product-container .form-group textarea,
+[data-theme='dark'] .add-product-container .form-group select,
+[data-theme='dark'] .add-product-container .custom-select-trigger,
 [data-theme='dark'] .add-product-container .add-product-custom-select-trigger {
-  background: var(--bg-surface, #111827);
-  color: var(--text-main, #f8fafc);
-  border-color: var(--border-color, rgba(255, 255, 255, 0.12));
+  background: var(--bg-surface, #111827) !important;
+  color: var(--text-main, #f8fafc) !important;
+  border-color: var(--border-color, rgba(255, 255, 255, 0.12)) !important;
 }
 
 [data-theme='dark'] .add-product-container .size-btn,
 [data-theme='dark'] .add-product-container .custom-size-btn,
 [data-theme='dark'] .add-product-container .image-drop-zone,
-[data-theme='dark'] .add-product-container .quick-drop-zone {
-  background: var(--bg-surface, #111827);
-  color: var(--text-main, #f8fafc);
-  border-color: var(--border-color, rgba(255, 255, 255, 0.12));
-}
-
+[data-theme='dark'] .add-product-container .quick-drop-zone,
+[data-theme='dark'] .add-product-container .custom-size-btn:hover:not(.selected) { background: var(--bg-surface, #111827);  color: var(--text-main, #f8fafc);  border-color: var(--border-color, rgba(255, 255, 255, 0.12))}
 [data-theme='dark'] .add-product-container .size-btn.selected,
-[data-theme='dark'] .add-product-container .custom-size-btn.selected {
-  background: #8b5cf6;
-  border-color: #8b5cf6;
-  color: #fff;
-}
-
+[data-theme='dark'] .add-product-container .custom-size-btn.selected {  background: #8b5cf6;  border-color: #8b5cf6;  color: #fff; }
 [data-theme='dark'] .add-product-container .add-product-form,
 [data-theme='dark'] .add-product-container .add-product-form-section,
 [data-theme='dark'] .add-product-container .add-product-price-box,
@@ -1187,8 +1185,9 @@
 }
 
 /* ========================================================= 
-   RESPONSIVE DESIGN 
-   ========================================================= */
+ RESPONSIVE DESIGN 
+  ========================================================= */
+
 @media (max-width: 992px) {
   .price-settings-row,
   .form-grid.two-col,
