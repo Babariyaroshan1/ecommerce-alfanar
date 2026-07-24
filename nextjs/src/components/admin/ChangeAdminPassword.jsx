@@ -139,55 +139,53 @@ export default function ChangeAdminPassword() {
   return (
     <div className="change-admin-password-container">
       {!unlocked ? (
-        <div className="admin-coadmin-container-pass">
-          <div className="secure-lock-overlay">
-            <div className="secure-lock-card">
-              <div className="secure-lock-header">
-                <div className="lock-icon-wrapper">
-                  <i className="fa-solid fa-lock"></i>
-                </div>
-                <h3>Enter Passcode</h3>
-                <p>Unlock the admin password settings with your secure code.</p>
+        <div className="secure-lock-overlay">
+          <div className="secure-lock-card">
+            <div className="secure-lock-header">
+              <div className="lock-icon-wrapper">
+                <i className="fa-solid fa-lock"></i>
               </div>
+              <h3>Enter Passcode</h3>
+              <p>Unlock the admin password settings with your secure code.</p>
+            </div>
 
-              <div className="secure-passcode-display">
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i} className={`passcode-slot ${i < lockPassword.length ? 'filled' : ''}`}></div>
-                ))}
-              </div>
+            <div className="secure-passcode-display">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className={`passcode-slot ${i < lockPassword.length ? 'filled' : ''}`}></div>
+              ))}
+            </div>
 
-              {unlockError && <div className="secure-error-msg">{unlockError}</div>}
+            {unlockError && <div className="secure-error-msg">{unlockError}</div>}
 
-              <div className="secure-keypad">
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
-                  <button
-                    key={num}
-                    className="secure-key-btn"
-                    onClick={() => { setLockPassword((prev) => prev.length < 4 ? prev + num : prev); setUnlockError(''); }}
-                  >
-                    {num}
-                  </button>
-                ))}
-                <button className="secure-key-btn action-btn" onClick={() => { setLockPassword(''); setUnlockError(''); }}>
-                  C
+            <div className="secure-keypad">
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
+                <button
+                  key={num}
+                  className="secure-key-btn"
+                  onClick={() => { setLockPassword((prev) => prev.length < 4 ? prev + num : prev); setUnlockError(''); }}
+                >
+                  {num}
                 </button>
-                <button className="secure-key-btn" onClick={() => { setLockPassword((prev) => prev.length < 4 ? prev + '0' : prev); setUnlockError(''); }}>
-                  0
-                </button>
-                <button className="secure-key-btn action-btn" onClick={() => { setLockPassword((prev) => prev.slice(0, -1)); setUnlockError(''); }}>
-                  ⌫
-                </button>
-              </div>
-
-              <button
-                id="admin-pass-unlock-btn"
-                className="secure-unlock-btn"
-                onClick={verifyUnlock}
-                disabled={unlockLoading}
-              >
-                {unlockLoading ? 'Verifying...' : 'Unlock'}
+              ))}
+              <button className="secure-key-btn action-btn" onClick={() => { setLockPassword(''); setUnlockError(''); }}>
+                C
+              </button>
+              <button className="secure-key-btn" onClick={() => { setLockPassword((prev) => prev.length < 4 ? prev + '0' : prev); setUnlockError(''); }}>
+                0
+              </button>
+              <button className="secure-key-btn action-btn" onClick={() => { setLockPassword((prev) => prev.slice(0, -1)); setUnlockError(''); }}>
+                ⌫
               </button>
             </div>
+
+            <button
+              id="admin-pass-unlock-btn"
+              className="secure-unlock-btn"
+              onClick={verifyUnlock}
+              disabled={unlockLoading}
+            >
+              {unlockLoading ? 'Verifying...' : 'Unlock'}
+            </button>
           </div>
         </div>
       ) : (
