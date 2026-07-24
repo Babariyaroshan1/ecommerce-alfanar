@@ -6,6 +6,7 @@
   border-radius: 18px;
   box-shadow: 0 10px 35px rgba(15, 23, 42, 0.08);
   border: 1px solid #e5e7eb;
+  --addproduct-headline: #b183ff;
 }
 
 .add-product-form {
@@ -25,7 +26,7 @@
   margin: 0 0 18px;
   font-size: 17px;
   font-weight: 800;
-  color: #0f2f80;
+  color: #ac87ff;
 }
 
 .add-product-full-width {
@@ -199,7 +200,7 @@
   margin: 0 0 16px;
   font-size: 17px;
   font-weight: 800;
-  color: #0f2f80;
+  color: #ac87ff;
 }
 
 .add-product-compact-currency-grid {
@@ -221,7 +222,7 @@
 .add-product-currency-card label {
   font-size: 13px;
   font-weight: 700;
-  color: #0f2f80;
+  color: #ac87ff;
 }
 
 .add-product-currency-card input {
@@ -469,7 +470,7 @@
   margin: 0 0 24px;
   font-size: 24px;
   font-weight: 800;
-  color: #0f2f80;
+  color: var(--addproduct-headline);
 }
 
 .success-message,
@@ -512,7 +513,7 @@
   margin: 0 0 18px;
   font-size: 17px;
   font-weight: 800;
-  color: #0f2f80;
+  color: var(--addproduct-headline);
 }
 
 .form-grid {
@@ -533,7 +534,7 @@
 .form-group label {
   font-size: 13px;
   font-weight: 700;
-  color: #0f2f80;
+  color: var(--addproduct-headline);
 }
 
 .form-group input,
@@ -681,7 +682,7 @@
   margin: 0 0 16px;
   font-size: 17px;
   font-weight: 800;
-  color: #0f2f80;
+  color: var(--addproduct-headline);
 }
 
 .compact-currency-grid {
@@ -703,7 +704,7 @@
 .currency-card label {
   font-size: 13px;
   font-weight: 700;
-  color: #0f2f80;
+  color: var(--addproduct-headline);
 }
 
 .currency-card input {
@@ -1094,6 +1095,7 @@
   background: var(--bg-card, #1e293b);
   color: var(--text-main, #f8fafc);
   border-color: var(--border-color, rgba(255, 255, 255, 0.12));
+  --addproduct-headline: #bfdbfe;
 }
 
 [data-theme='dark'] .add-product-container .form-section,
@@ -1288,7 +1290,7 @@
   padding: 10px 16px;
   margin: 0;
   font-weight: 800;
-  color: #0f2f80;
+  color: var(--addproduct-headline);
   border-right: 1px solid #cbd5e1;
   font-size: 14px;
 }
