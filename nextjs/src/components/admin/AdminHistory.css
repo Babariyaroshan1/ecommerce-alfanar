@@ -301,24 +301,26 @@
 }
 
 /* ---------------------------------
-   Modern Table Design (FLICKER FIXED)
+   Premium Table Design (Flicker & White BG Fixed)
 -----------------------------------*/
 .ah-summary-text {
-  color: #a1a1aa;
+  color: #94a3b8;
   font-size: 0.95rem;
   padding: 0 5px;
+  font-weight: 500;
 }
 
 .ah-table-wrapper {
   overflow-x: auto;
-  border-radius: 16px;
-  background: #111115;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
 .ah-table-wrapper::-webkit-scrollbar { height: 8px; }
-.ah-table-wrapper::-webkit-scrollbar-track { background: #09090b; }
-.ah-table-wrapper::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 8px; }
+.ah-table-wrapper::-webkit-scrollbar-track { background: #0f172a; }
+.ah-table-wrapper::-webkit-scrollbar-thumb { background: #334155; border-radius: 8px; }
 
 .ah-table {
   width: 100%;
@@ -326,61 +328,82 @@
   min-width: 1100px;
 }
 
-.ah-table th,
-.ah-table td {
+/* Fix for White Header Background Bug */
+.ah-table th {
+  background-color: #1e293b !important;
+  color: #cbd5e1 !important;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
   padding: 16px 20px;
   text-align: left;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.ah-table th {
-  font-weight: 600;
-  color: #8b8b93;
-  background: rgba(255, 255, 255, 0.02);
-  text-transform: uppercase;
-  font-size: 0.8rem;
-  letter-spacing: 0.5px;
+  border-bottom: 2px solid #334155 !important;
   white-space: nowrap;
 }
 
-/* FIXED FLICKERING AND HOVER */
-.ah-table tbody tr td {
-  transition: background-color 0.2s ease, color 0.2s ease;
-  color: #e4e4e7 !important;
-  font-size: 0.95rem;
+.ah-table td {
+  padding: 16px 20px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  color: #e2e8f0;
+  font-size: 0.9rem;
   vertical-align: middle;
 }
 
-.ah-table tbody tr.ah-row-even td {
-  background-color: transparent !important;
+/* Smooth Hover Fix (Removed Flicker) */
+.ah-table tbody tr {
+  transition: background-color 0.2s ease;
+  background-color: transparent;
 }
 
-.ah-table tbody tr.ah-row-odd td {
-  background-color: rgba(255, 255, 255, 0.02) !important;
+.ah-table tbody tr:hover {
+  background-color: #1e293b !important;
 }
-
-.ah-table tbody tr:hover td {
-  background-color: #27272a !important; 
-  color: #ffffff !important; 
-}
-
-/* Accent Column Colors */
-.ah-table tbody tr td:nth-child(3) { color: #a78bfa !important; font-weight: 500; }
-.ah-table tbody tr td:nth-child(4) { color: #c100c1 !important; font-weight: 600; text-transform: capitalize; }
-
-.ah-table tbody tr:hover td:nth-child(3) { color: #c4b5fd !important; }
-.ah-table tbody tr:hover td:nth-child(4) { color: #d58fff !important; }
 
 .ah-table tr:last-child td {
   border-bottom: none;
 }
 
+/* Badges instead of simple text colors */
+.badge-type {
+  background: rgba(139, 92, 246, 0.15);
+  color: #c4b5fd;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.badge-action {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+/* Replaced Magenta with Professional Colors */
+.action-update { background: rgba(59, 130, 246, 0.15); color: #93c5fd; }
+.action-create { background: rgba(16, 185, 129, 0.15); color: #6ee7b7; }
+.action-delete { background: rgba(239, 68, 68, 0.15); color: #fca5a5; }
+.action-refund, .action-cancel { background: rgba(245, 158, 11, 0.15); color: #fcd34d; }
+
+.desc-column {
+  max-width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #94a3b8;
+}
+
 .ah-empty-state {
   padding: 60px !important;
   text-align: center;
-  color: #71717a !important;
+  color: #64748b !important;
   font-size: 1.1rem;
 }
+
 
 /* ---------------------------------
    Pagination

@@ -157,14 +157,7 @@ const AdminHistory = () => {
   };
 
   return (
-    <div className="ah-container">
-      <div className="ah-header">
-        <div>
-          <h3>Admin Change History</h3>
-          <p>Only main admin can unlock this view using the secret history password.</p>
-        </div>
-      </div>
-
+    <>
       {!unlocked ? (
         <div className="secure-lock-overlay">
           <div className="secure-lock-card">
@@ -176,13 +169,13 @@ const AdminHistory = () => {
               <p>Only authorized admins can unlock this history.</p>
             </div>
 
+            {error && <div className="secure-error-msg">{error}</div>}
+
             <div className="secure-passcode-display">
               {Array.from({ length: 4 }).map((_, i) => (
                 <div key={i} className={`passcode-slot ${i < password.length ? 'filled' : ''}`}></div>
               ))}
             </div>
-
-            {error && <div className="secure-error-msg">{error}</div>}
 
             <div className="secure-keypad">
               {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
@@ -201,143 +194,106 @@ const AdminHistory = () => {
               </button>
             </div>
 
-            <button id="ah-unlock-btn" className="secure-unlock-btn" onClick={verifyAndFetch} disabled={loading}>
-              {loading ? 'Verifying...' : 'Unlock'}
+            <button id="ah-unlock-btn" className="secure-unlock-btn" onClick={verifyAndFetch} disabled={loading || password.length !== 4}>
+              {loading ? <><i className="fas fa-circle-notch fa-spin"></i> Verifying...</> : 'Unlock'}
             </button>
           </div>
         </div>
       ) : (
-        <div className="ah-dashboard">
-          
-          <div className="ah-filters-bar">
-            {/* FIXED: setPage(1) directly in onChange to avoid useEffect loop */}
-            <select className="ah-select" value={filterType} onChange={(e) => { setFilterType(e.target.value); setPage(1); }}>
-              <option value="">All Types</option>
-              <option value="Product">Product</option>
-              <option value="Order">Order</option>
-              <option value="User">User</option>
-            </select>
-            <select className="ah-select" value={filterAction} onChange={(e) => { setFilterAction(e.target.value); setPage(1); }}>
-              <option value="">All Actions</option>
-              <option value="create">Create</option>
-              <option value="update">Update</option>
-              <option value="delete">Delete</option>
-              <option value="status-change">Status Change</option>
-              <option value="cancel">Cancel</option>
-              <option value="refund">Refund</option>
-            </select>
-            <select className="ah-select" value={pageSize} onChange={(e) => { setPageSize(Number(e.target.value)); setPage(1); }}>
-              <option value={10}>Show 10</option>
-              <option value={20}>Show 20</option>
-              <option value={50}>Show 50</option>
-            </select>
-            <button type="button" className="ah-btn-refresh" onClick={verifyAndFetch} disabled={loading}>
-              {loading ? 'Loading...' : 'Refresh History'}
-            </button>
+        <div className="ah-container">
+          <div className="ah-header">
+            <div>
+              <h3>Admin Change History</h3>
+              <p>Only main admin can view the system history log.</p>
+            </div>
           </div>
 
-          {error && <p className="ah-error-msg">{error}</p>}
+          <div className="ah-dashboard">
+            <div className="ah-filters-bar">
+              <select className="ah-select" value={filterType} onChange={(e) => { setFilterType(e.target.value); setPage(1); }}>
+                <option value="">All Types</option>
+                <option value="Product">Product</option>
+                <option value="Order">Order</option>
+                <option value="User">User</option>
+              </select>
+              <select className="ah-select" value={filterAction} onChange={(e) => { setFilterAction(e.target.value); setPage(1); }}>
+                <option value="">All Actions</option>
+                <option value="create">Create</option>
+                <option value="update">Update</option>
+                <option value="delete">Delete</option>
+                <option value="status-change">Status Change</option>
+                <option value="cancel">Cancel</option>
+                <option value="refund">Refund</option>
+              </select>
+              <select className="ah-select" value={pageSize} onChange={(e) => { setPageSize(Number(e.target.value)); setPage(1); }}>
+                <option value={10}>Show 10</option>
+                <option value={20}>Show 20</option>
+                <option value={50}>Show 50</option>
+              </select>
+              <button type="button" className="ah-btn-refresh" onClick={verifyAndFetch} disabled={loading}>
+                {loading ? 'Loading...' : 'Refresh History'}
+              </button>
+            </div>
 
-          <div className="ah-summary-text">
-            <span>{`Showing ${history.length} records of ${totalRecords}`}</span>
-          </div>
+            <div className="ah-summary-text">
+              <span>{`Showing ${history.length} records of ${totalRecords}`}</span>
+            </div>
 
-          <div className="ah-table-wrapper">
-            <table className="ah-table">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>When</th>
-                  <th>Type</th>
-                  <th>Action</th>
-                  <th>Entity</th>
-                  <th>Changed By</th>
-                  <th>Role</th>
-                  <th>Client / Device</th>
-                  <th>Description</th>
-                </tr>
-              </thead>
-              <tbody>
-                {history.length === 0 ? (
+            <div className="ah-table-wrapper">
+              <table className="ah-table">
+                <thead>
                   <tr>
-                    <td colSpan="9" className="ah-empty-state">No history records found.</td>
+                    <th>#</th>
+                    <th>When</th>
+                    <th>Type</th>
+                    <th>Action</th>
+                    <th>Entity</th>
+                    <th>Changed By</th>
+                    <th>Role</th>
+                    <th>Client / Device</th>
+                    <th>Description</th>
                   </tr>
-                ) : (
-                  history.map((item, index) => (
-                    <tr key={item._id || index} className={index % 2 === 0 ? 'ah-row-even' : 'ah-row-odd'}>
-                      <td>{(page - 1) * pageSize + index + 1}</td>
-                      <td>{formatTimestamp(item.createdAt)}</td>
-                      <td>{item.entityType}</td>
-                      <td>{item.actionType}</td>
-                      <td>{item.entityName || item.entityId || '-'}</td>
-                      <td>{item.changedByName || item.changedByEmail || item.changedById || 'Unknown'}</td>
-                      <td>{item.changedByRole}</td>
-                      <td>{getClientInfo(item.clientInfo)}</td>
-                      <td>{item.description || JSON.stringify(item.metadata || {})}</td>
+                </thead>
+                <tbody>
+                  {history.length === 0 ? (
+                    <tr>
+                      <td colSpan="9" className="ah-empty-state">No history records found.</td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="ah-pagination-bar">
-            <div className="ah-page-info">
-              Page {page} of {totalPages}
+                  ) : (
+                    history.map((item, index) => (
+                      <tr key={item._id || index}>
+                        <td>{(page - 1) * pageSize + index + 1}</td>
+                        <td>{formatTimestamp(item.createdAt)}</td>
+                        <td><span className="badge-type">{item.entityType}</span></td>
+                        <td><span className={`badge-action action-${item.actionType?.toLowerCase()}`}>{item.actionType}</span></td>
+                        <td>{item.entityName || item.entityId || '-'}</td>
+                        <td>{item.changedByName || item.changedByEmail || item.changedById || 'Unknown'}</td>
+                        <td>{item.changedByRole}</td>
+                        <td>{getClientInfo(item.clientInfo)}</td>
+                        <td className="desc-column">{item.description || JSON.stringify(item.metadata || {})}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
             </div>
-            <div className="ah-page-buttons">
-              <button
-                type="button"
-                className="ah-page-btn"
-                onClick={() => setPage(1)}
-                disabled={page === 1}
-              >
-                First
-              </button>
 
-              <button
-                type="button"
-                className="ah-page-btn"
-                onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-                disabled={page === 1}
-              >
-                Prev
-              </button>
-              
-              {getVisiblePageNumbers().map((pageNumber) => (
-                <button
-                  key={pageNumber}
-                  type="button"
-                  className={`ah-page-btn ${pageNumber === page ? 'active' : ''}`}
-                  onClick={() => setPage(pageNumber)}
-                >
-                  {pageNumber}
-                </button>
-              ))}
-
-              <button
-                type="button"
-                className="ah-page-btn"
-                onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
-                disabled={page === totalPages}
-              >
-                Next
-              </button>
-              
-              <button
-                type="button"
-                className="ah-page-btn"
-                onClick={() => setPage(totalPages)}
-                disabled={page === totalPages}
-              >
-                Last
-              </button>
+            <div className="ah-pagination-bar">
+              <div className="ah-page-info">Page {page} of {totalPages}</div>
+              <div className="ah-page-buttons">
+                <button type="button" className="ah-page-btn" onClick={() => setPage(1)} disabled={page === 1}>First</button>
+                <button type="button" className="ah-page-btn" onClick={() => setPage((prev) => Math.max(prev - 1, 1))} disabled={page === 1}>Prev</button>
+                {getVisiblePageNumbers().map((pageNumber) => (
+                  <button key={pageNumber} type="button" className={`ah-page-btn ${pageNumber === page ? 'active' : ''}`} onClick={() => setPage(pageNumber)}>{pageNumber}</button>
+                ))}
+                <button type="button" className="ah-page-btn" onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))} disabled={page === totalPages}>Next</button>
+                <button type="button" className="ah-page-btn" onClick={() => setPage(totalPages)} disabled={page === totalPages}>Last</button>
+              </div>
             </div>
           </div>
-
         </div>
       )}
-    </div>
+    </>
   );
 };
 
