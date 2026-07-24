@@ -123,7 +123,7 @@
 }
 
 .form-title-coadmin i {
-  color: #62009d;
+  color: var(--primary, #8b5cf6);
 }
 
 .form-subtitle {
@@ -310,7 +310,7 @@
 }
 
 .info-box i {
-  color: #62009d;
+  color: var(--primary, #8b5cf6);
   font-size: 1rem;
   margin-top: 2px;
 }
