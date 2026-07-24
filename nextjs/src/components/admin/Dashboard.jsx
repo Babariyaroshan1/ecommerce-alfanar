@@ -289,11 +289,7 @@ export default function Dashboard({ onLogout }) {
 
         {/* Main Content */}
         <main className="dashboard-content">
-           <div className="header-badge">
-              <p className="header-eyebrow">Operations</p>
-              <h1 className="header-title">Alfanar Admin</h1>
-              {/* <p className="role-label">{role === 'admin' ? 'Admin workspace' : 'Co-admin workspace'} • Live operations</p> */}
-            </div>
+         
           {activeTab === 'dashboard' && (
             <div className="dashboard-main">
               <div className="page-header-card">
@@ -343,7 +339,13 @@ export default function Dashboard({ onLogout }) {
               </div>
             </div>
           )}
-
+          {activeTab === 'dashboard' && (
+            <div className="header-badge">
+              <p className="header-eyebrow">Operations</p>
+              <h1 className="header-title">Alfanar Admin</h1>
+              {/* <p className="role-label">{role === 'admin' ? 'Admin workspace' : 'Co-admin workspace'} • Live operations</p> */}
+            </div>
+          )}
           {activeTab === 'analytics' && hasPermission('view_analytics') && <Analytics />}
           {activeTab === 'orders' && <OrderList />}
           {activeTab === 'requests' && <OrderList showOnlyRequests={true} />}
