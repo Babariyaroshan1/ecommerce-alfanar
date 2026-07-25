@@ -10,11 +10,13 @@ const PAYMENT_METHODS = [
   { id: 'upi', label: 'UPI', description: 'Unified Payments Interface (India)' },
   { id: 'card', label: 'Credit/Debit Card', description: 'Visa, Mastercard, etc.' },
   { id: 'netbanking', label: 'Net Banking', description: 'Online bank transfers' },
-  { id: 'wamd', label: 'WAMD', description: 'Instant bank transfer (Kuwait)' },
   { id: 'cod', label: 'Cash on Delivery', description: 'Pay when you receive your order' }
 ];
 
-const DEFAULT_METHODS = ['upi', 'card', 'netbanking', 'wamd', 'cod'];
+// Backend-valid payment method IDs
+const VALID_METHOD_IDS = ['upi', 'card', 'netbanking', 'cod'];
+
+const DEFAULT_METHODS = ['upi', 'card', 'netbanking', 'cod'];
 
 export default function PaymentMethodsManagement() {
   const [enabledMethods, setEnabledMethods] = useState(DEFAULT_METHODS);
@@ -69,10 +71,16 @@ export default function PaymentMethodsManagement() {
     setLoading(true);
     setMessage('');
 
+    // Filter out any invalid/unsupported methods before sending to API
+    const filteredMethods = enabledMethods.filter((m) => VALID_METHOD_IDS.includes(m));
+    if (filteredMethods.length !== enabledMethods.length) {
+      setMessage('[WARN] Some selected payment methods are unsupported and were removed.');
+    }
+
     try {
       const response = await axios.put(
         `${API_URL}/settings/payment-methods`,
-        { enabledPaymentMethods: enabledMethods },
+        { enabledPaymentMethods: filteredMethods },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
