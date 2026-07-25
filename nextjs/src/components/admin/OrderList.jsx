@@ -73,6 +73,7 @@ export default function OrderList({ showOnlyRequests = false }) {
   const lastSeenOrderIdsRef = useRef(new Set());
   const audioContextRef = useRef(null);
   const audioUnlockedRef = useRef(false);
+  const audioAlarmRef = useRef({ oscillator: null, gainNode: null });
 
   const unlockAudio = useCallback(() => {
     if (typeof window === 'undefined' || audioUnlockedRef.current) return;
@@ -103,26 +104,59 @@ export default function OrderList({ showOnlyRequests = false }) {
       const audioContext = audioContextRef.current;
       if (!audioContext) return;
 
+      // Short beep for compatibility, but also start a persistent alarm
+      // that will continue until explicitly stopped.
+      // If an alarm is already running, skip creating another.
+      if (audioAlarmRef.current.oscillator) {
+        return;
+      }
+
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
 
-      oscillator.type = 'triangle';
-      oscillator.frequency.setValueAtTime(880, audioContext.currentTime);
-      oscillator.frequency.exponentialRampToValueAtTime(1180, audioContext.currentTime + 0.15);
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(720, audioContext.currentTime);
 
       gainNode.gain.setValueAtTime(0.0001, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.16, audioContext.currentTime + 0.01);
-      gainNode.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.25);
+      gainNode.gain.linearRampToValueAtTime(0.16, audioContext.currentTime + 0.02);
 
       oscillator.connect(gainNode);
       gainNode.connect(audioContext.destination);
 
       oscillator.start();
-      oscillator.stop(audioContext.currentTime + 0.25);
+
+      // Save references so we can stop the alarm later when order is accepted
+      audioAlarmRef.current = { oscillator, gainNode };
     } catch (error) {
       console.error('Failed to play new order alert sound:', error);
     }
   }, [unlockAudio]);
+
+  const stopNewOrderAlert = useCallback(() => {
+    try {
+      const audioContext = audioContextRef.current;
+      const { oscillator, gainNode } = audioAlarmRef.current || {};
+      if (gainNode) {
+        // Fade out quickly then stop
+        gainNode.gain.cancelScheduledValues(audioContext.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.0001, audioContext.currentTime + 0.05);
+      }
+      if (oscillator) {
+        try {
+          oscillator.stop(audioContext.currentTime + 0.06);
+        } catch (e) {
+          // ignore
+        }
+        try { oscillator.disconnect(); } catch (e) {}
+      }
+      if (gainNode) {
+        try { gainNode.disconnect(); } catch (e) {}
+      }
+      audioAlarmRef.current = { oscillator: null, gainNode: null };
+    } catch (err) {
+      console.error('Failed to stop new order alert:', err);
+    }
+  }, []);
 
   useEffect(() => {
     fetchOrders();
@@ -157,6 +191,7 @@ export default function OrderList({ showOnlyRequests = false }) {
         const newOrders = fetchedOrders.filter((order) => order?._id && !lastSeenOrderIdsRef.current.has(order._id));
         if (newOrders.length > 0) {
           playNewOrderAlert();
+          // Also ensure visual highlight and keep alarm until accepted
           const newOrderId = newOrders[0]?._id;
           if (newOrderId) {
             setHighlightedOrderId(newOrderId);
@@ -199,6 +234,10 @@ export default function OrderList({ showOnlyRequests = false }) {
       );
       console.log('Success response:', response.data);
       alert('Request updated successfully!');
+      // Stop alarm if order was accepted
+      if (status === 'confirmed') {
+        stopNewOrderAlert();
+      }
       if (refreshAfterUpdate) {
         fetchOrders(true); // Auto refresh with loader after action
       }
@@ -227,6 +266,9 @@ export default function OrderList({ showOnlyRequests = false }) {
         console.error('Failed auto-confirm order', order._id, err);
       }
     }
+
+    // Stop persistent alarm after auto-confirm
+    stopNewOrderAlert();
 
     if (refreshAfter) {
       await fetchOrders(true);
