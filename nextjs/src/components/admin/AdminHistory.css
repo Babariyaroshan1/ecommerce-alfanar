@@ -1,21 +1,35 @@
 /* =========================================
    Premium Dark Theme - Admin History UI
    ========================================= */
+:root {
+  /* Set your primary violet color here for the gradient */
+  --primary: #6d28d9; 
+  --brand-gradient: linear-gradient(90deg, var(--primary) 0%, #8b5cf6 100%);
+}
 
+body {
+  margin: 0;
+  background-color: #000000; /* Dark background for the app */
+}
+
+/* ---------------------------------
+   Main Container (Unlocked State)
+-----------------------------------*/
 .ah-container {
-  padding: 30px;
-  background: #09090b; /* Deep zinc background */
+  color: #f8fafc;
+  background: #09090b;
+  border: 1px solid #ffffff0d;
   border-radius: 24px;
+  flex-direction: column;
   width: 100%;
   max-width: 1200px;
-  margin: 0 auto;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  color: #f8fafc;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   min-height: 80vh;
+  margin: 40px auto;
+  padding: 30px;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   display: flex;
-  flex-direction: column;
+  box-shadow: 0 20px 50px #00000080;
+  animation: ahFadeIn 0.5s ease-out;
 }
 
 /* ---------------------------------
@@ -46,118 +60,144 @@
 }
 
 /* ---------------------------------
-   Premium iOS Style Lock Screen
+   Premium Lock Screen (Login)
 -----------------------------------*/
-.ah-lock-screen {
+.secure-lock-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: #000000;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.secure-lock-card {
+  background: #09090b;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 32px;
+  padding: 50px 40px;
+  width: 100%;
+  max-width: 380px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  flex: 1;
-  padding: 40px 20px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   animation: ahFadeIn 0.5s ease-out;
 }
 
-.ah-lock-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 40px 50px;
-  background: var(--bg-card, #111115);
-  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.05));
-  border-radius: 28px;
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
-  width: 100%;
-  max-width: 420px;
+.secure-lock-header {
+  text-align: center;
+  margin-bottom: 35px;
 }
 
-.ah-lock-title {
-  color: var(--text-main, #fafafa);
-  font-size: 1.05rem;
+.lock-icon-wrapper {
+  width: 60px;
+  height: 60px;
+  background: rgba(139, 92, 246, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  color: #8b5cf6;
+  font-size: 1.5rem;
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
+}
+
+.secure-lock-header h3 {
+  color: #ffffff;
+  font-size: 1.4rem;
   font-weight: 500;
-  margin-bottom: 25px;
+  margin: 0 0 8px 0;
   letter-spacing: 0.5px;
 }
 
-.ah-passcode-dots {
+.secure-lock-header p {
+  color: #71717a;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.secure-passcode-display {
   display: flex;
   justify-content: center;
-  gap: 18px;
+  gap: 20px;
   margin-bottom: 40px;
-  height: 20px;
+  height: 16px;
   align-items: center;
 }
 
-.ah-dot {
+.passcode-slot {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  border: 1.5px solid var(--primary, #8b5cf6);
+  border: 1.5px solid #3f3f46;
   background: transparent;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.ah-dot.filled {
-  background: linear-gradient(90deg, var(--primary) 0%, #8b5cf6 100%);
-  box-shadow: 0 0 12px rgba(98, 0, 157, 0.6);
-  transform: scale(1.1);
+.passcode-slot.filled {
+  background: var(--brand-gradient);
   border-color: transparent;
+  transform: scale(1.2);
+  box-shadow: 0 0 12px rgba(139, 92, 246, 0.6);
 }
 
-.ah-keypad {
+.secure-keypad {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-  margin-bottom: 30px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 35px;
   width: 100%;
-  max-width: 280px;
 }
 
-.ah-key-btn {
+.secure-key-btn {
   width: 70px;
   height: 70px;
   border-radius: 50%;
   border: none;
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--text-main, #fafafa);
+  background: rgba(255, 255, 255, 0.03);
+  color: #fafafa;
   font-size: 1.6rem;
   font-weight: 400;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
   margin: 0 auto;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
 }
 
-.ah-key-btn:hover {
+.secure-key-btn:hover {
   background: rgba(255, 255, 255, 0.08);
 }
 
-.ah-key-btn:active {
-  background: rgba(255, 255, 255, 0.2);
-  transform: scale(0.95);
+.secure-key-btn:active {
+  background: rgba(255, 255, 255, 0.15);
+  transform: scale(0.92);
 }
 
-.ah-key-btn.action-btn {
+.secure-key-btn.action-btn {
   background: transparent;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 500;
-  color: #8b8b93;
+  color: #71717a;
 }
 
-.ah-key-btn.action-btn:hover {
+.secure-key-btn.action-btn:hover {
   color: #ffffff;
+  background: rgba(255, 255, 255, 0.05);
 }
 
-.ah-unlock-btn {
+.secure-unlock-btn {
   width: 100%;
   padding: 16px;
   font-size: 1rem;
   letter-spacing: 1px;
   text-transform: uppercase;
-  border-radius: 12px;
-  background: linear-gradient(90deg, var(--primary) 0%, #8b5cf6 100%);
+  border-radius: 14px;
+  background: var(--brand-gradient);
   color: white;
   border: none;
   font-weight: 600;
@@ -165,69 +205,31 @@
   transition: all 0.3s ease;
 }
 
-.ah-unlock-btn:hover:not(:disabled) {
-  background: linear-gradient(90deg, var(--primary) 0%, #8b5cf6 100%);
-  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+.secure-unlock-btn:hover:not(:disabled) {
+  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+  transform: translateY(-2px);
 }
 
-.ah-unlock-btn:disabled {
+.secure-unlock-btn:disabled {
   background: #27272a;
-  color: #71717a;
+  color: #52525b;
   cursor: not-allowed;
+  box-shadow: none;
+  transform: translateY(0);
 }
 
-/* ---------------------------------
-   Error Display & Animations
------------------------------------*/
-.ah-error-msg {
+.secure-error-msg {
   color: #ef4444; 
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 500;
   margin-bottom: 20px;
   background: rgba(239, 68, 68, 0.1);
-  padding: 12px 20px;
+  padding: 10px 20px;
   border-radius: 10px;
   border: 1px solid rgba(239, 68, 68, 0.2);
   text-align: center;
   width: 100%;
-}
-
-.ah-shake {
   animation: ahShake 0.4s cubic-bezier(.36,.07,.19,.97) both;
-}
-
-@keyframes ahShake {
-  10%, 90% { transform: translate3d(-2px, 0, 0); }
-  20%, 80% { transform: translate3d(4px, 0, 0); }
-  30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
-  40%, 60% { transform: translate3d(6px, 0, 0); }
-}
-
-@keyframes ahFadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@media (max-width: 640px) {
-  .ah-container {
-    padding: 20px;
-  }
-
-  .ah-lock-card {
-    padding: 28px 18px;
-    max-width: 100%;
-  }
-
-  .ah-keypad {
-    gap: 12px;
-    max-width: 100%;
-  }
-
-  .ah-key-btn {
-    width: 62px;
-    height: 62px;
-    font-size: 1.35rem;
-  }
 }
 
 /* ---------------------------------
@@ -237,7 +239,6 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-  animation: ahFadeIn 0.5s ease-out;
 }
 
 .ah-filters-bar {
@@ -272,13 +273,13 @@
 
 .ah-select:focus {
   outline: none;
-  border-color: #62009d;
-  box-shadow: 0 0 0 2px rgba(98, 0, 157, 0.2);
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
 }
 
 .ah-btn-refresh {
   padding: 12px 24px;
-  background: #62009d;
+  background: var(--brand-gradient);
   color: white;
   border: none;
   border-radius: 10px;
@@ -289,9 +290,8 @@
 }
 
 .ah-btn-refresh:hover:not(:disabled) {
-  background: #c100c1;
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(193, 0, 193, 0.3);
 }
 
 .ah-btn-refresh:disabled {
@@ -300,9 +300,6 @@
   cursor: not-allowed;
 }
 
-/* ---------------------------------
-   Premium Table Design (Flicker & White BG Fixed)
------------------------------------*/
 .ah-summary-text {
   color: #94a3b8;
   font-size: 0.95rem;
@@ -312,15 +309,15 @@
 
 .ah-table-wrapper {
   overflow-x: auto;
-  border-radius: 12px;
-  background: #0f172a;
+  border-radius: 16px;
+  background: #111115;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
 .ah-table-wrapper::-webkit-scrollbar { height: 8px; }
-.ah-table-wrapper::-webkit-scrollbar-track { background: #0f172a; }
-.ah-table-wrapper::-webkit-scrollbar-thumb { background: #334155; border-radius: 8px; }
+.ah-table-wrapper::-webkit-scrollbar-track { background: #111115; }
+.ah-table-wrapper::-webkit-scrollbar-thumb { background: #27272a; border-radius: 8px; }
 
 .ah-table {
   width: 100%;
@@ -328,22 +325,21 @@
   min-width: 1100px;
 }
 
-/* Fix for White Header Background Bug */
 .ah-table th {
-  background-color: #1e293b !important;
+  background-color: #18181b !important;
   color: #cbd5e1 !important;
   font-weight: 600;
   text-transform: uppercase;
   font-size: 0.75rem;
   letter-spacing: 0.05em;
-  padding: 16px 20px;
+  padding: 18px 20px;
   text-align: left;
-  border-bottom: 2px solid #334155 !important;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.05) !important;
   white-space: nowrap;
 }
 
 .ah-table td {
-  padding: 16px 20px;
+  padding: 18px 20px;
   text-align: left;
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
   color: #e2e8f0;
@@ -351,39 +347,37 @@
   vertical-align: middle;
 }
 
-/* Smooth Hover Fix (Removed Flicker) */
 .ah-table tbody tr {
   transition: background-color 0.2s ease;
   background-color: transparent;
 }
 
 .ah-table tbody tr:hover {
-  background-color: #1e293b !important;
+  background-color: #18181b !important;
 }
 
 .ah-table tr:last-child td {
   border-bottom: none;
 }
 
-/* Badges instead of simple text colors */
+/* Badges */
 .badge-type {
   background: rgba(139, 92, 246, 0.15);
   color: #c4b5fd;
-  padding: 4px 10px;
+  padding: 5px 12px;
   border-radius: 6px;
   font-size: 0.8rem;
   font-weight: 500;
 }
 
 .badge-action {
-  padding: 4px 10px;
+  padding: 5px 12px;
   border-radius: 6px;
   font-size: 0.8rem;
   font-weight: 600;
   text-transform: capitalize;
 }
 
-/* Replaced Magenta with Professional Colors */
 .action-update { background: rgba(59, 130, 246, 0.15); color: #93c5fd; }
 .action-create { background: rgba(16, 185, 129, 0.15); color: #6ee7b7; }
 .action-delete { background: rgba(239, 68, 68, 0.15); color: #fca5a5; }
@@ -403,7 +397,6 @@
   color: #64748b !important;
   font-size: 1.1rem;
 }
-
 
 /* ---------------------------------
    Pagination
@@ -448,8 +441,8 @@
 }
 
 .ah-page-btn.active {
-  background: #62009d;
-  border-color: #62009d;
+  background: var(--brand-gradient);
+  border-color: transparent;
   color: #ffffff;
 }
 
@@ -458,48 +451,32 @@
   cursor: not-allowed;
 }
 
-/* =========================================
-   Mobile Responsiveness
-   ========================================= */
+/* ---------------------------------
+   Animations & Responsiveness
+-----------------------------------*/
+@keyframes ahShake {
+  10%, 90% { transform: translate3d(-2px, 0, 0); }
+  20%, 80% { transform: translate3d(4px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+  40%, 60% { transform: translate3d(6px, 0, 0); }
+}
+
+@keyframes ahFadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 @media (max-width: 992px) {
-  .ah-filters-bar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .ah-pagination-bar {
-    flex-direction: column;
-    justify-content: center;
-    text-align: center;
-  }
+  .ah-filters-bar { flex-direction: column; align-items: stretch; }
+  .ah-pagination-bar { flex-direction: column; justify-content: center; text-align: center; }
 }
 
 @media (max-width: 768px) {
-  .ah-container {    
-    padding: 20px;
-    border-radius: 16px;
-  }
-  
-  .ah-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-  
-  .ah-header h3 {
-    font-size: 1.6rem;
-  }
-
-  .ah-lock-card {
-    padding: 30px 20px;
-  }
-
-  .ah-keypad {
-    gap: 15px;
-  }
-  
-  .ah-key-btn {
-    width: 65px;
-    height: 65px;
-    font-size: 1.5rem;
-  }
+  .ah-container { padding: 20px; border-radius: 16px; margin: 10px;}
+  .ah-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .ah-header h3 { font-size: 1.6rem; }
+  .secure-lock-card { padding: 40px 20px; border-radius: 24px; }
+  .secure-keypad { gap: 12px; }
+  .secure-key-btn { width: 62px; height: 62px; font-size: 1.4rem; }
 }
+

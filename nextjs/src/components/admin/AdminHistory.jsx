@@ -1,9 +1,11 @@
+
+
 'use client';
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+// Only import your main CSS here
 import './AdminHistory.css';
-import './SecurityLock.css';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
@@ -42,8 +44,7 @@ const AdminHistory = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [unlocked]);
 
-  // FIXED: Removed the extra useEffect that was causing the infinite loop
-  // Changed dependencies to ONLY fetch when these specific states change
+  // Fetch logic dependency fixed
   useEffect(() => {
     if (unlocked) {
       fetchHistory(page, pageSize);
@@ -75,7 +76,6 @@ const AdminHistory = () => {
 
       setHistory(historyData);
       
-      // FIXED: Wrapped in Number() to strictly prevent string/number infinite loop bouncing
       setPage(Number(res.data.page || requestedPage));
       setPageSize(Number(res.data.pageSize || requestedPageSize));
       setTotalRecords(Number(totalRecs));
@@ -84,7 +84,7 @@ const AdminHistory = () => {
       setUnlocked(true);
     } catch (err) {
       console.error('History fetch failed:', err);
-      setError('Incorrect password! Please try again.');
+      setError('Incorrect passcode! Please try again.');
       setPassword('');
       setUnlocked(false);
     } finally {
@@ -107,8 +107,16 @@ const AdminHistory = () => {
     });
   };
 
+  // EXTRACT DEVICE NAME IF AVAILABLE, OTHERWISE FALLBACK TO OS/BROWSER
   const getClientInfo = (info) => {
     if (!info) return '-';
+    
+    // Check if the backend specifically logged the machine's "deviceName" (e.g., DESKTOP-26LKEN7)
+    // If it exists in the database's clientInfo object, print it!
+    if (info.deviceName) return info.deviceName;
+    if (info.hostname) return info.hostname;
+
+    // Fallback parsing from userAgent string if native Device Name isn't passed from backend
     const ua = info.userAgent || '';
     
     if (!ua) {
@@ -159,14 +167,15 @@ const AdminHistory = () => {
   return (
     <>
       {!unlocked ? (
+        // LOCK SCREEN - Shown BEFORE unlock
         <div className="secure-lock-overlay">
           <div className="secure-lock-card">
             <div className="secure-lock-header">
               <div className="lock-icon-wrapper">
                 <i className="fa-solid fa-lock"></i>
               </div>
-              <h3>Enter Passcode</h3>
-              <p>Only authorized admins can unlock this history.</p>
+              <h3>Admin Authorization</h3>
+              <p>Enter history passcode to continue</p>
             </div>
 
             {error && <div className="secure-error-msg">{error}</div>}
@@ -195,16 +204,17 @@ const AdminHistory = () => {
             </div>
 
             <button id="ah-unlock-btn" className="secure-unlock-btn" onClick={verifyAndFetch} disabled={loading || password.length !== 4}>
-              {loading ? <><i className="fas fa-circle-notch fa-spin"></i> Verifying...</> : 'Unlock'}
+              {loading ? <><i className="fas fa-circle-notch fa-spin"></i> Verifying...</> : 'Unlock History'}
             </button>
           </div>
         </div>
       ) : (
+        // MAIN CONTENT - Shown AFTER unlock
         <div className="ah-container">
           <div className="ah-header">
             <div>
               <h3>Admin Change History</h3>
-              <p>Only main admin can view the system history log.</p>
+              <p>Only main admin can view this system history log.</p>
             </div>
           </div>
 
@@ -298,3 +308,7 @@ const AdminHistory = () => {
 };
 
 export default AdminHistory;
+
+
+
+
