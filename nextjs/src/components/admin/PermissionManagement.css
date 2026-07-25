@@ -371,8 +371,8 @@
 }
 
 .perm-card.active {
-  border-color: #6c5ce7;
-  box-shadow: 0 0 0 1px rgba(98, 0, 157, 0.15);
+    border-color: white;
+    box-shadow: 0 0 0 1px #bb49ffc7;
 }
 
 .perm-header {
