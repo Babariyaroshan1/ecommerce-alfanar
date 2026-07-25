@@ -58,7 +58,7 @@ export default function Checkout() {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
   const [upiId, setUpiId] = useState('');
   const [upiError, setUpiError] = useState('');
-  const [enabledPaymentMethods, setEnabledPaymentMethods] = useState(['upi', 'card', 'netbanking', 'cod']);
+  const [enabledPaymentMethods, setEnabledPaymentMethods] = useState(['upi', 'card', 'netbanking', 'cod', 'wamd']);
 
   const[formData, setFormData] = useState({
     name: '',
@@ -480,7 +480,7 @@ export default function Checkout() {
   // Triggered from inside the modal
   const executePayment = async (selectedMethod) => {
     // Validate UPI if selected
-    if (selectedMethod === 'upi') {
+      if (selectedMethod === 'upi' || selectedMethod === 'wamd') {
       if (!upiId.trim()) {
         setUpiError('Please enter your UPI ID');
         return;
@@ -535,7 +535,7 @@ export default function Checkout() {
       }
 
       // For UPI: Show success message and redirect
-      if (selectedMethod === 'upi') {
+      if (selectedMethod === 'upi' || selectedMethod === 'wamd') {
         clearCart();
         setUpiId('');
         localStorage.removeItem('checkoutFormData');
@@ -1242,6 +1242,19 @@ export default function Checkout() {
                   <span><i className="fa-solid fa-building-columns"></i></span> {t("Net Banking")}
                 </div>
                 <span style={{fontSize: '12px', color: '#64748b'}}>All major banks available</span>
+              </div>
+              )}
+
+              {/* WAMD Option (Instant Bank Transfer - Kuwait) */}
+              {enabledPaymentMethods.includes('wamd') && (
+              <div 
+                className={`pay-method-card ${selectedPaymentMethod === 'wamd' ? 'selected' : ''}`}
+                onClick={() => handlePaymentMethodSelect('wamd')}
+              >
+                <div className="pay-method-title">
+                  <span><i className="fa-solid fa-university"></i></span> {t("WAMD - Instant Bank Transfer")}
+                </div>
+                <span style={{fontSize: '12px', color: '#64748b'}}>Instant bank transfer for Kuwait customers</span>
               </div>
               )}
 

@@ -44,7 +44,7 @@ router.post('/', auth, async (req, res) => {
             console.log('Validation failed: Incomplete shipping address', shippingAddress);
             return res.status(400).json({ message: 'Incomplete shipping address' });
         }
-        if (!paymentMethod || !['online', 'cod', 'upi'].includes(paymentMethod)) {
+        if (!paymentMethod || !['online', 'cod', 'upi', 'wamd'].includes(paymentMethod)) {
             console.log('Validation failed: Invalid payment method', paymentMethod);
             return res.status(400).json({ message: 'Invalid payment method' });
         }
