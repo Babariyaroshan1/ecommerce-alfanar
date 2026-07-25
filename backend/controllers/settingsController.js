@@ -252,7 +252,7 @@ const settingsController = {
             }
 
             // Validate that methods are valid
-            const validMethods = ['upi', 'card', 'netbanking', 'cod'];
+            const validMethods = ['upi', 'card', 'netbanking', 'cod', 'wamd'];
             const isValid = enabledPaymentMethods.every(method => validMethods.includes(method));
 
             if (!isValid) {
@@ -278,7 +278,7 @@ const settingsController = {
     getPaymentMethods: async (req, res) => {
         try {
             const settings = await Settings.findOne({ key: 'enabledPaymentMethods' });
-            const enabledPaymentMethods = settings?.value || ['upi', 'card', 'netbanking', 'cod'];
+            const enabledPaymentMethods = settings?.value || ['upi', 'card', 'netbanking', 'cod', 'wamd'];
 
             res.json({ enabledPaymentMethods });
         } catch (error) {

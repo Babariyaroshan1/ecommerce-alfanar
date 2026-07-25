@@ -10,13 +10,15 @@ const PAYMENT_METHODS = [
   { id: 'upi', label: 'UPI', description: 'Unified Payments Interface (India)' },
   { id: 'card', label: 'Credit/Debit Card', description: 'Visa, Mastercard, etc.' },
   { id: 'netbanking', label: 'Net Banking', description: 'Online bank transfers' },
-  { id: 'cod', label: 'Cash on Delivery', description: 'Pay when you receive your order' }
+  { id: 'cod', label: 'Cash on Delivery', description: 'Pay when you receive your order' },
+  { id: 'wamd', label: 'WAMD', description: 'Instant bank transfer (Kuwait)' }
 ];
 
 // Backend-valid payment method IDs
-const VALID_METHOD_IDS = ['upi', 'card', 'netbanking', 'cod'];
+// Backend-valid payment method IDs
+const VALID_METHOD_IDS = ['upi', 'card', 'netbanking', 'cod', 'wamd'];
 
-const DEFAULT_METHODS = ['upi', 'card', 'netbanking', 'cod'];
+const DEFAULT_METHODS = ['upi', 'card', 'netbanking', 'cod', 'wamd'];
 
 export default function PaymentMethodsManagement() {
   const [enabledMethods, setEnabledMethods] = useState(DEFAULT_METHODS);
