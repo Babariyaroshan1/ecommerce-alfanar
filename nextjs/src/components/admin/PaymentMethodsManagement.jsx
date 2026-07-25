@@ -10,11 +10,14 @@ const PAYMENT_METHODS = [
   { id: 'upi', label: 'UPI', description: 'Unified Payments Interface (India)' },
   { id: 'card', label: 'Credit/Debit Card', description: 'Visa, Mastercard, etc.' },
   { id: 'netbanking', label: 'Net Banking', description: 'Online bank transfers' },
+  { id: 'wamd', label: 'WAMD', description: 'Instant bank transfer (Kuwait)' },
   { id: 'cod', label: 'Cash on Delivery', description: 'Pay when you receive your order' }
 ];
 
+const DEFAULT_METHODS = ['upi', 'card', 'netbanking', 'wamd', 'cod'];
+
 export default function PaymentMethodsManagement() {
-  const [enabledMethods, setEnabledMethods] = useState(['upi', 'card', 'netbanking', 'cod']);
+  const [enabledMethods, setEnabledMethods] = useState(DEFAULT_METHODS);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [isInitializing, setIsInitializing] = useState(true);
@@ -28,7 +31,7 @@ export default function PaymentMethodsManagement() {
   const fetchPaymentMethods = async () => {
     try {
       const response = await axios.get(`${API_URL}/settings/payment-methods`);
-      setEnabledMethods(response.data.enabledPaymentMethods || ['upi', 'card', 'netbanking', 'cod']);
+      setEnabledMethods(response.data.enabledPaymentMethods || DEFAULT_METHODS);
     } catch (error) {
       console.error('Error fetching payment methods:', error);
       setMessage('[ERROR] Failed to load payment methods. Using defaults.');
@@ -151,7 +154,7 @@ export default function PaymentMethodsManagement() {
             <button
               className="pm-btn-secondary"
               onClick={() => {
-                setEnabledMethods(['upi', 'card', 'netbanking', 'cod']);
+                setEnabledMethods(DEFAULT_METHODS);
                 setMessage('');
               }}
               disabled={loading}
