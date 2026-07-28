@@ -12,6 +12,7 @@ const AVAILABLE_PERMISSIONS = [
   { key: 'add_products', label: 'Add Products', description: 'Create new products', icon: 'fa-plus' },
   { key: 'edit_products', label: 'Edit Products', description: 'Modify existing products', icon: 'fa-edit' },
   { key: 'delete_products', label: 'Delete Products', description: 'Remove products from database', icon: 'fa-trash' },
+  { key: 'manage_stock', label: 'Manage Stock', description: 'Manage size and stock availability', icon: 'fa-boxes' },
   { key: 'manage_kids_products', label: 'Manage Kids', description: 'Add, edit, and delete kids products', icon: 'fa-child' },
   { key: 'manage_orders', label: 'Manage Orders', description: 'View and update order status', icon: 'fa-shopping-cart' },
   { key: 'manage_users', label: 'Manage Users', description: 'View user information', icon: 'fa-users' },

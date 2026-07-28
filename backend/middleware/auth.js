@@ -4,12 +4,14 @@ import { PERMISSIONS } from '../utils/permissions.js';
 const PERMISSION_ALIASES = {
     [PERMISSIONS.MANAGE_PRODUCTS]: [
         PERMISSIONS.MANAGE_PRODUCTS,
+        PERMISSIONS.MANAGE_STOCK,
         'edit_products',
         'delete_products',
         'add_products'
     ],
     [PERMISSIONS.MANAGE_KIDS_PRODUCTS]: [
-        PERMISSIONS.MANAGE_KIDS_PRODUCTS
+        PERMISSIONS.MANAGE_KIDS_PRODUCTS,
+        PERMISSIONS.MANAGE_STOCK
     ]
 };
 

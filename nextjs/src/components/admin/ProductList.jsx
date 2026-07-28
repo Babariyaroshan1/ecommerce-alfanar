@@ -121,6 +121,7 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
   const canAddProducts = isAdmin || hasManageProducts || permissions.includes('add_products');
   const canEditProducts = isAdmin || hasManageProducts || permissions.includes('edit_products');
   const canDeleteProducts = isAdmin || hasManageProducts || permissions.includes('delete_products');
+  const canManageStock = isAdmin || hasManageProducts || permissions.includes('manage_stock') || permissions.includes('edit_products');
   const isCoAdmin = role === 'coadmin';
   const isViewOnlyCoAdmin = isCoAdmin && canViewProducts && !canEditProducts && !canAddProducts && !canDeleteProducts;
   
@@ -417,7 +418,7 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
   };
 
   const handleEditClick = (product) => {
-    if (!canEditProducts) {
+    if (!canEditProducts && !canManageStock) {
       setErrorMessage('You do not have permission to edit products. Contact admin.');
       return;
     }
@@ -1372,52 +1373,56 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
               </div>
             )}
 
-            <div className="edit-form-row">
-              <label>Available Sizes</label>
-              <div className="sizes-selector-compact">
-                {getSizesForCategory(
-                  editValues.showCustomCategory
-                    ? editValues.customCategory
-                    : editValues.category
-                ).map((size) => (
-                  <button
-                    key={size}
-                    type="button"
-                    className={`size-btn-compact ${
-                      editValues.sizes.includes(size) ? 'selected' : ''
-                    }`}
-                    onClick={() => handleSizeToggle(size)}
-                  >
-                    {size}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="edit-form-row full-width">
-              <label>Size Stock</label>
-              <div className="stock-per-size-edit">
-                {editValues.sizes.map((size) => (
-                  <div key={size} className="stock-input-group">
-                    <label>{size}</label>
-                    <input
-                      type="number"
-                      value={editValues.stock[size] ?? ''}
-                      onChange={(e) =>
-                        setEditValues((prev) => ({
-                          ...prev,
-                          stock: {
-                            ...prev.stock,
-                            [size]: e.target.value === '' ? '' : Number(e.target.value),
-                          },
-                        }))
-                      }
-                      min="0"
-                    />
+            {canManageStock && (
+              <>
+                <div className="edit-form-row">
+                  <label>Available Sizes</label>
+                  <div className="sizes-selector-compact">
+                    {getSizesForCategory(
+                      editValues.showCustomCategory
+                        ? editValues.customCategory
+                        : editValues.category
+                    ).map((size) => (
+                      <button
+                        key={size}
+                        type="button"
+                        className={`size-btn-compact ${
+                          editValues.sizes.includes(size) ? 'selected' : ''
+                        }`}
+                        onClick={() => handleSizeToggle(size)}
+                      >
+                        {size}
+                      </button>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </div>
+                </div>
+
+                <div className="edit-form-row full-width">
+                  <label>Size Stock</label>
+                  <div className="stock-per-size-edit">
+                    {editValues.sizes.map((size) => (
+                      <div key={size} className="stock-input-group">
+                        <label>{size}</label>
+                        <input
+                          type="number"
+                          value={editValues.stock[size] ?? ''}
+                          onChange={(e) =>
+                            setEditValues((prev) => ({
+                              ...prev,
+                              stock: {
+                                ...prev.stock,
+                                [size]: e.target.value === '' ? '' : Number(e.target.value),
+                              },
+                            }))
+                          }
+                          min="0"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
 
             <div className="edit-form-row full-width">
               <label>Available Colors</label>
