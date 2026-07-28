@@ -55,10 +55,19 @@ const KIDS_SIZES = [
 ];
 
 const getSizesForCategory = (category) => {
-  if (category === 'kids') {
+  if (String(category || '').toLowerCase() === 'kids') {
     return KIDS_SIZES;
   }
   return SIZES;
+};
+
+const getSizesForProductState = (values) => {
+  if (values?.isKidsProduct) {
+    return KIDS_SIZES;
+  }
+
+  const category = values?.showCustomCategory ? values?.customCategory : values?.category;
+  return getSizesForCategory(category);
 };
 
 const CURRENCIES = [
@@ -1097,14 +1106,28 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
                 <input
                   type="checkbox"
                   checked={editValues.isKidsProduct}
-                  onChange={(e) =>
-                    setEditValues((prev) => ({
-                      ...prev,
-                      isKidsProduct: e.target.checked,
-                      kidsType: e.target.checked ? 'boys' : '',
-                      customKidsType: ''
-                    }))
-                  }
+                  onChange={(e) => {
+                    const nextIsKids = e.target.checked;
+                    setEditValues((prev) => {
+                      const allowedSizes = nextIsKids ? KIDS_SIZES : SIZES;
+                      const nextSizes = prev.sizes.filter((size) => allowedSizes.includes(size));
+                      const nextStock = { ...prev.stock };
+                      Object.keys(nextStock).forEach((size) => {
+                        if (!nextSizes.includes(size)) {
+                          delete nextStock[size];
+                        }
+                      });
+
+                      return {
+                        ...prev,
+                        isKidsProduct: nextIsKids,
+                        kidsType: nextIsKids ? prev.kidsType || 'boys' : '',
+                        customKidsType: '',
+                        sizes: nextSizes,
+                        stock: nextStock,
+                      };
+                    });
+                  }}
                 />
                 <span>
                   <FaBaby style={{ marginRight: '6px' }} />
@@ -1461,11 +1484,7 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
                 <div className="edit-form-row">
                   <label>Available Sizes</label>
                   <div className="sizes-selector-compact">
-                    {getSizesForCategory(
-                      editValues.showCustomCategory
-                        ? editValues.customCategory
-                        : editValues.category
-                    ).map((size) => (
+                    {getSizesForProductState(editValues).map((size) => (
                       <button
                         key={size}
                         type="button"
