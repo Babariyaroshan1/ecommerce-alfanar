@@ -122,6 +122,7 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
   const canEditProducts = isAdmin || hasManageProducts || permissions.includes('edit_products');
   const canDeleteProducts = isAdmin || hasManageProducts || permissions.includes('delete_products');
   const canManageStock = isAdmin || hasManageProducts || permissions.includes('manage_stock') || permissions.includes('edit_products');
+  const canManageProductFields = canEditProducts || canManageStock;
   const isCoAdmin = role === 'coadmin';
   const isViewOnlyCoAdmin = isCoAdmin && canViewProducts && !canEditProducts && !canAddProducts && !canDeleteProducts;
   
@@ -163,6 +164,8 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
   const [detailedPreviewProduct, setDetailedPreviewProduct] = useState(null);
   const [fullScreenImageUrl, setFullScreenImageUrl] = useState('');
   const [fullScreenImageOpen, setFullScreenImageOpen] = useState(false);
+  const [stockEditorProduct, setStockEditorProduct] = useState(null);
+  const [stockEditorValues, setStockEditorValues] = useState({ sizes: [], stock: {} });
 
   const openPreview = (url) => {
     if (!url) return;
@@ -185,6 +188,8 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
     setDetailedPreviewProduct(null);
     setFullScreenImageOpen(false);
     setFullScreenImageUrl('');
+    setStockEditorProduct(null);
+    setStockEditorValues({ sizes: [], stock: {} });
   };
 
   const openFullScreenImage = (url) => {
@@ -645,6 +650,84 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
         stock: nextStock,
       };
     });
+  };
+
+  const initializeStockEditor = (product) => {
+    let stockData = {};
+    if (product.stock instanceof Map) {
+      stockData = Object.fromEntries(product.stock.entries());
+    } else if (product.stock && typeof product.stock === 'object' && !Array.isArray(product.stock)) {
+      stockData = { ...product.stock };
+    } else if (typeof product.stock === 'number' && Array.isArray(product.sizes)) {
+      product.sizes.forEach(size => {
+        stockData[size] = product.stock;
+      });
+    } else if (Array.isArray(product.sizes)) {
+      product.sizes.forEach(size => {
+        stockData[size] = 0;
+      });
+    }
+
+    setStockEditorProduct(product);
+    setStockEditorValues({
+      sizes: product.sizes || [],
+      stock: stockData,
+    });
+  };
+
+  const handleStockSizeToggle = (size) => {
+    setStockEditorValues(prev => {
+      const nextSizes = prev.sizes.includes(size)
+        ? prev.sizes.filter(s => s !== size)
+        : [...prev.sizes, size];
+
+      const nextStock = { ...prev.stock };
+      if (!nextSizes.includes(size)) {
+        delete nextStock[size];
+      } else if (nextStock[size] === undefined) {
+        nextStock[size] = 0;
+      }
+
+      return {
+        ...prev,
+        sizes: nextSizes,
+        stock: nextStock,
+      };
+    });
+  };
+
+  const handleSaveStockOnly = async () => {
+    if (!stockEditorProduct?._id) return;
+
+    try {
+      const cleanStock = {};
+      Object.entries(stockEditorValues.stock).forEach(([size, value]) => {
+        cleanStock[size] = value === '' ? 0 : Number(value) || 0;
+      });
+
+      const totalStock = Object.values(cleanStock).reduce((sum, value) => sum + value, 0);
+      const token = localStorage.getItem('adminToken');
+
+      await axios.put(
+        `${API_URL}/products/${stockEditorProduct._id}`,
+        {
+          sizes: stockEditorValues.sizes,
+          stock: cleanStock,
+          totalStock,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setSuccessMessage('Stock updated successfully');
+      setErrorMessage('');
+      setTimeout(() => setSuccessMessage(''), 2000);
+      setStockEditorProduct(null);
+      setStockEditorValues({ sizes: [], stock: {} });
+      fetchProducts();
+    } catch (error) {
+      console.error('Failed to update stock:', error);
+      setErrorMessage(error?.response?.data?.message || 'Failed to update stock. Please try again.');
+    }
   };
 
   const handleSaveEdit = async () => {
@@ -1558,7 +1641,7 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
           <th>Sizes</th>
           <th>Return</th>
           <th>Replacement</th>
-          {canEditProducts && (
+          {canManageProductFields && (
             <>
               <th>NEW</th>
               <th>Featured</th>
@@ -1607,7 +1690,7 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
             <td>{product.sizes?.join(', ')}</td>
             <td>{product.allowReturn ? 'Yes' : 'No'}</td>
             <td>{product.allowReplacement ? 'Yes' : 'No'}</td>
-            {canEditProducts && (
+            {canManageProductFields && (
               <>
                 <td>{product.isNew ? 'Yes' : 'No'}</td>
                 <td>
@@ -1630,7 +1713,7 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
                 </button>
               </td>
             )}
-            {canEditProducts && (
+            {canManageProductFields && (
               <td className="actions-cell">
                 <button className="edit-btn" onClick={() => handleEditClick(product)}>
                   <i className="fa-solid fa-pen"></i> Edit
@@ -1759,6 +1842,70 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
                   <span className="label">Sizes:</span>
                   <span className="value">{detailedPreviewProduct.sizes?.join(', ') || 'N/A'}</span>
                 </div>
+
+                {canManageStock && (
+                  <div className="preview-detail-row full-width">
+                    <span className="label">Stock Update:</span>
+                    <div className="stock-update-preview-panel">
+                      <button
+                        type="button"
+                        className="preview-btn"
+                        onClick={() => initializeStockEditor(detailedPreviewProduct)}
+                      >
+                        <i className="fa-solid fa-boxes-stacked"></i> Update Stock
+                      </button>
+
+                      {stockEditorProduct?._id === detailedPreviewProduct._id && (
+                        <div className="stock-update-preview-editor">
+                          <div className="sizes-selector-compact">
+                            {getSizesForCategory(
+                              detailedPreviewProduct.isKidsProduct ? 'kids' : detailedPreviewProduct.category
+                            ).map((size) => (
+                              <button
+                                key={size}
+                                type="button"
+                                className={`size-btn-compact ${stockEditorValues.sizes.includes(size) ? 'selected' : ''}`}
+                                onClick={() => handleStockSizeToggle(size)}
+                              >
+                                {size}
+                              </button>
+                            ))}
+                          </div>
+
+                          <div className="stock-per-size-edit">
+                            {stockEditorValues.sizes.map((size) => (
+                              <div key={size} className="stock-input-group">
+                                <label>{size}</label>
+                                <input
+                                  type="number"
+                                  value={stockEditorValues.stock[size] ?? ''}
+                                  min="0"
+                                  onChange={(e) =>
+                                    setStockEditorValues(prev => ({
+                                      ...prev,
+                                      stock: {
+                                        ...prev.stock,
+                                        [size]: e.target.value === '' ? '' : Number(e.target.value),
+                                      },
+                                    }))
+                                  }
+                                />
+                              </div>
+                            ))}
+                          </div>
+
+                          <button
+                            type="button"
+                            className="btn-small btn-add"
+                            onClick={handleSaveStockOnly}
+                          >
+                            Save Stock
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
 
                 <div className="preview-detail-row">
                   <span className="label">Return:</span>
