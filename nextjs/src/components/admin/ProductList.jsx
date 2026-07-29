@@ -130,7 +130,7 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
   const canAddProducts = isAdmin || hasManageProducts || permissions.includes('add_products');
   const canEditProducts = isAdmin || hasManageProducts || permissions.includes('edit_products');
   const canDeleteProducts = isAdmin || hasManageProducts || permissions.includes('delete_products');
-  const canManageStock = isAdmin || hasManageProducts || permissions.includes('manage_stock') || permissions.includes('edit_products');
+  const canManageStock = isAdmin || hasManageProducts || permissions.includes('manage_stock');
   const canManageProductFields = canEditProducts || canManageStock;
   const isCoAdmin = role === 'coadmin';
   const isViewOnlyCoAdmin = isCoAdmin && canViewProducts && !canEditProducts && !canAddProducts && !canDeleteProducts;
@@ -432,7 +432,7 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
   };
 
   const handleEditClick = (product) => {
-    if (!canEditProducts && !canManageStock) {
+    if (!canEditProducts) {
       setErrorMessage('You do not have permission to edit products. Contact admin.');
       return;
     }
@@ -1732,7 +1732,7 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
                 </button>
               </td>
             )}
-            {canManageProductFields && (
+            {canEditProducts && (
               <td className="actions-cell">
                 <button className="edit-btn" onClick={() => handleEditClick(product)}>
                   <i className="fa-solid fa-pen"></i> Edit

@@ -1397,7 +1397,7 @@ input:checked + .toggle-slider:before {
   margin: 0;
   line-height: 1.6;
   color: #4b5563;
-  background: #f9fafb;
+  /* background: #f9fafb; */
   padding: 12px;
   border-radius: 8px;
   border-left: 3px solid linear-gradient(90deg, var(--primary) 0%, #8b5cf6 100%);
