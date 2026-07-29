@@ -25,9 +25,13 @@ const parseTokenRole = (token) => {
   if (!token) return 'admin';
   try {
     const payload = JSON.parse(atob(token.split('.')[1]));
-    return payload.role || 'admin';
+    if (payload.role) return payload.role;
+    if (typeof payload.isAdmin === 'boolean') {
+      return payload.isAdmin ? 'admin' : 'coadmin';
+    }
+    return 'coadmin';
   } catch {
-    return 'admin';
+    return 'coadmin';
   }
 };
 
