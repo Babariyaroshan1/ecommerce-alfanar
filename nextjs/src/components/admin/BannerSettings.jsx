@@ -99,7 +99,7 @@ export default function BannerSettings() {
       );
       setSavedUrl(bannerUrl);
       setSavedMobileUrl(mobileBannerUrl);
-      setMessage('[SUCCESS] Banner settings saved successfully.');
+      setMessage(' Banner saved successfully.');
     } catch (error) {
       console.error('Error saving banner URL:', error);
       setMessage(error.response?.data?.message || 'Unable to save banner URL.');
