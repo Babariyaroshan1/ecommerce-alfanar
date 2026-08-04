@@ -284,9 +284,12 @@ export const useProductStore = create((set, get) => ({
 
     // Fetch filtered products from backend (with limit, category, featured, etc.)
     fetchFilteredProducts: async (params) => {
-        // params = { limit: 8, featured: true, category: 'pajamas', isKidsProduct: true }
+        // params = { limit: 8, featured: 'true', category: 'Pajamas', isKidsProduct: 'false' }
         try {
-            const queryString = new URLSearchParams(params).toString();
+            const cleanParams = Object.fromEntries(
+                Object.entries(params || {}).filter(([_, value]) => value != null && value !== '')
+            );
+            const queryString = new URLSearchParams(cleanParams).toString();
             const response = await fetch(`${API_URL}/products?${queryString}`);
             if (response.ok) {
                 const data = await response.json();
