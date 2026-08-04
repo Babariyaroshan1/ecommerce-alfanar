@@ -38,6 +38,11 @@ export default function BannerSettings() {
   const [uploadingDesktop, setUploadingDesktop] = useState(false);
   const [uploadingMobile, setUploadingMobile] = useState(false);
 
+  const inputFieldStyle = {
+    color: 'var(--text-main, #111827)',
+    backgroundColor: 'var(--bg-card, #ffffff)',
+  };
+
   const uploadImageFile = async (file) => {
     const formData = new FormData();
     formData.append('file', file);
@@ -124,6 +129,7 @@ export default function BannerSettings() {
               onChange={(e) => setBannerUrl(e.target.value)}
               className="form-control"
               placeholder="Enter desktop banner image URL or public path"
+              style={inputFieldStyle}
             />
             <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '12px' }}>
               <label htmlFor="desktopBannerUpload" className="btn btn-outline-secondary mb-0" style={{ cursor: 'pointer' }}>
@@ -150,6 +156,7 @@ export default function BannerSettings() {
               onChange={(e) => setMobileBannerUrl(e.target.value)}
               className="form-control"
               placeholder="Enter mobile banner image URL or public path"
+              style={inputFieldStyle}
             />
             <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '12px' }}>
               <label htmlFor="mobileBannerUpload" className="btn btn-outline-secondary mb-0" style={{ cursor: 'pointer' }}>
