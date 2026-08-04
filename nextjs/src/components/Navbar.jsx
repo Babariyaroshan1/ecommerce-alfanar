@@ -16,7 +16,6 @@ export default function Navbar() {
   const { favorites } = useFavoritesStore();
   const {
     products,
-    initializeProducts,
     currencySettings,
     selectedCurrency,
     setSelectedCurrency,
@@ -38,8 +37,7 @@ export default function Navbar() {
 
   useEffect(() => {
     setMounted(true);
-    initializeProducts();
-  }, [initializeProducts]);
+  }, []);
 
   useEffect(() => {
     if (mounted && !currencySettings?.showKwdNavbarOption) {

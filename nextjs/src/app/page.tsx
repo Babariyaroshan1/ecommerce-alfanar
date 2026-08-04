@@ -57,8 +57,8 @@ const Home = () => {
           fetchFilteredProducts({ limit: 8, featured: 'true', isKidsProduct: 'false' }),
           // Kids Featured: Kids products that are featured
           fetchFilteredProducts({ limit: 4, isKidsProduct: 'true', featured: 'true' }),
-          // Pajamas Featured: Pajama category products that are featured
-          fetchFilteredProducts({ limit: 8, category: 'Pajamas', featured: 'true' })
+          // Pajamas Featured: ONLY general pajamas (excluding kids)
+          fetchFilteredProducts({ limit: 8, category: 'Pajamas', featured: 'true', isKidsProduct: 'false' })
         ]);
 
         setBestSellers(best || []);
