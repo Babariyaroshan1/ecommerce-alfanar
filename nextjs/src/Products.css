@@ -111,21 +111,6 @@
   gap: 2rem;
 }
 
-[data-theme='dark'] .products-container {
-  background: var(--background);
-  color: var(--foreground);
-}
-
-[data-theme='dark'] .filter-group label,
-[data-theme='dark'] .filter-group input,
-[data-theme='dark'] .filter-group select {
-  color: var(--foreground);
-}
-
-[data-theme='dark'] .filter-group input,
-[data-theme='dark'] .filter-group select {
-  background: var(--card-bg);
-}
 
 @media (max-width: 768px) {
   .filters {
