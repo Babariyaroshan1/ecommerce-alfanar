@@ -5,6 +5,8 @@
   font-family: 'Jost', sans-serif;
   z-index: 1000;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+  background: var(--navbar-bg) !important;
+  color: var(--navbar-link);
 }
 
 .nav-link-custom {
@@ -12,6 +14,7 @@
   font-size: 15px;
   transition: color 0.2s ease;
   cursor: pointer;
+  color: var(--navbar-link) !important;
 }
 
 .nav-link-custom:hover {
@@ -41,14 +44,14 @@
 }
 
 .lang-box {
-  background-color: #f6f6f6 !important;
-  color: #333;
+  background-color: var(--card-bg) !important;
+  color: var(--foreground);
 }
 
 .icon-btn {
   background: transparent;
   border: none;
-  color: #000;
+  color: var(--navbar-link);
   padding: 0;
   margin: 0;
   display: flex;
@@ -83,11 +86,17 @@
 }
 
 .search-input {
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border-color);
   border-radius: 25px 0 0 25px;
   padding: 0.375rem 0.75rem;
   font-size: 14px;
   height: 38px;
+  background: var(--card-bg);
+  color: var(--foreground);
+}
+
+.search-input::placeholder {
+  color: var(--muted);
 }
 
 .search-input:focus {
@@ -97,12 +106,13 @@
 }
 
 .search-btn {
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border-color);
   border-left: none;
   border-radius: 0 25px 25px 0;
   height: 38px;
   padding: 0.375rem 0.75rem;
-  color: #000000;
+  color: var(--foreground);
+  background: var(--card-bg);
 }
 
 .search-btn:hover {
@@ -114,10 +124,12 @@
 .search-suggestions {
   max-height: 300px;
   overflow-y: auto;
+  background: var(--card-bg);
+  color: var(--foreground);
 }
 
 .suggestion-item {
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .suggestion-item:last-child {
@@ -125,11 +137,30 @@
 }
 
 .suggestion-item:hover {
-  background-color: #f8f9fa;
+  background-color: var(--hover-bg);
 }
 
 .hover-bg-light:hover {
-  background-color: #f8f9fa !important;
+  background-color: var(--hover-bg) !important;
+}
+
+.theme-toggle-btn {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: var(--card-bg);
+  color: var(--navbar-link);
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.theme-toggle-btn:hover {
+  transform: scale(1.05);
+  background: rgba(133, 0, 0, 0.1);
 }
 
 .mobile-menu {

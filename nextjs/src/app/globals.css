@@ -17,7 +17,36 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --navbar-bg: #0b1220;
+    --navbar-link: #f8fafc;
+    --card-bg: #111827;
+    --border-color: rgba(148, 163, 184, 0.24);
+    --hover-bg: rgba(255, 255, 255, 0.05);
+    --muted: #94a3b8;
   }
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --milano-gold: #D4AF37;
+  --navbar-bg: #ffffff;
+  --navbar-link: #111827;
+  --card-bg: #ffffff;
+  --border-color: rgba(226, 232, 240, 1);
+  --hover-bg: #f8f9fa;
+  --muted: #6b7280;
+}
+
+[data-theme='dark'] {
+  --background: #0b1220;
+  --foreground: #f8fafc;
+  --navbar-bg: #0f172a;
+  --navbar-link: #f8fafc;
+  --card-bg: #111827;
+  --border-color: rgba(148, 163, 184, 0.24);
+  --hover-bg: rgba(248, 250, 252, 0.04);
+  --muted: #94a3b8;
 }
 
 body {
