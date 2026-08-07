@@ -240,9 +240,17 @@ export default function ProductCard({ product: initialProduct, directToProduct =
     const wasFavorite = isFavorite;
     toggleFavorite(product);
     
-    // Enhanced toast notification
+    // Enhanced toast notification with action for wishlist add
     if (!wasFavorite) {
-      addToast(`${product.name} added to wishlist!`, 'success', 3000);
+      addToast(
+        `${product.name} added to wishlist!`,
+        'success',
+        4000,
+        {
+          label: 'Go to Cart',
+          callback: () => router.push('/cart')
+        }
+      );
     } else {
       addToast(`${product.name} removed from wishlist`, 'error', 3000);
     }

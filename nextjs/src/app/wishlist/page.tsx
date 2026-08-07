@@ -15,6 +15,7 @@ export default function Wishlist() {
   const { addToCart } = useCartStore();
   const products = useProductStore((state) => state.products);
   const currencySettings = useProductStore((state) => state.currencySettings);
+  const selectedCurrency = useProductStore((state) => state.selectedCurrency);
   const router = useRouter();
   const [selectedProducts, setSelectedProducts] = useState(new Set());
   const [shareModal, setShareModal] = useState(null);
@@ -71,6 +72,22 @@ export default function Wishlist() {
     }
   };
 
+  const getProductSymbol = (product) => {
+    if (product?.currencySymbol) return product.currencySymbol;
+    if (product?.currency === 'KWD') return 'KWD';
+    if (product?.currency === 'INR') return '₹';
+    return currencySettings?.symbol || (selectedCurrency === 'KWD' ? 'KWD' : '₹');
+  };
+
+  const formatCurrency = (value, symbol) => {
+    const numeric = Number(value || 0);
+    if (Number.isNaN(numeric)) return '';
+    const decimals = symbol === 'KWD' ? 3 : 2;
+    return `${symbol}${numeric.toFixed(decimals)}`;
+  };
+
+  const getProductPriceValue = (product) => product?.displayPrice ?? product?.price ?? 0;
+
   const handleShare = (product) => {
     setShareModal(product);
   };
@@ -80,12 +97,16 @@ export default function Wishlist() {
   };
 
   const shareOnWhatsApp = (product) => {
-    const text = `Check out this product: ${product.name} - ₹${product.price}\n${window.location.origin}/product/${product.id || product._id}`;
+    const symbol = getProductSymbol(product);
+    const priceText = formatCurrency(getProductPriceValue(product), symbol);
+    const text = `Check out this product: ${product.name} - ${priceText}\n${window.location.origin}/product/${product.id || product._id}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
   };
 
   const shareOnInstagram = (product) => {
-    const text = `Check out this product: ${product.name} - ₹${product.price}`;
+    const symbol = getProductSymbol(product);
+    const priceText = formatCurrency(getProductPriceValue(product), symbol);
+    const text = `Check out this product: ${product.name} - ${priceText}`;
     window.open(`https://www.instagram.com/?url=${encodeURIComponent(window.location.origin + '/product/' + (product.id || product._id))}`, '_blank');
   };
 
@@ -198,7 +219,7 @@ export default function Wishlist() {
                     <div className="mt-auto d-flex justify-content-between align-items-end">
                       <div>
                          <span className="badge bg-light text-secondary border mb-2">{product.category || 'Popular'}</span>
-                         <h6 className="fw-bold mb-0 price-text">₹{product.price}</h6>
+                         <h6 className="fw-bold mb-0 price-text">{formatCurrency(getProductPriceValue(product), getProductSymbol(product))}</h6>
                       </div>
                       
                       {/* Share Button (Small Icon at bottom right) */}

@@ -1,36 +1,36 @@
 .toast-container {
   position: fixed;
-  top: 20px;
-  right: 20px;
+  top: 85px; /* NAVBAR KE NICHE DIKHANE KE LIYE TOP CHANGE KIYA HAI */
+  right: 24px;
   z-index: 9999;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   max-width: 400px;
-  pointer-events: auto;
+  pointer-events: none; /* Allows clicking through empty space */
 }
 
 .toast-notification {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 16px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  animation: slideInRight 0.3s ease-out forwards;
-  min-width: 300px;
-  font-size: 14px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.95); /* Light glass effect */
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  animation: slideInRight 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  min-width: 320px;
   font-weight: 500;
+  pointer-events: auto; /* Makes the toast clickable */
+  overflow: hidden;
 }
 
 @keyframes slideInRight {
   0% {
-    transform: translateX(400px) scale(0.8);
+    transform: translateX(120%) scale(0.9);
     opacity: 0;
-  }
-  50% {
-    transform: translateX(-10px) scale(1.05);
-    opacity: 0.8;
   }
   100% {
     transform: translateX(0) scale(1);
@@ -38,122 +38,109 @@
   }
 }
 
-@keyframes slideOutRight {
-  from {
-    transform: translateX(0);
-    opacity: 1;
-  }
-  to {
-    transform: translateX(400px);
-    opacity: 0;
-  }
-}
+/* Modern colored left borders */
+.toast-success { border-left: 4px solid #10b981; }
+.toast-error { border-left: 4px solid #ef4444; }
+.toast-info { border-left: 4px solid #3b82f6; }
 
-/* Success Toast */
-.toast-success {
-  background: #f0fdf4;
-  color: #0f172a;
-  border-left: 4px solid #16a34a;
-  box-shadow: 0 16px 35px rgba(15, 23, 42, 0.08);
-}
-
-/* Error Toast */
-.toast-error {
-  background: #fee2e2;
-  color: #1f2937;
-  border-left: 4px solid #dc2626;
-}
-
-/* Info Toast */
-.toast-info {
-  background: #e0f2fe;
-  color: #0f172a;
-  border-left: 4px solid #2563eb;
+/* Icon Backgrounds */
+.toast-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
 .toast-success .toast-icon {
-  background: rgba(22, 163, 74, 0.12);
-  color: #16a34a;
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
 }
 
 .toast-error .toast-icon {
-  background: rgba(220, 38, 38, 0.12);
-  color: #dc2626;
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
 }
 
 .toast-info .toast-icon {
-  background: rgba(37, 99, 235, 0.12);
-  color: #2563eb;
+  background: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
 }
 
-/* Toast Content */
+/* Content */
 .toast-content {
   display: flex;
   align-items: center;
   gap: 12px;
   flex: 1;
-}
-
-.toast-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 20px;
-  color: inherit;
+  margin-right: 12px;
 }
 
 .toast-message {
-  color: inherit;
+  color: #111827;
+  font-size: 0.9rem;
+  line-height: 1.4;
   word-break: break-word;
 }
 
-/* Toast Close Button */
+/* Action Button (Go to Cart / View Wishlist) */
+.toast-action {
+  border: none;
+  background: #111827; /* Dark modern button */
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.8rem;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.toast-action:hover {
+  background: #374151;
+  transform: translateY(-1px);
+}
+
+.toast-action:active {
+  transform: translateY(0);
+}
+
+/* Close Button */
 .toast-close {
   background: none;
   border: none;
-  color: inherit;
+  color: #9ca3af;
   cursor: pointer;
-  padding: 0;
+  padding: 4px;
   margin-left: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0.8;
-  transition: opacity 0.2s ease;
+  border-radius: 50%;
+  transition: background 0.2s, color 0.2s;
   flex-shrink: 0;
 }
 
 .toast-close:hover {
-  opacity: 1;
-}
-
-.toast-action {
-  border: none;
-  background: rgba(15, 23, 42, 0.08);
-  color: inherit;
-  border-radius: 6px;
-  padding: 8px 12px;
-  cursor: pointer;
-  font-weight: 600;
-  margin-left: 8px;
-  transition: background-color 0.2s ease;
-}
-
-.toast-action:hover {
-  background: rgba(15, 23, 42, 0.12);
+  color: #111827;
+  background: #f3f4f6;
 }
 
 /* Mobile Responsive */
 @media (max-width: 640px) {
   .toast-container {
-    top: 10px;
-    right: 10px;
-    left: 10px;
-    max-width: calc(100% - 20px);
+    top: 75px;
+    right: 16px;
+    left: 16px;
+    max-width: none;
   }
 
   .toast-notification {
     min-width: auto;
     width: 100%;
+    padding: 10px 14px;
   }
 }
