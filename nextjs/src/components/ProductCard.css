@@ -1,9 +1,9 @@
 .product-card {
   cursor: pointer;
   overflow: hidden;
-  border: 1px solid #f0f0f0;
+  border: 1px solid var(--border-color);
   border-radius: 24px;
-  background: #ffffff;
+  background: var(--card-bg);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
@@ -14,14 +14,14 @@
 
 .product-card:hover {
   transform: translateY(-10px);
-  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.12);
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.18);
 }
 
 .product-card__image {
   position: relative;
   overflow: hidden;
   padding-top: 100%;
-  background: #f8f8f8;
+  background: var(--background);
 }
 
 .product-card__image img {
@@ -52,14 +52,14 @@
   position: absolute;
   top: 16px;
   left: 16px;
-  background: rgba(255, 255, 255, 0.95);
-  color: #111827;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--foreground);
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.02em;
   border-radius: 999px;
   padding: 0.55rem 0.9rem;
-  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
 }
 
 /* HOVER ICONS */
@@ -96,8 +96,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.95);
-  color: #111827;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--foreground);
   box-shadow: 0 10px 25px rgba(15, 23, 42, 0.16);
   cursor: pointer;
   transition: transform 0.25s ease, background 0.25s ease;
@@ -163,13 +163,13 @@
   bottom: 16px;
   left: 50%;
   transform: translateX(-50%) translateY(10px);
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--card-bg);
   padding: 8px 14px;
   border-radius: 999px;
   border: none;
   font-size: 0.82rem;
   font-weight: 700;
-  color: #111827;
+  color: var(--foreground);
   box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15);
   cursor: pointer;
   z-index: 2;
