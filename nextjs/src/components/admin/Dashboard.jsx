@@ -12,6 +12,8 @@ import ProductFAQManagement from './ProductFAQManagement';
 import ProductReviewsManagement from './ProductReviewsManagement';
 import Analytics from './Analytics';
 import Coupons from './Coupons';
+import Credits from './Credits';
+import Notifications from './Notifications';
 import BannerSettings from './BannerSettings';
 import PaymentMethodsManagement from './PaymentMethodsManagement';
 import ChangeAdminPassword from './ChangeAdminPassword';
@@ -148,6 +150,8 @@ export default function Dashboard({ onLogout }) {
     { id: 'reviews', label: 'Reviews', icon: 'fa-solid fa-star', permission: 'manage_reviews' },
     { id: 'currency', label: 'Currency', icon: 'fa-solid fa-dollar-sign', permission: 'manage_currency' },
     { id: 'banner', label: 'Banner', icon: 'fa-solid fa-image', permission: 'manage_banner' },
+    { id: 'notifications', label: 'Notifications', icon: 'fa-solid fa-bell', permission: 'manage_notifications' },
+    { id: 'credits', label: 'Credits', icon: 'fa-solid fa-coins', permission: 'manage_credits' },
     { id: 'payment-methods', label: 'Payment', icon: 'fa-solid fa-credit-card', permission: 'manage_settings', adminOnly: true },
     { id: 'history', label: 'History', icon: 'fa-solid fa-history', permission: 'manage_settings', adminOnly: true },
     { id: 'coupons', label: 'Coupons', icon: 'fa-solid fa-tags', permission: 'manage_coupons' },
@@ -172,6 +176,10 @@ export default function Dashboard({ onLogout }) {
     {
       title: 'Marketing',
       items: menuItems.filter(item => ['faqs', 'product-faqs', 'reviews', 'banner', 'coupons'].includes(item.id))
+    },
+    {
+      title: 'Notifications',
+      items: menuItems.filter(item => ['notifications', 'credits'].includes(item.id))
     },
     {
       title: 'Configuration',
@@ -359,6 +367,8 @@ export default function Dashboard({ onLogout }) {
           {activeTab === 'reviews' && <ProductReviewsManagement />}
           {activeTab === 'currency' && <CurrencyManagement />}
           {activeTab === 'banner' && <BannerSettings />}
+          {activeTab === 'notifications' && <Notifications />}
+          {activeTab === 'credits' && <Credits />}
           {activeTab === 'payment-methods' && role === 'admin' && <PaymentMethodsManagement />}
           {activeTab === 'coupons' && <Coupons />}
           {activeTab === 'history' && role === 'admin' && <AdminHistory />}

@@ -22,6 +22,8 @@ const AVAILABLE_PERMISSIONS = [
   { key: 'manage_product_faqs', label: 'Manage Product FAQs', description: 'Add, edit, and delete product-specific FAQs', icon: 'fa-question-circle' },
   { key: 'manage_reviews', label: 'Manage Reviews', description: 'View and manage product reviews', icon: 'fa-star' },
   { key: 'manage_banner', label: 'Manage Banner', description: 'Update website banner and images', icon: 'fa-image' },
+  { key: 'manage_notifications', label: 'Manage Notifications', description: 'Access notification templates, automation, and delivery logs', icon: 'fa-bell' },
+  { key: 'manage_credits', label: 'Manage Credits', description: 'Control credit balances and purchase history settings', icon: 'fa-coins' },
   { key: 'manage_currency', label: 'Manage Currency', description: 'Configure currency settings and rates', icon: 'fa-dollar-sign' },
   { key: 'manage_coupons', label: 'Manage Coupons', description: 'Create and manage discount coupons', icon: 'fa-tags' },
   { key: 'manage_settings', label: 'Manage Settings', description: 'Manage system settings and permissions', icon: 'fa-cog' }

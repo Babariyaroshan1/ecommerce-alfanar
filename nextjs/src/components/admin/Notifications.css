@@ -1,0 +1,224 @@
+.notifications-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  background: var(--bg-card, #ffffff);
+  border-radius: 24px;
+  border: 1px solid var(--border-color, #e5e7eb);
+  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.08);
+  padding: 2rem;
+}
+
+.tab-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.tab-button {
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  background: var(--bg-surface);
+  color: var(--text-main);
+  padding: 0.8rem 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.tab-button.active {
+  background: linear-gradient(90deg, var(--primary), #8b5cf6);
+  color: #ffffff;
+  border-color: transparent;
+}
+
+.overview-card,
+.section-card,
+.provider-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  padding: 1.5rem;
+}
+
+.section-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.overview-card {
+  min-height: 240px;
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.35rem;
+}
+
+.card-head h3,
+.section-card-header h3,
+.template-card h4,
+.setting-card h4 {
+  margin: 0;
+  color: var(--text-main);
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: rgba(139, 92, 246, 0.15);
+  color: var(--primary);
+}
+
+.pill.secondary {
+  background: rgba(15, 23, 42, 0.06);
+  color: var(--text-main);
+}
+
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.overview-stat {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 1rem;
+}
+
+.overview-stat span {
+  display: block;
+  color: var(--text-muted);
+}
+
+.overview-stat strong {
+  display: block;
+  margin-top: 0.55rem;
+  font-size: 1.7rem;
+  color: var(--text-main);
+}
+
+.highlight-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.automation-list,
+.template-grid,
+.settings-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.template-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.template-card,
+.setting-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 1.25rem;
+}
+
+.template-card p,
+.setting-card p {
+  margin-top: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+}
+
+.toggle-switch {
+  border: none;
+  border-radius: 999px;
+  padding: 0.65rem 1rem;
+  background: linear-gradient(90deg, var(--primary), #8b5cf6);
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.table-shell {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.table-shell table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 860px;
+}
+
+.table-shell th,
+.table-shell td {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-main);
+}
+
+.table-shell thead {
+  background: var(--table-header);
+}
+
+.table-shell th {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.table-shell tbody tr:hover {
+  background: var(--table-row-hover);
+}
+
+.status-pill.completed {
+  background: rgba(34, 197, 94, 0.15);
+  color: #16a34a;
+}
+
+.status-pill.failed {
+  background: rgba(239, 68, 68, 0.12);
+  color: #dc2626;
+}
+
+@media (max-width: 980px) {
+  .overview-grid,
+  .section-grid,
+  .template-grid,
+  .settings-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .action-btn,
+  .tab-button {
+    width: 100%;
+  }
+}
