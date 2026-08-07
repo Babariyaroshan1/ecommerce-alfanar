@@ -57,7 +57,7 @@ export default function Navbar() {
     });
   };
 
-  const showThemeToggle = pathname === '/kids';
+  const showThemeToggle = pathname?.startsWith('/kids');
   const [searchQuery, setSearchQuery] = useState('');
   const [searchSuggestions, setSearchSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -192,7 +192,7 @@ export default function Navbar() {
   );
 
   return (
-    <nav className="custom-navbar bg-white border-bottom sticky-top py-3">
+    <nav className="custom-navbar border-bottom sticky-top py-3">
       <div className="container-fluid px-4">
         <div className="d-flex align-items-center justify-content-between">
 
@@ -214,18 +214,18 @@ export default function Navbar() {
           </div>
 
           <div className="d-none d-lg-flex align-items-center gap-4">
-            <Link href="/" className="nav-link-custom fw-semibold text-dark">
+            <Link href="/" className="nav-link-custom fw-semibold">
               {t('Home')}
             </Link>
 
-            <Link className="nav-link-custom text-dark" href="/kids">
+            <Link className="nav-link-custom" href="/kids">
               Kids
             </Link>
 
             <div className="nav-item dropdown">
               <Link
                 href="/products"
-                className="nav-link-custom text-dark d-flex align-items-center gap-1"
+                className="nav-link-custom d-flex align-items-center gap-1"
                 data-bs-toggle="dropdown"
               >
                 {t('Products')}
@@ -244,11 +244,11 @@ export default function Navbar() {
             </div>
 
             {currencySettings?.showNewArrivalsNavbar && (
-              <Link href="/new-arrivals" className="nav-link-custom text-dark">
+              <Link href="/new-arrivals" className="nav-link-custom">
                 {t('New Arrivals')}
               </Link>
             )}
-            <Link href="/blog" className="nav-link-custom text-dark">
+            <Link href="/blog" className="nav-link-custom">
               Blog
             </Link>
           </div>
@@ -264,13 +264,13 @@ export default function Navbar() {
             id="navbarNav"
           >
             <div className="mobile-menu-inner">
-              <Link href="/" className="nav-link-custom fw-semibold text-dark" onClick={closeMobileMenu}>
+              <Link href="/" className="nav-link-custom fw-semibold" onClick={closeMobileMenu}>
                 {t('Home')}
               </Link>
-            <Link className="nav-link-custom text-dark d-flex align-items-center gap-1 btn  text-start" href="/products" onClick={closeMobileMenu}>
+            <Link className="nav-link-custom d-flex align-items-center gap-1 btn text-start" href="/products" onClick={closeMobileMenu}>
                 {t('All Products')}
               </Link>
-                 <Link href="/kids" className="nav-link-custom text-dark  " onClick={closeMobileMenu}>
+                 <Link href="/kids" className="nav-link-custom" onClick={closeMobileMenu}>
                 Kids 
               </Link>
 
@@ -376,7 +376,7 @@ export default function Navbar() {
             {showThemeToggle && (
               <button
                 type="button"
-                className="theme-toggle-btn d-none d-md-inline-flex"
+                className="theme-toggle-btn d-inline-flex"
                 onClick={toggleTheme}
                 aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
               >
