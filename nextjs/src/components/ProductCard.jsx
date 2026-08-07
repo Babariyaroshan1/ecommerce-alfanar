@@ -108,6 +108,7 @@ export default function ProductCard({ product: initialProduct, directToProduct =
   const [cardMainImage, setCardMainImage] = useState('');
   const [cardHoverImage, setCardHoverImage] = useState('');
   const [isCardFading, setIsCardFading] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     setProduct(initialProduct);
@@ -423,12 +424,19 @@ export default function ProductCard({ product: initialProduct, directToProduct =
     return words.slice(0, 15).join(' ') + '...';
   };
 
+  useEffect(() => {
+    // Ensure hover state is reset when component mounts (prevents bfcache/stale hover UI)
+    setIsHovered(false);
+  }, []);
+
   return (
     <>
       {/* CARD */}
       <div
-        className="card product-card h-100 shadow-sm"
+        className={`card product-card h-100 shadow-sm ${isHovered ? 'is-hovered' : ''}`}
         onClick={handleViewDetails}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
         <div
           className="product-card__image position-relative"

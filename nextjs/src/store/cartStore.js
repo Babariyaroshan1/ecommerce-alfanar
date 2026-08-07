@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { useToastStore } from './toastStore';
 
 const getProductId = (product) => product?._id ?? product?.id;
 
@@ -48,7 +49,8 @@ export const useCartStore = create((set, get) => ({
 
         if (totalQty > stockLimit) {
             console.warn(`Cannot add ${incomingQty} items. Stock limit is ${stockLimit}, current cart has ${currentCartQty}`);
-            alert(`Cannot add more items. Only ${stockLimit} items available in stock.`);
+            // Use toast for user-friendly error instead of alert popup
+            useToastStore.getState().addToast(`Cannot add more items. Only ${stockLimit} available in stock.`, 'error', 4000);
             return state; // Don't add if it exceeds stock
         }
 

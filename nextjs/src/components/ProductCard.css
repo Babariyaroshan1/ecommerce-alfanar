@@ -81,6 +81,13 @@
   transform: translateY(0);
 }
 
+/* Also allow programmatic hover state to control the actions (prevents stale :hover after client navigation)
+   Use the `is-hovered` class set by React on mouse enter/leave and reset on mount. */
+.product-card.is-hovered .product-card__hover-actions {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .product-card__icon-btn {
   width: 44px;
   height: 44px;
