@@ -127,6 +127,22 @@
   opacity: 1;
 }
 
+.toast-action {
+  border: none;
+  background: rgba(15, 23, 42, 0.08);
+  color: inherit;
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-left: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.toast-action:hover {
+  background: rgba(15, 23, 42, 0.12);
+}
+
 /* Mobile Responsive */
 @media (max-width: 640px) {
   .toast-container {

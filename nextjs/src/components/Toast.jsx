@@ -8,6 +8,13 @@ export default function Toast() {
   const { toasts, removeToast } = useToastStore();
   const [mounted, setMounted] = useState(false);
 
+  const handleActionClick = (toast) => {
+    if (toast.action?.callback) {
+      toast.action.callback();
+    }
+    removeToast(toast.id);
+  };
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -59,6 +66,14 @@ export default function Toast() {
             )}
             <span className="toast-message">{toast.message.replace(/^[^\w\d]+/u, '').trim()}</span>
           </div>
+          {toast.action?.label && (
+            <button
+              className="toast-action"
+              onClick={() => handleActionClick(toast)}
+            >
+              {toast.action.label}
+            </button>
+          )}
           <button
             className="toast-close"
             onClick={() => removeToast(toast.id)}

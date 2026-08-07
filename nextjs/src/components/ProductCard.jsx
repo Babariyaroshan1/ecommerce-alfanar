@@ -327,7 +327,15 @@ export default function ProductCard({ product: initialProduct, directToProduct =
       selectedSize: 'One Size',
       quantity: 1
     }, product.stock);
-    addToast(`${product.name} added to cart successfully!`, 'success', 4000);
+    addToast(
+      `${product.name} added to cart successfully!`,
+      'success',
+      4000,
+      {
+        label: 'Go to Cart',
+        callback: () => router.push('/cart')
+      }
+    );
   };
 
   const handleAddToCartFromModal = () => {
@@ -349,7 +357,15 @@ export default function ProductCard({ product: initialProduct, directToProduct =
       quantity: quantity
     }, selectedSizeStock);
 
-    addToast(`${product.name} added to cart successfully!`, 'success', 4000);
+    addToast(
+      `${product.name} added to cart successfully!`,
+      'success',
+      4000,
+      {
+        label: 'Go to Cart',
+        callback: () => router.push('/cart')
+      }
+    );
   };
 
   const handleViewDetails = (event) => {

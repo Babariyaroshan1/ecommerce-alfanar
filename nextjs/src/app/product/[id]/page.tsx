@@ -371,7 +371,15 @@ export default function ProductDetailPage() {
     }, selectedSizeStock);
     
     // Enhanced toast notification
-    addToast(`${product.name} added to cart successfully!`, 'success', 4000);
+    addToast(
+      `${product.name} added to cart successfully!`,
+      'success',
+      4000,
+      {
+        label: 'Go to Cart',
+        callback: () => router.push('/cart')
+      }
+    );
   };
 
   const handleBuyNow = (e) => {
