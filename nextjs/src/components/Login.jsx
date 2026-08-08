@@ -16,7 +16,11 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [loginLoading, setLoginLoading] = useState(true);
   const [error, setError] = useState('');
-  const { login } = useAuthStore();
+  const [otpMode, setOtpMode] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpCode, setOtpCode] = useState('');
+  const [otpMessage, setOtpMessage] = useState('');
+  const { login, sendOtp, verifyOtp } = useAuthStore();
   const router = useRouter();
   const { t } = useTranslation();
 
@@ -44,6 +48,7 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setOtpMessage('');
 
     try {
       let loginIdentifier = identifier.trim();
@@ -87,8 +92,30 @@ export default function Login() {
         }
       }
 
-      await login(loginIdentifier, password);
-      router.push(redirectTo);
+      if (otpMode) {
+        if (!otpSent) {
+          const channel = loginIdentifier.includes('@') ? 'email' : 'sms';
+          await sendOtp(loginIdentifier, channel);
+          setOtpSent(true);
+          setOtpMessage(t('OTP sent successfully. Please check your phone or email.'));
+        } else {
+          if (!otpCode.trim()) {
+            setError(t('Please enter the OTP code.'));
+            setLoading(false);
+            return;
+          }
+          const response = await verifyOtp(loginIdentifier, otpCode.trim());
+          if (!response.token) {
+            setError(t('OTP verified successfully, but user account was not found.'));
+            setLoading(false);
+            return;
+          }
+          router.push(redirectTo);
+        }
+      } else {
+        await login(loginIdentifier, password);
+        router.push(redirectTo);
+      }
     } catch (err) {
       setError(err.message || 'Login failed');
     } finally {
@@ -131,39 +158,90 @@ export default function Login() {
             </div>
           </div>
 
-          <div className="form-group password-group">
-            <label>{t('Password')}</label>
-            <div className="password-row">
+          {!otpMode && (
+            <div className="form-group password-group">
+              <label>{t('Password')}</label>
+              <div className="password-row">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder={t('Password')}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="form-input"
+                  autoComplete="new-password"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="password-toggle"
+                  aria-label={showPassword ? t('Hide Password') : t('Show Password')}
+                >
+                  {showPassword ? t('Hide') : t('Show')}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {otpMode && otpSent && (
+            <div className="form-group">
+              <label>{t('Enter OTP')}</label>
               <input
-                type={showPassword ? 'text' : 'password'}
-                placeholder={t('Password')}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                type="text"
+                placeholder={t('OTP Code')}
+                value={otpCode}
+                onChange={(e) => setOtpCode(e.target.value)}
                 className="form-input"
-                autoComplete="new-password"
+                autoComplete="off"
                 required
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="password-toggle"
-                aria-label={showPassword ? t('Hide Password') : t('Show Password')}
-              >
-                {showPassword ? t('Hide') : t('Show')}
-              </button>
             </div>
-          </div>
+          )}
+
+          {otpMessage && <div className="success-message">{otpMessage}</div>}
 
           <div className="form-group text-right">
-            <Link href="/forgot-password" className="forgot-link">
-              {t('Forgot Password?')}
-            </Link>
+            {!otpMode ? (
+              <Link href="/forgot-password" className="forgot-link">
+                {t('Forgot Password?')}
+              </Link>
+            ) : (
+              <button
+                type="button"
+                className="forgot-link otp-back"
+                onClick={() => {
+                  setOtpMode(false);
+                  setOtpSent(false);
+                  setOtpCode('');
+                  setOtpMessage('');
+                  setError('');
+                }}
+              >
+                {t('Use password login')}
+              </button>
+            )}
           </div>
 
           <button type="submit" disabled={loading} className="submit-btn">
             {loading ? t('Logging in...') : t('Login')}
           </button>
         </form>
+
+        <div className="toggle-form">
+          <button
+            type="button"
+            className="otp-toggle"
+            onClick={() => {
+              setOtpMode(!otpMode);
+              setOtpSent(false);
+              setOtpCode('');
+              setOtpMessage('');
+              setError('');
+            }}
+          >
+            {otpMode ? t('Use password login') : t('Login with OTP')}
+          </button>
+        </div>
 
         <div className="toggle-form">
           <p>{t("Don't have an account?")}</p>

@@ -31,6 +31,29 @@ export const useAuthStore = create((set) => ({
         }
     },
 
+    sendOtp: async (identifier, channel = 'sms') => {
+        try {
+            const res = await axios.post(`${API_URL}/otp/send`, { identifier, channel });
+            return res.data;
+        } catch (error) {
+            throw error.response?.data || error;
+        }
+    },
+
+    verifyOtp: async (identifier, code) => {
+        try {
+            const res = await axios.post(`${API_URL}/otp/verify`, { identifier, code });
+            if (res.data.token) {
+                localStorage.setItem('token', res.data.token);
+                localStorage.setItem('user', JSON.stringify(res.data.user));
+                set({ user: res.data.user, token: res.data.token });
+            }
+            return res.data;
+        } catch (error) {
+            throw error.response?.data || error;
+        }
+    },
+
     logout: () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');

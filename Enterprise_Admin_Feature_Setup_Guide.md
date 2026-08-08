@@ -323,3 +323,6 @@ That will prove the feature infrastructure is working before building the full s
 The current repo has the admin UI placeholders, but you still need to implement backend APIs, wire frontend actions, and add service provider keys.
 
 If you want, I can next generate the exact backend and frontend code files required for `Credits` and `Notifications` from scratch.
+
+
+

@@ -24,6 +24,9 @@ import faqRoutes from './routes/faqs.js';
 import productFaqRoutes from './routes/productFaqs.js';
 import reviewRoutes from './routes/reviews.js';
 import couponRoutes from './routes/coupons.js';
+import creditRoutes from './routes/credits.js';
+import notificationRoutes from './routes/notifications.js';
+import otpRoutes from './routes/otp.js';
 
 dotenv.config();
 
@@ -233,6 +236,9 @@ app.use('/api/product-faqs', productFaqRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/coupons', couponRoutes);
 app.use('/api/history', historyRoutes);
+app.use('/api/credits', creditRoutes);
+app.use('/api/notifications', notificationRoutes);
+app.use('/api/otp', otpRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
