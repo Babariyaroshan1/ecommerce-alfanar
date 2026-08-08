@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '../store/authStore';
 import { useTranslation } from 'react-i18next';
 import './Login.css';
-import ContactFormSkeleton from './ContactFormSkeleton';
+// import ContactFormSkeleton from './ContactFormSkeleton'; // Use if needed
 
 export default function Login() {
   const [identifier, setIdentifier] = useState('');
@@ -16,10 +16,14 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [loginLoading, setLoginLoading] = useState(true);
   const [error, setError] = useState('');
+  
+  // OTP States
   const [otpMode, setOtpMode] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
-  const [otpCode, setOtpCode] = useState('');
+  const [otpValues, setOtpValues] = useState(['', '', '', '', '', '']);
   const [otpMessage, setOtpMessage] = useState('');
+  const otpRefs = useRef([]);
+
   const { login, sendOtp, verifyOtp } = useAuthStore();
   const router = useRouter();
   const { t } = useTranslation();
@@ -28,7 +32,6 @@ export default function Login() {
     setLoginLoading(false);
   }, []);
 
-  // Get redirect URL from query params
   const searchParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
   const redirectTo = searchParams.get('redirect') || '/';
 
@@ -43,6 +46,46 @@ export default function Login() {
     if (code === '+965') return digits.length === 8;
     return digits.length >= 7 && digits.length <= 15;
   };
+
+  // --- OTP Box Logic Handlers ---
+  const handleOtpChange = (index, e) => {
+    const value = e.target.value;
+    if (isNaN(value)) return; // Allow only numbers
+
+    const newOtpValues = [...otpValues];
+    // Take only the last character entered
+    newOtpValues[index] = value.substring(value.length - 1);
+    setOtpValues(newOtpValues);
+
+    // Auto focus next input
+    if (value && index < 5) {
+      otpRefs.current[index + 1].focus();
+    }
+  };
+
+  const handleOtpKeyDown = (index, e) => {
+    if (e.key === 'Backspace' && !otpValues[index] && index > 0) {
+      // Focus previous input on backspace if current is empty
+      otpRefs.current[index - 1].focus();
+    }
+  };
+
+  const handleOtpPaste = (e) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData('text').slice(0, 6).replace(/\D/g, ''); // Extract up to 6 digits
+    if (pastedData) {
+      const newOtpValues = [...otpValues];
+      for (let i = 0; i < pastedData.length; i++) {
+        newOtpValues[i] = pastedData[i];
+      }
+      setOtpValues(newOtpValues);
+      
+      // Auto focus the input right after the pasted content
+      const focusIndex = Math.min(pastedData.length, 5);
+      otpRefs.current[focusIndex].focus();
+    }
+  };
+  // -----------------------------
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -99,12 +142,13 @@ export default function Login() {
           setOtpSent(true);
           setOtpMessage(t('OTP sent successfully. Please check your phone or email.'));
         } else {
-          if (!otpCode.trim()) {
-            setError(t('Please enter the OTP code.'));
+          const finalOtpCode = otpValues.join('');
+          if (finalOtpCode.length !== 6) {
+            setError(t('Please enter the complete 6-digit OTP code.'));
             setLoading(false);
             return;
           }
-          const response = await verifyOtp(loginIdentifier, otpCode.trim());
+          const response = await verifyOtp(loginIdentifier, finalOtpCode);
           if (!response.token) {
             setError(t('OTP verified successfully, but user account was not found.'));
             setLoading(false);
@@ -123,12 +167,21 @@ export default function Login() {
     }
   };
 
+  const resetOtpState = () => {
+    setOtpMode((prev) => !prev);
+    setOtpSent(false);
+    setOtpValues(['', '', '', '', '', '']);
+    setOtpMessage('');
+    setError('');
+  };
+
   return (
     <div className="login-container">
       <div className="login-card">
-        <h2>{t('Login')}</h2>
+        <h2>{t('Welcome Back')}</h2>
 
         {error && <div className="error-message">{error}</div>}
+        {otpMessage && <div className="success-message">{otpMessage}</div>}
 
         <form onSubmit={handleSubmit} autoComplete="off">
           <input type="text" name="username" autoComplete="off" style={{ display: 'none' }} />
@@ -142,18 +195,20 @@ export default function Login() {
                 onChange={(e) => setCountryCode(e.target.value)}
                 className="country-code-select"
                 autoComplete="off"
+                disabled={otpSent}
               >
                 <option value="+965">🇰🇼 +965</option>
                 <option value="+91">🇮🇳 +91</option>
               </select>
               <input
                 type="text"
-                placeholder={t('Email or Phone')}
+                placeholder={t('Enter Email or Phone')}
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
                 className="form-input"
                 autoComplete="off"
                 required
+                disabled={otpSent}
               />
             </div>
           </div>
@@ -164,7 +219,7 @@ export default function Login() {
               <div className="password-row">
                 <input
                   type={showPassword ? 'text' : 'password'}
-                  placeholder={t('Password')}
+                  placeholder={t('Enter Password')}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="form-input"
@@ -185,20 +240,25 @@ export default function Login() {
 
           {otpMode && otpSent && (
             <div className="form-group">
-              <label>{t('Enter OTP')}</label>
-              <input
-                type="text"
-                placeholder={t('OTP Code')}
-                value={otpCode}
-                onChange={(e) => setOtpCode(e.target.value)}
-                className="form-input"
-                autoComplete="off"
-                required
-              />
+              <label>{t('Enter 6-Digit OTP')}</label>
+              <div className="otp-container" onPaste={handleOtpPaste}>
+                {otpValues.map((value, index) => (
+                  <input
+                    key={index}
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={1}
+                    value={value}
+                    ref={(el) => (otpRefs.current[index] = el)}
+                    onChange={(e) => handleOtpChange(index, e)}
+                    onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                    className="otp-box"
+                    autoComplete="off"
+                  />
+                ))}
+              </div>
             </div>
           )}
-
-          {otpMessage && <div className="success-message">{otpMessage}</div>}
 
           <div className="form-group text-right">
             {!otpMode ? (
@@ -212,7 +272,7 @@ export default function Login() {
                 onClick={() => {
                   setOtpMode(false);
                   setOtpSent(false);
-                  setOtpCode('');
+                  setOtpValues(['', '', '', '', '', '']);
                   setOtpMessage('');
                   setError('');
                 }}
@@ -223,29 +283,19 @@ export default function Login() {
           </div>
 
           <button type="submit" disabled={loading} className="submit-btn">
-            {loading ? t('Logging in...') : t('Login')}
+            {loading ? t('Processing...') : otpMode && !otpSent ? t('Send OTP') : t('Login')}
           </button>
         </form>
 
         <div className="toggle-form">
-          <button
-            type="button"
-            className="otp-toggle"
-            onClick={() => {
-              setOtpMode(!otpMode);
-              setOtpSent(false);
-              setOtpCode('');
-              setOtpMessage('');
-              setError('');
-            }}
-          >
-            {otpMode ? t('Use password login') : t('Login with OTP')}
+          <button type="button" className="otp-toggle" onClick={resetOtpState}>
+            {otpMode ? t('Switch to Password Login') : t('Login with OTP instead')}
           </button>
         </div>
 
         <div className="toggle-form">
           <p>{t("Don't have an account?")}</p>
-          <Link href="/register">{t('Register')}</Link>
+          <Link href="/register">{t('Register here')}</Link>
         </div>
       </div>
     </div>
