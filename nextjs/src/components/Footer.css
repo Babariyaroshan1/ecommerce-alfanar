@@ -8,17 +8,18 @@
 }
 
 .footer-container {
-  background-color: #f5f5f5;
-  color: #333;
+  background-color: var(--footer-bg);
+  color: var(--text-primary);
   margin-top: auto;
   font-family: 'Jost', sans-serif;
   width: 100%;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .footer-main {
   width: 100%;
   padding: 30px 20px;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .footer-wrapper {
@@ -44,14 +45,10 @@
   width: 100%;
 }
 
-.newsletter-section {
-  width: 100%;
-}
-
 .footer-section-title {
   font-size: 24px;
   font-weight: 400;
-  color: #1a1a1a;
+  color: var(--text-primary);
   margin-bottom: 12px;
   letter-spacing: 0.5px;
   line-height: 1.2;
@@ -59,7 +56,7 @@
 
 .footer-section-desc {
   font-size: 14px;
-  color: #888;
+  color: var(--text-secondary);
   margin-bottom: 20px;
   line-height: 1.6;
 }
@@ -73,29 +70,28 @@
 
 .newsletter-input {
   padding: 12px 14px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   font-family: 'Jost', sans-serif;
   font-size: 13px;
-  background-color: #fff;
-  color: #333;
+  background-color: var(--card-bg);
+  color: var(--text-primary);
   transition: all 0.3s ease;
   width: 100%;
 }
 
 .newsletter-input::placeholder {
-  color: #aaa;
+  color: var(--text-secondary);
 }
 
 .newsletter-input:focus {
   outline: none;
-  border-color: #999;
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+  border-color: var(--accent-color);
 }
 
 .subscribe-btn {
   padding: 10px 20px;
-  background-color: #6b6b6b;
+  background-color: var(--accent-color);
   color: white;
   border: none;
   border-radius: 4px;
@@ -108,21 +104,13 @@
 }
 
 .subscribe-btn:hover {
-  background-color: #555;
-}
-
-.subscribe-btn:active {
-  transform: scale(0.98);
-}
-
-.footer-column {
-  text-align: center;
+  opacity: 0.9;
 }
 
 .footer-column-title {
   font-size: 10px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--text-primary);
   text-transform: uppercase;
   letter-spacing: 1.2px;
   margin-bottom: 15px;
@@ -139,43 +127,26 @@
   align-items: center;
 }
 
-.footer-column-links li {
-  margin: 0;
-}
-
 .footer-column-links a {
-  color: #888;
+  color: var(--text-secondary);
   text-decoration: none;
   font-size: 12px;
   transition: color 0.3s ease;
-  line-height: 1.4;
 }
 
 .footer-column-links a:hover {
-  color: #333;
-}
-
-.contact-section {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 15px;
-  align-items: center;
+  color: var(--accent-color);
 }
 
 .contact-phone {
   font-size: 12px;
-  color: #333;
+  color: var(--text-primary);
   font-weight: 500;
-  margin: 0;
-  line-height: 1.4;
 }
 
 .contact-hours {
   font-size: 11px;
-  color: #888;
-  margin: 0;
-  line-height: 1.5;
+  color: var(--text-secondary);
 }
 
 .social-icons-footer {
@@ -192,52 +163,35 @@
   justify-content: center;
   width: 32px;
   height: 32px;
-  background-color: #e8e8e8;
-  color: #333;
+  background-color: var(--hover-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
   border-radius: 50%;
   text-decoration: none;
   transition: all 0.3s ease;
-  font-size: 14px;
 }
 
 .social-icons-footer a:hover {
-  background-color: #333;
+  background-color: var(--accent-color);
   color: white;
-  transform: translateY(-2px);
+  border-color: var(--accent-color);
 }
 
 .footer-bottom {
-  background-color: #f5f5f5;
+  background-color: var(--footer-bg);
   padding: 15px 20px;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid var(--border-color);
 }
 
-.footer-bottom-content {
-  max-width: 1400px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: center;
-  text-align: center;
-}
-
-.copyright-text {
-  font-size: 11px;
-  color: #888;
-  margin: 0;
-}
-
-.orders-link {
-  font-size: 11px;
-  color: #888;
-  text-decoration: none;
-  transition: color 0.3s ease;
+.copyright-text, .powered-text, .orders-link {
+  color: var(--text-secondary);
 }
 
 .orders-link:hover {
-  color: #333;
+  color: var(--accent-color);
 }
+
+/* Yahan iske niche appke mobile aur tablet wale sab media queries paste rahenge jaise the */
 @media (max-width: 599px) {
   .footer-main {
     padding: 24px 16px;
