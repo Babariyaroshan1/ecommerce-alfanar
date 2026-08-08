@@ -253,12 +253,29 @@ body {
     transform: translateX(0);
   }
 
+  .mobile-menu-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
   .mobile-menu .nav-link-custom,
   .mobile-menu .dropdown-item,
-  .mobile-only-order {
+  .mobile-only-order,
+  .mobile-menu button.nav-link-custom {
+    display: block !important;
+    width: 100%;
     color: var(--text-primary) !important;
     padding: 10px !important;
     border-radius: 8px;
+    text-align: left;
+  }
+
+  .mobile-menu .nav-link-custom:hover,
+  .mobile-menu .dropdown-item:hover,
+  .mobile-menu button.nav-link-custom:hover {
+    background: var(--hover-bg);
+    color: var(--accent-color) !important;
   }
 
   .mobile-menu .nav-link-custom:hover,

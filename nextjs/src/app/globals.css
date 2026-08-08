@@ -56,3 +56,20 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.text-dark {
+  color: var(--text-primary, var(--foreground)) !important;
+}
+
+.text-muted {
+  color: var(--text-secondary, var(--muted, #6b7280)) !important;
+}
+
+.btn-outline-white {
+  border-color: #ffffff !important;
+  color: #ffffff !important;
+}
+
+[data-theme='dark'] .btn-outline-white {
+  border-color: rgba(255, 255, 255, 0.85) !important;
+}

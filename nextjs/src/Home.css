@@ -8,6 +8,30 @@ body {
   font-size: 14px;
 }
 
+.text-dark {
+  color: var(--text-primary, #111827) !important;
+}
+
+.text-muted {
+  color: var(--text-secondary, #6b7280) !important;
+}
+
+.btn-outline-white {
+  border-color: #ffffff !important;
+  color: #ffffff !important;
+}
+
+.btn-outline-white.bg-black {
+  background-color: #000 !important;
+  color: #fff !important;
+  border-color: #fff !important;
+}
+
+.btn-outline-white.bg-black:hover {
+  background-color: #222 !important;
+  color: #fff !important;
+}
+
 /* PRODUCT CARD STYLES */
 .product-card-custom {
   cursor: pointer;
@@ -155,47 +179,47 @@ body {
 }
 
 .faq-item {
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border-color, #e5e7eb);
   border-radius: 8px;
   overflow: hidden;
-  background: white;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background: var(--card-bg, #ffffff);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .faq-question {
   padding: 20px 24px;
-  background: white;
+  background: var(--card-bg, #ffffff);
   cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 16px;
   font-weight: 600;
-  color: #111;
+  color: var(--text-primary, #111);
   transition: background-color 0.2s ease;
 }
 
 .faq-question:hover {
-  background: #f9fafb;
+  background: var(--hover-bg, #f9fafb);
 }
 
 .faq-toggle {
   font-size: 20px;
   font-weight: bold;
-  color: #6b7280;
+  color: var(--text-secondary, #6b7280);
   transition: transform 0.3s ease, color 0.2s ease;
 }
 
 .faq-item.active .faq-toggle {
   transform: rotate(45deg);
-  color: #111;
+  color: var(--text-primary, #111);
 }
 
 .faq-answer {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.3s ease;
-  background: #f9fafb;
+  background: var(--card-bg, #f9fafb);
 }
 
 .faq-item.active .faq-answer {
@@ -205,7 +229,7 @@ body {
 .faq-answer p {
   margin: 0;
   padding: 0 24px 24px 24px;
-  color: #4b5563;
+  color: var(--text-secondary, #4b5563);
   line-height: 1.6;
   font-size: 15px;
 }
@@ -245,8 +269,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
+  background: var(--card-bg, #ffffff);
+  border: 1px solid var(--border-color, #e5e7eb);
   border-radius: 999px;
   width: 36px;
   height: 36px;
@@ -254,12 +278,13 @@ body {
   top: 40%;
   transform: translateY(-50%);
   z-index: 10;
+  color: var(--text-primary, #111);
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   transition: all 0.2s ease;
 }
 
 .slider-nav-btn:hover {
-  background-color: #f8f9fa;
+  background-color: var(--hover-bg, #f8f9fa);
 }
 
 /* Specific logic for Kids section: Hide on screens larger than mobile */
@@ -313,6 +338,10 @@ body {
   height: 100%;
   pointer-events: none;
   background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.95) 100%);
+}
+
+[data-theme='dark'] .slider-wrapper::after {
+  background: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(11,17,27,0.95) 100%);
 }
 
 .home-slider {
