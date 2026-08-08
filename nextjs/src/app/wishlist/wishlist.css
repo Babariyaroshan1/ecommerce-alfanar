@@ -14,7 +14,13 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid #eaeaea !important;
+  border: 1px solid var(--border-color) !important;
+  background-color: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+}
+
+.wishlist-card.bg-white {
+  background-color: var(--card-bg) !important;
 }
 
 .wishlist-card:hover {
@@ -22,12 +28,19 @@
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08) !important;
 }
 
-/* Fixed Aspect Ratio for Images (Crucial for Fashion/Products) */
-.product-image-wrapper {
-  position: relative;
+  .btn-gradient {
+    background: linear-gradient(90deg, var(--primary) 0%, #8b5cf6 100%);
+    color: #ffffff;
+    border: 1px solid transparent;
+  }
+
+  .btn-gradient:hover, .btn-gradient:focus {
+    background: linear-gradient(90deg, #7c3aed 0%, #8b5cf6 100%);
+    color: #ffffff;
+    border: 1px solid transparent;
   width: 100%;
   padding-top: 133.33%; /* 3:4 Aspect ratio - Perfect for clothing */
-  background-color: #f8f9fa;
+  background-color: var(--hover-bg);
   overflow: hidden;
 }
 
@@ -56,6 +69,7 @@
   line-height: 1.4;
   height: 2.8em; 
   font-weight: 500;
+  color: var(--text-primary) !important;
 }
 
 /* Action Buttons (Remove/Share) floating on image */

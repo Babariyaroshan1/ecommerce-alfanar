@@ -14,19 +14,6 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --navbar-bg: #0b1220;
-    --navbar-link: #f8fafc;
-    --card-bg: #111827;
-    --border-color: rgba(148, 163, 184, 0.24);
-    --hover-bg: rgba(255, 255, 255, 0.05);
-    --muted: #94a3b8;
-  }
-}
-
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -37,6 +24,12 @@
   --border-color: rgba(226, 232, 240, 1);
   --hover-bg: #f8f9fa;
   --muted: #6b7280;
+  --text-primary: #111827;
+  --text-secondary: #64748b;
+  --footer-bg: #f8fafc;
+  --accent-color: #3b82f6;
+  --skeleton-base: #f0f0f0;
+  --skeleton-highlight: #e0e0e0;
 }
 
 [data-theme='dark'] {
@@ -49,6 +42,12 @@
   --hover-bg: rgba(248, 250, 252, 0.04);
   --muted: #94a3b8;
   --primary: #8b5cf6;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --footer-bg: #0b1220;
+  --accent-color: #8b5cf6;
+  --skeleton-base: rgba(255, 255, 255, 0.08);
+  --skeleton-highlight: rgba(255, 255, 255, 0.16);
 }
 
 body {
@@ -58,7 +57,7 @@ body {
 }
 
 .text-dark {
-  color: var(--text-primary, var(--foreground)) !important;
+  color: #111827 !important;
 }
 
 .text-muted {

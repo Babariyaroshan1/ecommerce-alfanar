@@ -39,7 +39,7 @@
 }
 
 .skeleton-list-item {
-  background: #f9f9f9;
+  background: var(--card-bg);
   padding: 20px;
   border-radius: 8px;
   display: flex;
