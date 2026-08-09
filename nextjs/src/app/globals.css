@@ -143,31 +143,74 @@ body {
   border-bottom: 1px solid var(--panel-border);
 }
 
+html[data-theme='dark'] .cart-card,
+body[data-theme='dark'] .cart-card,
 [data-theme='dark'] .cart-card,
+html[data-theme='dark'] .cart-summary,
+body[data-theme='dark'] .cart-summary,
 [data-theme='dark'] .cart-summary,
+html[data-theme='dark'] .cart-panel,
+body[data-theme='dark'] .cart-panel,
 [data-theme='dark'] .cart-panel,
+html[data-theme='dark'] .wishlist-card,
+body[data-theme='dark'] .wishlist-card,
 [data-theme='dark'] .wishlist-card {
-  background-color: var(--card-bg) !important;
-  border-color: var(--border-color) !important;
-  color: var(--text-primary) !important;
-}
-
-[data-theme='dark'] .cart-panel {
-  background-color: var(--panel-bg) !important;
-}
-
-[data-theme='dark'] .cart-btn,
-[data-theme='dark'] .cart-remove-btn,
-[data-theme='dark'] .cart-clear-btn {
-  background-color: #1b2437 !important;
-  color: var(--text-primary) !important;
+  background-color: #111827 !important;
   border-color: rgba(148, 163, 184, 0.18) !important;
+  color: #f8fafc !important;
 }
 
-[data-theme='dark'] .cart-btn:hover,
-[data-theme='dark'] .cart-remove-btn:hover,
-[data-theme='dark'] .cart-clear-btn:hover {
+html[data-theme='dark'] .cart-panel,
+body[data-theme='dark'] .cart-panel,
+[data-theme='dark'] .cart-panel {
+  background-color: #172134 !important;
+}
+
+html[data-theme='dark'] .cart-heading-text,
+body[data-theme='dark'] .cart-heading-text,
+[data-theme='dark'] .cart-heading-text,
+html[data-theme='dark'] .cart-surface-text,
+body[data-theme='dark'] .cart-surface-text,
+[data-theme='dark'] .cart-surface-text,
+html[data-theme='dark'] .cart-muted-text,
+body[data-theme='dark'] .cart-muted-text,
+[data-theme='dark'] .cart-muted-text {
+  color: #f8fafc !important;
+}
+
+html[data-theme='dark'] .cart-summary-section,
+body[data-theme='dark'] .cart-summary-section,
+[data-theme='dark'] .cart-summary-section,
+html[data-theme='dark'] .cart-quantity-panel,
+body[data-theme='dark'] .cart-quantity-panel,
+[data-theme='dark'] .cart-quantity-panel {
   background-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+html[data-theme='dark'] .cart-btn,
+body[data-theme='dark'] .cart-btn,
+[data-theme='dark'] .cart-btn,
+html[data-theme='dark'] .cart-remove-btn,
+body[data-theme='dark'] .cart-remove-btn,
+[data-theme='dark'] .cart-remove-btn,
+html[data-theme='dark'] .cart-clear-btn,
+body[data-theme='dark'] .cart-clear-btn,
+[data-theme='dark'] .cart-clear-btn {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  color: #f8fafc !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+html[data-theme='dark'] .cart-btn:hover,
+body[data-theme='dark'] .cart-btn:hover,
+[data-theme='dark'] .cart-btn:hover,
+html[data-theme='dark'] .cart-remove-btn:hover,
+body[data-theme='dark'] .cart-remove-btn:hover,
+[data-theme='dark'] .cart-remove-btn:hover,
+html[data-theme='dark'] .cart-clear-btn:hover,
+body[data-theme='dark'] .cart-clear-btn:hover,
+[data-theme='dark'] .cart-clear-btn:hover {
+  background-color: rgba(255, 255, 255, 0.12) !important;
 }
 
 [data-theme='dark'] .action-btn-circle {
