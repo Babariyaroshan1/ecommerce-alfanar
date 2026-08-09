@@ -29,6 +29,21 @@ export default function Cart() {
 
   const currencySettings = useProductStore((state) => state.currencySettings);
   const selectedCurrency = useProductStore((state) => state.selectedCurrency);
+
+  const getItemMaxStock = (item: any, product: any) => {
+    const productStock = product?.stock ?? item.stock;
+    const itemSize = item.selectedSize || 'One Size';
+    const itemColor = item.selectedColor || 'Default';
+
+    if (productStock && typeof productStock === 'object') {
+      const stockValue = productStock[itemSize] ?? productStock[itemColor] ?? item.stock ?? 1;
+      const parsedValue = Number(stockValue);
+      return Number.isFinite(parsedValue) ? parsedValue : 1;
+    }
+
+    const parsedValue = Number(productStock ?? item.stock ?? 1);
+    return Number.isFinite(parsedValue) ? parsedValue : 1;
+  };
   const parsePrice = (value: any) => Number(String(value || 0).replace(/[^0-9.]/g, '')) || 0;
   const currencyDecimals = selectedCurrency === 'KWD' ? 3 : 2;
   const currencySymbol = selectedCurrency === 'INR' ? '₹' : selectedCurrency === 'KWD' ? 'KWD' : currencySettings?.symbol || 'KWD';
@@ -162,6 +177,7 @@ export default function Cart() {
                       {/* QUANTITY FIX */}
                       <div className="inline-flex items-center rounded-2xl cart-quantity-panel px-2 py-1 text-sm cart-surface-text">
                         <button
+                          type="button"
                           onClick={() =>
                             updateQuantity(itemId, item.quantity - 1, itemSize, itemColor)
                           }
@@ -176,15 +192,16 @@ export default function Cart() {
                         </span>
 
                         <button
+                          type="button"
                           onClick={() => {
                             const product = products.find(p => String(p._id || p.id) === String(itemId));
-                            const maxStock = product?.stock || item.stock || 1;
+                            const maxStock = getItemMaxStock(item, product);
                             updateQuantity(itemId, Math.min(item.quantity + 1, maxStock), itemSize, itemColor, maxStock);
                           }}
                           className="h-8 w-8 rounded-lg cart-btn cart-btn-square"
                           disabled={(() => {
                             const product = products.find(p => String(p._id || p.id) === String(itemId));
-                            const maxStock = product?.stock || item.stock || 1;
+                            const maxStock = getItemMaxStock(item, product);
                             return item.quantity >= maxStock;
                           })()}
                         >
@@ -194,6 +211,7 @@ export default function Cart() {
 
                       {/* REMOVE FIX */}
                       <button
+                        type="button"
                         onClick={() =>
                           removeFromCart(itemId, itemSize, itemColor)
                         }

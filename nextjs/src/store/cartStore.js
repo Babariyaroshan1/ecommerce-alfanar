@@ -99,10 +99,16 @@ export const useCartStore = create((set, get) => ({
         const filterColor = selectedColor || 'Default';
         const filterSize = selectedSize || 'One Size';
 
-        // Validate against stock limit if provided
-        if (maxStock && quantity > maxStock) {
-            console.warn(`Cannot set quantity to ${quantity}. Stock limit is ${maxStock}`);
-            return state; // Don't update if it exceeds stock
+        const normalizedQuantity = Number(quantity);
+        if (!Number.isFinite(normalizedQuantity) || normalizedQuantity < 1) {
+            console.warn('updateQuantity skipped invalid quantity', quantity);
+            return state;
+        }
+
+        const normalizedMaxStock = Number(maxStock);
+        if (normalizedMaxStock > 0 && normalizedQuantity > normalizedMaxStock) {
+            console.warn(`Cannot set quantity to ${normalizedQuantity}. Stock limit is ${normalizedMaxStock}`);
+            return state;
         }
 
         const newCart = state.cart.map(item =>

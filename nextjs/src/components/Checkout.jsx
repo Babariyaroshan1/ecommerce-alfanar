@@ -911,11 +911,12 @@ export default function Checkout() {
             )}
 
             {savedAddresses.length > 0 ? (
-              <div style={{display: 'grid', gap: '12px', marginBottom: '24px'}}>
+              <div style={{display: 'grid', gridTemplateColumns: '1fr', gap: '12px', marginBottom: '24px'}}>
                 {savedAddresses.map((address) => (
                   <div
                     key={address.id}
                     style={{
+                      width: '100%',
                       border: selectedSavedAddressId === address.id ? '1px solid #2563eb' : '1px solid #d1d5db',
                       borderRadius: '12px',
                       padding: '18px',
