@@ -254,7 +254,7 @@ body[data-theme='dark'] .saved-addresses-section .form-control:-webkit-autofill:
 }
 
 .payment-modal {
-  background: var(--page-bg, #f8fafc);
+  background: var(--card-bg, #ffffff);
   color: var(--text-primary, #111827);
   width: 100%;
   max-width: 420px;
