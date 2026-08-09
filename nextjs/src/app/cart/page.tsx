@@ -84,7 +84,8 @@ export default function Cart() {
 
   <Link
     href="/products"
-    className="inline-flex items-center justify-center rounded-lg bg-black px-5 py-3 text-white shadow hover:bg-gray-800 transition"
+    className="inline-flex items-center justify-center rounded-lg px-5 py-3 text-white shadow hover:opacity-90 transition"
+    style={{ backgroundColor: '#6e56cf' }}
   >
     Continue shopping
   </Link>
