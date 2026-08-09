@@ -128,10 +128,11 @@ body[data-theme='dark'] .saved-addresses-section .form-control:-webkit-autofill:
 
 .form input:focus,
 .form select:focus,
-.saved-addresses-section .form-control:focus {
-  outline: none;
-  border-color: #6c5dd3;
-  box-shadow: 0 0 0 3px rgba(108, 93, 211, 0.18);
+.saved-addresses-section .form-control:focus,
+.form-control:focus {
+  outline: none !important;
+  border-color: #6c5dd3 !important;
+  box-shadow: 0 0 0 3px rgba(108, 93, 211, 0.18) !important;
 }
 
 .full-width {
@@ -148,7 +149,7 @@ body[data-theme='dark'] .saved-addresses-section .form-control:-webkit-autofill:
   flex: 1;
 }
 
-/* ================= BUTTON ================= */
+/* ================= BUTTONS ================= */
 .btnbuy {
   width: 100%;
   background: #16a34a;
@@ -163,9 +164,31 @@ body[data-theme='dark'] .saved-addresses-section .form-control:-webkit-autofill:
   transition: 0.3s;
 }
 
-.btn:hover {
+.btnbuy:hover {
   background: #15803d;
 }
+
+/* Custom primary & danger buttons to override universal green hover */
+.custom-primary-btn {
+  background-color: #6c5dd3 !important;
+  color: #ffffff !important;
+  border: none !important;
+  transition: background-color 0.3s ease;
+}
+.custom-primary-btn:hover {
+  background-color: #5a4eb3 !important;
+}
+
+.custom-danger-btn {
+  background-color: #ef4444 !important;
+  color: #ffffff !important;
+  border: none !important;
+  transition: background-color 0.3s ease;
+}
+.custom-danger-btn:hover {
+  background-color: #dc2626 !important;
+}
+
 
 /* ================= ORDER SUMMARY ================= */
 .checkout-right .item {
@@ -205,7 +228,8 @@ body[data-theme='dark'] .saved-addresses-section .form-control:-webkit-autofill:
   display: block;
 }
 
-.saved-addresses-section .form-control {
+.saved-addresses-section .form-control,
+.form-control {
   width: 100%;
   padding: 12px;
   border: 1px solid var(--border-color, #cbd5e1);
@@ -216,9 +240,13 @@ body[data-theme='dark'] .saved-addresses-section .form-control:-webkit-autofill:
   transition: all 0.3s ease;
 }
 
-.saved-addresses-section .form-control:focus {
-  border-color: #16a34a;
-  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+/* Fix for dark mode inputs so they don't turn white */
+html[data-theme='dark'] .form-control,
+body[data-theme='dark'] .form-control,
+[data-theme='dark'] .form-control {
+  background-color: #111827 !important;
+  color: #f8fafc !important;
+  border-color: rgba(148, 163, 184, 0.24) !important;
 }
 
 /* ================= SELECTED ADDRESS PREVIEW ================= */
@@ -416,9 +444,6 @@ body[data-theme='dark'] .payment-modal,
 html[data-theme='dark'] .pay-method-card,
 body[data-theme='dark'] .pay-method-card,
 [data-theme='dark'] .pay-method-card,
-html[data-theme='dark'] .saved-addresses-section .form-control,
-body[data-theme='dark'] .saved-addresses-section .form-control,
-[data-theme='dark'] .saved-addresses-section .form-control,
 html[data-theme='dark'] .form input,
 body[data-theme='dark'] .form input,
 [data-theme='dark'] .form input,

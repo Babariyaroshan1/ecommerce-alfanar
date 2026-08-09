@@ -86,6 +86,7 @@ export default function Checkout() {
   const [selectedSavedAddressId, setSelectedSavedAddressId] = useState('');
   const [addressModalOpen, setAddressModalOpen] = useState(false);
   const [addressMessage, setAddressMessage] = useState('');
+  const [isAddFormVisible, setIsAddFormVisible] = useState(false); // New state to toggle add address form
 
   const persistSelectedAddressId = (id) => {
     if (typeof window === 'undefined') return;
@@ -217,6 +218,7 @@ export default function Checkout() {
   const handleOpenAddressModal = () => {
     setAddressModalOpen(true);
     setAddressMessage('');
+    setIsAddFormVisible(false); // Default to hiding form when opening modal
   };
 
   useEffect(() => {
@@ -588,7 +590,7 @@ export default function Checkout() {
       <div className="checkout-container">
         <div className="checkout-header d-flex align-items-center justify-content-between mb-3">
           <h1 className="checkout-title">{t("Checkout")}</h1>
-          <button type="button" className="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1" onClick={handleOpenAddressModal}>
+          <button type="button" className="btn custom-primary-btn btn-sm d-flex align-items-center gap-1" onClick={handleOpenAddressModal}>
             <i className="fa-solid fa-map-marker-alt"></i>
             {t('My Addresses')}
           </button>
@@ -750,7 +752,7 @@ export default function Checkout() {
                 </>
               )}
 
-              <button type="submit" className="btn btnbuy" disabled={loading || unavailableItems.length > 0} style={{opacity: unavailableItems.length > 0 ? 0.6 : 1}}>
+              <button type="submit" className="btnbuy" disabled={loading || unavailableItems.length > 0} style={{opacity: unavailableItems.length > 0 ? 0.6 : 1}}>
                 {unavailableItems.length > 0 ? t('Remove Unavailable Items') : loading ? t('Fetching Location & Processing...') : t('Buy Now')}
               </button>
             </form>
@@ -895,12 +897,14 @@ export default function Checkout() {
                 <h2 style={{margin: 0, color: 'var(--text-primary)'}}>{t('My Addresses')}</h2>
                 <p style={{margin: '6px 0 0 0', color: 'var(--text-secondary)'}}>{t('Select a saved address or save a new address for future checkout.')}</p>
               </div>
+              
               <button
                 type="button"
-                className="btn btn-outline-secondary btn-sm"
-                onClick={() => setAddressModalOpen(false)}
+                className="btn custom-primary-btn btn-sm"
+                onClick={() => setIsAddFormVisible(!isAddFormVisible)}
+                style={{ padding: '8px 16px', borderRadius: '6px', fontWeight: 'bold' }}
               >
-                ✕
+                {isAddFormVisible ? t('Close Form') : t('Add Address')}
               </button>
             </div>
 
@@ -917,32 +921,32 @@ export default function Checkout() {
                     key={address.id}
                     style={{
                       width: '100%',
-                      border: selectedSavedAddressId === address.id ? '1px solid #2563eb' : '1px solid #d1d5db',
+                      border: selectedSavedAddressId === address.id ? '1px solid #6c5dd3' : '1px solid #d1d5db',
                       borderRadius: '12px',
                       padding: '18px',
-                      background: selectedSavedAddressId === address.id ? 'rgba(59, 130, 246, 0.12)' : 'var(--card-bg)'
+                      background: selectedSavedAddressId === address.id ? 'rgba(108, 93, 211, 0.12)' : 'var(--card-bg)'
                     }}
                   >
                     <div style={{display: 'flex', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap'}}>
                       <div style={{minWidth: 0}}>
-                        <div style={{fontWeight: 700, fontSize: '15px', marginBottom: '6px'}}>{address.addressTitle || address.name || t('Address')}</div>
-                        <div style={{fontSize: '13px', color: '#475569', lineHeight: 1.6}}>
+                        <div style={{fontWeight: 700, fontSize: '15px', marginBottom: '6px', color: 'var(--text-primary)'}}>{address.addressTitle || address.name || t('Address')}</div>
+                        <div style={{fontSize: '13px', color: 'var(--text-muted, #8b96a5)', lineHeight: 1.6}}>
                           {address.street}{address.houseNumber ? `, ${address.houseNumber}` : ''}{address.apartment ? `, ${address.apartment}` : ''}{address.floor ? `, ${address.floor}` : ''}
                           {address.area ? `, ${address.area}` : ''}{address.city ? `, ${address.city}` : ''}{address.state ? `, ${address.state}` : ''}{address.governorate ? `, ${address.governorate}` : ''}{address.pincode ? `, ${address.pincode}` : ''}
                         </div>
-                        <div style={{marginTop: '6px', fontSize: '13px', color: '#475569'}}><i className="fa-solid fa-phone"></i> {address.phone}</div>
+                        <div style={{marginTop: '6px', fontSize: '13px', color: 'var(--text-muted, #8b96a5)'}}><i className="fa-solid fa-phone"></i> {address.phone}</div>
                       </div>
                       <div style={{display: 'flex', flexWrap: 'wrap', gap: '10px'}}>
                         <button
                           type="button"
-                          className="btn btn-sm btn-primary"
+                          className="btn btn-sm custom-primary-btn"
                           onClick={() => handleSelectSavedAddress(address)}
                         >
                           {t('Use This Address')}
                         </button>
                         <button
                           type="button"
-                          className="btn btn-sm btn-outline-secondary"
+                          className="btn btn-sm custom-danger-btn"
                           onClick={() => handleDeleteSavedAddress(address.id)}
                         >
                           {t('Delete')}
@@ -954,170 +958,182 @@ export default function Checkout() {
               </div>
             ) : (
               <div style={{marginBottom: '24px', padding: '18px', borderRadius: '12px', background: 'var(--card-bg)', border: '1px solid var(--border-color)', color: 'var(--text-primary)'}}>
-                {t('No saved addresses yet. Add one below and it will appear on My Addresses page.')}
+                {t('No saved addresses yet. Click "Add Address" to create one.')}
               </div>
             )}
 
-            <div style={{borderTop: '1px solid #e2e8f0', paddingTop: '20px'}}>
-              <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px'}}>
-                <h3 style={{margin: 0}}>{t('Add New Address')}</h3>
-                <span style={{fontSize: '13px', color: '#64748b'}}>{t('Saved to My Addresses automatically')}</span>
-              </div>
+            {isAddFormVisible && (
+              <div style={{borderTop: '1px solid var(--border-color, #e2e8f0)', paddingTop: '20px'}}>
+                <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px'}}>
+                  <h3 style={{margin: 0, color: 'var(--text-primary)'}}>{t('Add New Address')}</h3>
+                  <span style={{fontSize: '13px', color: 'var(--text-muted, #64748b)'}}>{t('Saved to My Addresses automatically')}</span>
+                </div>
 
-              <div style={{display: 'grid', gap: '12px'}}>
-                <input
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder={t('Full Name')}
-                  className="form-control"
-                />
-                <input
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  placeholder={t('Phone Number')}
-                  className="form-control"
-                />
+                <div style={{display: 'grid', gap: '12px'}}>
+                  <input
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder={t('Full Name')}
+                    className="form-control"
+                  />
+                  <input
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    placeholder={t('Phone Number')}
+                    className="form-control"
+                  />
 
-                {selectedCurrency === 'KWD' ? (
-                  <>
-                    <input
-                      name="addressTitle"
-                      value={formData.addressTitle}
-                      onChange={handleChange}
-                      placeholder={t('Address Title (e.g. Home, Work)')}
-                      className="form-control"
-                    />
-                    <select
-                      name="governorate"
-                      value={formData.governorate}
-                      onChange={handleChange}
-                      className="form-control"
-                    >
-                      <option value="">{t('Select Governorate')}</option>
-                      <option value="Kuwait">Kuwait</option>
-                      <option value="Farwaniya">Farwaniya</option>
-                      <option value="Hawalli">Hawalli</option>
-                      <option value="Ahmadi">Ahmadi</option>
-                      <option value="Jahra">Jahra</option>
-                      <option value="Mubarak Al-Kabeer">Mubarak Al-Kabeer</option>
-                    </select>
-                    <input
-                      name="area"
-                      value={formData.area}
-                      onChange={handleChange}
-                      placeholder={t('Area')}
-                      className="form-control"
-                    />
-                    <div style={{display: 'grid', gap: '12px', gridTemplateColumns: '1fr 1fr'}}>
+                  {selectedCurrency === 'KWD' ? (
+                    <>
                       <input
-                        name="block"
-                        value={formData.block}
+                        name="addressTitle"
+                        value={formData.addressTitle}
                         onChange={handleChange}
-                        placeholder={t('Block')}
+                        placeholder={t('Address Title (e.g. Home, Work)')}
                         className="form-control"
                       />
+                      <select
+                        name="governorate"
+                        value={formData.governorate}
+                        onChange={handleChange}
+                        className="form-control"
+                      >
+                        <option value="">{t('Select Governorate')}</option>
+                        <option value="Kuwait">Kuwait</option>
+                        <option value="Farwaniya">Farwaniya</option>
+                        <option value="Hawalli">Hawalli</option>
+                        <option value="Ahmadi">Ahmadi</option>
+                        <option value="Jahra">Jahra</option>
+                        <option value="Mubarak Al-Kabeer">Mubarak Al-Kabeer</option>
+                      </select>
+                      <input
+                        name="area"
+                        value={formData.area}
+                        onChange={handleChange}
+                        placeholder={t('Area')}
+                        className="form-control"
+                      />
+                      <div style={{display: 'grid', gap: '12px', gridTemplateColumns: '1fr 1fr'}}>
+                        <input
+                          name="block"
+                          value={formData.block}
+                          onChange={handleChange}
+                          placeholder={t('Block')}
+                          className="form-control"
+                        />
+                        <input
+                          name="street"
+                          value={formData.street}
+                          onChange={handleChange}
+                          placeholder={t('Street')}
+                          className="form-control"
+                        />
+                      </div>
+                      <div style={{display: 'grid', gap: '12px', gridTemplateColumns: '1fr 1fr 1fr'}}>
+                        <input
+                          name="houseNumber"
+                          value={formData.houseNumber}
+                          onChange={handleChange}
+                          placeholder={t('House No.')}
+                          className="form-control"
+                        />
+                        <input
+                          name="apartment"
+                          value={formData.apartment}
+                          onChange={handleChange}
+                          placeholder={t('Apartment')}
+                          className="form-control"
+                        />
+                        <input
+                          name="floor"
+                          value={formData.floor}
+                          onChange={handleChange}
+                          placeholder={t('Floor')}
+                          className="form-control"
+                        />
+                      </div>
+                      <input
+                        name="jadda"
+                        value={formData.jadda}
+                        onChange={handleChange}
+                        placeholder={t('Jadda (Additional Details)')}
+                        className="form-control"
+                      />
+                    </>
+                  ) : (
+                    <>
                       <input
                         name="street"
                         value={formData.street}
                         onChange={handleChange}
-                        placeholder={t('Street')}
+                        placeholder={t('Street Address')}
                         className="form-control"
                       />
-                    </div>
-                    <div style={{display: 'grid', gap: '12px', gridTemplateColumns: '1fr 1fr 1fr'}}>
-                      <input
-                        name="houseNumber"
-                        value={formData.houseNumber}
-                        onChange={handleChange}
-                        placeholder={t('House No.')}
-                        className="form-control"
-                      />
-                      <input
-                        name="apartment"
-                        value={formData.apartment}
-                        onChange={handleChange}
-                        placeholder={t('Apartment')}
-                        className="form-control"
-                      />
-                      <input
-                        name="floor"
-                        value={formData.floor}
-                        onChange={handleChange}
-                        placeholder={t('Floor')}
-                        className="form-control"
-                      />
-                    </div>
-                    <input
-                      name="jadda"
-                      value={formData.jadda}
-                      onChange={handleChange}
-                      placeholder={t('Jadda (Additional Details)')}
-                      className="form-control"
-                    />
-                  </>
-                ) : (
-                  <>
-                    <input
-                      name="street"
-                      value={formData.street}
-                      onChange={handleChange}
-                      placeholder={t('Street Address')}
-                      className="form-control"
-                    />
-                    <div style={{display: 'grid', gap: '12px', gridTemplateColumns: '1fr 1fr'}}>
-                      <input
-                        name="city"
-                        value={formData.city}
-                        onChange={handleChange}
-                        placeholder={t('City')}
-                        className="form-control"
-                      />
-                      <input
-                        name="state"
-                        value={formData.state}
-                        onChange={handleChange}
-                        placeholder={t('State')}
-                        className="form-control"
-                      />
-                    </div>
-                    <div style={{display: 'grid', gap: '12px', gridTemplateColumns: '1fr 1fr'}}>
-                      <input
-                        name="houseNumber"
-                        value={formData.houseNumber}
-                        onChange={handleChange}
-                        placeholder={t('House/Building No.')}
-                        className="form-control"
-                      />
-                      <input
-                        name="pincode"
-                        value={formData.pincode}
-                        onChange={handleChange}
-                        placeholder={t('Pincode')}
-                        className="form-control"
-                      />
-                    </div>
-                  </>
-                )}
-              </div>
+                      <div style={{display: 'grid', gap: '12px', gridTemplateColumns: '1fr 1fr'}}>
+                        <input
+                          name="city"
+                          value={formData.city}
+                          onChange={handleChange}
+                          placeholder={t('City')}
+                          className="form-control"
+                        />
+                        <input
+                          name="state"
+                          value={formData.state}
+                          onChange={handleChange}
+                          placeholder={t('State')}
+                          className="form-control"
+                        />
+                      </div>
+                      <div style={{display: 'grid', gap: '12px', gridTemplateColumns: '1fr 1fr'}}>
+                        <input
+                          name="houseNumber"
+                          value={formData.houseNumber}
+                          onChange={handleChange}
+                          placeholder={t('House/Building No.')}
+                          className="form-control"
+                        />
+                        <input
+                          name="pincode"
+                          value={formData.pincode}
+                          onChange={handleChange}
+                          placeholder={t('Pincode')}
+                          className="form-control"
+                        />
+                      </div>
+                    </>
+                  )}
+                </div>
 
-              <div style={{display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '20px'}}>
-                <button type="button" className="btn btn-outline-secondary" onClick={() => setAddressModalOpen(false)}>
+                <div style={{display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '20px'}}>
+                  <button type="button" className="btn custom-danger-btn" onClick={() => setAddressModalOpen(false)}>
+                    {t('Close')}
+                  </button>
+                  <button type="button" className="btn custom-primary-btn" onClick={async () => {
+                    const saved = await saveAddressToBackend(formData);
+                    if (saved) {
+                      setAddressMessage(t('Address saved to My Addresses.'));
+                      setIsAddFormVisible(false); // Hide the form after saving
+                    } else {
+                      setAddressMessage(t('Fill the required address fields before saving.'));
+                    }
+                  }}>
+                    {t('Save Address')}
+                  </button>
+                </div>
+              </div>
+            )}
+            
+            {/* If Add Form is NOT visible, we still need a way to close the overall modal at the bottom for convenience */}
+            {!isAddFormVisible && (
+              <div style={{display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '20px', borderTop: '1px solid var(--border-color, #e2e8f0)', paddingTop: '20px'}}>
+                <button type="button" className="btn custom-danger-btn" onClick={() => setAddressModalOpen(false)}>
                   {t('Close')}
                 </button>
-                <button type="button" className="btn btn-primary" onClick={async () => {
-                  const saved = await saveAddressToBackend(formData);
-                  if (saved) {
-                    setAddressMessage(t('Address saved to My Addresses.'));
-                  } else {
-                    setAddressMessage(t('Fill the required address fields before saving.'));
-                  }
-                }}>
-                  {t('Save Address')}
-                </button>
               </div>
-            </div>
+            )}
           </div>
         </div>
       )}
@@ -1285,6 +1301,3 @@ export default function Checkout() {
     </>
   );
 }
-
-
-
