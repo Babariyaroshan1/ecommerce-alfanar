@@ -3,7 +3,9 @@
   margin: 0 auto;
   padding: 2rem 1rem;
 }
-
+.prd-h1{
+  font-weight: 700 !important;
+}
 .products-container h1 {
   margin-bottom: 2rem;
   color: transparent;

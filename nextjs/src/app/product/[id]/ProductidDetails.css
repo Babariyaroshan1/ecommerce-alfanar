@@ -4,23 +4,25 @@
   margin: 0 auto;
   padding: 20px 40px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--background);
+  color: var(--foreground);
 }
 
 .tss-breadcrumbs {
   font-size: 12px;
-  color: #777;
+  color: var(--muted);
   margin-bottom: 20px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .tss-breadcrumbs a {
-  color: #777;
+  color: var(--muted);
   text-decoration: none;
 }
 
 .tss-breadcrumbs span {
-  color: #111;
+  color: var(--text-primary);
   font-weight: 600;
 }
 
@@ -75,16 +77,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #ddd;
-  background: #f8f8f8;
-  color: #ffffff;
+  border: 1px solid var(--border-color);
+  background: var(--card-bg);
+  color: var(--foreground);
   min-height: 180px;
   transition: transform 0.2s ease, background 0.2s ease;
   text-align: center;
 }
 
 .tss-more-images-box:hover {
-  background: #ececec;
+  background: var(--hover-bg);
   transform: translateY(-2px);
 }
 
@@ -141,17 +143,17 @@
   }
 
   .tss-image-grid::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: rgba(255, 255, 255, 0.08);
     border-radius: 3px;
   }
 
   .tss-image-grid::-webkit-scrollbar-thumb {
-    background: #ccc;
+    background: rgba(255, 255, 255, 0.18);
     border-radius: 3px;
   }
 
   .tss-image-grid::-webkit-scrollbar-thumb:hover {
-    background: #999;
+    background: rgba(255, 255, 255, 0.28);
   }
 
   .tss-img-wrapper {
@@ -175,18 +177,18 @@
 .tss-title {
   font-size: 24px;
   font-weight: 700;
-  color: #111;
+  color: var(--text-primary);
   margin: 0 0 5px 0;
 }
 
 .tss-subtitle {
   font-size: 14px;
-  color: #666;
+  color: var(--text-secondary);
   margin-bottom: 20px;
 }
 
 .tss-price-section {
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border-color);
   padding-bottom: 15px;
   margin-bottom: 20px;
 }
@@ -202,14 +204,13 @@
 .tss-price {
   font-size: 22px;
   font-weight: 700;
-  color: #111;
+  color: var(--text-primary);
 }
 
 .tss-original-price-desk {
   font-size: 15px;
-  color: #777;
+  color: var(--muted);
   text-decoration: line-through;
-  color: #888;
   margin: 2px 0 0 0;
 }
 
@@ -220,7 +221,7 @@
 .tss-label {
   font-size: 13px;
   font-weight: 600;
-  color: #111;
+  color: var(--text-primary);
   margin-bottom: 10px;
 }
 
@@ -234,7 +235,7 @@
 
 .tss-size-chart {
   font-size: 11px;
-  color: #00768e; /* Teal link color */
+  color: var(--accent-color);
   font-weight: 600;
   cursor: pointer;
   text-decoration: underline;
@@ -256,23 +257,23 @@
 .tss-size-btn {
   width: 45px;
   height: 45px;
-  border: 1px solid #ddd;
-  background: white;
+  border: 1px solid var(--border-color);
+  background: var(--card-bg);
   font-size: 13px;
   font-weight: 600;
-  color: #111;
+  color: var(--text-primary);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .tss-size-btn:hover {
-  border-color: #111;
+  border-color: var(--text-primary);
 }
 
 .tss-size-btn.active {
-  background: #111;
-  color: white;
-  border-color: #111;
+  background: var(--text-primary);
+  color: var(--background);
+  border-color: var(--text-primary);
 }
 
 .tss-size-btn.disabled {
@@ -298,9 +299,9 @@
   min-width: 80px;
   padding: 10px 14px;
   border-radius: 0;
-  border: 1px solid #ddd;
-  background: #fff;
-  color: #111;
+  border: 1px solid var(--border-color);
+  background: var(--card-bg);
+  color: var(--text-primary);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -309,14 +310,14 @@
 }
 
 .tss-color-btn:hover {
-  border-color: #111;
-  background: #f8f8f8;
+  border-color: var(--text-primary);
+  background: var(--hover-bg);
 }
 
 .tss-color-btn.active {
-  background: #111;
-  color: #fff;
-  border-color: #111;
+  background: var(--text-primary);
+  color: var(--background);
+  border-color: var(--text-primary);
 }
 
 /* Quantity */
@@ -333,11 +334,13 @@
 
 .tss-qty-dropdown {
   padding: 6px 12px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   font-size: 14px;
   outline: none;
   cursor: pointer;
+  background: var(--card-bg);
+  color: var(--foreground);
 }
 
 /* Action Buttons */
@@ -395,8 +398,8 @@
 }
 
 .tss-btn-buy-now {
-  background-color: #111;
-  color: white;
+  background-color: var(--text-primary);
+  color: var(--background);
   border: none;
   position: relative;
   overflow: hidden;
@@ -423,13 +426,13 @@
 }
 
 .tss-btn-wishlist {
-  background-color: white;
-  color: #00768e; /* Souled store Teal */
-  border: 1px solid #00768e;
+  background-color: var(--card-bg);
+  color: var(--accent-color); /* Souled store Teal */
+  border: 1px solid var(--accent-color);
 }
 
 .tss-btn-wishlist:hover {
-  background-color: #f0fbff;
+  background-color: var(--hover-bg);
 }
 
 .tss-btn-wishlist:disabled {
@@ -463,9 +466,9 @@
   min-width: 140px;
   padding: 8px 12px;
   border-radius: 0;
-  border: 1px solid #111;
-  background-color: #fff;
-  color: #111;
+  border: 1px solid var(--border-color);
+  background-color: var(--card-bg);
+  color: var(--text-primary);
   font-weight: 600;
   font-size: 12px;
   margin-left: 0;
@@ -474,13 +477,13 @@
 .tss-color-row-btn:hover,
 .tss-color-row-btn:focus,
 .tss-color-row-btn:active {
-  background-color: #f4f4f4;
-  color: #111;
+  background-color: var(--hover-bg);
+  color: var(--text-primary);
 }
 
 .tss-color-row-btn:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(17, 17, 17, 0.12);
+  box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.12);
 }
 
 .tss-btn-wishlist.clicked {
@@ -510,10 +513,11 @@
 
 .tss-pincode-box {
   display: flex;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   overflow: hidden;
   margin-bottom: 10px;
+  background: var(--card-bg);
 }
 
 .tss-pincode-box input {
@@ -522,14 +526,16 @@
   border: none;
   outline: none;
   font-size: 14px;
+  background: var(--card-bg);
+  color: var(--foreground);
 }
 
 .tss-pincode-box button {
-  background: white;
+  background: var(--card-bg);
   border: none;
-  border-left: 1px solid #ccc;
+  border-left: 1px solid var(--border-color);
   padding: 0 15px;
-  color: #00768e;
+  color: var(--accent-color);
   font-weight: 700;
   font-size: 12px;
   cursor: pointer;
@@ -537,7 +543,7 @@
 
 .tss-delivery-note {
   font-size: 11px;
-  color: #666;
+  color: var(--text-secondary);
   line-height: 1.5;
   display: flex;
   gap: 8px;
@@ -555,9 +561,9 @@
 .tss-btn-return,
 .tss-btn-replacement {
   padding: 8px 16px;
-  border: 1px solid #ddd;
-  background: white;
-  color: #111;
+  border: 1px solid var(--border-color);
+  background: var(--card-bg);
+  color: var(--text-primary);
   font-size: 12px;
   font-weight: 600;
   border-radius: 4px;
@@ -570,8 +576,8 @@
 
 .tss-btn-return:hover,
 .tss-btn-replacement:hover {
-  background: #f8f9fa;
-  border-color: #bbb;
+  background: var(--hover-bg);
+  border-color: var(--text-secondary);
 }
 
 .tss-btn-return:active,
@@ -581,11 +587,11 @@
 
 /* Accordions */
 .tss-accordions {
-  border-top: 1px solid #ddd;
+  border-top: 1px solid var(--border-color);
 }
 
 .tss-acc-item {
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .tss-acc-header {
@@ -597,7 +603,7 @@
   padding: 15px 0;
   font-size: 14px;
   font-weight: 600;
-  color: #111;
+  color: var(--text-primary);
   cursor: pointer;
   text-align: left;
 }
@@ -605,7 +611,7 @@
 .tss-acc-body {
   padding-bottom: 15px;
   font-size: 13px;
-  color: #444;
+  color: var(--text-secondary);
   line-height: 1.6;
 }
 
@@ -795,13 +801,13 @@
 .tss-related-products {
   margin-top: 30px;
   padding-top: 40px;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--border-color);
 }
 
 .tss-related-title {
   font-size: 20px;
   font-weight: 700;
-  color: #111;
+  color: var(--text-primary);
   margin-bottom: 30px;
 }
 
@@ -822,8 +828,8 @@
   align-items: center;
   justify-content: center;
   padding: 12px 30px;
-  background-color: #111;
-  color: #fff;
+  background-color: var(--text-primary);
+  color: var(--background);
   border-radius: 999px;
   text-decoration: none;
   font-size: 14px;
@@ -836,7 +842,7 @@
 }
 
 .tss-related-card {
-  border: 1px solid #f0f0f0;
+  border: 1px solid var(--border-color);
   /* border-radius: 8px; */
   overflow: hidden;
   cursor: pointer;
@@ -845,6 +851,7 @@
   color: inherit;
   display: flex;
   flex-direction: column;
+  background: var(--card-bg);
 }
 
 .tss-related-card:hover {
@@ -856,7 +863,7 @@
   width: 100%;
   height: 310px;
   object-fit: cover;
-  background: #f8f8f8;
+  background: var(--hover-bg);
 }
 
 .tss-related-info {
@@ -869,7 +876,7 @@
 .tss-related-name {
   font-size: 14px;
   font-weight: 600;
-  color: #111;
+  color: var(--text-primary);
   margin-bottom: 8px;
   line-height: 1.3;
   display: -webkit-box;
@@ -882,13 +889,13 @@
 .tss-related-price {
   font-size: 16px;
   font-weight: 700;
-  color: #111;
+  color: var(--text-primary);
   margin-bottom: 5px;
 }
 
 .tss-related-original-price {
   font-size: 12px;
-  color: #999;
+  color: var(--muted);
   text-decoration: line-through;
 }
 
@@ -991,47 +998,47 @@
 }
 
 .tss-faq-item {
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   overflow: hidden;
-  background: white;
+  background: var(--card-bg);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .tss-faq-question {
   padding: 20px 24px;
-  background: white;
+  background: var(--card-bg);
   cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 16px;
   font-weight: 600;
-  color: #111;
+  color: var(--text-primary);
   transition: background-color 0.2s ease;
 }
 
 .tss-faq-question:hover {
-  background: #f9fafb;
+  background: var(--hover-bg);
 }
 
 .tss-faq-toggle {
   font-size: 20px;
   font-weight: bold;
-  color: #6b7280;
+  color: var(--muted);
   transition: transform 0.3s ease, color 0.2s ease;
 }
 
 .tss-faq-item.active .tss-faq-toggle {
   transform: rotate(45deg);
-  color: #111;
+  color: var(--text-primary);
 }
 
 .tss-faq-answer {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.3s ease;
-  background: #f9fafb;
+  background: var(--card-bg);
 }
 
 .tss-faq-item.active .tss-faq-answer {
@@ -1041,7 +1048,7 @@
 .tss-faq-answer p {
   margin: 0;
   padding: 0 24px 24px 24px;
-  color: #4b5563;
+  color: var(--text-secondary);
   line-height: 1.6;
   font-size: 15px;
 }
@@ -1088,7 +1095,7 @@
 }
 
 .similar-products-content {
-  background: white;
+  background: var(--card-bg);
   border-radius: 8px;
   padding: 20px;
   max-width: 600px;
@@ -1104,13 +1111,13 @@
   right: 15px;
   font-size: 24px;
   cursor: pointer;
-  color: #666;
+  color: var(--muted);
 }
 
 .similar-products-content h3 {
   margin-top: 0;
   margin-bottom: 20px;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .similar-products-list {
@@ -1124,14 +1131,15 @@
   align-items: center;
   gap: 15px;
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s;
+  background: var(--card-bg);
 }
 
 .similar-product-item:hover {
-  background-color: #f9f9f9;
+  background-color: var(--hover-bg);
 }
 
 .similar-product-item img {
@@ -1160,8 +1168,8 @@
 .tss-review-section {
   margin-top: 60px;
   padding: 40px 0;
-  border-top: 1px solid #eee;
-  border-bottom: 1px solid #eee;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
   max-width: 900px;
   margin-left: auto;
   margin-right: auto;
@@ -1179,20 +1187,20 @@
 .tss-review-title {
   font-size: 28px;
   font-weight: 700;
-  color: #111;
+  color: var(--text-primary);
   margin: 0;
 }
 
 .tss-review-summary {
   font-size: 14px;
-  color: #666;
+  color: var(--text-secondary);
   margin: 8px 0 0 0;
 }
 
 .tss-review-button {
   padding: 12px 28px;
-  background-color: #111;
-  color: white;
+  background-color: var(--text-primary);
+  color: var(--background);
   border: none;
   border-radius: 4px;
   font-size: 14px;
@@ -1215,9 +1223,9 @@
 .tss-review-empty {
   padding: 40px 20px;
   text-align: center;
-  color: #666;
+  color: var(--text-secondary);
   font-size: 16px;
-  background: #f9fafb;
+  background: var(--hover-bg);
   border-radius: 8px;
 }
 
@@ -1229,9 +1237,9 @@
 
 .tss-review-card {
   padding: 24px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
-  background: white;
+  background: var(--card-bg);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.2s ease;
 }
@@ -1248,11 +1256,11 @@
 
 .tss-review-stars i {
   font-size: 16px;
-  color: #000000;
+  color: var(--text-primary);
 }
 
 .tss-review-stars i.inactive {
-  color: #d1d5db;
+  color: var(--muted);
 }
 
 .tss-review-meta {
@@ -1264,16 +1272,16 @@
 
 .tss-review-author {
   font-weight: 600;
-  color: #111;
+  color: var(--text-primary);
 }
 
 .tss-review-date {
-  color: #999;
+  color: var(--muted);
 }
 
 .tss-review-comment {
   font-size: 15px;
-  color: #444;
+  color: var(--text-secondary);
   line-height: 1.6;
   margin: 12px 0;
   word-wrap: break-word;
@@ -1291,7 +1299,7 @@
   height: 80px;
   object-fit: cover;
   border-radius: 6px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border-color);
   cursor: pointer;
   transition: transform 0.2s ease;
 }

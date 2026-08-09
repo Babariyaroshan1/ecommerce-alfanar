@@ -8,7 +8,7 @@ import ProductCard from '../../components/ProductCard';
 import { SkeletonGrid } from '../../components/ProductSkeleton';
 import { useProductStore } from '../../store/productStore';
 import Fuse from 'fuse.js';
-import '../../Products.css';
+import './Products.css';
 
 const ProductsContent = () => {
   const products = useProductStore((state) => state.products);
@@ -97,7 +97,7 @@ const ProductsContent = () => {
   if (loading) {
     return (
       <div className="products-container">
-        <h1 className="text-center mb-4">Our Products</h1>
+        <h1 className="text-center mb-4 prd-h1">Our Products</h1>
         <SkeletonGrid count={12} />
       </div>
     );
@@ -105,7 +105,7 @@ const ProductsContent = () => {
 
   return (
     <div className="products-container">
-      <h1 className="text-center mb-4">Our Products</h1>
+      <h1 className="text-center mb-4 prd-h1">Our Products</h1>
 
       <div className="filters mb-4">
         <div className="filters-left">

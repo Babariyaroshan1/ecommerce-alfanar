@@ -79,6 +79,26 @@
   min-width: 0;
 }
 
+.addresses-page .form-control:focus {
+  border-color: #6c5dd3 !important;
+  box-shadow: 0 0 0 4px rgba(108, 93, 211, 0.22) !important;
+  outline: none !important;
+}
+
+.addresses-page .btn-primary {
+  background-color: #6c5dd3 !important;
+  border-color: #6c5dd3 !important;
+  color: #fff !important;
+}
+
+.addresses-page .btn-primary:hover,
+.addresses-page .btn-primary:focus,
+.addresses-page .btn-primary:active {
+  background-color: #5338b7 !important;
+  border-color: #5338b7 !important;
+  color: #fff !important;
+}
+
 @media (max-width: 900px) {
   .addresses-grid {
     grid-template-columns: 1fr;

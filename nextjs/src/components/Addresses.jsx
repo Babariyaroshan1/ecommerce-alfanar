@@ -172,7 +172,7 @@ export default function Addresses() {
         <div className="address-form-card section-card">
           <div className="section-card-header">
             <h2>Add Address</h2>
-            <p className="text-muted mb-0">Save an address here, or open checkout to add a new address with the full checkout overlay.</p>
+            <p className="mb-0">Save an address here, or open checkout to add a new address with the full checkout overlay.</p>
           </div>
           <form onSubmit={handleSaveAddress} className="address-form">
             <div className="form-group">

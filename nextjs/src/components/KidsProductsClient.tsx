@@ -6,7 +6,7 @@ import ProductCard from './ProductCard';
 import { SkeletonGrid } from './ProductSkeleton';
 import { useProductStore } from '../store/productStore';
 import Fuse from 'fuse.js';
-import '../Products.css';
+import '../app/products/Products.css';
 
 const KidsProductsClient = () => {
   const products = useProductStore((state) => state.products);
@@ -105,7 +105,7 @@ const KidsProductsClient = () => {
   if (loading) {
     return (
       <div className="products-container">
-        <h1 className="text-center mb-4">Kids Products</h1>
+        <h1 className="text-center mb-4 prd-h1">Kids Products</h1>
         <SkeletonGrid count={8} />
       </div>
     );
@@ -113,8 +113,8 @@ const KidsProductsClient = () => {
 
   return (
     <div className="products-container">
-      <h1 className="text-center mb-4">Kids Products</h1>
-      <p className="text-center text-muted mb-4">Explore our beautiful collection of kids clothing, dresses, and accessories</p>
+      <h1 className="text-center mb-4 prd-h1">Kids Products</h1>
+      <p className="text-center  mb-4 pb-5">Explore our beautiful collection of kids clothing, dresses, and accessories</p>
 
       <div className="filters mb-4">
         <div className="filters-left">

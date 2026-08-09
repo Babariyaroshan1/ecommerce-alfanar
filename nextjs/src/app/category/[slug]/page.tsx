@@ -5,7 +5,7 @@ import Link from 'next/link';
 import ProductCard from '@/components/ProductCard';
 import { SkeletonGrid } from '@/components/ProductSkeleton';
 import { useProductStore } from '@/store/productStore';
-import '../../../Products.css';
+import '../../products/Products.css';
 
 const slugify = (value) =>
   value?.toString().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') || '';

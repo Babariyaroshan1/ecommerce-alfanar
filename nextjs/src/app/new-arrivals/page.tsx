@@ -6,7 +6,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import ProductCard from '@/components/ProductCard';
 import { SkeletonGrid } from '@/components/ProductSkeleton';
 import { useProductStore } from '@/store/productStore';
-import '../../Products.css';
+import '../products/Products.css';
 
 export default function NewArrivalsPage() {
   const products = useProductStore((state) => state.products);
