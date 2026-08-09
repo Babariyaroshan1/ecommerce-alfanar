@@ -99,7 +99,7 @@ export default function Cart() {
             return (
               <article
                 key={`${itemId}-${itemColor}-${itemSize}`} //   UNIQUE KEY
-                className="overflow-hidden rounded-3xl border shadow-sm transition hover:shadow-md cart-card"
+                className="overflow-hidden rounded-3xl border shadow-sm transition hover:shadow-md cart-card mb-3"
               >
                 <div className="flex flex-col gap-2 p-2 sm:flex-row sm:items-center">
                  <img
@@ -219,7 +219,7 @@ export default function Cart() {
             </p>
           </div>
 
-          <div className="space-y-3 cart-summary-section pb-4">
+          <div className="space-y-3 cart-summary-section pb-4 px-4">
             {discount > 0 && (
               <div className="flex items-center justify-between py-2">
                 <span className="font-medium cart-surface-text">Original price</span>
