@@ -38,7 +38,9 @@
   --navbar-bg: #0f172a;
   --navbar-link: #f8fafc;
   --card-bg: #111827;
-  --border-color: rgba(148, 163, 184, 0.24);
+  --surface-bg: #111827;
+  --panel-bg: #172134;
+  --panel-border: rgba(148, 163, 184, 0.24);
   --hover-bg: rgba(248, 250, 252, 0.04);
   --muted: #94a3b8;
   --primary: #8b5cf6;
@@ -54,6 +56,96 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+:root {
+  --surface-bg: #ffffff;
+  --panel-bg: #f8fafc;
+  --panel-border: rgba(226, 232, 240, 1);
+  --panel-text: #111827;
+  --panel-muted: #6b7280;
+}
+
+.cart-card,
+.cart-summary,
+.cart-panel,
+.wishlist-card {
+  background-color: var(--surface-bg) !important;
+  border-color: var(--panel-border) !important;
+  color: var(--panel-text) !important;
+}
+
+.cart-panel {
+  background-color: var(--panel-bg) !important;
+}
+
+.cart-surface-text {
+  color: var(--panel-text) !important;
+}
+
+.cart-muted-text {
+  color: var(--panel-muted) !important;
+}
+
+.cart-quantity-panel {
+  background-color: var(--hover-bg) !important;
+}
+
+.cart-btn,
+.cart-remove-btn,
+.cart-clear-btn {
+  background-color: var(--surface-bg) !important;
+  color: var(--panel-text) !important;
+  border-color: var(--panel-border) !important;
+}
+
+.cart-btn:hover,
+.cart-remove-btn:hover,
+.cart-clear-btn:hover {
+  background-color: var(--hover-bg) !important;
+}
+
+.cart-summary-section {
+  border-bottom: 1px solid var(--panel-border);
+}
+
+[data-theme='dark'] .cart-card,
+[data-theme='dark'] .cart-summary,
+[data-theme='dark'] .cart-panel,
+[data-theme='dark'] .wishlist-card {
+  background-color: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme='dark'] .cart-panel {
+  background-color: var(--panel-bg) !important;
+}
+
+[data-theme='dark'] .cart-btn,
+[data-theme='dark'] .cart-remove-btn,
+[data-theme='dark'] .cart-clear-btn {
+  background-color: #1b2437 !important;
+  color: var(--text-primary) !important;
+  border-color: rgba(148, 163, 184, 0.18) !important;
+}
+
+[data-theme='dark'] .cart-btn:hover,
+[data-theme='dark'] .cart-remove-btn:hover,
+[data-theme='dark'] .cart-clear-btn:hover {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+[data-theme='dark'] .action-btn-circle {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--foreground);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme='dark'] .btn-light {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
 }
 
 .text-dark {

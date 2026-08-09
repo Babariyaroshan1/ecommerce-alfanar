@@ -355,12 +355,20 @@
 }
 
 .nav-item.active {
-  background: var(--sidebar-active);
+  background: var(--sidebar-accent);
   color: var(--sidebar-accent);
   border-radius: 12px;
   border: 1px solid;
 }
 
+:root[data-theme='dark'] .nav-item.active {
+  background: var(--sidebar-accent);
+  color: white;
+}
+
+:root[data-theme='dark'] .nav-item.active .nav-icon {
+  color: white;
+}
 
 .nav-item.active .nav-icon {
   color: var(--sidebar-accent);

@@ -83,8 +83,8 @@ export default function Cart() {
 
   return (
     <div className="container mx-auto px-4 py-5">
-      <h1 className="text-3xl font-semibold text-slate-900">Shopping Cart</h1>
-      <p className="mt-2 text-sm text-slate-500">Home / Cart</p>
+      <h1 className="text-3xl font-semibold cart-surface-text">Shopping Cart</h1>
+      <p className="mt-2 text-sm cart-muted-text">Home / Cart</p>
 
       <div className="mt-8 grid gap-6 xl:grid-cols-[2fr_0.95fr]">
 
@@ -99,7 +99,7 @@ export default function Cart() {
             return (
               <article
                 key={`${itemId}-${itemColor}-${itemSize}`} //   UNIQUE KEY
-                className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:shadow-md"
+                className="overflow-hidden rounded-3xl border shadow-sm transition hover:shadow-md cart-card"
               >
                 <div className="flex flex-col gap-2 p-2 sm:flex-row sm:items-center">
                  <img
@@ -130,10 +130,10 @@ export default function Cart() {
 
                       <div className="mt-2 flex items-center gap-3 text-[11px] text-slate-700 sm:max-w-[220px]">
                         <div className="flex-1">
-                          <p className="uppercase tracking-[0.25em] text-slate-500">
+                          <p className="uppercase tracking-[0.25em] cart-muted-text">
                             Unit price
                           </p>
-                          <p className="mt-1 text-sm font-semibold text-slate-900">
+                          <p className="mt-1 text-sm font-semibold cart-surface-text">
                             {parsePrice(item.displayPrice ?? item.price).toFixed(currencyDecimals)} {item.currencySymbol || currencySettings?.symbol || 'KWD'}
                           </p>
                         </div>
@@ -143,10 +143,10 @@ export default function Cart() {
                           if (original > current) {
                             return (
                               <div className="text-right">
-                                <p className="uppercase tracking-[0.25em] text-slate-500">
+                                <p className="uppercase tracking-[0.25em] cart-muted-text">
                                   Original
                                 </p>
-                                <p className="mt-1 text-sm font-semibold text-slate-500 line-through">
+                                <p className="mt-1 text-sm font-semibold cart-muted-text line-through">
                                   {original.toFixed(currencyDecimals)} {item.currencySymbol || currencySettings?.symbol || 'KWD'}
                                 </p>
                               </div>
@@ -160,18 +160,18 @@ export default function Cart() {
                     <div className="flex flex-wrap items-center gap-2">
 
                       {/* QUANTITY FIX */}
-                      <div className="inline-flex items-center rounded-2xl bg-slate-100 px-2 py-1 text-sm text-slate-700">
+                      <div className="inline-flex items-center rounded-2xl cart-quantity-panel px-2 py-1 text-sm cart-surface-text">
                         <button
                           onClick={() =>
                             updateQuantity(itemId, item.quantity - 1, itemSize, itemColor)
                           }
-                          className="h-8 w-8 rounded-lg bg-white text-slate-700 transition hover:bg-slate-200"
+                          className="h-8 w-8 rounded-lg cart-btn cart-btn-square"
                           disabled={item.quantity <= 1}
                         >
                           -
                         </button>
 
-                        <span className="mx-2 min-w-[1.5rem] text-center text-sm font-medium">
+                        <span className="mx-2 min-w-[1.5rem] text-center text-sm font-medium cart-surface-text">
                           {item.quantity}
                         </span>
 
@@ -181,7 +181,7 @@ export default function Cart() {
                             const maxStock = product?.stock || item.stock || 1;
                             updateQuantity(itemId, Math.min(item.quantity + 1, maxStock), itemSize, itemColor, maxStock);
                           }}
-                          className="h-8 w-8 rounded-lg bg-white text-slate-700 transition hover:bg-slate-200"
+                          className="h-8 w-8 rounded-lg cart-btn cart-btn-square"
                           disabled={(() => {
                             const product = products.find(p => String(p._id || p.id) === String(itemId));
                             const maxStock = product?.stock || item.stock || 1;
@@ -197,7 +197,7 @@ export default function Cart() {
                         onClick={() =>
                           removeFromCart(itemId, itemSize, itemColor)
                         }
-                        className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-rose-600 transition hover:bg-rose-50"
+                        className="rounded-full border cart-btn cart-remove-btn px-3 py-1 text-xs font-semibold transition"
                       >
                         Remove
                       </button>
@@ -211,46 +211,46 @@ export default function Cart() {
         </section>
 
         {/* RIGHT SIDE SAME */}
-        <aside className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm xl:sticky xl:top-24">
-          <div className="mb-4 rounded-2xl bg-slate-50 p-3 text-slate-700">
-            <p className="text-sm font-medium text-slate-500">Order summary</p>
-            <p className="mt-2 text-2xl font-semibold text-slate-900">
+        <aside className="rounded-3xl border p-4 shadow-sm xl:sticky xl:top-24 cart-summary">
+          <div className="mb-4 rounded-2xl cart-panel p-3 cart-surface-text">
+            <p className="text-sm font-medium cart-muted-text">Order summary</p>
+            <p className="mt-2 text-2xl font-semibold cart-surface-text">
               {total.toFixed(currencyDecimals)} {currencySymbol}
             </p>
           </div>
 
-          <div className="space-y-3 border-b border-slate-200 pb-4 text-sm text-slate-600">
+          <div className="space-y-3 cart-summary-section pb-4">
             {discount > 0 && (
               <div className="flex items-center justify-between py-2">
-                <span className="font-medium">Original price</span>
-                <span className="font-semibold line-through text-slate-400">
+                <span className="font-medium cart-surface-text">Original price</span>
+                <span className="font-semibold cart-muted-text line-through">
                   {originalSubtotal.toFixed(currencyDecimals)} {currencySymbol}
                 </span>
               </div>
             )}
             <div className="flex items-center justify-between py-2">
-              <span className="font-medium">Subtotal</span>
-              <span className="font-semibold text-slate-900">
+              <span className="font-medium cart-surface-text">Subtotal</span>
+              <span className="font-semibold cart-surface-text">
                 {subtotal.toFixed(currencyDecimals)} {currencySymbol}
               </span>
             </div>
             {discount > 0 && (
               <div className="flex items-center justify-between py-2 text-emerald-600">
-                <span className="font-medium">Discount Price</span>
+                <span className="font-medium cart-surface-text">Discount Price</span>
                 <span className="font-semibold">
                   -{discount.toFixed(currencyDecimals)} {currencySymbol}
                 </span>
               </div>
             )}
             <div className="flex items-center justify-between py-2">
-              <span className="font-medium">Shipping</span>
-              <span className="font-semibold text-slate-900">
+              <span className="font-medium cart-surface-text">Shipping</span>
+              <span className="font-semibold cart-surface-text">
                 {shipping.toFixed(currencyDecimals)} {currencySymbol}
               </span>
             </div>
           </div>
 
-          <div className="mt-4 flex items-center justify-between rounded-2xl bg-slate-50 px-3 py-3 text-sm font-semibold text-slate-900">
+          <div className="mt-4 flex items-center justify-between rounded-2xl cart-panel px-3 py-3 text-sm font-semibold cart-surface-text">
             <span>Total</span>
             <span>{total.toFixed(currencyDecimals)} {currencySymbol}</span>
           </div>
@@ -264,7 +264,7 @@ export default function Cart() {
 
           <button
             onClick={clearCart}
-            className="mt-3 w-full rounded-3xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50 transition"
+            className="mt-3 w-full rounded-3xl cart-clear-btn px-5 py-3 text-sm font-semibold shadow-sm transition"
           >
             Clear Cart
           </button>

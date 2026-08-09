@@ -326,3 +326,41 @@ If you want, I can next generate the exact backend and frontend code files requi
 
 
 
+
+
+
+
+all file me jaga jaaha skeleton lage hue he woh dark mode me  white arahe he jo nahi ane chiye na skeleton me sare page me dark mode me chages kar ke do 
+
+profile page me ## My Profile
+Update your personal information and select your profile avatar. You can change your avatar anytime! 
+ye text dark arahe he 
+
+![Profile 2](https://www.alfanar.store/profile.jpg)
+
+### Babariya Roshan
+babariyaroshan123@gmail.com
+
++918799484056
+
+Profile: Profile 2
+
+Change Avatar
+
+### Privacy & Support
+Manage your account settings and access helpful resources.
+
+[Privacy Policy](https://www.alfanar.store/privacy-policy)[Help & Support](https://www.alfanar.store/profile#)
+
+### Personal Information
+Full Name
+Phone
+House Number
+Street Address
+City
+Pincode
+
+Update Profilecard jitne bane hue he sab me bg white araha he 
+orders
+me bhii card ka bg white arehe 
+footer me upper ki side border top 1pxsolid kar ke do wite taki footer mix na ho 

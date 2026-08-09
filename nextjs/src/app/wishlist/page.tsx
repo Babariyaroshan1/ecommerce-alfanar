@@ -178,7 +178,7 @@ export default function Wishlist() {
             
             return (
               <div key={productId} className="col-6 col-sm-6 col-md-4 col-lg-3">
-                <div className="card shadow-none h-100 wishlist-card bg-white position-relative">
+                <div className="card shadow-none h-100 wishlist-card position-relative">
                   
                   {/* Top Left: Checkbox (Only if multiple items) */}
                   {favorites.length > 1 && (
