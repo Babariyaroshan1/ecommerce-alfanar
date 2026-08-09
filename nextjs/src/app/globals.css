@@ -41,7 +41,10 @@
   --surface-bg: #111827;
   --panel-bg: #172134;
   --panel-border: rgba(148, 163, 184, 0.24);
+  --surface-border: rgba(148, 163, 184, 0.24);
   --hover-bg: rgba(248, 250, 252, 0.04);
+  --panel-text: #f8fafc;
+  --panel-muted: #94a3b8;
   --muted: #94a3b8;
   --primary: #8b5cf6;
   --text-primary: #f8fafc;
@@ -64,6 +67,7 @@ body {
   --panel-border: rgba(226, 232, 240, 1);
   --panel-text: #111827;
   --panel-muted: #6b7280;
+  --surface-border: rgba(226, 232, 240, 1);
 }
 
 .cart-card,
@@ -73,6 +77,36 @@ body {
   background-color: var(--surface-bg) !important;
   border-color: var(--panel-border) !important;
   color: var(--panel-text) !important;
+}
+
+.cart-heading-text,
+.wishlist-heading-text,
+.wishlist-card-body,
+.price-text,
+.wishlist-badge,
+.wishlist-share-btn {
+  color: var(--panel-text) !important;
+}
+
+.cart-heading-text {
+  color: var(--panel-text) !important;
+}
+
+.cart-muted-text {
+  color: var(--panel-muted) !important;
+}
+
+.wishlist-heading-text {
+  color: var(--text-primary) !important;
+}
+
+.wishlist-card-body {
+  color: var(--text-primary) !important;
+}
+
+.wishlist-badge,
+.wishlist-share-btn {
+  color: var(--text-primary) !important;
 }
 
 .cart-panel {

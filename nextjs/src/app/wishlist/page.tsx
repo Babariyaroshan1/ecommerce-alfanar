@@ -214,7 +214,7 @@ export default function Wishlist() {
 
                   {/* Card Body */}
                   <div className="card-body d-flex flex-column p-3">
-                    <h5 className="card-title-clamp text-dark mb-2">{product.name}</h5>
+                    <h5 className="card-title-clamp wishlist-title mb-2">{product.name}</h5>
                     
                     <div className="mt-auto d-flex justify-content-between align-items-end">
                       <div>

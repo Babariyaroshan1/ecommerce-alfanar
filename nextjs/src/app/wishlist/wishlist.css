@@ -14,9 +14,74 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid var(--border-color) !important;
-  background-color: var(--card-bg) !important;
+  border: 1px solid var(--surface-border) !important;
+  background-color: rgba(255, 255, 255, 0.92);
   color: var(--text-primary) !important;
+  min-height: 100%;
+}
+
+[data-theme='dark'] .wishlist-card {
+  background-color: var(--card-bg) !important;
+  border-color: rgba(148, 163, 184, 0.16) !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18) !important;
+}
+
+.wishlist-card .card-body {
+  background: transparent !important;
+  color: inherit !important;
+}
+
+.wishlist-heading-text,
+.wishlist-card-body,
+.price-text,
+.wishlist-badge,
+.wishlist-share-btn {
+  color: var(--text-primary) !important;
+}
+
+.wishlist-badge {
+  background-color: rgba(255, 255, 255, 0.14) !important;
+  border-color: rgba(255, 255, 255, 0.16) !important;
+}
+
+[data-theme='dark'] .wishlist-badge {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  color: var(--text-secondary) !important;
+  border-color: rgba(255, 255, 255, 0.16) !important;
+}
+
+.wishlist-share-btn {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme='dark'] .wishlist-share-btn {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  color: var(--foreground) !important;
+  border-color: rgba(255, 255, 255, 0.16) !important;
+}
+
+.wishlist-badge {
+  background-color: rgba(255, 255, 255, 0.14);
+  color: var(--text-secondary) !important;
+  border-color: rgba(255, 255, 255, 0.16) !important;
+}
+
+[data-theme='dark'] .wishlist-badge {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary) !important;
+  border-color: rgba(255, 255, 255, 0.16) !important;
+}
+
+.wishlist-share-btn {
+  background-color: rgba(255, 255, 255, 0.9);
+  color: var(--text-primary) !important;
+}
+
+[data-theme='dark'] .wishlist-share-btn {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  color: var(--foreground) !important;
+  border-color: rgba(255, 255, 255, 0.16) !important;
 }
 
 .wishlist-card.bg-white {
@@ -38,6 +103,10 @@
     background: linear-gradient(90deg, #7c3aed 0%, #8b5cf6 100%);
     color: #ffffff;
     border: 1px solid transparent;
+}
+
+.product-image-wrapper {
+  position: relative;
   width: 100%;
   padding-top: 133.33%; /* 3:4 Aspect ratio - Perfect for clothing */
   background-color: var(--hover-bg);

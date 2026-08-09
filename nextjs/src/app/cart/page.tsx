@@ -63,7 +63,7 @@ export default function Cart() {
     <div className="container mx-auto px-4 py-5 text-center">
   <h2 className="text-3xl font-semibold mb-4">Your cart is empty</h2>
 
-  <p className="text-gray-600 mb-6">
+  <p className="cart-muted-text mb-6">
     Add products to your cart to see them here.
   </p>
 
@@ -83,7 +83,7 @@ export default function Cart() {
 
   return (
     <div className="container mx-auto px-4 py-5">
-      <h1 className="text-3xl font-semibold cart-surface-text">Shopping Cart</h1>
+      <h1 className="text-3xl font-semibold cart-heading-text">Shopping Cart</h1>
       <p className="mt-2 text-sm cart-muted-text">Home / Cart</p>
 
       <div className="mt-8 grid gap-6 xl:grid-cols-[2fr_0.95fr]">
@@ -111,24 +111,24 @@ export default function Cart() {
                   <div className="flex-1 space-y-2">
                     <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                       <div className="min-w-0">
-                        <h2 className="text-sm font-semibold text-slate-900 line-clamp-2">
+                        <h2 className="text-sm font-semibold cart-heading-text line-clamp-2">
                           {item.name}
                         </h2>
 
-                        {/* <p className="mt-1 text-xs text-slate-500">
+                        {/* <p className="mt-1 text-xs cart-muted-text">
                           {item.description || ''}
                         </p> */}
 
                         {/* SHOW COLOR & SIZE */}
-                        <p className="text-xs text-slate-500">
+                        <p className="text-xs cart-muted-text">
                           Color: <strong>{itemColor}</strong>
                         </p>
-                        <p className="text-xs text-slate-500">
+                        <p className="text-xs cart-muted-text">
                           Size: <strong>{itemSize}</strong>
                         </p>
                       </div>
 
-                      <div className="mt-2 flex items-center gap-3 text-[11px] text-slate-700 sm:max-w-[220px]">
+                      <div className="mt-2 flex items-center gap-3 cart-surface-text sm:max-w-[220px]">
                         <div className="flex-1">
                           <p className="uppercase tracking-[0.25em] cart-muted-text">
                             Unit price
