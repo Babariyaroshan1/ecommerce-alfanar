@@ -490,3 +490,34 @@ body[data-theme='dark'] .saved-addresses-section select option,
     to { transform: translateY(0); }
   }
 }
+
+
+/* ================= CUSTOM SCROLLBAR ================= */
+
+/* Chrome, Edge, Safari ke liye */
+::-webkit-scrollbar {
+  width: 8px; /* Scrollbar ki width */
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; 
+  border-radius: 10px;
+}
+
+/* HAMESHA DIKHNE WALA COLOR */
+::-webkit-scrollbar-thumb {
+  background: #6c5dd3; 
+  border-radius: 10px;
+}
+
+/* HOVER PE THODA DARK HOGA */
+::-webkit-scrollbar-thumb:hover {
+  background: #5a4eb3; 
+}
+
+/* Firefox browser ke liye */
+* {
+  scrollbar-width: thin; 
+  scrollbar-color: #6c5dd3 transparent; 
+}
