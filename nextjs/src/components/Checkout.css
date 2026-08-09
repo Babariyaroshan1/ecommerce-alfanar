@@ -54,14 +54,38 @@
   gap: 12px;
 }
 
-.form input {
+.form input,
+.form select,
+.saved-addresses-section select {
   width: calc(50% - 6px); 
   padding: 12px;
   border: 1px solid var(--border-color, #ddd);
   border-radius: 8px;
   background: var(--card-bg, #ffffff);
   color: var(--text-primary, #111827);
+  outline: none;
+  appearance: none;
 }
+
+.form select,
+.saved-addresses-section select {
+  min-width: 0;
+}
+
+.form select option,
+.saved-addresses-section select option {
+  background: var(--card-bg, #ffffff);
+  color: var(--text-primary, #111827);
+}
+
+.form input:focus,
+.form select:focus,
+.saved-addresses-section .form-control:focus {
+  outline: none;
+  border-color: #6c5dd3;
+  box-shadow: 0 0 0 3px rgba(108, 93, 211, 0.18);
+}
+
 .full-width {
   width: 100% !important;
 }
@@ -349,10 +373,26 @@ body[data-theme='dark'] .saved-addresses-section .form-control,
 [data-theme='dark'] .saved-addresses-section .form-control,
 html[data-theme='dark'] .form input,
 body[data-theme='dark'] .form input,
-[data-theme='dark'] .form input {
+[data-theme='dark'] .form input,
+html[data-theme='dark'] .form select,
+body[data-theme='dark'] .form select,
+[data-theme='dark'] .form select,
+html[data-theme='dark'] .saved-addresses-section select,
+body[data-theme='dark'] .saved-addresses-section select,
+[data-theme='dark'] .saved-addresses-section select {
   background: #111827 !important;
   color: #f8fafc !important;
   border-color: rgba(148, 163, 184, 0.24) !important;
+}
+
+html[data-theme='dark'] .form select option,
+body[data-theme='dark'] .form select option,
+[data-theme='dark'] .form select option,
+html[data-theme='dark'] .saved-addresses-section select option,
+body[data-theme='dark'] .saved-addresses-section select option,
+[data-theme='dark'] .saved-addresses-section select option {
+  background: #111827 !important;
+  color: #f8fafc !important;
 }
 
 @media (max-width: 600px) {

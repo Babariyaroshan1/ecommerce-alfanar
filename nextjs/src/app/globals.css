@@ -61,6 +61,31 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+input:focus,
+select:focus,
+textarea:focus,
+.form-control:focus,
+.register-input:focus,
+.register-phone-select:focus,
+.search-input:focus,
+.newsletter-input:focus,
+.contact-form input:focus,
+.contact-form textarea:focus,
+.add-product-form-group input:focus,
+.add-product-form-group select:focus,
+.edit-form-row input:focus,
+.edit-form-row select:focus,
+.ah-select:focus,
+.date-input:focus,
+.password-input-wrapper input:focus,
+.input-wrapper input:focus,
+.user-search-input:focus {
+  outline: none !important;
+  border-color: #6c5dd3 !important;
+  box-shadow: 0 0 0 3px rgba(108, 93, 211, 0.18) !important;
+  outline-offset: 0 !important;
+}
+
 :root {
   --surface-bg: #ffffff;
   --panel-bg: #f8fafc;
