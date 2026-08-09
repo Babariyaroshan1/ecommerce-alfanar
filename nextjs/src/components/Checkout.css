@@ -72,6 +72,54 @@
   min-width: 0;
 }
 
+.form input:-webkit-autofill,
+.form input:-webkit-autofill:hover,
+.form input:-webkit-autofill:focus,
+.form input:-webkit-autofill:active,
+.saved-addresses-section .form-control:-webkit-autofill,
+.saved-addresses-section .form-control:-webkit-autofill:hover,
+.saved-addresses-section .form-control:-webkit-autofill:focus,
+.saved-addresses-section .form-control:-webkit-autofill:active {
+  background-color: var(--card-bg, #ffffff) !important;
+  color: var(--text-primary, #111827) !important;
+  -webkit-text-fill-color: var(--text-primary, #111827) !important;
+  box-shadow: 0 0 0 1000px var(--card-bg, #ffffff) inset !important;
+  border-color: #6c5dd3 !important;
+  transition: background-color 5000s ease-in-out 0s !important;
+}
+
+html[data-theme='dark'] .form input:-webkit-autofill,
+html[data-theme='dark'] .form input:-webkit-autofill:hover,
+html[data-theme='dark'] .form input:-webkit-autofill:focus,
+html[data-theme='dark'] .form input:-webkit-autofill:active,
+html[data-theme='dark'] .saved-addresses-section .form-control:-webkit-autofill,
+html[data-theme='dark'] .saved-addresses-section .form-control:-webkit-autofill:hover,
+html[data-theme='dark'] .saved-addresses-section .form-control:-webkit-autofill:focus,
+html[data-theme='dark'] .saved-addresses-section .form-control:-webkit-autofill:active,
+body[data-theme='dark'] .form input:-webkit-autofill,
+body[data-theme='dark'] .form input:-webkit-autofill:hover,
+body[data-theme='dark'] .form input:-webkit-autofill:focus,
+body[data-theme='dark'] .form input:-webkit-autofill:active,
+body[data-theme='dark'] .saved-addresses-section .form-control:-webkit-autofill,
+body[data-theme='dark'] .saved-addresses-section .form-control:-webkit-autofill:hover,
+body[data-theme='dark'] .saved-addresses-section .form-control:-webkit-autofill:focus,
+body[data-theme='dark'] .saved-addresses-section .form-control:-webkit-autofill:active,
+[data-theme='dark'] .form input:-webkit-autofill,
+[data-theme='dark'] .form input:-webkit-autofill:hover,
+[data-theme='dark'] .form input:-webkit-autofill:focus,
+[data-theme='dark'] .form input:-webkit-autofill:active,
+[data-theme='dark'] .saved-addresses-section .form-control:-webkit-autofill,
+[data-theme='dark'] .saved-addresses-section .form-control:-webkit-autofill:hover,
+[data-theme='dark'] .saved-addresses-section .form-control:-webkit-autofill:focus,
+[data-theme='dark'] .saved-addresses-section .form-control:-webkit-autofill:active {
+  background-color: #111827 !important;
+  color: #f8fafc !important;
+  -webkit-text-fill-color: #f8fafc !important;
+  box-shadow: 0 0 0 1000px #111827 inset !important;
+  border-color: #6c5dd3 !important;
+  transition: background-color 5000s ease-in-out 0s !important;
+}
+
 .form select option,
 .saved-addresses-section select option {
   background: var(--card-bg, #ffffff);
