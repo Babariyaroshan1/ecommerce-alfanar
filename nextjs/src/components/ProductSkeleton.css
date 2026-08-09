@@ -32,9 +32,9 @@
 .skeleton-text {
   background: linear-gradient(
     90deg,
-    #f0f0f0 25%,
-    #e0e0e0 50%,
-    #f0f0f0 75%
+    var(--skeleton-base, #f0f0f0) 25%,
+    var(--skeleton-highlight, #e0e0e0) 50%,
+    var(--skeleton-base, #f0f0f0) 75%
   );
   background-size: 200% 100%;
   animation: skeleton-loading 0.5s infinite;
@@ -51,6 +51,14 @@
 .skeleton-description {
   height: 12px;
   width: 100%;
+  background: linear-gradient(
+    90deg,
+    var(--skeleton-base, #f0f0f0) 25%,
+    var(--skeleton-highlight, #e0e0e0) 50%,
+    var(--skeleton-base, #f0f0f0) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 0.5s infinite;
 }
 
 .skeleton-description.short {
@@ -70,12 +78,28 @@
   height: 14px;
   width: 40%;
   font-weight: 600;
+  background: linear-gradient(
+    90deg,
+    var(--skeleton-base, #f0f0f0) 25%,
+    var(--skeleton-highlight, #e0e0e0) 50%,
+    var(--skeleton-base, #f0f0f0) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 0.5s infinite;
 }
 
 .skeleton-button {
   height: 32px;
   width: 45%;
   border-radius: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--skeleton-base, #f0f0f0) 25%,
+    var(--skeleton-highlight, #e0e0e0) 50%,
+    var(--skeleton-base, #f0f0f0) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 0.5s infinite;
 }
 
 /* Skeleton Grid Layout */

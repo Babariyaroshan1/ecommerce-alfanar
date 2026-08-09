@@ -884,7 +884,7 @@ export default function Checkout() {
               maxHeight: '90vh',
               overflowY: 'auto',
               borderRadius: '14px',
-              background: '#fff',
+              background: 'var(--card-bg)',
               padding: '24px',
               boxShadow: '0 24px 80px rgba(15, 23, 42, 0.18)'
             }}
@@ -892,8 +892,8 @@ export default function Checkout() {
           >
             <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px'}}>
               <div>
-                <h2 style={{margin: 0}}>{t('My Addresses')}</h2>
-                <p style={{margin: '6px 0 0 0', color: '#475569'}}>{t('Select a saved address or save a new address for future checkout.')}</p>
+                <h2 style={{margin: 0, color: 'var(--text-primary)'}}>{t('My Addresses')}</h2>
+                <p style={{margin: '6px 0 0 0', color: 'var(--text-secondary)'}}>{t('Select a saved address or save a new address for future checkout.')}</p>
               </div>
               <button
                 type="button"
@@ -919,7 +919,7 @@ export default function Checkout() {
                       border: selectedSavedAddressId === address.id ? '1px solid #2563eb' : '1px solid #d1d5db',
                       borderRadius: '12px',
                       padding: '18px',
-                      background: selectedSavedAddressId === address.id ? '#eff6ff' : '#ffffff'
+                      background: selectedSavedAddressId === address.id ? 'rgba(59, 130, 246, 0.12)' : 'var(--card-bg)'
                     }}
                   >
                     <div style={{display: 'flex', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap'}}>
@@ -952,7 +952,7 @@ export default function Checkout() {
                 ))}
               </div>
             ) : (
-              <div style={{marginBottom: '24px', padding: '18px', borderRadius: '12px', background: '#f8fafc', border: '1px solid #e2e8f0', color: '#334155'}}>
+              <div style={{marginBottom: '24px', padding: '18px', borderRadius: '12px', background: 'var(--card-bg)', border: '1px solid var(--border-color)', color: 'var(--text-primary)'}}>
                 {t('No saved addresses yet. Add one below and it will appear on My Addresses page.')}
               </div>
             )}
