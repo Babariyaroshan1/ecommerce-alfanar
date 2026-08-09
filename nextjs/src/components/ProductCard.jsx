@@ -248,8 +248,8 @@ export default function ProductCard({ product: initialProduct, directToProduct =
         'success',
         4000,
         {
-          label: 'Go to Cart',
-          callback: () => router.push('/cart')
+          label: 'Go to Wishlist',
+          callback: () => router.push('/wishlist')
         }
       );
     } else {

@@ -218,7 +218,7 @@ export default function Wishlist() {
                     
                     <div className="mt-auto d-flex justify-content-between align-items-end">
                       <div>
-                         <span className="badge bg-light text-secondary border mb-2">{product.category || 'Popular'}</span>
+                         <span className="badge bg-light  border mb-2">{product.category || 'Popular'}</span>
                          <h6 className="fw-bold mb-0 price-text">{formatCurrency(getProductPriceValue(product), getProductSymbol(product))}</h6>
                       </div>
                       
