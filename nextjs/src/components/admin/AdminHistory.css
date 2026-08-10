@@ -86,12 +86,32 @@ body {
   animation: ahFadeIn 0.5s ease-out;
 }
 
+[data-theme='dark'] .secure-lock-card {
+  background: #09090b;
+  color: #f8fafc;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
 /* Light mode override: white background + dark text */
 [data-theme='light'] .secure-lock-card {
   background: #ffffff;
   color: #111827;
   border: 1px solid rgba(17, 24, 39, 0.06);
   box-shadow: 0 10px 30px rgba(16, 24, 40, 0.06);
+}
+
+[data-theme='light'] .secure-lock-card,
+[data-theme='light'] .secure-lock-card .secure-lock-header h3,
+[data-theme='light'] .secure-lock-card .secure-lock-header p {
+  color: inherit;
+}
+
+[data-theme='light'] .secure-lock-card .secure-lock-header h3 {
+  color: #111827;
+}
+
+[data-theme='light'] .secure-lock-card .secure-lock-header p {
+  color: #6b7280;
 }
 
 .secure-lock-header {

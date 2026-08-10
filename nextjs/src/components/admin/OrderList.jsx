@@ -707,6 +707,9 @@ export default function OrderList({ showOnlyRequests = false }) {
               Search
             </button>
           </div>
+          <button className="refresh-btn" onClick={handleRefresh} disabled={isRefreshing}>
+            {isRefreshing ? <i className="fas fa-spinner fa-spin"></i> : <i className="fas fa-sync-alt"></i>}
+          </button>
           <div className="order-controls">
             <div className="control-group control-group-accept">
               <span>Auto Accept</span>
@@ -720,9 +723,6 @@ export default function OrderList({ showOnlyRequests = false }) {
                 <span className="toggle-thumb" />
               </button>
             </div>
-            <button className="refresh-btn" onClick={handleRefresh} disabled={isRefreshing}>
-              {isRefreshing ? <i className="fas fa-spinner fa-spin"></i> : <i className="fas fa-sync-alt"></i>}
-            </button>
           </div>
         </div>
       </div>

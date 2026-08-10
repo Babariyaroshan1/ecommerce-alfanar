@@ -162,10 +162,12 @@
 /* Thumb Movement */
 .toggle-switch.off .toggle-thumb {
   transform: translateX(0);
+  background-color: #64748b !important;
 }
 
 .toggle-switch.on .toggle-thumb {
   transform: translateX(22px); 
+  background-color: #ffffff !important;
 }
 
 .refresh-btn {
@@ -1425,5 +1427,55 @@
 
   .filter-section button {
     width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .order-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .order-title-group {
+    gap: 4px;
+  }
+
+  .order-title-group .last-update {
+    margin-bottom: 0;
+  }
+
+  .order-toolbar {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.75rem;
+    align-items: center;
+    width: 100%;
+  }
+
+  .order-search {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .search-btn {
+    padding: 0 16px;
+    font-size: 0.82rem;
+  }
+
+  .order-toolbar .refresh-btn {
+    width: auto;
+    min-width: 46px;
+    justify-self: end;
+  }
+
+  .order-controls {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    grid-column: 1 / -1;
+  }
+
+  .order-controls .order-toggle-switch {
+    margin-left: auto;
   }
 }
