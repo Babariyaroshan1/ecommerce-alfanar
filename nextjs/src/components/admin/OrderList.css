@@ -92,8 +92,8 @@
 /* --- Modern Toggle Switch UI --- */
 .control-group {
   gap: 0.75rem;
-  background: var(--bg-card, #ffffff);
-  border: 1px solid var(--border-color, #e5e7eb);
+  /* background: var(--bg-card, #ffffff); */
+  /* border: 1px solid var(--border-color, #e5e7eb); */
   border-radius: 999px;
   font-size: 0.95rem;
   font-weight: 500;
@@ -106,10 +106,8 @@
   white-space: nowrap;
 }
 
-.control-group-accept {
-  border-color: #34d399;
-}
 
+/*  */
 .control-group-refresh {
   border-color: #0040d4;
 }
@@ -155,7 +153,7 @@
 /* Thumb Fix for OFF state */
 .order-list .toggle-switch.off .toggle-thumb {
   transform: translateX(0);
-  background-color: #64748b !important;
+  background-color:white !important;
 }
 
 /* Thumb Fix for ON state */
