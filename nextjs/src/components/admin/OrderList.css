@@ -114,33 +114,35 @@
   border-color: #0040d4;
 }
 
-.toggle-switch {
+.order-list .toggle-switch {
   position: relative;
   width: 52px;
   height: 30px;
   border-radius: 999px;
   border: none;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  justify-content: flex-start;
   padding: 3px;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
   box-sizing: border-box;
+  background-color: #e2e8f0;
 }
 
-.order-toggle-switch {
+.order-list .order-toggle-switch {
   min-width: 52px;
   min-height: 30px;
 }
 
 /* Toggle Colors Fix */
-.toggle-switch-accept.off { background-color: #e2e8f0; } /* Greyish background for 'off' state */
-.toggle-switch-accept.on { background-color: #10b981; }
+.order-list .toggle-switch-accept.off { background-color: #e2e8f0; }
+.order-list .toggle-switch-accept.on { background-color: #10b981; }
 
-.toggle-switch-refresh.off { background-color: #e2e8f0; }
-.toggle-switch-refresh.on { background-color: #0d6efd; }
+.order-list .toggle-switch-refresh.off { background-color: #e2e8f0; }
+.order-list .toggle-switch-refresh.on { background-color: #0d6efd; }
 
-.toggle-thumb {
+.order-list .toggle-thumb {
   width: 22px;
   height: 22px;
   background-color: #ffffff;
@@ -151,14 +153,14 @@
 }
 
 /* Thumb Fix for OFF state */
-.toggle-switch.off .toggle-thumb {
+.order-list .toggle-switch.off .toggle-thumb {
   transform: translateX(0);
   background-color: #64748b !important;
 }
 
 /* Thumb Fix for ON state */
-.toggle-switch.on .toggle-thumb {
-  transform: translateX(22px); 
+.order-list .toggle-switch.on .toggle-thumb {
+  transform: translateX(22px);
   background-color: #ffffff !important;
 }
 
@@ -230,6 +232,12 @@
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+  .order-list h2 {
+    margin-bottom: 0;
+  }
 }
 
 .auto-accept {
@@ -585,6 +593,6 @@
   .order-controls .control-group:last-child { margin-right: 0; }
   
   .order-controls .order-toggle-switch {
-    margin-left: auto;
+    margin-left: 0;
   }
 }
