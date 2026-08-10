@@ -1,9 +1,10 @@
 /* Container & Header */
 .analytics-page {
-  padding: 30px;
+  padding: 30px 24px 24px;
   background-color: var(--bg-body, #f1f5f9);
   min-height: 100vh;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  box-sizing: border-box;
 }
 
 .analytics-header {
@@ -53,11 +54,11 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  min-width: 160px;
+  min-width: 140px;
 }
 
 .currency-switch {
-  min-width: 180px;
+  min-width: 220px;
 }
 
 .currency-toggle-group {
@@ -67,7 +68,7 @@
 
 .currency-toggle {
   flex: 1;
-  padding: 10px 12px;
+  padding: 10px 8px;
   border: 0.5px solid rgba(0, 0, 0, 0.3);
   background: transparent;
   color: var(--text-main, #0f172a);
@@ -75,6 +76,8 @@
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s ease;
+  min-width: 0;
+  white-space: nowrap;
 }
 
 .currency-toggle.active,
@@ -82,6 +85,14 @@
   background: #7c44ff;
   border-color: #ffffff;
   color: #ffffff;
+}
+
+.currency-toggle:not(.active) {
+  opacity: 0.7;
+}
+
+.currency-toggle.active {
+  opacity: 1;
 }
 
 [data-theme='dark'] .currency-toggle {
@@ -587,12 +598,12 @@
 
 @media (max-width: 768px) {
   .analytics-page {
-    padding: 0;
+    padding: 12px 12px 20px;
   }
 
   .analytics-header {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
   }
   
   .date-filters {
@@ -601,6 +612,8 @@
     align-items: stretch;
     box-sizing: border-box;
     overflow: hidden;
+    gap: 12px;
+    padding: 16px;
   }
   
   .filter-group {
@@ -611,9 +624,46 @@
   .filter-group input,
   .date-input {
     width: 100%;
+    min-width: 0;
   }
   
+  .currency-switch {
+    min-width: 0;
+  }
+
+  .currency-toggle-group {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .currency-toggle {
+    flex: 1 1 48%;
+    min-width: 0;
+  }
+
   .refresh-btn {
     width: 100%;
+  }
+
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-box {
+    padding: 18px;
+  }
+
+  .recharts-wrapper {
+    height: 320px;
+  }
+
+  .custom-pie-legend-img2 {
+    justify-content: stretch;
+    gap: 12px;
+  }
+
+  .top-products-section,
+  .table-responsive {
+    padding: 18px;
   }
 }
