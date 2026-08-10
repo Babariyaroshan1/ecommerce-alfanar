@@ -110,7 +110,7 @@ export default function ProductReviewsManagement() {
 
       {editingReview && (
         <form onSubmit={handleSave} className="review-edit-form">
-          <h3>Edit Review for {editingReview.productId?.name || 'Product'}</h3>
+          <h3>Edit Review for: <span className="product-name">{editingReview.productId?.name || 'Product'}</span></h3>
           <div className="form-row">
             <label>Rating</label>
             <select

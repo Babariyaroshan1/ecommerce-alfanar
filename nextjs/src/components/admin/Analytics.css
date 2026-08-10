@@ -68,9 +68,9 @@
 .currency-toggle {
   flex: 1;
   padding: 10px 12px;
-  border: 1px solid #cbd5e1;
-  /* background: rgb(1, 1, 1); */
-  color: #ffffff !important;
+  border: 0.5px solid rgba(0, 0, 0, 0.3);
+  background: transparent;
+  color: var(--text-main, #0f172a);
   font-weight: 600;
   border-radius: 10px;
   cursor: pointer;
@@ -79,6 +79,18 @@
 
 .currency-toggle.active,
 .currency-toggle:hover {
+  background: #7c44ff;
+  border-color: #ffffff;
+  color: #ffffff;
+}
+
+[data-theme='dark'] .currency-toggle {
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #ffffff;
+}
+
+[data-theme='dark'] .currency-toggle.active,
+[data-theme='dark'] .currency-toggle:hover {
   background: #7c44ff;
   border-color: #ffffff;
   color: #ffffff;
@@ -574,6 +586,10 @@
 }
 
 @media (max-width: 768px) {
+  .analytics-page {
+    padding: 0;
+  }
+
   .analytics-header {
     flex-direction: column;
     align-items: flex-start;
@@ -583,9 +599,17 @@
     width: 100%;
     flex-direction: column;
     align-items: stretch;
+    box-sizing: border-box;
+    overflow: hidden;
   }
   
-  .filter-group input {
+  .filter-group {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .filter-group input,
+  .date-input {
     width: 100%;
   }
   

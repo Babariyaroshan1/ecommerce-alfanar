@@ -356,7 +356,7 @@
 
 .nav-item.active {
   background: var(--sidebar-accent);
-  color: var(--sidebar-accent);
+  color: white;
   border-radius: 12px;
   border: 1px solid;
 }
@@ -371,7 +371,7 @@
 }
 
 .nav-item.active .nav-icon {
-  color: var(--sidebar-accent);
+  color: white;
 }
 
 .badge-notification {
@@ -447,13 +447,12 @@
   padding: 1rem 0.95rem;
   border-bottom: 1px solid var(--sidebar-border);
   margin-bottom: 0.75rem;
-}
+    width: 100%;
+    overflow: hidden;
+  }
 
-.sidebar-mobile-badge .header-eyebrow {
-  margin: 0;
-  color: var(--sidebar-muted);
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
+  .sidebar.closed .sidebar-mobile-badge {
+    display: none;
   text-transform: uppercase;
 }
 
@@ -608,6 +607,8 @@
   border: 1px solid var(--border-color);
   box-shadow: var(--shadow-lg);
   z-index: 120;
+  max-width: calc(100vw - 1rem);
+  overflow: hidden;
 }
 
 /* Downward pointing arrow (v shape pointer) */
@@ -751,7 +752,8 @@
 /* =========================================
    Main Content Area
 ========================================= */
-.dashboard-content {
+.dashboard-content,
+.dashboard-contentSpecificity {
   flex: 1;
   padding: 0.8rem 1rem 1rem;
   overflow-x: hidden;
@@ -791,6 +793,9 @@
 
 :root[data-theme='dark'] .dashboard-content .cancel-btn,
 :root[data-theme='dark'] .dashboard-content .delete-btn,
+
+
+
 :root[data-theme='dark'] .dashboard-content .delete-cat-dropdown-btn,
 :root[data-theme='dark'] .dashboard-content .remove-image-btn,
 :root[data-theme='dark'] .dashboard-content .remove-color-btn,
@@ -1208,6 +1213,39 @@ table tbody tr:hover {
   color: var(--text-main);
 }
 
+/* Banner settings: mobile-friendly adjustments */
+@media (max-width: 768px) {
+  .admin-settings-section .form-group {
+    display: block;
+    width: 100%;
+  }
+
+  .admin-settings-section .form-group label {
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .admin-settings-section .form-control {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .admin-settings-section .form-actions {
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .admin-settings-section img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+  }
+
+  .admin-settings-section .btn {
+    width: auto;
+  }
+}
+
 /* =========================================
    Badges (Status)
 ========================================= */
@@ -1313,12 +1351,21 @@ table tbody tr:hover {
   .form-row { grid-template-columns: 1fr; }
 }
 
+
+@media (max-width: 768px) {
+  .dashboard-content,
+  .dashboard-contentSpecificity {
+    padding: 0 !important;
+  }
+}
+
 @media (max-width: 768px) {
   .dashboard-header { padding: 1rem; }
   .header-content {
     justify-content: space-between;
     gap: 0.5rem;
-  }
+  } 
+  
   .header-left {
     display: flex;
     align-items: center;

@@ -1,57 +1,62 @@
 /* Coupon Management Styles */
 .coupon-management-container {
   background: var(--bg-card, #ffffff);
-  border-radius: 20px;
-  padding: 2rem;
-  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
+  background: var(--bg-card, #ffffff);
+  border-radius: 16px;
+  padding: 1.25rem;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
   border: 1px solid var(--border-color, rgba(115, 123, 147, 0.12));
+
+
+.coupon-management-container > div {
+  display: grid;
+  gap: 1.5rem;
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
 .coupon-management-container h2 {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
   color: var(--text-main, #111827);
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 700;
 }
 
 .coupon-management-container > div {
   display: grid;
-  gap: 1.5rem;
-  margin-top: 1.5rem;
-}
+  gap: 1rem;
+  margin-top: 1rem;
 
 /* Form Section */
 .coupon-form-section {
   background: var(--bg-card, #fff);
-  padding: 1.5rem;
-  border-radius: 20px;
+  background: var(--bg-card, #fff);
+  padding: 1rem;
+  border-radius: 12px;
   box-shadow: var(--shadow-sm);
-}
+
 
 .coupon-form-section h3 {
-  margin-bottom: 1rem;
+  margin-bottom: 0.6rem;
   color: var(--text-main, #1e293b);
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 600;
-}
 
 /* Form Styles */
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.form-group {
-  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
   flex-direction: column;
   gap: 0.5rem;
-}
+  gap: 0.4rem;
 
 .form-group label {
-  font-size: 0.875rem;
-  font-weight: 600;
+  gap: 0.4rem;
   color: var(--text-main, #374151);
 }
 
@@ -59,25 +64,22 @@
 .form-group select,
 .form-group textarea {
   padding: 0.75rem;
+  padding: 0.6rem;
   border: 1px solid var(--border-color, #d1d5db);
   border-radius: 8px;
-  font-size: 0.9rem;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-
-
-.form-group textarea {
-  resize: vertical;
+  font-size: 0.88rem;
+  padding: 0.6rem;
+  border: 1px solid var(--border-color, #d1d5db);
+  border-radius: 8px;
+  font-size: 0.88rem;
+  transition: border-color 0.15s, box-shadow 0.15s;
   min-height: 80px;
 }
-
-/* Active Checkbox */
-.active-checkbox-group {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
+.form-group textarea {
+  min-height: 72px;
+}
+  gap: 0.6rem;
+  margin-bottom: 0.6rem;
 }
 
 .active-checkbox-group input[type="checkbox"] {
@@ -87,7 +89,7 @@
 }
 
 .active-checkbox-group label {
-  font-size: 0.875rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: #374151;
   cursor: pointer;
@@ -96,19 +98,19 @@
 /* Form Actions */
 .form-actions {
   display: flex;
-  gap: 1rem;
+  gap: 0.5rem;
   flex-wrap: wrap;
 }
 
 .submit-btn,
 .cancel-btn {
-  padding: 0.75rem 1.5rem;
+  padding: 0.6rem 1rem;
   border: none;
   border-radius: 8px;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.15s;
 }
 
 .submit-btn {
@@ -132,16 +134,22 @@
 
 /* Coupon List Section */
 .coupon-list-section {
-  background: var(--bg-card, #fff);
-  padding: 1.5rem;
-  border-radius: 20px;
+  padding: 1rem;
+  border-radius: 12px;
   box-shadow: var(--shadow-sm);
 }
-
+}
 .coupon-list-section h3 {
-  margin-bottom: 1rem;
+  margin-bottom: 0.6rem;
   color: var(--text-main, #1e293b);
-  font-size: 1.25rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+  margin-bottom: 0.6rem;
+  color: var(--text-main, #1e293b);
+  font-size: 1.125rem;
+  font-weight: 600;
   font-weight: 600;
 }
 
@@ -162,8 +170,9 @@
 }
 
 .coupon-table-container th,
+.coupon-table-container th,
 .coupon-table-container td {
-  padding: 0.75rem 1rem;
+  padding: 0.65rem 0.9rem;
   text-align: left;
   border-bottom: 1px solid var(--border-color, #e5e7eb);
 }
@@ -176,9 +185,10 @@
   letter-spacing: 0.05em;
 }
 
+  color: var(--text-main, #4b5563);
 .coupon-table-container td {
   color: var(--text-main, #4b5563);
-  font-size: 0.9rem;
+  font-size: 0.88rem;
 }
 
 .coupon-table-container tbody tr:hover {
@@ -352,19 +362,24 @@
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
   .coupon-management-container {
-    padding: 1rem;
+    padding: 0.75rem;
   }
   
   .form-row {
     grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .coupon-form-section,
+  .coupon-list-section {
+    padding: 0.75rem;
   }
 
   .coupon-table-container th,
   .coupon-table-container td {
-    padding: 0.5rem;
-    font-size: 0.8rem;
+    padding: 0.45rem 0.5rem;
+    font-size: 0.78rem;
   }
 
   .action-buttons {
@@ -374,7 +389,15 @@
 
   .edit-btn,
   .delete-btn {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.75rem;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.72rem;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 0.5rem;
+    font-size: 0.86rem;
+  }
   }
 }

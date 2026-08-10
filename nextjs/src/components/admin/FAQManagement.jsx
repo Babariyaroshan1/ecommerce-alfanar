@@ -105,7 +105,7 @@ export default function FAQManagement() {
           onClick={() => setShowForm(!showForm)}
           className="add-faq-btn"
         >
-          {showForm ? 'Cancel' : '+ Add New FAQ'}
+          {showForm ? 'Cancel' : '+ Add New'}
         </button>
       </div>
 
@@ -157,6 +157,12 @@ export default function FAQManagement() {
       <div className="faq-list">
         <div className="faq-list-header">
           <h3>All FAQs ({faqs.length})</h3>
+          <button
+            onClick={() => setShowForm(!showForm)}
+            className="add-faq-btn add-faq-btn-mobile"
+          >
+            {showForm ? 'Cancel' : '+ Add New'}
+          </button>
         </div>
         {faqs.length === 0 ? (
           <div className="no-faqs">

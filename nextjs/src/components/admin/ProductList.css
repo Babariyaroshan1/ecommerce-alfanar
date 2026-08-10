@@ -841,6 +841,10 @@ input:checked + .toggle-slider:before {
   display: flex;
   gap: 12px;
   margin-bottom: 24px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  white-space: nowrap;
+  padding-bottom: 6px;
 }
 
 .product-filter-toggle button {
@@ -853,6 +857,8 @@ input:checked + .toggle-slider:before {
   background-color: var(--bg-surface, #ffffff);
   color: var(--text-main, #000000);
   transition: all 0.2s ease-in-out;
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 
 .product-filter-toggle button:hover {

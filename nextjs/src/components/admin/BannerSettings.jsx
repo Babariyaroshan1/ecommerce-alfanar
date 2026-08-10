@@ -115,6 +115,9 @@ export default function BannerSettings() {
       <p>
         Upload or set banner image URLs. <strong>Recommended:</strong> Use the upload buttons to directly upload to Cloudinary for guaranteed availability. Manual URLs must be fully accessible (http/https links or files in the public folder).
       </p>
+      <p style={{ marginTop: 8 }}>
+        <strong>Recommended banner dimensions:</strong> Desktop banner: 1300px × 430px. Mobile banner: 350px × 350px.
+      </p>
 
       {loading ? (
         <div>Loading banner settings...</div>
@@ -218,16 +221,7 @@ export default function BannerSettings() {
             </div>
           </div>
 
-          <div style={{ marginTop: '16px' }}>
-            <p className="text-muted" style={{ fontSize: '0.95rem' }}>
-              <strong>How to use:</strong>
-            </p>
-            <ul style={{ fontSize: '0.95rem', color: '#6b7280', marginLeft: '16px' }}>
-              <li><i className="fa-solid fa-check"></i> <strong>Best option:</strong> Use "Upload" buttons → Images go to Cloudinary (reliable & fast)</li>
-              <li><i className="fa-solid fa-triangle-exclamation"></i> Manual URL entry: Must be a full URL (https://example.com/banner.png) or file path in public folder (/banner.png)</li>
-              <li><i className="fa-solid fa-x"></i> Don't use relative paths like "/banner.png" unless the file actually exists in your public directory</li>
-            </ul>
-          </div>
+          
         </>
       )}
     </div>

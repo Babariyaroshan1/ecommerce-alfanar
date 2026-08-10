@@ -116,7 +116,7 @@ export default function ProductFAQManagement() {
       <div className="faq-header">
         <h2>Product FAQ Management</h2>
         <button onClick={() => setShowForm(!showForm)} className="add-faq-btn">
-          {showForm ? 'Cancel' : '+ Add New FAQ'}
+          {showForm ? 'Cancel' : '+ Add New'}
         </button>
       </div>
 
@@ -129,7 +129,7 @@ export default function ProductFAQManagement() {
       {showForm && (
         <div className="faq-form-container">
           <form onSubmit={handleSubmit} className="faq-form">
-            <h3>{editingFaq ? 'Edit FAQ' : 'Add New FAQ'}</h3>
+            <h3>{editingFaq ? 'Edit FAQ' : 'Add New'}</h3>
 
             <div className="faq-form-group">
               <label>Question *</label>
@@ -168,6 +168,9 @@ export default function ProductFAQManagement() {
       <div className="faq-list">
         <div className="faq-list-header">
           <h3>All Product FAQs ({faqs.length})</h3>
+          <button onClick={() => setShowForm(!showForm)} className="add-faq-btn add-faq-btn-mobile">
+            {showForm ? 'Cancel' : '+ Add New'}
+          </button>
         </div>
 
         {faqs.length === 0 ? (

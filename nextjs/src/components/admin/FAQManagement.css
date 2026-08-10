@@ -31,6 +31,39 @@
   background: #0056b3;
 }
 
+/* Mobile: move Add button to the FAQ list header and shorten spacing */
+.add-faq-btn-mobile { display: none; }
+
+@media (max-width: 768px) {
+  .add-faq-btn { display: none; }
+  .add-faq-btn-mobile {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 14px;
+    font-size: 13px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+
+  .faq-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: nowrap;
+  }
+
+  /* Make top header compact and row-aligned on mobile */
+  .faq-header { flex-direction: row; gap: 12px; }
+  .faq-header h2 { font-size: 18px; margin: 0; }
+
+  .faq-list-header h3 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
 .message {
   padding: 10px;
   border-radius: 5px;

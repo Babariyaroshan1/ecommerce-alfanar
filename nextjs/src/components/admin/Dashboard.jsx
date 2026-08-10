@@ -284,7 +284,10 @@ export default function Dashboard({ onLogout }) {
           <button 
             type="button" 
             className={`theme-toggle-btn-square ${theme}`} 
-            onClick={toggleTheme}
+            onClick={() => {
+              toggleTheme();
+              setProfileMenuOpen(false);
+            }}
             aria-label="Toggle theme"
           >
             <i className={`fa-solid ${theme === 'dark' ? 'fa-sun' : 'fa-moon'}`}></i>

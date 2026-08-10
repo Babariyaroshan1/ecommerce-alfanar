@@ -130,8 +130,8 @@
 }
 
 .ctaBox {
-  background: var(--text-primary);
-  color: var(--background);
+  background: var(--card-bg);
+  color: var(--text-primary);
   border-radius: 24px;
   padding: 2rem;
   text-align: center;

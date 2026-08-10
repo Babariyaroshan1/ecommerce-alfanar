@@ -967,7 +967,7 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
         <p className="product-label">Product Management</p>
         <h1>Manage Products</h1>
         <p className="product-subtitle">
-          Search, edit, or remove products quickly with a clean admin view.
+          Search, view products quickly with a clean admin view.
         </p>
       </div>
     </div>
@@ -975,9 +975,9 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
     <div className="product-filter-toggle">
       {availableCategoryFilters.map((category) => {
         const label = category === 'all'
-          ? 'All Products'
+          ? 'ALL'
           : category === 'kids'
-            ? 'Kids Products'
+            ? 'Kids'
             : category;
 
         return (
