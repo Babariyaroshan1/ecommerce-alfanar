@@ -1342,7 +1342,17 @@ table tbody tr:hover {
   font-size: 1.1rem;
   font-weight: 600;
 }
-
+.save-btn{
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: var(--transition);
+}
 /* =========================================
    Responsive Design
 ========================================= */

@@ -69,6 +69,7 @@ export default function OrderList({ showOnlyRequests = false }) {
   const [activeSearchTerm, setActiveSearchTerm] = useState('');
   const token = localStorage.getItem('adminToken');
   const lastSeenOrderIdsRef = useRef(new Set());
+  const searchInputRef = useRef(null);
   const audioContextRef = useRef(null);
   const audioUnlockedRef = useRef(false);
   const audioAlarmRef = useRef({ oscillator: null, gainNode: null });
@@ -253,7 +254,13 @@ export default function OrderList({ showOnlyRequests = false }) {
   };
 
   const handleSearch = () => {
-    setActiveSearchTerm(searchTerm.trim().toLowerCase());
+    const trimmed = searchTerm.trim();
+    if (!trimmed) {
+      // if input is empty, focus it so user can type
+      searchInputRef.current?.focus();
+      return;
+    }
+    setActiveSearchTerm(trimmed.toLowerCase());
   };
 
   const formatOrderTimeline = (createdAt) => {
@@ -595,6 +602,7 @@ export default function OrderList({ showOnlyRequests = false }) {
         <div className="order-toolbar">
           <div className="order-search">
             <input
+              ref={searchInputRef}
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}

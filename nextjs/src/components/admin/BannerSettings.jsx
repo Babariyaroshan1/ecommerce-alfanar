@@ -79,8 +79,6 @@ export default function BannerSettings() {
       return;
     }
 
-    // STRICT: Only allow Cloudinary URLs or full http/https URLs
-    // Block relative paths like /banner.png since they don't work on Vercel
     const isCloudinary = bannerUrl.includes('cloudinary') || bannerUrl.includes('res.cloudinary');
     const isFullUrl = bannerUrl.startsWith('http://') || bannerUrl.startsWith('https://');
 
@@ -112,9 +110,6 @@ export default function BannerSettings() {
   return (
     <div className="admin-settings-section">
       <h2>Homepage Banner Settings</h2>
-      <p>
-        Upload or set banner image URLs. <strong>Recommended:</strong> Use the upload buttons to directly upload to Cloudinary for guaranteed availability. Manual URLs must be fully accessible (http/https links or files in the public folder).
-      </p>
       <p style={{ marginTop: 8 }}>
         <strong>Recommended banner dimensions:</strong> Desktop banner: 1300px × 430px. Mobile banner: 350px × 350px.
       </p>
@@ -179,7 +174,7 @@ export default function BannerSettings() {
 
           <div className="form-actions" style={{ marginTop: '12px' }}>
             <button
-              className="btn btn-primary"
+              className="btn save-btn"
               onClick={handleSave}
               disabled={saving || bannerUrl.trim().length === 0}
             >
