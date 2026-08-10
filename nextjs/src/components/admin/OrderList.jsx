@@ -4,14 +4,12 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import axios from 'axios';
 import './OrderList.css';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'; // Set in nextjs/.env.local for development and in Vercel env for production
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'; 
 
-// Format price with proper decimal places (currency-aware)
 const formatPrice = (price, currencySymbol = '₹') => {
   if (!price && price !== 0) return '0.00';
   const num = typeof price === 'string' ? parseFloat(price) : price;
   if (isNaN(num)) return '0.00';
-  // KWD uses 3 decimals, others use 2
   const decimals = currencySymbol === 'KWD' ? 3 : 2;
   return num.toFixed(decimals);
 };
@@ -56,7 +54,7 @@ const ExpandableProductName = ({ name }) => {
 export default function OrderList({ showOnlyRequests = false }) {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isRefreshing, setIsRefreshing] = useState(false); // Refersh state
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [autoAccept, setAutoAccept] = useState(false);
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [trackingModal, setTrackingModal] = useState({ orderId: null, trackingId: '' });
@@ -77,18 +75,14 @@ export default function OrderList({ showOnlyRequests = false }) {
 
   const unlockAudio = useCallback(() => {
     if (typeof window === 'undefined' || audioUnlockedRef.current) return;
-
     try {
       const AudioContextClass = window.AudioContext || window.webkitAudioContext;
       if (!AudioContextClass) return;
-
       const audioContext = audioContextRef.current || new AudioContextClass();
       audioContextRef.current = audioContext;
-
       if (audioContext.state === 'suspended') {
         void audioContext.resume();
       }
-
       audioUnlockedRef.current = true;
     } catch (error) {
       console.error('Failed to unlock audio context:', error);
@@ -97,35 +91,22 @@ export default function OrderList({ showOnlyRequests = false }) {
 
   const playNewOrderAlert = useCallback(() => {
     if (typeof window === 'undefined') return;
-
     unlockAudio();
-
     try {
       const audioContext = audioContextRef.current;
       if (!audioContext) return;
-
-      // Short beep for compatibility, but also start a persistent alarm
-      // that will continue until explicitly stopped.
-      // If an alarm is already running, skip creating another.
       if (audioAlarmRef.current.oscillator) {
         return;
       }
-
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
-
       oscillator.type = 'sine';
       oscillator.frequency.setValueAtTime(720, audioContext.currentTime);
-
       gainNode.gain.setValueAtTime(0.0001, audioContext.currentTime);
       gainNode.gain.linearRampToValueAtTime(0.16, audioContext.currentTime + 0.02);
-
       oscillator.connect(gainNode);
       gainNode.connect(audioContext.destination);
-
       oscillator.start();
-
-      // Save references so we can stop the alarm later when order is accepted
       audioAlarmRef.current = { oscillator, gainNode };
     } catch (error) {
       console.error('Failed to play new order alert sound:', error);
@@ -137,16 +118,13 @@ export default function OrderList({ showOnlyRequests = false }) {
       const audioContext = audioContextRef.current;
       const { oscillator, gainNode } = audioAlarmRef.current || {};
       if (gainNode) {
-        // Fade out quickly then stop
         gainNode.gain.cancelScheduledValues(audioContext.currentTime);
         gainNode.gain.linearRampToValueAtTime(0.0001, audioContext.currentTime + 0.05);
       }
       if (oscillator) {
         try {
           oscillator.stop(audioContext.currentTime + 0.06);
-        } catch (e) {
-          // ignore
-        }
+        } catch (e) {}
         try { oscillator.disconnect(); } catch (e) {}
       }
       if (gainNode) {
@@ -164,12 +142,10 @@ export default function OrderList({ showOnlyRequests = false }) {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-
     const handleUserInteraction = () => unlockAudio();
     window.addEventListener('click', handleUserInteraction, { once: true });
     window.addEventListener('keydown', handleUserInteraction, { once: true });
     window.addEventListener('touchstart', handleUserInteraction, { once: true });
-
     return () => {
       window.removeEventListener('click', handleUserInteraction);
       window.removeEventListener('keydown', handleUserInteraction);
@@ -183,7 +159,6 @@ export default function OrderList({ showOnlyRequests = false }) {
       const res = await axios.get(`${API_URL}/orders/admin/all`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-
       const fetchedOrders = Array.isArray(res.data) ? res.data : [];
       const currentOrderIds = new Set(fetchedOrders.map((order) => order?._id).filter(Boolean));
 
@@ -191,7 +166,6 @@ export default function OrderList({ showOnlyRequests = false }) {
         const newOrders = fetchedOrders.filter((order) => order?._id && !lastSeenOrderIdsRef.current.has(order._id));
         if (newOrders.length > 0) {
           playNewOrderAlert();
-          // Also ensure visual highlight and keep alarm until accepted
           const newOrderId = newOrders[0]?._id;
           if (newOrderId) {
             setHighlightedOrderId(newOrderId);
@@ -201,16 +175,13 @@ export default function OrderList({ showOnlyRequests = false }) {
           }
         }
       }
-
       lastSeenOrderIdsRef.current = currentOrderIds;
       setOrders(fetchedOrders);
       setLastUpdate(new Date());
 
-      // Auto accept pending orders if enabled
       if (autoAccept) {
         await processPendingOrders(fetchedOrders, false);
       }
-
       setLoading(false);
       if (manualRefresh) setIsRefreshing(false);
     } catch (error) {
@@ -226,26 +197,20 @@ export default function OrderList({ showOnlyRequests = false }) {
       if (status !== undefined) {
         payload.orderStatus = status;
       }
-      console.log('Sending payload:', JSON.stringify(payload));
-      const response = await axios.put(
+      await axios.put(
         `${API_URL}/orders/${orderId}/status`,
         payload,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      console.log('Success response:', response.data);
       alert('Request updated successfully!');
-      // Stop alarm if order was accepted
       if (status === 'confirmed') {
         stopNewOrderAlert();
       }
       if (refreshAfterUpdate) {
-        fetchOrders(true); // Auto refresh with loader after action
+        fetchOrders(true);
       }
-      setSelectedRequest(null); // Close modal
+      setSelectedRequest(null);
     } catch (error) {
-      console.error('Error updating order:', error);
-      console.error('Response:', error.response?.data);
-      console.error('Status:', error.response?.status);
       const errorMsg = error.response?.data?.message || error.message || 'Unknown error';
       alert(`Error: ${errorMsg}`);
     }
@@ -266,10 +231,7 @@ export default function OrderList({ showOnlyRequests = false }) {
         console.error('Failed auto-confirm order', order._id, err);
       }
     }
-
-    // Stop persistent alarm after auto-confirm
     stopNewOrderAlert();
-
     if (refreshAfter) {
       await fetchOrders(true);
     }
@@ -290,10 +252,6 @@ export default function OrderList({ showOnlyRequests = false }) {
     setPreviewImage(null);
   };
 
-  const toggleHighlightRow = (orderId) => {
-    setHighlightedOrderId((prev) => (prev === orderId ? null : orderId));
-  };
-
   const handleSearch = () => {
     setActiveSearchTerm(searchTerm.trim().toLowerCase());
   };
@@ -302,12 +260,7 @@ export default function OrderList({ showOnlyRequests = false }) {
     if (!createdAt) return 'Order time unavailable';
     const date = new Date(createdAt);
     return date.toLocaleString('en-IN', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false,
+      day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false,
     });
   };
 
@@ -396,27 +349,21 @@ export default function OrderList({ showOnlyRequests = false }) {
   };
 
   const getRequestDetails = (order) => {
-    if (order.returnRequest?.requestedAt) {
-      return order.returnRequest;
-    }
-    if (order.replacementRequest?.requestedAt) {
-      return order.replacementRequest;
-    }
+    if (order.returnRequest?.requestedAt) return order.returnRequest;
+    if (order.replacementRequest?.requestedAt) return order.replacementRequest;
     return {};
   };
 
   const handleRequestAction = (order, action) => {
     const hasReturnRequest = Boolean(order.returnRequest?.requestedAt);
     const hasReplacementRequest = Boolean(order.replacementRequest?.requestedAt);
-
     let requestType;
     if (hasReturnRequest) {
       requestType = 'return';
     } else if (hasReplacementRequest) {
       requestType = 'replacement';
     } else {
-      alert('No valid request found for this order. Request must have requestedAt timestamp.');
-      console.error('Invalid request state:', { returnRequest: order.returnRequest, replacementRequest: order.replacementRequest });
+      alert('No valid request found for this order.');
       return;
     }
 
@@ -439,8 +386,6 @@ export default function OrderList({ showOnlyRequests = false }) {
       }
       payload.bankDetails = { accountHolder, accountNumber, ifsc };
     }
-
-    console.log('Request action payload:', payload, 'orderId:', order._id, 'order returnRequest:', order.returnRequest, 'replacementRequest:', order.replacementRequest);
     updateOrderStatus(order._id, undefined, payload);
     setSelectedRequest(null);
   };
@@ -458,18 +403,9 @@ export default function OrderList({ showOnlyRequests = false }) {
 
   const getTotalQuantity = (order) => order.items?.reduce((sum, item) => sum + (item.quantity || 0), 0) || 0;
 
-  const formatItemDetails = (items) => {
-    if (!items || items.length === 0) return 'No items';
-    return items.map(item => {
-      const details = [item.selectedColor, item.selectedSize].filter(Boolean).join(', ');
-      return `${item.name}${details ? ` (${details})` : ''} x${item.quantity}`;
-    }).join('\n');
-  };
-
   if (loading) return <div className="loading">Loading Data...</div>;
 
   const requestOrders = orders.filter(order => hasValidRequest(order));
-  
   const filteredRequestOrders = requestOrders.filter(order => {
     if (requestFilter === 'all') return true;
     const currentStatus = getRequestStatus(order);
@@ -478,35 +414,19 @@ export default function OrderList({ showOnlyRequests = false }) {
 
   const visibleOrders = orders.filter((order) => {
     if (!activeSearchTerm) return true;
-
     const searchableText = [
-      order.orderId,
-      order.userId?.name,
-      order.userId?.phone,
-      order.shippingAddress?.phone,
-      order.shippingAddress?.addressTitle,
-      order.shippingAddress?.area,
-      order.shippingAddress?.governorate,
-      order.shippingAddress?.city,
-      order.shippingAddress?.houseNumber,
-      order.shippingAddress?.street,
-      order.shippingAddress?.apartment,
-      order.orderStatus,
-      order.paymentStatus,
-      order.paymentMethod,
-      order.items?.map((item) => item.name).join(' '),
-    ]
-      .filter(Boolean)
-      .join(' ')
-      .toLowerCase();
+      order.orderId, order.userId?.name, order.userId?.phone, order.shippingAddress?.phone,
+      order.shippingAddress?.addressTitle, order.shippingAddress?.area, order.shippingAddress?.governorate,
+      order.shippingAddress?.city, order.shippingAddress?.houseNumber, order.shippingAddress?.street,
+      order.shippingAddress?.apartment, order.orderStatus, order.paymentStatus, order.paymentMethod,
+      order.items?.map((item) => item.name).join(' ')
+    ].filter(Boolean).join(' ').toLowerCase();
 
     return searchableText.includes(activeSearchTerm);
   });
 
   const formatShippingAddress = (address) => {
     if (!address) return 'No address available';
-    
-    // Check if Kuwait address (has governorate field)
     if (address.governorate) {
       const lines = [
         address.addressTitle ? `${address.addressTitle}` : '',
@@ -519,7 +439,6 @@ export default function OrderList({ showOnlyRequests = false }) {
       ];
       return lines.filter(Boolean).join('\n');
     } else {
-      // India address (has city field)
       const lines = [
         address.houseNumber ? `House No: ${address.houseNumber}` : '',
         address.street || '',
@@ -533,8 +452,6 @@ export default function OrderList({ showOnlyRequests = false }) {
 
   return (
     <div className="order-list">
-      
-      {/* CENTERED GLOBAL REFRESH LOADER */}
       {isRefreshing && (
         <div className="global-refresh-overlay">
           <div className="global-spinner"></div>
@@ -609,7 +526,6 @@ export default function OrderList({ showOnlyRequests = false }) {
       </div>
       )}
 
-      {/* MODAL SECTION */}
       {showOnlyRequests && selectedRequest && (
         <div className="request-details-modal" onClick={() => { setSelectedRequest(null); setShowRequestImages(false); }}>
           <div className="request-details-content" onClick={(e) => e.stopPropagation()}>
@@ -617,7 +533,6 @@ export default function OrderList({ showOnlyRequests = false }) {
               <h3>Request Details</h3>
               <button type="button" className="modal-close" onClick={() => { setSelectedRequest(null); setShowRequestImages(false); }}>×</button>
             </div>
-            
             <div className="modal-body-scroll">
               <p><strong>Order:</strong> {selectedRequest.orderId}</p>
               <p><strong>Customer:</strong> {selectedRequest.userId?.name || 'Unknown'}</p>
@@ -637,25 +552,11 @@ export default function OrderList({ showOnlyRequests = false }) {
               {showRequestImages && (getRequestDetails(selectedRequest).proofImages || []).length > 0 && (
                 <div className="proof-images-row" style={{ display: 'flex', overflowX: 'auto', gap: '8px', paddingBottom: '8px' }}>
                   {(getRequestDetails(selectedRequest).proofImages || []).map((src, index) => (
-                    <a
-                      key={index}
-                      href={src}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="proof-image-link"
-                      style={{ minWidth: '120px', maxWidth: '160px', display: 'inline-block' }}
-                    >
-                      <img
-                        src={src}
-                        alt={`proof-${index}`}
-                        style={{ width: '100%', height: '100px', objectFit: 'cover', borderRadius: '6px' }}
-                      />
+                    <a key={index} href={src} target="_blank" rel="noreferrer" className="proof-image-link" style={{ minWidth: '120px', maxWidth: '160px', display: 'inline-block' }}>
+                      <img src={src} alt={`proof-${index}`} style={{ width: '100%', height: '100px', objectFit: 'cover', borderRadius: '6px' }} />
                     </a>
                   ))}
                 </div>
-              )}
-              {showRequestImages && (getRequestDetails(selectedRequest).proofImages || []).length === 0 && (
-                <p style={{ marginTop: '8px', color: '#555' }}>No proof images available yet.</p>
               )}
               {getRequestDetails(selectedRequest).bankDetails && (
                 <div className="bank-details-box">
@@ -682,7 +583,6 @@ export default function OrderList({ showOnlyRequests = false }) {
         </div>
       )}
 
-      {/* Main Order Tables */}
       {!showOnlyRequests && (
       <div className="order-header">
         <div className="order-title-group">
@@ -774,25 +674,12 @@ export default function OrderList({ showOnlyRequests = false }) {
                           href={order.shippingAddress.mapLink} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          style={{
-                            color: '#2563eb',
-                            textDecoration: 'none',
-                            fontWeight: '500',
-                            fontSize: '12px',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '5px'
-                          }}
+                          style={{ color: '#2563eb', textDecoration: 'none', fontWeight: '500', fontSize: '12px', display: 'inline-flex', alignItems: 'center', gap: '5px' }}
                           onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
                           onMouseLeave={(e) => e.target.style.textDecoration = 'none'}
                         >
                           📍 View on Maps
                         </a>
-                        {order.shippingAddress?.latitude && order.shippingAddress?.longitude && (
-                          <div style={{fontSize: '11px', color: '#6b7280', marginTop: '4px'}}>
-                            Lat: {order.shippingAddress.latitude.toFixed(4)}, Lng: {order.shippingAddress.longitude.toFixed(4)}
-                          </div>
-                        )}
                       </div>
                     )}
                   </div>
@@ -880,9 +767,7 @@ export default function OrderList({ showOnlyRequests = false }) {
       {showImageModal && (
         <div className="order-image-modal" onClick={closeItemImage}>
           <div className="order-image-modal-content" onClick={(e) => e.stopPropagation()}>
-            <button type="button" className="order-image-modal-close" onClick={closeItemImage}>
-              ×
-            </button>
+            <button type="button" className="order-image-modal-close" onClick={closeItemImage}>×</button>
             <img src={previewImage} alt="Product preview" className="order-image-preview-img" />
           </div>
         </div>

@@ -1,5 +1,5 @@
 /* =========================================
-   Premium Dark Theme - Admin History UI
+   Premium Dark/Light Theme - Admin History UI
    ========================================= */
 :root {
   /* Set your primary violet color here for the gradient */
@@ -10,6 +10,11 @@
 body {
   margin: 0;
   background-color: #000000; /* Dark background for the app */
+}
+
+/* Light mode body background */
+[data-theme='light'] body {
+  background-color: #f3f4f6;
 }
 
 /* ---------------------------------
@@ -32,6 +37,13 @@ body {
   animation: ahFadeIn 0.5s ease-out;
 }
 
+[data-theme='light'] .ah-container {
+  background: #ffffff;
+  color: #111827;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+}
+
 /* ---------------------------------
    Header
 -----------------------------------*/
@@ -45,6 +57,10 @@ body {
   gap: 20px;
 }
 
+[data-theme='light'] .ah-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
 .ah-header h3 {
   margin: 0 0 8px 0;
   font-size: 2rem;
@@ -53,10 +69,18 @@ body {
   letter-spacing: -0.5px;
 }
 
+[data-theme='light'] .ah-header h3 {
+  color: #111827;
+}
+
 .ah-header p {
   margin: 0;
   color: #a1a1aa;
   font-size: 0.95rem;
+}
+
+[data-theme='light'] .ah-header p {
+  color: #6b7280;
 }
 
 /* ---------------------------------
@@ -66,8 +90,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* min-height: 100vh; */
-  /* background: #000000; */
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
@@ -165,6 +187,10 @@ body {
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+[data-theme='light'] .passcode-slot {
+  border-color: #d1d5db;
+}
+
 .passcode-slot.filled {
   background: var(--brand-gradient);
   border-color: transparent;
@@ -207,6 +233,20 @@ body {
   transform: scale(0.92);
 }
 
+/* Light Mode Keypad Fixes */
+[data-theme='light'] .secure-key-btn {
+  background: rgba(0, 0, 0, 0.04);
+  color: #111827; /* Dark text for light mode */
+}
+
+[data-theme='light'] .secure-key-btn:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .secure-key-btn:active {
+  background: rgba(0, 0, 0, 0.12);
+}
+
 .secure-key-btn.action-btn {
   background: transparent;
   font-size: 1.1rem;
@@ -217,6 +257,17 @@ body {
 .secure-key-btn.action-btn:hover {
   color: #ffffff;
   background: rgba(255, 255, 255, 0.05);
+}
+
+/* Light Mode Action Buttons (Clear/Backspace) */
+[data-theme='light'] .secure-key-btn.action-btn {
+  color: #4b5563;
+  background: transparent;
+}
+
+[data-theme='light'] .secure-key-btn.action-btn:hover {
+  color: #111827;
+  background: rgba(0, 0, 0, 0.06);
 }
 
 .secure-unlock-btn {
@@ -508,4 +559,3 @@ body {
   .secure-keypad { gap: 12px; }
   .secure-key-btn { width: 62px; height: 62px; font-size: 1.4rem; }
 }
-
