@@ -234,7 +234,7 @@ export default function CurrencyManagement() {
           <div className="form-group navbar-toggle-group">
             <label htmlFor="show-kwd-navbar">Enable KWD & INR Toggle in Navbar</label>
             <div className="navbar-toggle-control">
-              <label className="pm-toggle-switch">
+              <label className="pm-premium-toggle">
                 <input
                   id="show-kwd-navbar"
                   type="checkbox"
@@ -253,7 +253,7 @@ export default function CurrencyManagement() {
           <div className="form-group navbar-toggle-group">
             <label htmlFor="show-new-arrivals-navbar">Show New Arrivals link in Navbar</label>
             <div className="navbar-toggle-control">
-              <label className="pm-toggle-switch">
+              <label className="pm-premium-toggle">
                 <input
                   id="show-new-arrivals-navbar"
                   type="checkbox"
