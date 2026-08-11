@@ -1,8 +1,3 @@
-/* =========================================
-   Premium Theme - Payment Methods UI
-   (Fixed: Hardcoded Colors to prevent global clash)
-   ========================================= */
-
 /* --- Default & Dark Mode (Forced Dark) --- */
 .pm-container {
   background-color: #09090b !important; /* Forces dark background */

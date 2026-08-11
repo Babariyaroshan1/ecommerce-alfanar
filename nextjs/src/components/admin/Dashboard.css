@@ -914,7 +914,8 @@
 
 :root[data-theme='dark'] .dashboard-content{
     background: var(--bg-body) !important;
-}
+    padding: 25px;
+  }
 
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(20px); }
