@@ -367,7 +367,7 @@
 .kids-add-color-btn,
 .kids-add-image-btn {
   min-height: 44px;
-  padding: 0 18px;
+  padding: 0 10px;
   border-radius: 13px;
   border: 1px solid transparent;
   cursor: pointer;
@@ -380,12 +380,12 @@
 
 .remove-btn {
   background: #fff5f5;
-  color: #dc2626;
+  color: #dc2626 !important;
   border-color: #fecaca;
 }
 
 .remove-btn:hover {
-  background: #dc2626;
+  background: #dc2626 ;
   color: #ffffff;
   border-color: #dc2626;
 }
