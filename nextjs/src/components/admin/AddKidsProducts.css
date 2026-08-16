@@ -393,7 +393,7 @@
 .add-color-btn,
 .add-image-btn {
   width: fit-content;
-  background: #111111;
+  /* background: #111111; */
   color: #ffffff;
   border-color: #111111;
 }
