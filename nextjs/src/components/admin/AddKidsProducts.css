@@ -393,15 +393,16 @@
 .add-color-btn,
 .add-image-btn {
   width: fit-content;
-  /* background: #111111; */
+  background: linear-gradient(135deg, #111111 0%, #1f2937 100%);
   color: #ffffff;
   border-color: #111111;
+  box-shadow: 0 8px 16px rgba(17, 24, 39, 0.14);
 }
 
 .add-color-btn:hover,
 .add-image-btn:hover {
   transform: translateY(-1px);
-  /* background: #000000; */
+  background: linear-gradient(135deg, #000000 0%, #111111 100%);
   box-shadow: 0 10px 22px rgba(0, 0, 0, 0.16);
 }
 
@@ -646,20 +647,23 @@
 
 [data-theme='dark'] .add-kids-products-container .size-btn,
 [data-theme='dark'] .add-kids-products-container .manual-url-btn,
-[data-theme='dark'] .add-kids-products-container .remove-btn,
-[data-theme='dark'] .add-kids-products-container .add-color-btn,
-[data-theme='dark'] .add-kids-products-container .add-image-btn {
+[data-theme='dark'] .add-kids-products-container .remove-btn {
   background: var(--bg-surface, #111827);
   color: var(--text-main, #f8fafc);
   border-color: var(--border-color, rgba(255, 255, 255, 0.12));
 }
 
-[data-theme='dark'] .add-kids-products-container .size-btn.selected,
 [data-theme='dark'] .add-kids-products-container .add-color-btn,
 [data-theme='dark'] .add-kids-products-container .add-image-btn {
+  background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+  border-color: transparent;
+  color: #ffffff;
+}
+
+[data-theme='dark'] .add-kids-products-container .size-btn.selected {
   background: #8b5cf6;
   border-color: #8b5cf6;
-  color: #fff;
+  color: #ffffff;
 }
 
 /* =========================================
