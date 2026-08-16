@@ -1,250 +1,282 @@
-/* Coupon Management Styles */
-.coupon-management-container {
-  background: var(--bg-card, #ffffff);
-  background: var(--bg-card, #ffffff);
-  border-radius: 16px;
-  padding: 1.25rem;
-  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
-  border: 1px solid var(--border-color, rgba(115, 123, 147, 0.12));
+/* ==========================================================================
+   Coupon Management Styles - Modernized
+   ========================================================================== */
 
+:root {
+  /* Color Palette - Light Theme (Default) */
+  --color-primary: #8B5CF6; /* Vibrant Purple */
+  --color-primary-hover: #7C3AED;
+  --color-success: #10B981; /* Emerald Green */
+  --color-warning: #F59E0B; /* Amber */
+  --color-danger: #EF4444;  /* Red */
+  --color-bg-app: #F3F4F6;  /* Light Gray Background */
+  --color-bg-card: #FFFFFF;
+  --color-bg-input: #F9FAFB;
+  --color-text-main: #111827; /* Dark Gray */
+  --color-text-muted: #6B7280;
+  --color-border: #E5E7EB;
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Dark Mode Support */
+[data-theme='dark'] {
+  --color-bg-app: #111827;
+  --color-bg-card: #1F2937;
+  --color-bg-input: #374151;
+  --color-text-main: #F9FAFB;
+  --color-text-muted: #9CA3AF;
+  --color-border: #4B5563;
+}
+
+/* Global Container */
+.coupon-management-container {
+  background: var(--color-bg-app);
+  min-height: 100vh;
+  padding: 2rem;
+  color: var(--color-text-main);
+}
 
 .coupon-management-container > div {
-  display: grid;
-  gap: 1.5rem;
-  gap: 1rem;
-  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }
 
 .coupon-management-container h2 {
-  margin-bottom: 0.4rem;
-  color: var(--text-main, #111827);
-  font-size: 1.5rem;
-  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--color-text-main);
+  font-size: 1.875rem; /* 30px */
+  font-weight: 800;
+  letter-spacing: -0.025em;
 }
 
-.coupon-management-container > div {
-  display: grid;
-  gap: 1rem;
-  margin-top: 1rem;
-
-/* Form Section */
-.coupon-form-section {
-  background: var(--bg-card, #fff);
-  background: var(--bg-card, #fff);
-  padding: 1rem;
+/* ==========================================
+   Section Common Styles
+   ========================================== */
+.coupon-form-section,
+.coupon-list-section {
+  background: var(--color-bg-card);
+  padding: 2rem;
   border-radius: 12px;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
+}
 
+.coupon-form-section > h3,
+.coupon-list-section > h3 {
+  margin-bottom: 1.5rem;
+  color: var(--color-text-main);
+  font-size: 1.25rem; /* 20px */
+  font-weight: 700;
+  border-bottom: 2px solid var(--color-border);
+  padding-bottom: 0.75rem;
+}
 
-.coupon-form-section h3 {
-  margin-bottom: 0.6rem;
-  color: var(--text-main, #1e293b);
-  font-size: 1.125rem;
-  font-weight: 600;
+/* ==========================================
+   Form Styles
+   ========================================== */
+.coupon-form-section form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
 
-/* Form Styles */
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  gap: 0.75rem;
-  margin-bottom: 0.75rem;
-  gap: 0.75rem;
-  margin-bottom: 0.75rem;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  gap: 0.4rem;
+}
 
 .form-group label {
-  gap: 0.4rem;
-  color: var(--text-main, #374151);
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--color-text-main);
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
-  padding: 0.75rem;
-  padding: 0.6rem;
-  border: 1px solid var(--border-color, #d1d5db);
+  background: var(--color-bg-input);
+  color: var(--color-text-main);
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
-  font-size: 0.88rem;
-  padding: 0.6rem;
-  border: 1px solid var(--border-color, #d1d5db);
-  border-radius: 8px;
-  font-size: 0.88rem;
-  transition: border-color 0.15s, box-shadow 0.15s;
-  min-height: 80px;
+  font-size: 1rem;
+  transition: all 0.2s;
 }
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+}
+
 .form-group textarea {
-  min-height: 72px;
+  resize: vertical;
+  min-height: 100px;
 }
-  gap: 0.6rem;
-  margin-bottom: 0.6rem;
+
+.active-checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(16, 185, 129, 0.1); /* Light Success BG */
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
 .active-checkbox-group input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-  accent-color: #c100c1;
+  width: 20px;
+  height: 20px;
+  accent-color: var(--color-success);
+  cursor: pointer;
 }
 
 .active-checkbox-group label {
-  font-size: 0.85rem;
   font-weight: 600;
-  color: #374151;
+  color: var(--color-success);
   cursor: pointer;
+  margin: 0;
 }
 
 /* Form Actions */
 .form-actions {
   display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+  justify-content: flex-end; /* Align buttons to the right */
 }
 
 .submit-btn,
 .cancel-btn {
-  padding: 0.6rem 1rem;
+  padding: 0.75rem 1.5rem;
   border: none;
   border-radius: 8px;
-  font-size: 0.85rem;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .submit-btn {
-  background: #c100c1;
+  background: var(--color-primary);
   color: white;
+  box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.4);
 }
 
 .submit-btn:hover {
-  background: #1d4ed8;
+  background: var(--color-primary-hover);
   transform: translateY(-1px);
+  box-shadow: 0 6px 8px -1px rgba(139, 92, 246, 0.5);
 }
 
 .cancel-btn {
-  background: #f3f4f6;
-  color: #374151;
+  background: var(--color-bg-app);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
 }
 
 .cancel-btn:hover {
-  background: #e5e7eb;
+  background: var(--color-border);
+  color: var(--color-text-main);
 }
 
-/* Coupon List Section */
+/* ==========================================
+   Coupon List & Table Styles
+   ========================================== */
 .coupon-list-section {
-  padding: 1rem;
-  border-radius: 12px;
-  box-shadow: var(--shadow-sm);
-}
-}
-.coupon-list-section h3 {
-  margin-bottom: 0.6rem;
-  color: var(--text-main, #1e293b);
-  font-size: 1.125rem;
-  font-weight: 600;
+  overflow: hidden; /* Ensures border-radius applies to table */
 }
 
-  margin-bottom: 0.6rem;
-  color: var(--text-main, #1e293b);
-  font-size: 1.125rem;
-  font-weight: 600;
-  font-weight: 600;
-}
-
-/* Table Styles */
 .coupon-table-container {
   overflow-x: auto;
   border-radius: 12px;
-  border: 1px solid var(--border-color, #e5e7eb);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-card);
 }
 
 .coupon-table-container table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 800px; /* Prevents squishing on small screens */
 }
 
 .coupon-table-container thead {
-  background: var(--table-header, #f9fafb);
+  background: var(--color-bg-app);
 }
 
 .coupon-table-container th,
-.coupon-table-container th,
 .coupon-table-container td {
-  padding: 0.65rem 0.9rem;
+  padding: 1rem 1.25rem;
   text-align: left;
-  border-bottom: 1px solid var(--border-color, #e5e7eb);
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
 }
 
 .coupon-table-container th {
-  font-weight: 600;
-  color: var(--text-main, #374151);
-  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+  font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
-  color: var(--text-main, #4b5563);
 .coupon-table-container td {
-  color: var(--text-main, #4b5563);
-  font-size: 0.88rem;
+  color: var(--color-text-main);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.coupon-table-container tbody tr:last-child td {
+  border-bottom: none;
 }
 
 .coupon-table-container tbody tr:hover {
-  background: var(--table-row-hover, #f9fafb);
+  background: rgba(139, 92, 246, 0.05); /* Very subtle purple hover */
 }
 
-/* Scoped dark mode */
-[data-theme='dark'] .coupon-management-container {
-  background: var(--bg-card, #1e293b);
-  color: var(--text-main, #f8fafc);
-  border-color: var(--border-color, rgba(255, 255, 255, 0.1));
+/* Specific Column Styling */
+.coupon-table-container td:first-child {
+  font-weight: 700;
+  color: var(--color-primary);
 }
 
-[data-theme='dark'] .coupon-management-container .coupon-form-section,
-[data-theme='dark'] .coupon-management-container .coupon-list-section,
-[data-theme='dark'] .coupon-management-container .coupon-table-container {
-  background: var(--bg-card, #1e293b);
-  color: var(--text-main, #f8fafc);
-  border-color: var(--border-color, rgba(255, 255, 255, 0.12));
+/* Description Cell */
+.coupon-table-container td:nth-child(5) {
+  max-width: 250px;
+  white-space: normal; /* Allows text wrap for descriptions */
 }
 
-[data-theme='dark'] .coupon-management-container .form-group input,
-[data-theme='dark'] .coupon-management-container .form-group select,
-[data-theme='dark'] .coupon-management-container .form-group textarea {
-  background: var(--bg-surface, #111827);
-  color: var(--text-main, #f8fafc);
-  border-color: var(--border-color, rgba(255, 255, 255, 0.12));
-}
-
-[data-theme='dark'] .coupon-management-container .active-checkbox-group label,
-[data-theme='dark'] .coupon-management-container .toggle-label,
-[data-theme='dark'] .coupon-management-container .coupon-table-container th,
-[data-theme='dark'] .coupon-management-container .coupon-table-container td {
-  color: var(--text-main, #f8fafc);
-}
-
-/* Status Column */
+/* Status Cell (Toggle Switch) */
 .status-cell {
   display: flex;
-  align-items: center;
   justify-content: center;
 }
 
-/* Toggle Switch */
 .toggle-switch-container {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.75rem;
+  gap: 0.75rem;
+  margin: 0;
 }
 
 .toggle-switch {
   position: relative;
   display: inline-block;
-  width: 50px;
-  height: 28px;
+  width: 54px;
+  height: 30px;
   flex-shrink: 0;
 }
 
@@ -261,46 +293,48 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #cbd5e1;
-  transition: 0.3s;
-  border-radius: 12px;
-  width: 45px;
-  height: 24px;
+  background-color: var(--color-border);
+  transition: 0.4s;
+  border-radius: 15px;
 }
 
 .toggle-slider:before {
   position: absolute;
   content: "";
-  height: 18px;
-  width: 18px;
-  left: 3px;
-  bottom: 3px;
+  height: 22px;
+  width: 22px;
+  left: 4px;
+  bottom: 4px;
   background-color: white;
-  transition: 0.3s;
+  transition: 0.4s;
   border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .toggle-switch input:checked + .toggle-slider {
-  background-color: #10b981;
+  background-color: var(--color-success);
 }
 
 .toggle-switch input:checked + .toggle-slider:before {
-  transform: translateX(21px);
+  transform: translateX(24px);
 }
 
 .toggle-label {
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--text-main, #4b5563);
-  margin-right: 10px;
+  color: var(--color-text-muted);
   white-space: nowrap;
+}
+
+.toggle-switch input:checked ~ .toggle-label {
+  color: var(--color-success);
+  font-weight: 700;
 }
 
 /* Action Buttons */
 .action-buttons {
   display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
 .edit-btn,
@@ -308,96 +342,122 @@
   padding: 0.5rem 1rem;
   border: none;
   border-radius: 6px;
-  font-size: 0.8rem;
+  font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
 .edit-btn {
-  background: #f59e0b;
-  color: white;
+  background: rgba(245, 158, 11, 0.1); /* Light Amber BG */
+  color: var(--color-warning);
+  border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
 .edit-btn:hover {
-  background: #d97706;
+  background: var(--color-warning);
+  color: white;
   transform: translateY(-1px);
 }
 
 .delete-btn {
-  background: #ef4444;
-  color: white;
+  background: rgba(239, 68, 68, 0.1); /* Light Red BG */
+  color: var(--color-danger);
+  border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
 .delete-btn:hover {
-  background: #dc2626;
+  background: var(--color-danger);
+  color: white;
   transform: translateY(-1px);
 }
 
-/* Error Message */
+/* ==========================================
+   Feedback & States
+   ========================================== */
 .error-message {
-  background: #fef2f2;
-  color: #dc2626;
-  padding: 0.75rem;
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--color-danger);
+  padding: 1rem;
   border-radius: 8px;
-  border: 1px solid #fecaca;
-  margin-bottom: 1rem;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  margin-bottom: 1.5rem;
   font-size: 0.875rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-/* Loading */
-.loading {
-  text-align: center;
-  padding: 2rem;
-  color: #6b7280;
-  font-size: 0.9rem;
-}
-
-/* Empty State */
+.loading,
 .empty-state {
   text-align: center;
-  padding: 2rem;
-  color: #6b7280;
-  font-size: 0.9rem;
+  padding: 3rem;
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  font-weight: 500;
 }
 
-/* Responsive Design */
+/* ==========================================
+   Responsive Design (Mobile-First)
+   ========================================== */
+@media (max-width: 768px) {
   .coupon-management-container {
-    padding: 0.75rem;
+    padding: 1rem;
   }
-  
-  .form-row {
-    grid-template-columns: 1fr;
-    gap: 0.5rem;
+
+  .coupon-management-container h2 {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
   }
 
   .coupon-form-section,
   .coupon-list-section {
-    padding: 0.75rem;
+    padding: 1rem;
+    border-radius: 8px;
+  }
+
+  .coupon-form-section > h3,
+  .coupon-list-section > h3 {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse; /* 'Clear' on top, 'Submit' on bottom for mobile */
+    width: 100%;
+  }
+
+  .submit-btn,
+  .cancel-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 0.875rem;
   }
 
   .coupon-table-container th,
   .coupon-table-container td {
-    padding: 0.45rem 0.5rem;
-    font-size: 0.78rem;
+    padding: 0.75rem 0.5rem;
+    font-size: 0.85rem;
   }
 
   .action-buttons {
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 0.5rem;
   }
 
   .edit-btn,
   .delete-btn {
-    padding: 0.35rem 0.7rem;
-    font-size: 0.72rem;
-  }
-
-  .form-group input,
-  .form-group select,
-  .form-group textarea {
-    padding: 0.5rem;
-    font-size: 0.86rem;
-  }
+    width: 100%;
+    justify-content: center;
+    padding: 0.75rem;
   }
 }
