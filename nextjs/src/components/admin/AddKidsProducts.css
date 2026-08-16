@@ -401,7 +401,7 @@
 .add-color-btn:hover,
 .add-image-btn:hover {
   transform: translateY(-1px);
-  background: #000000;
+  /* background: #000000; */
   box-shadow: 0 10px 22px rgba(0, 0, 0, 0.16);
 }
 
