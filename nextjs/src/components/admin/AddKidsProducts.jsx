@@ -662,7 +662,7 @@ export default function AddKidsProducts() {
               <button
                 type="button"
                 onClick={handleAddImageUrl}
-                className="add-image-btn"
+                className="kids-add-image-btn"
               >
                 + Add Image URL
               </button>
@@ -697,7 +697,7 @@ export default function AddKidsProducts() {
               </div>
             ))}
 
-            <button type="button" onClick={addColorField} className="add-color-btn">
+            <button type="button" onClick={addColorField} className="kids-add-color-btn">
               Add Color
             </button>
           </div>
