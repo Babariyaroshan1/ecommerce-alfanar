@@ -13,6 +13,7 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: 22px;
+  border-radius: 20%;
 }
 
 .add-product-form-section {

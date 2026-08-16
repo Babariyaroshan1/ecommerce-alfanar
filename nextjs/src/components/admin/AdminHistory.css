@@ -94,7 +94,7 @@ body {
 }
 
 .secure-lock-card {
-  background: var(--panel-bg, #09090b);
+  background: var(--panel-bg, var(--bg-card, #1e293b));
   color: var(--panel-text, #f8fafc);
   border: 1px solid var(--panel-border, rgba(255, 255, 255, 0.08));
   border-radius: 32px;
@@ -312,9 +312,8 @@ body {
   animation: ahShake 0.4s cubic-bezier(.36,.07,.19,.97) both;
 }
 
-/* ---------------------------------
-   Dashboard (Filters & Table)
------------------------------------*/
+/* -------------------------------- Dashboard (Filters & Table) -----------------------------------*/
+
 .ah-dashboard {
   display: flex;
   flex-direction: column;

@@ -752,7 +752,7 @@ const AddProduct = () => {
                       }));
                     }}
                     placeholder="0"
-                    min="0"
+                    min=""
                   />
                 </div>
               ))}
