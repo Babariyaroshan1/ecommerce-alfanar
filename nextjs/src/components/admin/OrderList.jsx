@@ -408,7 +408,14 @@ export default function OrderList({ showOnlyRequests = false }) {
     processPendingOrders();
   }, [autoAccept]);
 
-  const getTotalQuantity = (order) => order.items?.reduce((sum, item) => sum + (item.quantity || 0), 0) || 0;
+  const getNormalizedQuantity = (item) => Number(item?.quantity ?? item?.qty ?? 1) || 1;
+
+  const getTotalQuantity = (order) => order.items?.reduce((sum, item) => sum + getNormalizedQuantity(item), 0) || 0;
+
+  const getQuantitySummary = (order) => {
+    if (!Array.isArray(order?.items) || order.items.length === 0) return '0';
+    return order.items.map((item) => getNormalizedQuantity(item)).join(' + ');
+  };
 
   if (loading) return <div className="loading">Loading Data...</div>;
 
@@ -693,14 +700,16 @@ export default function OrderList({ showOnlyRequests = false }) {
                   </div>
                 </td>
                 <td>{order.items?.length || 0}</td>
-                <td>{getTotalQuantity(order)}</td>
+                <td>{getQuantitySummary(order)}</td>
                 <td>
                   <div className="order-items-preview">
                     {(order.items || []).map((item, itemIndex) => {
                       const imageUrl = item.image || '/placeholder.png';
+                      const itemQty = getNormalizedQuantity(item);
                       return (
                         <div key={itemIndex} className="order-item-box">
                           <ExpandableProductName name={item.name} />
+                          <div className="order-item-qty">Qty: {itemQty}</div>
                           <button
                             type="button"
                             className="order-item-image-btn"

@@ -50,20 +50,21 @@ const Home = () => {
     const loadHomeData = async () => {
       setHomeLoading(true);
       
-      // Ek saath 3 calls (Parallel) - Sirf utne hi product aayenge jitne chahiye
+      // Home page should only show the admin-selected featured products for each section.
+      // Best selling and kids are capped to the allowed home limits; pajamas follows the selected featured set.
       try {
         const [best, kids, pjs] = await Promise.all([
-          // Best Sellers: Featured products EXCLUDING kids
-          fetchFilteredProducts({ limit: 8, featured: 'true', isKidsProduct: 'false' }),
-          // Kids Featured: Kids products that are featured
-          fetchFilteredProducts({ limit: 4, isKidsProduct: 'true', featured: 'true' }),
-          // Pajamas Featured: ONLY general pajamas (excluding kids)
-          fetchFilteredProducts({ limit: 8, category: 'Pajamas', featured: 'true', isKidsProduct: 'false' })
+          // Best Sellers: featured general products only, max 8
+          fetchFilteredProducts({ limit: GENERAL_FEATURED_LIMIT, featured: 'true', isKidsProduct: 'false' }),
+          // Kids Featured: featured kids products only, max 4
+          fetchFilteredProducts({ limit: KIDS_FEATURED_LIMIT, isKidsProduct: 'true', featured: 'true' }),
+          // Pajamas Featured: only the selected featured pajamas items, no forced extra limit
+          fetchFilteredProducts({ category: 'Pajamas', featured: 'true', isKidsProduct: 'false' })
         ]);
 
-        setBestSellers(best || []);
-        setKidsProducts(kids || []);
-        setPajamasProducts(pjs || []);
+        setBestSellers((best || []).slice(0, GENERAL_FEATURED_LIMIT));
+        setKidsProducts((kids || []).slice(0, KIDS_FEATURED_LIMIT));
+        setPajamasProducts(Array.isArray(pjs) ? pjs : []);
       } catch (error) {
         console.error('Error loading home products:', error);
         setBestSellers([]);
