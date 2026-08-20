@@ -15,7 +15,19 @@ const formatPrice = (price, currencySymbol = '₹') => {
 };
 
 const hasValidRequest = (order) => {
-  return (order.returnRequest?.requestedAt) || (order.replacementRequest?.requestedAt);
+  const legacyRequestStatuses = [
+    'returned',
+    'return-approved',
+    'return-processing',
+    'replacement-requested',
+    'replacement-approved',
+    'replacement-processing'
+  ];
+  return Boolean(
+    order.returnRequest?.requestedAt ||
+    order.replacementRequest?.requestedAt ||
+    legacyRequestStatuses.includes(String(order.orderStatus || '').toLowerCase())
+  );
 };
 
 const ExpandableProductName = ({ name }) => {
@@ -342,6 +354,8 @@ export default function OrderList({ showOnlyRequests = false }) {
   const getRequestType = (order) => {
     if (order.returnRequest?.requestedAt) return 'Return';
     if (order.replacementRequest?.requestedAt) return 'Replacement';
+    if (String(order.orderStatus || '').toLowerCase().startsWith('replacement')) return 'Replacement';
+    if (['returned', 'return-approved', 'return-processing'].includes(String(order.orderStatus || '').toLowerCase())) return 'Return';
     return 'Request';
   };
 
@@ -352,6 +366,10 @@ export default function OrderList({ showOnlyRequests = false }) {
     if (order.replacementRequest?.requestedAt) {
       return order.replacementRequest.status || 'pending';
     }
+    const legacyStatus = String(order.orderStatus || '').toLowerCase();
+    if (legacyStatus === 'returned' || legacyStatus === 'replacement-requested') return 'pending';
+    if (legacyStatus.endsWith('-approved')) return 'approved';
+    if (legacyStatus.endsWith('-processing')) return 'processing';
     return 'none';
   };
 

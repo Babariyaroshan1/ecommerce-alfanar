@@ -723,10 +723,14 @@ router.get('/admin/analytics', permissionAuth(PERMISSIONS.VIEW_ANALYTICS), async
 
         // Calculate return and replacement orders
         const returnReplacementOrders = allOrders.filter(order => {
-            const hasActiveReturn = order.returnRequest && order.returnRequest.status &&
-                ['approved', 'processing', 'completed'].includes(order.returnRequest.status);
-            const hasActiveReplacement = order.replacementRequest && order.replacementRequest.status &&
-                ['approved', 'processing', 'completed'].includes(order.replacementRequest.status);
+            const activeRequestStatuses = ['pending', 'approved', 'processing', 'completed'];
+            const orderStatus = String(order.orderStatus || '').toLowerCase();
+            const hasActiveReturn = order.returnRequest &&
+                ((order.returnRequest.requestedAt && activeRequestStatuses.includes(order.returnRequest.status)) ||
+                    ['returned', 'return-approved', 'return-processing'].includes(orderStatus));
+            const hasActiveReplacement = order.replacementRequest &&
+                ((order.replacementRequest.requestedAt && activeRequestStatuses.includes(order.replacementRequest.status)) ||
+                    ['replacement-requested', 'replacement-approved', 'replacement-processing'].includes(orderStatus));
 
             if (hasActiveReturn || hasActiveReplacement) {
                 console.log(`Return/Replacement Order found: ${order._id}, returnStatus: ${order.returnRequest?.status}, replacementStatus: ${order.replacementRequest?.status}`);
