@@ -34,7 +34,7 @@ export default function Analytics() {
     endDate: new Date().toISOString().split('T')[0]
   });
 
-  const [analyticsCurrency, setAnalyticsCurrency] = useState('INR');
+  const [analyticsCurrency, setAnalyticsCurrency] = useState('KWD');
   const [loading, setLoading] = useState(false);
   const { currencySettings } = useProductStore();
 
@@ -253,17 +253,17 @@ export default function Analytics() {
             <div className="currency-toggle-group">
               <button
                 type="button"
+                className={`currency-toggle ${analyticsCurrency === 'KWD' ? 'active' : ''}`}
+                onClick={() => setAnalyticsCurrency('KWD')} 
+                >
+                KWD
+              </button>
+              <button
+                type="button"
                 className={`currency-toggle ${analyticsCurrency === 'INR' ? 'active' : ''}`}
                 onClick={() => setAnalyticsCurrency('INR')}
               >
                 INR
-              </button>
-              <button
-                type="button"
-                className={`currency-toggle ${analyticsCurrency === 'KWD' ? 'active' : ''}`}
-                onClick={() => setAnalyticsCurrency('KWD')}
-              >
-                KWD
               </button>
             </div>
           </div>
