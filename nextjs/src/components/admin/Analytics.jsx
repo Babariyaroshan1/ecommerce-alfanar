@@ -14,6 +14,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'; 
 export default function Analytics() {
   const [analyticsData, setAnalyticsData] = useState({
     totalRevenue: 0,
+    lossRevenue: 0,
     totalOrders: 0,
     successfulOrders: 0,
     cancelledOrders: 0,
@@ -64,7 +65,7 @@ export default function Analytics() {
     } catch (error) {
       console.error('Error fetching analytics:', error);
       setAnalyticsData({
-        totalRevenue: 0, totalOrders: 0, successfulOrders: 0, cancelledOrders: 0, totalProductsSold: 0, returnReplacementOrders: 0, averageOrderValue: 0,
+        totalRevenue: 0, lossRevenue: 0, totalOrders: 0, successfulOrders: 0, cancelledOrders: 0, totalProductsSold: 0, returnReplacementOrders: 0, averageOrderValue: 0,
         dailyRevenue: [], orderStatusBreakdown: [], topProducts: []
       });
     } finally {
@@ -287,6 +288,13 @@ export default function Analytics() {
               <div className="metric-content">
                 <h3>Total Revenue</h3>
                 <p className="metric-value">{renderCurrencyValue(analyticsData.totalRevenue)}</p>
+              </div>
+            </div>
+            <div className="metric-card">
+              <div className="metric-icon bg-red"><i className="fas fa-chart-line"></i></div>
+              <div className="metric-content">
+                <h3>Loss Revenue</h3>
+                <p className="metric-value">{renderCurrencyValue(analyticsData.lossRevenue)}</p>
               </div>
             </div>
             <div className="metric-card">

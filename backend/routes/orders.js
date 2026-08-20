@@ -645,10 +645,22 @@ router.get('/admin/analytics', permissionAuth(PERMISSIONS.VIEW_ANALYTICS), async
 
         const allOrders = await Order.find(orderFilter);
 
-        // Calculate total revenue and orders
-        const totalRevenue = orders.reduce((sum, order) => sum + Number(order.totalAmount || 0), 0);
+        // Revenue is earned only from delivered orders. Cancelled and returned/refunded
+        // orders are tracked separately as loss revenue.
+        const getOrderStatus = (order) => String(order.orderStatus || '').toLowerCase();
+        const successfulOrderRecords = allOrders.filter(order => getOrderStatus(order) === 'delivered');
+        const lossOrderStatuses = [
+            'cancelled',
+            'returned',
+            'return-approved',
+            'return-processing',
+            'refunded'
+        ];
+        const lossOrderRecords = allOrders.filter(order => lossOrderStatuses.includes(getOrderStatus(order)));
+        const totalRevenue = successfulOrderRecords.reduce((sum, order) => sum + Number(order.totalAmount || 0), 0);
+        const lossRevenue = lossOrderRecords.reduce((sum, order) => sum + Number(order.totalAmount || 0), 0);
         const totalOrders = allOrders.length; // All orders placed in the selected range
-        const averageOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+        const averageOrderValue = successfulOrderRecords.length > 0 ? totalRevenue / successfulOrderRecords.length : 0;
 
         // Calculate total products sold across all orders (including cancelled)
         const totalProductsSold = allOrders.reduce((sum, order) => {
@@ -667,7 +679,7 @@ router.get('/admin/analytics', permissionAuth(PERMISSIONS.VIEW_ANALYTICS), async
             const dayEnd = new Date(currentDate);
             dayEnd.setHours(23, 59, 59, 999);
 
-            const dayOrders = orders.filter(order => {
+            const dayOrders = successfulOrderRecords.filter(order => {
                 const orderDate = new Date(order.createdAt);
                 return orderDate >= dayStart && orderDate <= dayEnd;
             });
@@ -683,8 +695,8 @@ router.get('/admin/analytics', permissionAuth(PERMISSIONS.VIEW_ANALYTICS), async
         }
 
         // Get order status breakdown and counts
-        const successfulOrders = allOrders.filter(o => String(o.orderStatus || '').toLowerCase() === 'delivered').length;
-        const cancelledOrders = allOrders.filter(o => String(o.orderStatus || '').toLowerCase() === 'cancelled').length;
+        const successfulOrders = successfulOrderRecords.length;
+        const cancelledOrders = allOrders.filter(o => getOrderStatus(o) === 'cancelled').length;
 
         const orderStatusBreakdown = [
             { status: 'delivered', count: successfulOrders },
@@ -743,6 +755,7 @@ router.get('/admin/analytics', permissionAuth(PERMISSIONS.VIEW_ANALYTICS), async
 
         res.json({
             totalRevenue,
+            lossRevenue,
             totalOrders,
             successfulOrders,
             cancelledOrders,
