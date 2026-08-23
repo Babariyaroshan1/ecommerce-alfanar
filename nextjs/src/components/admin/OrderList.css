@@ -109,6 +109,9 @@
 :root[data-theme=dark] .dashboard-content .toggle-switch-accept.off{
       background-color: #576a84 !important;
 }
+:root[data-theme=dark] .dashboard-content .toggle-switch.off {
+    background-color: #576a84 !important;
+}
 
 /*  */
 .control-group-refresh {
