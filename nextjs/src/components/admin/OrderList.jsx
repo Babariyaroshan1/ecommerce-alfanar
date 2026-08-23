@@ -13,14 +13,23 @@
     const decimals = currencySymbol === 'KWD' ? 3 : 2;
     return num.toFixed(decimals);
   };
-  // Naya function phone number me space add karne ke liye
-  const formatPhone = (phone) => {
+const formatPhone = (phone) => {
     if (!phone) return '';
-    // Agar phone number '+' se start hota hai, toh country code ke baad space add karega
     const cleaned = phone.replace(/\s+/g, ''); // purane spaces remove karega
-    if (cleaned.startsWith('+')) {
+    
+    // India (+91) ke liye specific logic
+    if (cleaned.startsWith('+91')) {
+      return cleaned.replace(/^(\+91)(\d+)/, '$1 $2');
+    } 
+    // Kuwait (+965) ke liye specific logic
+    else if (cleaned.startsWith('+965')) {
+      return cleaned.replace(/^(\+965)(\d+)/, '$1 $2');
+    } 
+    // Kisi aur country code ke liye general logic
+    else if (cleaned.startsWith('+')) {
       return cleaned.replace(/^(\+\d{1,3})(\d+)/, '$1 $2');
     }
+    
     return phone;
   };
 
