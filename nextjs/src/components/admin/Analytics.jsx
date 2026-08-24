@@ -11,6 +11,13 @@ import './Analytics.css';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'; // Set in nextjs/.env.local for development and in Vercel env for production
 
+const formatDateInputValue = (date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 export default function Analytics() {
   const [analyticsData, setAnalyticsData] = useState({
     totalRevenue: 0,
@@ -31,8 +38,8 @@ export default function Analytics() {
   });
 
   const [dateRange, setDateRange] = useState({
-    startDate: new Date(new Date().getFullYear(), 0, 1).toISOString().split('T')[0],
-    endDate: new Date().toISOString().split('T')[0]
+    startDate: formatDateInputValue(new Date(new Date().getFullYear(), 0, 1)),
+    endDate: formatDateInputValue(new Date())
   });
 
   const [analyticsCurrency, setAnalyticsCurrency] = useState('KWD');
