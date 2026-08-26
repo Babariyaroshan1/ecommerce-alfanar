@@ -105,14 +105,6 @@ export default function Analytics() {
     KWD: 'KWD'
   };
 
-  const formatCurrency = (amount) => {
-    const symbol = currencySymbols[analyticsCurrency] || currencySettings?.symbol || '₹';
-    const value = Number(amount || 0);
-    return analyticsCurrency === 'KWD'
-      ? `${symbol} ${value.toFixed(3)}`
-      : `${symbol} ${value.toLocaleString()}`;
-  };
-
   const renderCurrencyValue = (amount) => {
     const symbol = currencySymbols[analyticsCurrency] || currencySettings?.symbol || '₹';
     const value = Number(amount || 0);
@@ -123,11 +115,11 @@ export default function Analytics() {
     if (analyticsCurrency === 'KWD') {
       return (
         <>
-          <span className="currency-code">{symbol}</span> {formattedValue}
+          <span className="currency-code">{symbol}</span> <span className="numeric-value">{formattedValue}</span>
         </>
       );
     }
-    return `${symbol} ${formattedValue}`;
+    return <><span className="currency-code">{symbol}</span> <span className="numeric-value">{formattedValue}</span></>;
   };
 
   const formatDate = (dateString) => {
@@ -153,7 +145,7 @@ export default function Analytics() {
       return (
         <div className="custom-tooltip">
           <p className="tooltip-date">{formatDate(label)}</p>
-          <p className="tooltip-value">Revenue: <span>{formatCurrency(payload[0].value)}</span></p>
+          <p className="tooltip-value">Revenue: {renderCurrencyValue(payload[0].value)}</p>
         </div>
       );
     }
@@ -173,7 +165,7 @@ export default function Analytics() {
             <p className="tooltip-status" style={{ color: '#374151' }}>
               TOTAL PLACED ORDERS
             </p>
-            <p className="tooltip-value">Count: <span>{data.value}</span></p>
+            <p className="tooltip-value">Count: <span className="numeric-value">{data.value}</span></p>
           </div>
         );
       }
@@ -183,7 +175,7 @@ export default function Analytics() {
           <p className="tooltip-status" style={{ color: STATUS_COLORS[data.status] || '#64748b' }}>
             {data.status.toUpperCase()}
           </p>
-          <p className="tooltip-value">Orders: <span>{data.count}</span></p>
+          <p className="tooltip-value">Orders: <span className="numeric-value">{data.count}</span></p>
         </div>
       );
     }
@@ -315,21 +307,21 @@ export default function Analytics() {
               <div className="metric-icon bg-teal"><i className="fas fa-check-circle"></i></div>
               <div className="metric-content">
                 <h3>Successful Orders</h3>
-                <p className="metric-value">{analyticsData.successfulOrders ?? 0}</p>
+                <p className="metric-value numeric-value">{analyticsData.successfulOrders ?? 0}</p>
               </div>
             </div>
             <div className="metric-card">
               <div className="metric-icon bg-orange"><i className="fas fa-sync-alt"></i></div>
               <div className="metric-content">
                 <h3>Return & Replacement Orders</h3>
-                <p className="metric-value">{analyticsData.returnReplacementOrders ?? 0}</p>
+                <p className="metric-value numeric-value">{analyticsData.returnReplacementOrders ?? 0}</p>
               </div>
             </div>
             <div className="metric-card">
               <div className="metric-icon bg-red"><i className="fas fa-times-circle"></i></div>
               <div className="metric-content">
                 <h3>Cancelled Orders</h3>
-                <p className="metric-value">{analyticsData.cancelledOrders ?? 0}</p>
+                <p className="metric-value numeric-value">{analyticsData.cancelledOrders ?? 0}</p>
               </div>
             </div>
             <div className="metric-card">
@@ -419,7 +411,7 @@ export default function Analytics() {
                         label={({ cx, cy }) => (
                           <>
                             <text x={cx} y={cy - 10} textAnchor="middle" dominantBaseline="central" fontSize="16" fontWeight="700" fill="var(--text-main)">
-                              {analyticsData.totalOrders}
+                              <tspan className="numeric-value">{analyticsData.totalOrders}</tspan>
                             </text>
                             <text x={cx} y={cy + 12} textAnchor="middle" dominantBaseline="central" fontSize="10" fontWeight="600" fill="var(--text-muted)">
                               TOTAL PLACED ORDERS
@@ -479,11 +471,11 @@ export default function Analytics() {
                     {analyticsData.topProducts.map((product, index) => (
                       <tr key={product.id || index}>
                         <td>
-                          <span className={`rank-badge rank-${index + 1}`}>{index + 1}</span>
+                          <span className={`rank-badge rank-${index + 1} numeric-value`}>{index + 1}</span>
                         </td>
                         <td className="product-name">{product.name}</td>
-                        <td className="text-right fw-600">{product.totalSold}</td>
-                        <td className="text-right text-green fw-600">{formatCurrency(product.totalRevenue)}</td>
+                        <td className="text-right fw-600 numeric-value">{product.totalSold}</td>
+                        <td className="text-right text-green fw-600">{renderCurrencyValue(product.totalRevenue)}</td>
                       </tr>
                     ))}
                   </tbody>
