@@ -60,13 +60,21 @@ const formatPhone = (phone) => {
 
     return (
       <div className="order-item-name">
-        <span className={expanded ? 'order-item-name-text expanded' : 'order-item-name-text'}>
-          {safeName}
-        </span>
+        {expanded ? safeName : words.slice(0, 4).join(' ') + '...'}
         <button
           type="button"
           onClick={() => setExpanded(!expanded)}
-          className="order-item-name-toggle"
+          style={{
+            background: 'transparent',
+            border: 'none',
+            padding: 0,
+            color: '#2563eb',
+            textDecoration: 'underline',
+            cursor: 'pointer',
+            fontSize: 'inherit',
+            fontFamily: 'inherit',
+            marginLeft: '5px'
+          }}
         >
           {expanded ? 'less' : 'view'}
         </button>
