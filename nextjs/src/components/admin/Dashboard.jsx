@@ -327,7 +327,7 @@ export default function Dashboard({ onLogout }) {
                     <h3 className="stat-title">Total Orders</h3>
                     <i className="fa-solid fa-shopping-bag"></i>
                   </div>
-                  <p className="stat-value">{stats.totalOrders}</p>
+                  <p className="stat-value numeric-value">{stats.totalOrders}</p>
                   <p className="stat-label">orders placed</p>
                 </div>
                 <div className="stat-card">
@@ -335,7 +335,7 @@ export default function Dashboard({ onLogout }) {
                     <h3 className="stat-title">Total Products</h3>
                     <i className="fa-solid fa-box-open"></i>
                   </div>
-                  <p className="stat-value">{stats.totalProducts}</p>
+                  <p className="stat-value numeric-value">{stats.totalProducts}</p>
                   <p className="stat-label">products listed</p>
                 </div>
                 <div className="stat-card">
@@ -343,7 +343,7 @@ export default function Dashboard({ onLogout }) {
                     <h3 className="stat-title">Cancelled Orders</h3>
                     <i className="fa-solid fa-circle-xmark"></i>
                   </div>
-                  <p className="stat-value">{stats.cancelledOrders}</p>
+                  <p className="stat-value numeric-value">{stats.cancelledOrders}</p>
                   <p className="stat-label">orders cancelled</p>
                 </div>
                 <div className="stat-card">
@@ -351,7 +351,7 @@ export default function Dashboard({ onLogout }) {
                     <h3 className="stat-title">Total Revenue</h3>
                     <i className="fa-solid fa-chart-pie"></i>
                   </div>
-                  <p className="stat-value">KWD {Number(stats.totalRevenue).toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</p>
+                  <p className="stat-value">KWD <span className="numeric-value">{Number(stats.totalRevenue).toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</span></p>
                   <p className="stat-label">total earned (KWD)</p>
                 </div>
               </div>

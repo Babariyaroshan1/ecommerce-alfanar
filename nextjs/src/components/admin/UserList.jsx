@@ -268,7 +268,7 @@ export default function UserList() {
                         <div className="user-location">{locationText}</div>
                       </td>
                       <td>
-                        <div className="user-order-count">{totalOrders}</div>
+                        <div className="user-order-count numeric-value">{totalOrders}</div>
                       </td>
                       <td>
                         <span className={`status-badge ${statusClassName}`}>

@@ -177,7 +177,7 @@ export default function UserOrderHistory({ user, onBack }) {
               <p className="summary-subtitle">A polished overview of recent purchases and customer details.</p>
             </div>
             <div className="summary-pill-row">
-              <span className="summary-pill">Orders {orders.length}</span>
+              <span className="summary-pill">Orders <span className="numeric-value">{orders.length}</span></span>
               <span className="summary-pill accent">Spent {formatCurrency(totalSpent, user?.currencySymbol || '₹')}</span>
             </div>
           </div>
@@ -270,7 +270,7 @@ export default function UserOrderHistory({ user, onBack }) {
                         <div className="product-details">
                           <div className="product-title-row">
                             <h4>{item?.name || 'Product'}</h4>
-                            <span className="quantity-pill">Qty {item?.quantity || 0}</span>
+                            <span className="quantity-pill">Qty <span className="numeric-value">{item?.quantity || 0}</span></span>
                           </div>
                           <div className="product-meta-row">
                             {item?.selectedColor && <span>Color: {item.selectedColor}</span>}
@@ -279,11 +279,11 @@ export default function UserOrderHistory({ user, onBack }) {
                         </div>
                         <div className="product-price-block">
                           <span className="price-label">Price</span>
-                          <strong>{formatCurrency(item?.price, currencySymbol)}</strong>
+                          <strong className="numeric-value">{formatCurrency(item?.price, currencySymbol)}</strong>
                         </div>
                         <div className="product-price-block">
                           <span className="price-label">Subtotal</span>
-                          <strong>{formatCurrency(itemSubtotal, currencySymbol)}</strong>
+                          <strong className="numeric-value">{formatCurrency(itemSubtotal, currencySymbol)}</strong>
                         </div>
                       </div>
                     );
@@ -295,25 +295,25 @@ export default function UserOrderHistory({ user, onBack }) {
                     {subtotalValue !== null && subtotalValue !== undefined && (
                       <div className="total-row">
                         <span>Subtotal</span>
-                        <strong>{formatCurrency(subtotalValue, currencySymbol)}</strong>
+                        <strong className="numeric-value">{formatCurrency(subtotalValue, currencySymbol)}</strong>
                       </div>
                     )}
                     {shippingValue !== null && shippingValue !== undefined && (
                       <div className="total-row">
                         <span>Shipping</span>
-                        <strong>{formatCurrency(shippingValue, currencySymbol)}</strong>
+                        <strong className="numeric-value">{formatCurrency(shippingValue, currencySymbol)}</strong>
                       </div>
                     )}
                     {discountValue !== null && discountValue !== undefined && (
                       <div className="total-row">
                         <span>Discount</span>
-                        <strong>-{formatCurrency(discountValue, currencySymbol)}</strong>
+                        <strong className="numeric-value">-{formatCurrency(discountValue, currencySymbol)}</strong>
                       </div>
                     )}
                     {grandTotalValue !== null && grandTotalValue !== undefined && (
                       <div className="total-row total-row--grand">
                         <span>Grand Total</span>
-                        <strong>{formatCurrency(grandTotalValue, currencySymbol)}</strong>
+                        <strong className="numeric-value">{formatCurrency(grandTotalValue, currencySymbol)}</strong>
                       </div>
                     )}
                     {(subtotalValue === null || subtotalValue === undefined) && (grandTotalValue !== null && grandTotalValue !== undefined) && (

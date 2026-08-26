@@ -1674,20 +1674,20 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
       <tbody>
         {filteredProducts.map((product, index) => (
           <tr key={product._id || product.id}>
-            <td>{index + 1}</td>
+            <td className="numeric-value">{index + 1}</td>
             <td>#{product._id?.slice(-6) || product.id}</td>
             <td>{product.name}</td>
             <td>{product.category}</td>
             <td>
-              {formatAdminPrice(
+              <span className="numeric-value">{formatAdminPrice(
                 product.displayPrice || product.price,
                 product.currencySymbol,
                 product.currency
-              )}
+              )}</span>
             </td>
             <td>
               <span className={getStockTotal(product.stock) > 0 ? 'in-stock' : 'out-of-stock'}>
-                {getStockTotal(product.stock)}
+                <span className="numeric-value">{getStockTotal(product.stock)}</span>
               </span>
             </td>
             <td>
@@ -1705,7 +1705,7 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
                 ))}
               </div>
             </td>
-            <td>{getImageCount(product)}</td>
+            <td className="numeric-value">{getImageCount(product)}</td>
             <td>{product.sizes?.join(', ')}</td>
             <td>{product.allowReturn ? 'Yes' : 'No'}</td>
             <td>{product.allowReplacement ? 'Yes' : 'No'}</td>
@@ -1816,7 +1816,7 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
                 
                 <div className="preview-detail-row">
                   <span className="label">Product ID:</span>
-                  <span className="value">#{detailedPreviewProduct._id?.slice(-6) || detailedPreviewProduct.id}</span>
+                  <span className="value numeric-value">#{detailedPreviewProduct._id?.slice(-6) || detailedPreviewProduct.id}</span>
                 </div>
 
                 <div className="preview-detail-row">
@@ -1827,17 +1827,17 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
                 <div className="preview-detail-row">
                   <span className="label">Price:</span>
                   <span className="value">
-                    {formatAdminPrice(
+                    <span className="numeric-value">{formatAdminPrice(
                       detailedPreviewProduct.displayPrice || detailedPreviewProduct.price,
                       detailedPreviewProduct.currencySymbol,
                       detailedPreviewProduct.currency
-                    )}
+                    )}</span>
                   </span>
                 </div>
 
                 <div className="preview-detail-row">
                   <span className="label">Stock:</span>
-                  <span className="value">{getStockTotal(detailedPreviewProduct.stock)}</span>
+                  <span className="value numeric-value">{getStockTotal(detailedPreviewProduct.stock)}</span>
                 </div>
 
                 <div className="preview-detail-row">

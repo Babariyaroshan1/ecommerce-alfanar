@@ -272,7 +272,7 @@ const AdminHistory = () => {
                   ) : (
                     history.map((item, index) => (
                       <tr key={item._id || index}>
-                        <td>{(page - 1) * pageSize + index + 1}</td>
+                        <td className="numeric-value">{(page - 1) * pageSize + index + 1}</td>
                         <td>{formatTimestamp(item.createdAt)}</td>
                         <td><span className="badge-type">{item.entityType}</span></td>
                         <td><span className={`badge-action action-${item.actionType?.toLowerCase()}`}>{item.actionType}</span></td>
@@ -289,12 +289,12 @@ const AdminHistory = () => {
             </div>
 
             <div className="ah-pagination-bar">
-              <div className="ah-page-info">Page {page} of {totalPages}</div>
+              <div className="ah-page-info">Page <span className="numeric-value">{page}</span> of <span className="numeric-value">{totalPages}</span></div>
               <div className="ah-page-buttons">
                 <button type="button" className="ah-page-btn" onClick={() => setPage(1)} disabled={page === 1}>First</button>
                 <button type="button" className="ah-page-btn" onClick={() => setPage((prev) => Math.max(prev - 1, 1))} disabled={page === 1}>Prev</button>
                 {getVisiblePageNumbers().map((pageNumber) => (
-                  <button key={pageNumber} type="button" className={`ah-page-btn ${pageNumber === page ? 'active' : ''}`} onClick={() => setPage(pageNumber)}>{pageNumber}</button>
+                  <button key={pageNumber} type="button" className={`ah-page-btn ${pageNumber === page ? 'active' : ''}`} onClick={() => setPage(pageNumber)}><span className="numeric-value">{pageNumber}</span></button>
                 ))}
                 <button type="button" className="ah-page-btn" onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))} disabled={page === totalPages}>Next</button>
                 <button type="button" className="ah-page-btn" onClick={() => setPage(totalPages)} disabled={page === totalPages}>Last</button>

@@ -308,7 +308,7 @@ export default function Analytics() {
               <div className="metric-icon bg-blue"><i className="fas fa-shopping-bag"></i></div>
               <div className="metric-content">
                 <h3>Total Orders</h3>
-                <p className="metric-value">{analyticsData.totalOrders}</p>
+                <p className="metric-value numeric-value">{analyticsData.totalOrders}</p>
               </div>
             </div>
             <div className="metric-card">
@@ -336,14 +336,14 @@ export default function Analytics() {
               <div className="metric-icon bg-purple"><i className="fas fa-box-open"></i></div>
               <div className="metric-content">
                 <h3>Products Sold</h3>
-                <p className="metric-value">{analyticsData.totalProductsSold ?? 0}</p>
+                <p className="metric-value numeric-value">{analyticsData.totalProductsSold ?? 0}</p>
               </div>
             </div>
             <div className="metric-card">
               <div className="metric-icon bg-indigo"><i className="fas fa-cubes"></i></div>
               <div className="metric-content">
                 <h3>Total Products Available</h3>
-                <p className="metric-value">{productsData.totalProducts}</p>
+                <p className="metric-value numeric-value">{productsData.totalProducts}</p>
               </div>
             </div>
             <div className="metric-card">

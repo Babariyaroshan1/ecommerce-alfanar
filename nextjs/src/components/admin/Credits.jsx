@@ -60,7 +60,7 @@ export default function Credits() {
             <div className="stat-card-header">
               <p>{item.title}</p>
             </div>
-            <p className="stat-value">{item.value}</p>
+            <p className="stat-value numeric-value">{item.value}</p>
             <p className="stat-caption">{item.description}</p>
           </div>
         ))}
@@ -103,9 +103,9 @@ export default function Credits() {
                   <td>{item.date}</td>
                   <td>{item.provider}</td>
                   <td>{item.type}</td>
-                  <td>{item.added}</td>
-                  <td>{item.used}</td>
-                  <td>{item.balance}</td>
+                  <td className="numeric-value">{item.added}</td>
+                  <td className="numeric-value">{item.used}</td>
+                  <td className="numeric-value">{item.balance}</td>
                   <td>{item.paymentId}</td>
                   <td><span className={`status-pill ${item.status.toLowerCase()}`}>{item.status}</span></td>
                   <td>{item.admin}</td>

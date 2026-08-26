@@ -557,7 +557,7 @@ const formatPhone = (phone) => {
                     <div>{order.userId?.email || 'No email'}</div>
                     <div>{requestType}</div>
                    <div style={{whiteSpace: 'nowrap'}}>
-                    <span className="currency-symbol">{order.currencySymbol || '₹'}</span> {formatPrice(order.totalAmount, order.currencySymbol)}
+                    <span className="currency-symbol">{order.currencySymbol || '₹'}</span> <span className="numeric-value">{formatPrice(order.totalAmount, order.currencySymbol)}</span>
                   </div>
                     <div className="returned-order-notes">{requestDetails.reason || requestDetails.details}</div>
                     <div className="returned-order-meta">
@@ -763,7 +763,7 @@ const formatPhone = (phone) => {
                     <div className="order-timeline">Ordered: {formatOrderTimeline(order.createdAt)}</div>
                   </td>
                   <td className="price-cell" style={{whiteSpace: 'nowrap'}}>
-                    <span className="currency-symbol">{order.currencySymbol || '₹'}</span> {formatPrice(order.totalAmount, order.currencySymbol)}
+                    <span className="currency-symbol">{order.currencySymbol || '₹'}</span> <span className="numeric-value">{formatPrice(order.totalAmount, order.currencySymbol)}</span>
                   </td>
                   <td>
                     <span className={`payment-status ${order.paymentStatus}`}>

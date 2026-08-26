@@ -211,11 +211,11 @@ export default function CurrencyManagement() {
             </div>
             <div className="setting-item">
               <span className="label">Shipping Price (KWD):</span>
-              <span className="value">{currentSettings.symbol || 'KWD'} {currentSettings.shippingPriceKWD?.toFixed?.(3) ?? '5.000'}</span>
+              <span className="value">{currentSettings.symbol || 'KWD'} <span className="numeric-value">{currentSettings.shippingPriceKWD?.toFixed?.(3) ?? '5.000'}</span></span>
             </div>
             <div className="setting-item">
               <span className="label">Shipping Price (INR):</span>
-              <span className="value">₹ {currentSettings.shippingPriceINR?.toFixed?.(2) ?? '0.00'}</span>
+              <span className="value">₹ <span className="numeric-value">{currentSettings.shippingPriceINR?.toFixed?.(2) ?? '0.00'}</span></span>
             </div>
             <div className="setting-item">
               <span className="label">Show KWD in Navbar:</span>
