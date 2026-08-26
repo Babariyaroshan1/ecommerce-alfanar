@@ -52,9 +52,9 @@ const formatPhone = (phone) => {
   const ExpandableProductName = ({ name }) => {
     const [expanded, setExpanded] = useState(false);
     const safeName = name || 'Unnamed product';
-    const words = safeName.split(' ');
+    const words = safeName.trim().split(/\s+/);
 
-    if (words.length <= 3) {
+    if (words.length <= 4) {
       return <div className="order-item-name">{safeName}</div>;
     }
 
