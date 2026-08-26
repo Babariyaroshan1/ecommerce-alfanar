@@ -1244,7 +1244,7 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
 
                 <div className="compact-return-row">
                   <div className="toggle-switch-container">
-                    <label className="toggle-switch">
+                    <label className="pm-premium-toggle">
                       <input
                         type="checkbox"
                         checked={editValues.allowReturn}
@@ -1255,15 +1255,15 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
                           }))
                         }
                       />
-                      <span className="toggle-slider"></span>
+                      <span className="pm-toggle-track"></span>
                     </label>
                     <span className="toggle-label">
-                      {editValues.allowReturn ? '↩️ Return' : '⛔ No Return'}
+                      {editValues.allowReturn ? <><i className="fa-solid fa-rotate-left"></i> Return</> : <><i className="fa-solid fa-ban"></i> No Return</>}
                     </span>
                   </div>
 
                   <div className="toggle-switch-container">
-                    <label className="toggle-switch">
+                    <label className="pm-premium-toggle">
                       <input
                         type="checkbox"
                         checked={editValues.allowReplacement}
@@ -1274,7 +1274,7 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
                           }))
                         }
                       />
-                      <span className="toggle-slider"></span>
+                      <span className="pm-toggle-track"></span>
                     </label>
                     <span className="toggle-label">
                       {editValues.allowReplacement ? <><i className="fa-solid fa-check"></i> Repl</> : <><i className="fa-solid fa-ban"></i> No Repl</>}
@@ -1284,7 +1284,7 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
   <div className="edit-form-row compact-toggle-box">
                     <label>NEW Tag</label>
                     <div className="toggle-switch-container">
-                      <label className="toggle-switch">
+                      <label className="pm-premium-toggle">
                         <input
                           type="checkbox"
                           checked={editValues.isNew}
@@ -1295,7 +1295,7 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
                             }))
                           }
                         />
-                        <span className="toggle-slider"></span>
+                        <span className="pm-toggle-track"></span>
                       </label>
                       <span className="toggle-label">
                         {editValues.isNew ? 'Show "NEW" Tag' : 'Hide "NEW" Tag'}
@@ -1305,7 +1305,7 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
                  <div className="edit-form-row compact-toggle-box">
                     <label>Same Color Button</label>
                     <div className="toggle-switch-container">
-                      <label className="toggle-switch">
+                      <label className="pm-premium-toggle">
                         <input
                           type="checkbox"
                           checked={editValues.showSimilarProductButton}
@@ -1316,7 +1316,7 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
                             }))
                           }
                         />
-                        <span className="toggle-slider"></span>
+                        <span className="pm-toggle-track"></span>
                       </label>
                       <span className="toggle-label">
                         {editValues.showSimilarProductButton ? 'Enabled' : 'Disabled'}
@@ -1346,7 +1346,7 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
                     style={{ display: 'none' }}
                   />
                   <label htmlFor="main-image-input" className="file-input-label">
-                    📤 Drag & drop image here or click to upload
+                    <i className="fa-solid fa-cloud-arrow-up"></i> Drag & drop image here or click to upload
                   </label>
                 </div>
               </div>
@@ -1391,7 +1391,7 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
                       style={{ display: 'none' }}
                     />
                     <label htmlFor="quick-images-input" className="file-input-label">
-                      📤 Drag & drop images here or click to upload multiple
+                      <i className="fa-solid fa-cloud-arrow-up"></i> Drag & drop images here or click to upload multiple
                     </label>
                   </div>
                 </div>
