@@ -51,33 +51,55 @@ const formatPhone = (phone) => {
 
   const ExpandableProductName = ({ name }) => {
     const [expanded, setExpanded] = useState(false);
+    const [needsToggle, setNeedsToggle] = useState(false);
+    const nameContainerRef = useRef(null);
+    const measureRef = useRef(null);
     const safeName = name || 'Unnamed product';
     const words = safeName.trim().split(/\s+/);
 
-    if (words.length <= 4) {
-      return <div className="order-item-name">{safeName}</div>;
-    }
+    useEffect(() => {
+      const nameContainer = nameContainerRef.current;
+      const measureElement = measureRef.current;
+      if (!nameContainer || !measureElement) return undefined;
+
+      const updateOverflow = () => {
+        setNeedsToggle(measureElement.offsetWidth > nameContainer.clientWidth);
+      };
+
+      updateOverflow();
+      const resizeObserver = new ResizeObserver(updateOverflow);
+      resizeObserver.observe(nameContainer);
+
+      return () => resizeObserver.disconnect();
+    }, [safeName]);
 
     return (
-      <div className="order-item-name">
-        {expanded ? safeName : words.slice(0, 4).join(' ') + '...'}
-        <button
-          type="button"
-          onClick={() => setExpanded(!expanded)}
-          style={{
-            background: 'transparent',
-            border: 'none',
-            padding: 0,
-            color: '#2563eb',
-            textDecoration: 'underline',
-            cursor: 'pointer',
-            fontSize: 'inherit',
-            fontFamily: 'inherit',
-            marginLeft: '5px'
-          }}
-        >
-          {expanded ? 'less' : 'view'}
-        </button>
+      <div ref={nameContainerRef} className="order-item-name">
+        <span ref={measureRef} className="order-item-name-measure" aria-hidden="true">
+          {safeName}
+        </span>
+        <span className="order-item-name-text">
+          {needsToggle && !expanded ? `${words.slice(0, 4).join(' ')}...` : safeName}
+        </span>
+        {needsToggle && (
+          <button
+            type="button"
+            onClick={() => setExpanded(!expanded)}
+            style={{
+              background: 'transparent',
+              border: 'none',
+              padding: 0,
+              color: '#2563eb',
+              textDecoration: 'underline',
+              cursor: 'pointer',
+              fontSize: 'inherit',
+              fontFamily: 'inherit',
+              marginLeft: '5px'
+            }}
+          >
+            {expanded ? 'less' : 'view'}
+          </button>
+        )}
       </div>
     );
   };

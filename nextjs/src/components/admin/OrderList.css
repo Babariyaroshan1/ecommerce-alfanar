@@ -416,7 +416,8 @@
 .order-items-preview::-webkit-scrollbar-thumb {  background-color: #cbd5e1;  border-radius: 4px;}
 .order-item-box { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 10px 12px; background: var(--bg-surface, #f8fafc); border: 1px solid var(--border-color, #e5e7eb); border-radius: 10px; min-width: 0; width: 100%; box-sizing: border-box; }
 .order-item-name { display: flex; align-items: flex-start; width: 100%; min-width: 0; font-size: 0.92rem; color: #1f2937; font-weight: 700; line-height: 1.35; }
-.order-item-name-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.order-item-name-measure { position: absolute; width: max-content; visibility: hidden; white-space: nowrap; pointer-events: none; }
+.order-item-name-text { display: block; min-width: 0; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .order-item-name-text.expanded { overflow: visible; white-space: normal; overflow-wrap: anywhere; }
 .order-item-name-toggle { flex: 0 0 auto; margin-left: 5px; padding: 0; border: none; background: transparent; color: #2563eb; text-decoration: underline; cursor: pointer; font-size: inherit; font-family: inherit; line-height: inherit; }
 [data-theme='dark'] .order-item-name { color: #f1f5f9; }
