@@ -60,7 +60,7 @@ const formatPhone = (phone) => {
 
     return (
       <div className="order-item-name">
-        {expanded ? safeName : words.slice(0, 3).join(' ') + '...'}
+        {expanded ? safeName : words.slice(0, 4).join(' ') + '...'}
         <button
           type="button"
           onClick={() => setExpanded(!expanded)}
