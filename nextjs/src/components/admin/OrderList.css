@@ -118,54 +118,50 @@
   border-color: #0040d4;
 }
 
-.order-list .toggle-switch {
+.order-list .pm-premium-toggle {
   position: relative;
-  width: 52px;
-  height: 30px;
-  border-radius: 999px;
-  border: none;
-  cursor: pointer;
   display: inline-flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 3px;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  box-sizing: border-box;
-  background-color: #e2e8f0;
+  width: 50px;
+  height: 28px;
+  flex-shrink: 0;
+  cursor: pointer;
+  margin: 0;
 }
 
-.order-list .order-toggle-switch {
-  min-width: 52px;
-  min-height: 30px;
+.order-list .pm-premium-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
 }
 
-/* Toggle Colors Fix */
-.order-list .toggle-switch-accept.off { background-color: #e2e8f0; }
-.order-list .toggle-switch-accept.on { background-color: #10b981; }
+.order-list .pm-toggle-track {
+  position: absolute;
+  inset: 0;
+  background-color: #3f3f46;
+  border-radius: 34px;
+  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.12);
+}
 
-.order-list .toggle-switch-refresh.off { background-color: #e2e8f0; }
-.order-list .toggle-switch-refresh.on { background-color: #0d6efd; }
-
-.order-list .toggle-thumb {
-  width: 22px;
+.order-list .pm-toggle-track:before {
+  content: "";
+  position: absolute;
   height: 22px;
+  width: 22px;
+  left: 3px;
+  bottom: 3px;
   background-color: #ffffff;
   border-radius: 50%;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
-  transition: transform 0.3s ease, background-color 0.3s ease;
-  display: block;
+  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
-/* Thumb Fix for OFF state */
-.order-list .toggle-switch.off .toggle-thumb {
-  transform: translateX(0);
-  background-color:white !important;
+.order-list .pm-premium-toggle input:checked + .pm-toggle-track {
+  background-color: #6366f1;
 }
 
-/* Thumb Fix for ON state */
-.order-list .toggle-switch.on .toggle-thumb {
+.order-list .pm-premium-toggle input:checked + .pm-toggle-track:before {
   transform: translateX(22px);
-  background-color: #ffffff !important;
 }
 
 .refresh-btn {

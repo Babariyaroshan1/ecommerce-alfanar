@@ -667,15 +667,25 @@ const formatPhone = (phone) => {
             <div className="order-controls">
               <div className="control-group control-group-accept">
                 <span>Auto Accept</span>
-                <button type="button" className={`toggle-switch order-toggle-switch toggle-switch-accept ${autoAccept ? 'on' : 'off'}`} onClick={() => setAutoAccept(!autoAccept)}>
-                  <span className="toggle-thumb" />
-                </button>
+                <label className="pm-premium-toggle">
+                  <input
+                    type="checkbox"
+                    checked={autoAccept}
+                    onChange={() => setAutoAccept(!autoAccept)}
+                  />
+                  <span className="pm-toggle-track"></span>
+                </label>
               </div>
               <div className="control-group control-group-refresh">
                 <span>Auto Refresh</span>
-                <button type="button" className={`toggle-switch order-toggle-switch toggle-switch-refresh ${autoRefresh ? 'on' : 'off'}`} onClick={() => setAutoRefresh(!autoRefresh)}>
-                  <span className="toggle-thumb" />
-                </button>
+                <label className="pm-premium-toggle">
+                  <input
+                    type="checkbox"
+                    checked={autoRefresh}
+                    onChange={() => setAutoRefresh(!autoRefresh)}
+                  />
+                  <span className="pm-toggle-track"></span>
+                </label>
               </div>
             </div>
           </div>
