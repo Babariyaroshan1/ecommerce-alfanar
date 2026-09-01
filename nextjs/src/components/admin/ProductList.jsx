@@ -379,6 +379,58 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
     value === '1' ||
     value === 1;
 
+  const handleToggleFeatured = async (product) => {
+    console.log('[FEATURED] Clicked for:', product.name);
+
+      const currentlyFeatured = normalizeFeatured(product.isFeaturedOnHome);
+    const totalFeaturedCount = products.filter((p) => normalizeFeatured(p.isFeaturedOnHome)).length;
+    const kidsFeaturedCount = products.filter((p) => normalizeFeatured(p.isFeaturedOnHome) && isKidsProduct(p)).length;
+    const pajamasFeaturedCount = products.filter((p) => normalizeFeatured(p.isFeaturedOnHome) && isPajamasCategory(p)).length;
+    const generalFeaturedCount = totalFeaturedCount - kidsFeaturedCount - pajamasFeaturedCount;
+    const isPajamasProduct = isPajamasCategory(product);
+    const isKidsProductCategory = isKidsProduct(product);
+
+    if (!currentlyFeatured) {
+      if (isKidsProductCategory && kidsFeaturedCount >= KIDS_FEATURED_LIMIT) {
+        alert(`You can only mark up to ${KIDS_FEATURED_LIMIT} kids products as featured. To increase this limit, update the code.`);
+        return;
+      }
+      if (!product.isKidsProduct && !isPajamasProduct && generalFeaturedCount >= GENERAL_FEATURED_LIMIT) {
+        alert(`You can only mark up to ${GENERAL_FEATURED_LIMIT} general products as featured. To increase this limit, update the code.`);
+        return;
+      }
+    }
+
+    try {
+      const token = localStorage.getItem('adminToken');
+      if (!token) {
+        alert('Admin authorization is required to change featured status. Please log in again.');
+        return;
+      }
+
+      const newFeaturedState = !currentlyFeatured;
+      let updatedProduct = { ...product, isFeaturedOnHome: newFeaturedState };
+
+      if (product._id) {
+        const response = await axios.put(
+          `${API_URL}/products/${product._id}`,
+          { isFeaturedOnHome: newFeaturedState },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        if (response?.data?.product) {
+          updatedProduct = response.data.product;
+        }
+      }
+
+      updateProduct(updatedProduct);
+      console.log('[FEATURED] Updated successfully');
+    } catch (error) {
+      console.error('Unable to update featured state:', error?.response?.data || error.message || error);
+      alert('Failed to update featured state: ' + (error?.response?.data?.message || error.message));
+    }
+  };
+
   const handleEditClick = (product) => {
     if (!canEditProducts) {
       setErrorMessage('You do not have permission to edit products. Contact admin.');
@@ -1387,6 +1439,24 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
 
               <div className="image-controls-under-quick">
                 <div className="image-toggle-grid">
+
+                  <div className="edit-form-row compact-toggle-box">
+                    <label>Featured</label>
+                    <div className="toggle-switch-container">
+                      <input
+                        type="checkbox"
+                        checked={normalizeFeatured(editValues.isFeaturedOnHome)}
+                        onChange={() =>
+                          setEditValues((prev) => ({
+                            ...prev,
+                            isFeaturedOnHome: !normalizeFeatured(prev.isFeaturedOnHome),
+                          }))
+                        }
+                      />
+                      <span className="toggle-label">Show on Home Page</span>
+                    </div>
+                  </div>
+
                  
                 </div>
               </div>
@@ -1593,6 +1663,7 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
           {canManageProductFields && (
             <>
               <th>NEW</th>
+              <th>Featured</th>
             </>
           )}
           {canViewProducts && <th>Preview</th>}
@@ -1641,6 +1712,13 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
             {canManageProductFields && (
               <>
                 <td>{product.isNew ? 'Yes' : 'No'}</td>
+                <td>
+                  <input
+                    type="checkbox"
+                    checked={normalizeFeatured(product.isFeaturedOnHome)}
+                    onChange={() => handleToggleFeatured(product)}
+                  />
+                </td>
               </>
             )}
             {canViewProducts && (

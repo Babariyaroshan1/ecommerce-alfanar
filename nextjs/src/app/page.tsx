@@ -50,8 +50,6 @@ const Home = () => {
     const loadHomeData = async () => {
       setHomeLoading(true);
          
-
-      
       // Home page should only show the admin-selected featured products for each section.
       // Best selling and kids are capped to the allowed home limits; pajamas follows the selected featured set.
       try {
