@@ -389,27 +389,6 @@ const AddProduct = () => {
         }
       }
 
-      const totalFeaturedCount = products.filter(p => p.isFeaturedOnHome === true || p.isFeaturedOnHome === 'true').length;
-      const kidsFeaturedCount = products.filter(p => (p.isFeaturedOnHome === true || p.isFeaturedOnHome === 'true') && (p.isKidsProduct === true || p.isKidsProduct === 'true' || isKidsCategory(p.category))).length;
-      const pajamasFeaturedCount = products.filter(p => (p.isFeaturedOnHome === true || p.isFeaturedOnHome === 'true') && isPajamasCategory(p.category)).length;
-      const generalFeaturedCount = totalFeaturedCount - kidsFeaturedCount - pajamasFeaturedCount;
-      const isKidsNew = isKidsCategory(formData.category);
-      const isPajamasNew = isPajamasCategory(formData.category);
-
-      if (formData.isFeaturedOnHome) {
-        if (isKidsNew) {
-          if (kidsFeaturedCount >= KIDS_FEATURED_LIMIT) {
-            setErrorMessage(`You can only mark up to ${KIDS_FEATURED_LIMIT} kids products as featured.`);
-            setNotificationType('error'); setNotificationOpen(true); setLoading(false); return;
-          }
-        } else if (!isPajamasNew) {
-          if (generalFeaturedCount >= GENERAL_FEATURED_LIMIT) {
-            setErrorMessage(`You can only mark up to ${GENERAL_FEATURED_LIMIT} products as featured.`);
-            setNotificationType('error'); setNotificationOpen(true); setLoading(false); return;
-          }
-        }
-      }
-
       const mainImageToSubmit = (formData.image || '').trim() || imagesToSubmit[0] || '';
       const submitPayload = {
         ...formData,
@@ -604,13 +583,6 @@ const AddProduct = () => {
                     <span className="add-product-toggle-switch-ord "></span>
                   </label>
                   <span className="add-product-toggle-label">{formData.isNew ? <><i className="fa-solid fa-star"></i> Marked as New Arrival</> : 'Mark as New Arrival'}</span>
-                </div>
-                <div className="add-product-toggle-switch-container">
-                  <label className="add-product-toggle-switch">
-                    <input type="checkbox" checked={formData.isFeaturedOnHome} onChange={() => setFormData((prev) => ({ ...prev, isFeaturedOnHome: !prev.isFeaturedOnHome }))} />
-                    <span className="add-product-toggle-switch-ord "></span>
-                  </label>
-                  <span className="add-product-toggle-label">{formData.isFeaturedOnHome ? <><i className="fa-solid fa-star"></i> Featured on Home Page</> : 'Feature on Home Page'}</span>
                 </div>
                 <div className="add-product-toggle-switch-container">
                   <label className="add-product-toggle-switch">
