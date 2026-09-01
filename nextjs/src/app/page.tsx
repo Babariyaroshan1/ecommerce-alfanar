@@ -39,7 +39,7 @@ const Home = () => {
   const [faqsLoading, setFaqsLoading] = useState(true);
 
   const HOME_BANNER_URL = '/Banners/alfnar-main-banner.png';
-  const HOME_MOBILE_BANNER_URL = '/home-banner.svg';
+  const HOME_MOBILE_BANNER_URL = '/Banners/mobile-banner-alfanar.png';
 
   const toggleFaq = (index) => {
     setActiveFaq(activeFaq === index ? null : index);
