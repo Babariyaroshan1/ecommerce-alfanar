@@ -38,7 +38,7 @@ const Home = () => {
   const [faqs, setFaqs] = useState([]);
   const [faqsLoading, setFaqsLoading] = useState(true);
 
-  const HOME_BANNER_URL = '/home-banner.svg';
+  const HOME_BANNER_URL = '/Banners/alfnar-main-banner.png';
   const HOME_MOBILE_BANNER_URL = '/home-banner.svg';
 
   const toggleFaq = (index) => {
