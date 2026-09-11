@@ -54,7 +54,7 @@ export default function Dashboard({ onLogout }) {
     const savedTheme = localStorage.getItem('admin-theme');
     if (savedTheme) return savedTheme;
 
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    return 'light';
   });
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const token = typeof window !== 'undefined' ? localStorage.getItem('adminToken') : null;

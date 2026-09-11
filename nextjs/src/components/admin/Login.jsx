@@ -17,7 +17,7 @@ export default function Login({ onLogin }) {
     const savedTheme = localStorage.getItem('admin-login-theme');
     if (savedTheme) return savedTheme;
 
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    return 'light';
   });
 
   const handleSubmit = async (e) => {
