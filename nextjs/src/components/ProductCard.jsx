@@ -222,7 +222,7 @@ export default function ProductCard({ product: initialProduct, directToProduct =
 
   const handleQuickView = (e) => {
     e.stopPropagation();
-    if (directToProduct) {
+    if (directToProduct || (typeof window !== 'undefined' && window.innerWidth <= 767)) {
       handleViewDetails(e);
       return;
     }
@@ -525,7 +525,7 @@ export default function ProductCard({ product: initialProduct, directToProduct =
               </span>
             </button>
             <button
-              className="product-card__icon-btn"
+              className="product-card__icon-btn wishlist-btn"
               onClick={handleToggleFavorite}
               title="Add to Wishlist"
             >

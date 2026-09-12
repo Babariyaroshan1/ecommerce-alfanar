@@ -50,7 +50,7 @@ export default function Login({ onLogin }) {
   };
 
   const toggleTheme = () => {
-    setTheme((currentTheme) => (currentTheme === 'dark' ? 'light' : 'dark'));
+    setTheme((currentTheme) => (currentTheme === 'dark' ? 'light' : 'light'));
   };
 
   return (
@@ -62,7 +62,7 @@ export default function Login({ onLogin }) {
             <h2>Admin Login</h2>
           </div>
           <button
-            type="button"
+            type= "button"
             className="theme-toggle-btn"
             onClick={toggleTheme}
             aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
