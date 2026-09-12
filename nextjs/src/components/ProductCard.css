@@ -222,7 +222,10 @@
   .product-card__hover-actions .product-card__icon-btn {
     display: none;
   }
-
+.product-card__icon-btn{
+width: 38px;
+height: 38px;
+}
   .product-card__hover-actions .wishlist-btn {
     display: inline-flex;
   }
@@ -232,7 +235,7 @@
   }
 
   .product-card .card-body {
-    padding: 0.7rem 0.75rem 0.8rem;
+    padding: 0.7rem 0.75rem 0;
   }
 
   .product-card .card-body h5 {
