@@ -80,6 +80,45 @@ export const useCartStore = create((set, get) => ({
         return { cart: newCart };
     }),
 
+    setCartItem: (product, maxStock) => set((state) => {
+        const incomingId = getProductId(product);
+        const incomingColor = product.selectedColor || 'Default';
+        const incomingSize = product.selectedSize || 'One Size';
+        const incomingQty = Number(product.quantity) || 1;
+        const stockLimit = Number(maxStock || product.stock || 1);
+
+        if (incomingQty < 1 || incomingQty > stockLimit) {
+            useToastStore.getState().addToast(`Cannot set quantity. Only ${stockLimit} available in stock.`, 'error', 4000);
+            return state;
+        }
+
+        const existingItem = state.cart.find(item =>
+            getProductId(item) === incomingId &&
+            (item.selectedSize || 'One Size') === incomingSize &&
+            (item.selectedColor || 'Default') === incomingColor
+        );
+
+        const newCart = existingItem
+            ? state.cart.map(item =>
+                getProductId(item) === incomingId &&
+                    (item.selectedSize || 'One Size') === incomingSize &&
+                    (item.selectedColor || 'Default') === incomingColor
+                    ? { ...item, ...product, quantity: incomingQty }
+                    : item
+            )
+            : [...state.cart, {
+                ...JSON.parse(JSON.stringify(product)),
+                selectedColor: incomingColor,
+                selectedSize: incomingSize,
+                quantity: incomingQty,
+                allowReturn: product.allowReturn !== false,
+                allowReplacement: product.allowReplacement !== false
+            }];
+
+        localStorage.setItem('cart', JSON.stringify(newCart));
+        return { cart: newCart };
+    }),
+
     removeFromCart: (productId, selectedSize, selectedColor) => set((state) => {
         console.log('removeFromCart called', productId, selectedSize, selectedColor);
         const filterColor = selectedColor || 'Default';

@@ -855,9 +855,7 @@ export default function ProductCard({ product: initialProduct, directToProduct =
                   </span>
                   {isUnavailable ? 'Not Available' : (requiresSizeSelection && !selectedSize ? 'Select Size First' : 'Add to Cart')}
                 </button>
-                <button className="btn btn-outline-secondary flex-grow-1" onClick={handleShare}>
-                  Share
-                </button>
+                <button className="btn btn-outline-secondary flex-grow-1" onClick={handleShare}> Share </button>
               </div>
             </div>
           </div>

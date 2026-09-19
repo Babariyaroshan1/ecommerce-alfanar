@@ -12,7 +12,7 @@ import './wishlist.css';
 
 export default function Wishlist() {
   const { favorites, removeFromFavorites } = useFavoritesStore();
-  const { addToCart } = useCartStore();
+  const { addToCart, setCartItem } = useCartStore();
   const products = useProductStore((state) => state.products);
   const currencySettings = useProductStore((state) => state.currencySettings);
   const selectedCurrency = useProductStore((state) => state.selectedCurrency);
@@ -39,7 +39,7 @@ export default function Wishlist() {
     if (favorites.length === 1) {
       const product = products.find(p => String(p.id || p._id) === String(favorites[0].id || favorites[0]._id));
       const stock = product?.stock || 1;
-      addToCart({
+      setCartItem({
         ...favorites[0],
         price: favorites[0].displayPrice ?? favorites[0].price,
         displayPrice: favorites[0].displayPrice ?? favorites[0].price,

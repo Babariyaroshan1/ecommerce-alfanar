@@ -85,7 +85,7 @@ export default function ProductDetailPage() {
   const products = useProductStore((state) => state.products);
   const fetchProducts = useProductStore((state) => state.fetchProducts);
   const { currencySettings, selectedCurrency } = useProductStore();
-  const { addToCart } = useCartStore();
+  const { addToCart, setCartItem } = useCartStore();
   const { favorites, toggleFavorite } = useFavoritesStore();
   const { addToast } = useToastStore();
   const { user, token } = useAuthStore();
@@ -404,7 +404,7 @@ export default function ProductDetailPage() {
       setTimeout(() => e.target.classList.remove('clicked'), 600);
     }
     
-    addToCart({
+    setCartItem({
       ...product,
       price: currentPrice ?? numericCurrentPrice,
       displayPrice: currentPrice ?? numericCurrentPrice,
