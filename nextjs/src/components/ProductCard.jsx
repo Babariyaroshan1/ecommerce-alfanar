@@ -542,21 +542,6 @@ export default function ProductCard({ product: initialProduct, directToProduct =
             )}
           </div>
 
-          {!directToProduct && (
-            <button
-              className="product-card__select-btn"
-              onClick={(e) => {
-                e.stopPropagation();
-                if (!isUnavailable) {
-                  setShowModal(true);
-                }
-              }}
-              disabled={isUnavailable}
-              title={isUnavailable ? `Not available in ${selectedCurrency}` : 'Select options'}
-            >
-              {isUnavailable ? 'Unavailable' : 'Select options'}
-            </button>
-          )}
         </div>
 
         <div className="card-body">
