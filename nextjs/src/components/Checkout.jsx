@@ -844,16 +844,12 @@ export default function Checkout() {
               {!mounted ? (
                 <>
                   <div><span>{t("Subtotal")}:</span><span>{t("Loading...")}</span></div>
-                  {discount > 0 && <div><span>{t("Original Price")}:</span><span>{t("Loading...")}</span></div>}
                   {discount > 0 && <div><span>{t("Discount")}:</span><span>{t("Loading...")}</span></div>}
                   <div><span>{t("Shipping")}:</span><span>{t("Loading...")}</span></div>
                   <div className="total"><span>{t("Total")}:</span><span>{t("Loading...")}</span></div>
                 </>
               ) : (
                 <>
-                  {discount > 0 && (
-                    <div><span>{t("Original Price")}:</span><span>{originalSubtotal.toFixed(currencySettings?.currency === 'KWD' ? 3 : 2)} {currencySettings?.symbol || 'KWD'}</span></div>
-                  )}
                   <div><span>{t("Subtotal")}:</span><span>{subtotal.toFixed(currencySettings?.currency === 'KWD' ? 3 : 2)} {currencySettings?.symbol || 'KWD'}</span></div>
                   {discount > 0 && (
                     <div><span>{t("Discount")}:</span><span style={{color: '#059669'}}>-{discount.toFixed(currencySettings?.currency === 'KWD' ? 3 : 2)} {currencySettings?.symbol || 'KWD'}</span></div>
