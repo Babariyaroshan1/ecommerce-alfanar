@@ -32,7 +32,10 @@
   border-radius: 0 !important;
   transition: opacity 0.35s ease, transform 0.35s ease;
 }
-
+.card{
+  padding: 0 !important;
+  border-radius: 0 !important;  
+}
 .card-img-base {
   z-index: 1;
 }
