@@ -5,18 +5,16 @@
   justify-content: center;
   align-items: center;
   min-height: calc(100vh - 80px);
-  /* Matching the dark background from the screenshot */
-  background-color: #0d1117; 
+  background-color: #f5f7fb;
   padding: 1rem;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
 .login-card {
-  /* Matching the card background and borders */
-  background-color: #161b22;
-  border: 1px solid #30363d;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
   border-radius: 8px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.10);
   padding: 2.5rem 2rem;
   width: 100%;
   max-width: 420px;
@@ -26,28 +24,28 @@
 .login-card h2 {
   text-align: center;
   margin-bottom: 1.5rem;
-  color: #ffffff;
+  color: #0f172a;
   font-weight: 600;
   letter-spacing: 0.5px;
 }
 
 .error-message {
-  background-color: rgba(248, 81, 73, 0.1);
-  color: #ff7b72;
+  background-color: #fef2f2;
+  color: #b91c1c;
   padding: 12px;
   border-radius: 6px;
   margin-bottom: 1.5rem;
-  border: 1px solid rgba(248, 81, 73, 0.4);
+  border: 1px solid #fecaca;
   font-size: 0.9rem;
 }
 
 .success-message {
-  background-color: rgba(46, 160, 67, 0.1);
-  color: #3fb950;
+  background-color: #f0fdf4;
+  color: #15803d;
   padding: 12px;
   border-radius: 6px;
   margin-bottom: 1.5rem;
-  border: 1px solid rgba(46, 160, 67, 0.4);
+  border: 1px solid #bbf7d0;
   font-size: 0.9rem;
 }
 
@@ -57,7 +55,7 @@
 
 .form-group label {
   display: block;
-  color: #8b949e;
+  color: #475569;
   margin-bottom: 0.5rem;
   font-size: 0.85rem;
   text-transform: uppercase;
@@ -77,9 +75,9 @@
 .country-code-select {
   min-width: 100px;
   padding: 12px;
-  background: #0d1117;
-  color: #c9d1d9;
-  border: 1px solid #30363d;
+  background: #ffffff;
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
   border-right: none;
   border-radius: 6px 0 0 6px;
   font-size: 0.95rem;
@@ -93,10 +91,10 @@
 .form-input {
   width: 100%;
   padding: 12px 14px;
-  background-color: #0d1117;
-  border: 1px solid #30363d;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
   border-radius: 6px;
-  color: #ffffff;
+  color: #0f172a;
   font-size: 0.95rem;
   transition: all 0.2s ease;
 }
@@ -124,9 +122,9 @@
 .password-toggle {
   position: absolute;
   right: 8px;
-  background: #21262d;
-  border: 1px solid #30363d;
-  color: #c9d1d9;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  color: #475569;
   cursor: pointer;
   font-size: 0.75rem;
   padding: 6px 10px;
@@ -135,8 +133,8 @@
 }
 
 .password-toggle:hover {
-  background: #30363d;
-  color: #ffffff;
+  background: #e2e8f0;
+  color: #0f172a;
 }
 
 /* 6-DIGIT OTP BOXES UI */
@@ -153,10 +151,10 @@
   text-align: center;
   font-size: 1.25rem;
   font-weight: 600;
-  background-color: #0d1117;
-  border: 1px solid #30363d;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
   border-radius: 8px;
-  color: #ffffff;
+  color: #0f172a;
   transition: all 0.2s ease;
 }
 
@@ -169,7 +167,6 @@
 
 .submit-btn {
   width: 100%;
-  /* Purple accent color from your screenshot */
   background: #6e56cf; 
   color: white;
   padding: 12px;
@@ -196,11 +193,11 @@
   text-align: center;
   margin-top: 1.5rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #30363d;
+  border-top: 1px solid #e2e8f0;
 }
 
 .toggle-form p {
-  color: #8b949e;
+  color: #64748b;
   margin-bottom: 0.5rem;
   font-size: 0.9rem;
 }
@@ -224,14 +221,14 @@
 }
 
 .forgot-link {
-  color: #8b949e;
+  color: #64748b;
   text-decoration: none;
   font-size: 0.85rem;
   transition: color 0.2s;
 }
 
 .forgot-link:hover {
-  color: #c9d1d9;
+  color: #475569;
 }
 
 .otp-back {

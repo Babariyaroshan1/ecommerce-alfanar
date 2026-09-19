@@ -18,7 +18,7 @@ const parsePrice = (price) => {
 };
 
 export default function Checkout() {
-  const { user, token, updateProfile } = useAuthStore();
+  const { user, token, logout, updateProfile } = useAuthStore();
   const { cart, clearCart, appliedCoupon, getDiscountedTotal } = useCartStore();
   const currencySettings = useProductStore((state) => state.currencySettings);
   const selectedCurrency = useProductStore((state) => state.selectedCurrency);
@@ -575,6 +575,11 @@ export default function Checkout() {
 
     } catch (err) {
       console.error('Order creation error:', err.response?.data || err.message);
+      if (err.response?.status === 401) {
+        logout();
+        router.push('/login?redirect=/checkout');
+        return;
+      }
       alert(err.response?.data?.message || 'Order failed. Please try again.');
     } finally {
       setLoading(false);
