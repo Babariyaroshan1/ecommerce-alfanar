@@ -36,37 +36,41 @@ export default function Wishlist() {
   };
 
   const handleBuyNow = () => {
-    if (favorites.length === 1) {
-      const product = products.find(p => String(p.id || p._id) === String(favorites[0].id || favorites[0]._id));
-      const stock = product?.stock || 1;
+    const selectedFavorites = favorites.length === 1
+      ? favorites
+      : favorites.filter(product => selectedProducts.has(product.id || product._id));
+    const availableProducts = selectedFavorites
+      .map(favorite => products.find(product => String(product.id || product._id) === String(favorite.id || favorite._id)) || favorite)
+      .filter(product => !product.isSoldOut);
+
+    if (!availableProducts.length) return;
+
+    if (availableProducts.length === 1) {
+      const product = availableProducts[0];
+      const stock = product.stock || 1;
       setCartItem({
-        ...favorites[0],
-        price: favorites[0].displayPrice ?? favorites[0].price,
-        displayPrice: favorites[0].displayPrice ?? favorites[0].price,
-        currency: favorites[0].currency || currencySettings?.currency,
-        currencySymbol: favorites[0].currencySymbol || currencySettings?.symbol || '₹',
+        ...product,
+        price: product.displayPrice ?? product.price,
+        displayPrice: product.displayPrice ?? product.price,
+        currency: product.currency || currencySettings?.currency,
+        currencySymbol: product.currencySymbol || currencySettings?.symbol || '₹',
         quantity: 1,
         selectedColor: 'Default',
         selectedSize: 'One Size'
       }, stock);
       router.push('/checkout');
     } else {
-      selectedProducts.forEach(productId => {
-        const product = favorites.find(p => String(p.id || p._id) === String(productId));
-        const fullProduct = products.find(p => String(p.id || p._id) === String(productId));
-        const stock = fullProduct?.stock || 1;
-        if (product) {
-          addToCart({
-            ...product,
-            price: product.displayPrice ?? product.price,
-            displayPrice: product.displayPrice ?? product.price,
-            currency: product.currency || currencySettings?.currency,
-            currencySymbol: product.currencySymbol || currencySettings?.symbol || '₹',
-            quantity: 1,
-            selectedColor: 'Default',
-            selectedSize: 'One Size'
-          }, stock);
-        }
+      availableProducts.forEach(product => {
+        addToCart({
+          ...product,
+          price: product.displayPrice ?? product.price,
+          displayPrice: product.displayPrice ?? product.price,
+          currency: product.currency || currencySettings?.currency,
+          currencySymbol: product.currencySymbol || currencySettings?.symbol || '₹',
+          quantity: 1,
+          selectedColor: 'Default',
+          selectedSize: 'One Size'
+        }, product.stock || 1);
       });
       router.push('/checkout');
     }
@@ -175,6 +179,8 @@ export default function Wishlist() {
           {favorites.map((product) => {
             const productId = product.id || product._id;
             const isSelected = selectedProducts.has(productId);
+            const currentProduct = products.find(item => String(item.id || item._id) === String(productId)) || product;
+            const isSoldOut = currentProduct.isSoldOut === true || currentProduct.isSoldOut === 'true' || currentProduct.isSoldOut === 1;
             
             return (
               <div key={productId} className="col-6 col-sm-6 col-md-4 col-lg-3">
@@ -205,6 +211,7 @@ export default function Wishlist() {
 
                   {/* Product Image with Fixed Aspect Ratio */}
                   <div className="product-image-wrapper">
+                    {isSoldOut && <span className="wishlist-sold-out-badge">SOLD OUT</span>}
                     <img
                       src={product.image || 'https://via.placeholder.com/400x533?text=Product'}
                       className="product-image"

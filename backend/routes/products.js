@@ -242,6 +242,10 @@ router.put('/:id', async (req, res) => {
                 updateData.isFeaturedOnHome = parseBooleanValue(updateData.isFeaturedOnHome);
             }
 
+            if ('isSoldOut' in updateData) {
+                updateData.isSoldOut = parseBooleanValue(updateData.isSoldOut);
+            }
+
             if ('isKidsProduct' in updateData) {
                 updateData.isKidsProduct = parseBooleanValue(updateData.isKidsProduct);
             }

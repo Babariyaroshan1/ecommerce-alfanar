@@ -156,6 +156,7 @@ export default function ProductCard({ product: initialProduct, directToProduct =
 
   const productKey = getProductKey(product);
   const isFavorite = favorites.some((item) => getProductKey(item) === productKey);
+  const isSoldOut = product.isSoldOut === true || product.isSoldOut === 'true' || product.isSoldOut === 1;
   const requiresSizeSelection = Array.isArray(product.sizes) && product.sizes.length > 0;
   const selectedSizeStock = requiresSizeSelection
     ? (typeof product.stock === 'object' ? product.stock[selectedSize] || 0 : product.stock || 0)
@@ -312,6 +313,11 @@ export default function ProductCard({ product: initialProduct, directToProduct =
 
   const handleAddToCart = (e) => {
     e.stopPropagation();
+
+    if (isSoldOut) {
+      addToast('This product is sold out.', 'error', 3000);
+      return;
+    }
     
     // Check if product is unavailable
     if (isUnavailable) {
@@ -348,6 +354,11 @@ export default function ProductCard({ product: initialProduct, directToProduct =
   };
 
   const handleAddToCartFromModal = () => {
+    if (isSoldOut) {
+      addToast('This product is sold out.', 'error', 3000);
+      return;
+    }
+
     if (requiresSizeSelection && !selectedSize) {
       addToast('Please select a size before adding to cart.', 'error', 3000);
       return;
@@ -493,6 +504,7 @@ export default function ProductCard({ product: initialProduct, directToProduct =
               NEW
             </div>
           )}
+          {isSoldOut && <div className="product-card__sold-out">SOLD OUT</div>}
 
           {/* HOVER ICONS */}
           <div className="product-card__hover-actions">
@@ -511,6 +523,8 @@ export default function ProductCard({ product: initialProduct, directToProduct =
                 }
               }}
               title="Add to Cart"
+              disabled={isSoldOut}
+              aria-label={isSoldOut ? 'Sold out' : 'Add to Cart'}
             >
               <span className="add-to-cart-text">
                 <span className="svg-wrapper add-to-cart-icon">
@@ -765,8 +779,8 @@ export default function ProductCard({ product: initialProduct, directToProduct =
                           type="button"
                           className={`option-button ${selectedSize === size ? 'selected' : ''} ${!inStock ? 'disabled' : ''}`}
                           onClick={() => setSelectedSize(size)}
-                          disabled={!inStock}
-                          title={!inStock ? 'Out of stock' : ''}
+                              disabled={!inStock || isSoldOut}
+                              title={isSoldOut ? 'Sold out' : !inStock ? 'Out of stock' : ''}
                         >
                           {size} 
                         </button>
@@ -845,7 +859,7 @@ export default function ProductCard({ product: initialProduct, directToProduct =
                     addToast(`${product.name} added to cart successfully!`, 'success', 4000);
                     setShowModal(false);
                   }}
-                  disabled={isUnavailable || (requiresSizeSelection && !selectedSize)}
+                  disabled={isSoldOut || isUnavailable || (requiresSizeSelection && !selectedSize)}
                 >
                   <span className="svg-wrapper add-to-cart-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none">
@@ -853,7 +867,7 @@ export default function ProductCard({ product: initialProduct, directToProduct =
                       <path stroke="currentColor" strokeLinecap="round" strokeWidth="1.6" d="M14.608 12.563v5m2.5-2.5h-5" />
                     </svg>
                   </span>
-                  {isUnavailable ? 'Not Available' : (requiresSizeSelection && !selectedSize ? 'Select Size First' : 'Add to Cart')}
+                  {isSoldOut ? 'Sold Out' : isUnavailable ? 'Not Available' : (requiresSizeSelection && !selectedSize ? 'Select Size First' : 'Add to Cart')}
                 </button>
                 <button className="btn btn-outline-secondary flex-grow-1" onClick={handleShare}> Share </button>
               </div>

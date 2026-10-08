@@ -379,6 +379,12 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
     value === '1' ||
     value === 1;
 
+  const normalizeSoldOut = (value) =>
+    value === true ||
+    value === 'true' ||
+    value === '1' ||
+    value === 1;
+
   const handleToggleFeatured = async (product) => {
     console.log('[FEATURED] Clicked for:', product.name);
 
@@ -428,6 +434,30 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
     } catch (error) {
       console.error('Unable to update featured state:', error?.response?.data || error.message || error);
       alert('Failed to update featured state: ' + (error?.response?.data?.message || error.message));
+    }
+  };
+
+  const handleToggleSoldOut = async (product) => {
+    const newSoldOutState = !normalizeSoldOut(product.isSoldOut);
+    const updatedProduct = { ...product, isSoldOut: newSoldOutState };
+
+    try {
+      const token = localStorage.getItem('adminToken');
+      if (!token) {
+        alert('Admin authorization is required to change product availability. Please log in again.');
+        return;
+      }
+
+      const response = await axios.put(
+        `${API_URL}/products/${product._id}`,
+        { isSoldOut: newSoldOutState },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      updateProduct(response?.data?.product || updatedProduct);
+    } catch (error) {
+      console.error('Unable to update product availability:', error?.response?.data || error.message || error);
+      alert('Failed to update product availability: ' + (error?.response?.data?.message || error.message));
     }
   };
 
@@ -1664,6 +1694,7 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
             <>
               <th>NEW</th>
               <th>Featured</th>
+              <th>Available</th>
             </>
           )}
           {canViewProducts && <th>Preview</th>}
@@ -1718,6 +1749,17 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
                     checked={normalizeFeatured(product.isFeaturedOnHome)}
                     onChange={() => handleToggleFeatured(product)}
                   />
+                </td>
+                <td>
+                  <label className="product-sold-out-toggle" title={normalizeSoldOut(product.isSoldOut) ? 'Sold out' : 'Available'}>
+                    <input
+                      type="checkbox"
+                      aria-label={`${product.name} availability`}
+                      checked={!normalizeSoldOut(product.isSoldOut)}
+                      onChange={() => handleToggleSoldOut(product)}
+                    />
+                    <span className="product-sold-out-toggle__track" />
+                  </label>
                 </td>
               </>
             )}

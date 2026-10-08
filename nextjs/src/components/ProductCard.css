@@ -23,6 +23,20 @@
   background: var(--hover-bg);
 }
 
+.product-card__sold-out {
+  position: absolute;
+  z-index: 3;
+  top: 50%;
+  left: 50%;
+  padding: 8px 14px;
+  transform: translate(-50%, -50%);
+  background: #c62828;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
 .product-card__image img {
   position: absolute;
   inset: 0;

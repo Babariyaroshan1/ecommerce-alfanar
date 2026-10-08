@@ -49,9 +49,24 @@
 }
 
 .tss-img-wrapper {
+  position: relative;
   cursor: pointer;
   overflow: hidden;
   transition: transform 0.2s ease;
+}
+
+.tss-sold-out-badge {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  padding: 8px 14px;
+  transform: translate(-50%, -50%);
+  background: #c62828;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
 .tss-img-wrapper:hover {

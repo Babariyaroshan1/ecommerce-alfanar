@@ -28,6 +28,11 @@ export const useCartStore = create((set, get) => ({
     })(),
 
     addToCart: (product, maxStock) => set((state) => {
+        if (product?.isSoldOut === true || product?.isSoldOut === 'true' || product?.isSoldOut === 1) {
+            useToastStore.getState().addToast('This product is sold out.', 'error', 3000);
+            return state;
+        }
+
         const incomingId = getProductId(product);
         const incomingColor = product.selectedColor || 'Default';
         const incomingSize = product.selectedSize || 'One Size';
@@ -81,6 +86,11 @@ export const useCartStore = create((set, get) => ({
     }),
 
     setCartItem: (product, maxStock) => set((state) => {
+        if (product?.isSoldOut === true || product?.isSoldOut === 'true' || product?.isSoldOut === 1) {
+            useToastStore.getState().addToast('This product is sold out.', 'error', 3000);
+            return state;
+        }
+
         const incomingId = getProductId(product);
         const incomingColor = product.selectedColor || 'Default';
         const incomingSize = product.selectedSize || 'One Size';

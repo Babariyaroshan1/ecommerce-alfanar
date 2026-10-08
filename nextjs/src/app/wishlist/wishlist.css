@@ -193,3 +193,17 @@
     font-size: 0.95rem;
   }
 }
+
+.wishlist-sold-out-badge {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  padding: 7px 12px;
+  transform: translate(-50%, -50%);
+  background: #c62828;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  white-space: nowrap;
+}

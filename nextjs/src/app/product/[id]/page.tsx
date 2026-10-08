@@ -339,6 +339,11 @@ export default function ProductDetailPage() {
 
   const handleAddToCart = (e) => {
     if (!product) return;
+
+    if (product.isSoldOut) {
+      addToast('This product is sold out.', 'error', 3000);
+      return;
+    }
     
     // Check if product is unavailable
     if (isProductUnavailable(product, currencySettings, selectedCurrency)) {
@@ -384,6 +389,11 @@ export default function ProductDetailPage() {
 
   const handleBuyNow = (e) => {
     if (!product) return;
+
+    if (product.isSoldOut) {
+      addToast('This product is sold out.', 'error', 3000);
+      return;
+    }
     
     // Check if product is unavailable
     if (isProductUnavailable(product, currencySettings, selectedCurrency)) {
@@ -719,6 +729,7 @@ export default function ProductDetailPage() {
                         target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="500" height="500"%3E%3Crect fill="%23e0e0e0" width="500" height="500"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="%23999" font-size="24"%3EImage Not Available%3C/text%3E%3C/svg%3E';
                       }}
                     />
+                    {index === 0 && product.isSoldOut && <span className="tss-sold-out-badge">SOLD OUT</span>}
                   </div>
                 ))}
 
@@ -827,9 +838,9 @@ export default function ProductDetailPage() {
                     <div key={size} className="tss-size-wrapper">
                       <button
                         type="button"
-                        className={`tss-size-btn ${selectedSize === size ? 'active' : ''} ${!inStock ? 'disabled' : ''}`}
+                        className={`tss-size-btn ${selectedSize === size ? 'active' : ''} ${!inStock || product.isSoldOut ? 'disabled' : ''}`}
                         onClick={() => setSelectedSize(size)}
-                        disabled={!inStock}
+                        disabled={!inStock || product.isSoldOut}
                       >
                         {size}
                       </button>
@@ -850,7 +861,7 @@ export default function ProductDetailPage() {
                 value={quantity} 
                 onChange={(e) => setQuantity(Number(e.target.value))}
                 className="tss-qty-dropdown"
-                disabled={maxStock === 0}
+                disabled={maxStock === 0 || product.isSoldOut}
               >
                 {maxStock === 0 ? <option value="0">0</option> : quantityOptions.map(num => (
                   <option key={num} value={num}>{num}</option>
@@ -863,16 +874,16 @@ export default function ProductDetailPage() {
               <button 
                 className="tss-btn tss-btn-cart" 
                 onClick={handleAddToCart}
-                disabled={maxStock === 0 || isUnavailable}
+                disabled={maxStock === 0 || isUnavailable || product.isSoldOut}
               >
-                {isUnavailable ? 'UNAVAILABLE' : 'ADD TO CART'}
+                {product.isSoldOut ? 'SOLD OUT' : isUnavailable ? 'UNAVAILABLE' : 'ADD TO CART'}
               </button>
               <button 
                 className="tss-btn tss-btn-buy-now" 
                 onClick={handleBuyNow}
-                disabled={maxStock === 0 || isUnavailable}
+                disabled={maxStock === 0 || isUnavailable || product.isSoldOut}
               >
-                {isUnavailable ? 'UNAVAILABLE' : 'BUY NOW'}
+                {product.isSoldOut ? 'SOLD OUT' : isUnavailable ? 'UNAVAILABLE' : 'BUY NOW'}
               </button>
             </div>
 
