@@ -110,6 +110,7 @@ export default function Dashboard({ onLogout }) {
   const hasPermission = (permissionKey) => {
     if (role === 'admin') return true;
     if (permissions.includes(permissionKey)) return true;
+    if (permissionKey === 'view_products' && permissions.includes('manage_product_availability')) return true;
     if (permissionKey === 'view_products' || permissionKey === 'add_products') {
       return permissions.includes('manage_products');
     }

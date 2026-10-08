@@ -126,7 +126,8 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
   const isAdmin = role === 'admin';
   const hasManageProducts = permissions.includes('manage_products');
   const hasManageKidsProducts = permissions.includes('manage_kids_products');
-  const canViewProducts = isAdmin || hasManageProducts || hasManageKidsProducts || permissions.includes('view_products');
+  const canManageProductAvailability = isAdmin || permissions.includes('manage_product_availability');
+  const canViewProducts = isAdmin || hasManageProducts || hasManageKidsProducts || canManageProductAvailability || permissions.includes('view_products');
   const canAddProducts = isAdmin || hasManageProducts || permissions.includes('add_products');
   const canEditProducts = isAdmin || hasManageProducts || permissions.includes('edit_products');
   const canDeleteProducts = isAdmin || hasManageProducts || permissions.includes('delete_products');
@@ -448,8 +449,8 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
         return;
       }
 
-      const response = await axios.put(
-        `${API_URL}/products/${product._id}`,
+        const response = await axios.patch(
+          `${API_URL}/products/${product._id}/sold-out`,
         { isSoldOut: newSoldOutState },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -1694,9 +1695,9 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
             <>
               <th>NEW</th>
               <th>Featured</th>
-              <th>Available</th>
             </>
           )}
+          {canManageProductAvailability && <th>Available</th>}
           {canViewProducts && <th>Preview</th>}
           {canEditProducts && <th>Actions</th>}
         </tr>
@@ -1750,18 +1751,20 @@ const ProductList = ({ role = 'admin', permissions = [] }) => {
                     onChange={() => handleToggleFeatured(product)}
                   />
                 </td>
-                <td>
-                  <label className="product-sold-out-toggle" title={normalizeSoldOut(product.isSoldOut) ? 'Sold out' : 'Available'}>
-                    <input
-                      type="checkbox"
-                      aria-label={`${product.name} availability`}
-                      checked={!normalizeSoldOut(product.isSoldOut)}
-                      onChange={() => handleToggleSoldOut(product)}
-                    />
-                    <span className="product-sold-out-toggle__track" />
-                  </label>
-                </td>
               </>
+            )}
+            {canManageProductAvailability && (
+              <td>
+                <label className="product-sold-out-toggle" title={normalizeSoldOut(product.isSoldOut) ? 'Sold out' : 'Available'}>
+                  <input
+                    type="checkbox"
+                    aria-label={`${product.name} availability`}
+                    checked={!normalizeSoldOut(product.isSoldOut)}
+                    onChange={() => handleToggleSoldOut(product)}
+                  />
+                  <span className="product-sold-out-toggle__track" />
+                </label>
+              </td>
             )}
             {canViewProducts && (
               <td className="preview-cell">

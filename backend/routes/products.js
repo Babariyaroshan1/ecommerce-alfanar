@@ -202,6 +202,33 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+// Update sold-out status using its own narrowly scoped permission.
+router.patch('/:id/sold-out', permissionAuth(PERMISSIONS.MANAGE_PRODUCT_AVAILABILITY), async (req, res) => {
+    try {
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        if (!Object.prototype.hasOwnProperty.call(req.body, 'isSoldOut')) {
+            return res.status(400).json({ message: 'isSoldOut is required' });
+        }
+
+        const product = await Product.findById(req.params.id);
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        product.isSoldOut = parseBooleanValue(req.body.isSoldOut);
+        await product.save();
+        await invalidateProducts();
+        await invalidateProduct(req.params.id);
+
+        res.json({ message: 'Product availability updated successfully', product: product.toObject({ flattenMaps: true }) });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
 // Update product (Admin and authorized Coadmin - with permission-based check for kids products)
 router.put('/:id', async (req, res) => {
     try {

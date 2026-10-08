@@ -2,6 +2,7 @@
 export const PERMISSIONS = {
     MANAGE_PRODUCTS: 'manage_products',
     MANAGE_STOCK: 'manage_stock',
+    MANAGE_PRODUCT_AVAILABILITY: 'manage_product_availability',
     MANAGE_KIDS_PRODUCTS: 'manage_kids_products',
     MANAGE_ORDERS: 'manage_orders',
     MANAGE_USERS: 'manage_users',
@@ -27,6 +28,11 @@ export const PERMISSION_METADATA = [
         key: PERMISSIONS.MANAGE_STOCK,
         label: 'Manage Stock',
         description: 'Manage size and stock availability'
+    },
+    {
+        key: PERMISSIONS.MANAGE_PRODUCT_AVAILABILITY,
+        label: 'Manage Product Availability',
+        description: 'Mark products as available or sold out on the website'
     },
     {
         key: PERMISSIONS.MANAGE_KIDS_PRODUCTS,

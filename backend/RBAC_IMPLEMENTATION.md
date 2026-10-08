@@ -16,6 +16,7 @@ Your e-commerce application now has a complete **Role-Based Access Control (RBAC
 | Permission Key | Label | Description |
 |---|---|---|
 | `manage_products` | Manage Products | Add, edit, and delete products |
+| `manage_product_availability` | Manage Product Availability | Mark products as available or sold out on the website |
 | `manage_orders` | Manage Orders | View and update order status |
 | `manage_users` | Manage Users | View user information |
 | `view_analytics` | View Analytics | Access sales and performance data |
