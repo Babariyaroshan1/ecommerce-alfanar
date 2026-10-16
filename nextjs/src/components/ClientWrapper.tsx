@@ -33,6 +33,16 @@ export default function ClientWrapper({ children }) {
       {!isAdminRoute && <Navbar />}
       <main className="flex-grow">{children}</main>
       {!isAdminRoute && <Footer />}
+      <a
+        className="whatsapp-float"
+        href="https://wa.me/96597210352"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Chat with us on WhatsApp"
+        title="Chat with us on WhatsApp"
+      >
+        <i className="fa-brands fa-whatsapp" aria-hidden="true" />
+      </a>
       <Toast />
     </div>
   );
