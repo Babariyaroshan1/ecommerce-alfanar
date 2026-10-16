@@ -568,6 +568,12 @@ export default function ProductDetailPage() {
     setActiveFaq(activeFaq === index ? null : index);
   };
 
+  const shareOnWhatsApp = () => {
+    const productUrl = new URL(window.location.pathname, window.location.origin).toString();
+    const message = `Hi, I'm interested in ${product.name}.\n${productUrl}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
+  };
+
   if (loading) {
     return <ProductDetailSkeleton />;
   }
@@ -901,7 +907,15 @@ export default function ProductDetailPage() {
             <div className="tss-share">
               <span>Share:</span>
               <div className="tss-social-icons">
-                <i className="fa-brands fa-whatsapp"></i>
+                <button
+                  type="button"
+                  className="tss-whatsapp-share"
+                  onClick={shareOnWhatsApp}
+                  aria-label="Share product on WhatsApp"
+                  title="Share product on WhatsApp"
+                >
+                  <i className="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                </button>
                 <i className="fa-brands fa-facebook"></i>
                 <i className="fa-brands fa-twitter"></i>
                 <i className="fa-brands fa-instagram"></i>
