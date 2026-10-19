@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { useProductStore } from '@/store/productStore';
 import '../i18n';
@@ -10,7 +10,7 @@ import Toast from './Toast';
 
 export default function ClientWrapper({ children }) {
   const pathname = usePathname();
-  const [isAdminRoute, setIsAdminRoute] = useState(false);
+  const isAdminRoute = pathname?.startsWith('/admin') ?? false;
   const initializeLimitedProducts = useProductStore((state) => state.initializeLimitedProducts);
 
   useEffect(() => {
@@ -23,26 +23,23 @@ export default function ClientWrapper({ children }) {
     initializeLimitedProducts?.(8);
   }, [initializeLimitedProducts]);
 
-  useEffect(() => {
-    // Check if current route is an admin route
-    setIsAdminRoute(pathname?.startsWith('/admin'));
-  }, [pathname]);
-
   return (
     <div className="flex flex-col min-h-screen">
       {!isAdminRoute && <Navbar />}
       <main className="flex-grow">{children}</main>
       {!isAdminRoute && <Footer />}
-      <a
-        className="whatsapp-float"
-        href="https://wa.me/96597210352"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Chat with us on WhatsApp"
-        title="Chat with us on WhatsApp"
-      >
-        <i className="fa-brands fa-whatsapp" aria-hidden="true" />
-      </a>
+      {!isAdminRoute && (
+        <a
+          className="whatsapp-float"
+          href="https://wa.me/96597210352?text=Hello%2C%20I%20need%20help%20with%20my%20order."
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Chat with us on WhatsApp"
+          title="Chat with us on WhatsApp"
+        >
+          <i className="fa-brands fa-whatsapp" aria-hidden="true" />
+        </a>
+      )}
       <Toast />
     </div>
   );

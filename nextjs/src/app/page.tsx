@@ -27,11 +27,17 @@ const Home = () => {
   const [bestSellers, setBestSellers] = useState([]);
   const [kidsProducts, setKidsProducts] = useState([]);
   const [pajamasProducts, setPajamasProducts] = useState([]);
-  const [homeLoading, setHomeLoading] = useState(true);
+  const [bestSellersLoading, setBestSellersLoading] = useState(true);
+  const [kidsLoading, setKidsLoading] = useState(true);
+  const [pajamasLoading, setPajamasLoading] = useState(true);
+  const [shouldLoadKids, setShouldLoadKids] = useState(false);
+  const [shouldLoadPajamas, setShouldLoadPajamas] = useState(false);
 
   // Refs for horizontal scrollers
   const kidsRef = useRef(null);
   const pajamasRef = useRef(null);
+  const kidsSectionRef = useRef(null);
+  const pajamasSectionRef = useRef(null);
 
   // FAQ state
   const [activeFaq, setActiveFaq] = useState(null);
@@ -45,38 +51,104 @@ const Home = () => {
     setActiveFaq(activeFaq === index ? null : index);
   };
 
-  // Load home data with parallel filtered requests
+  // Load the first product section immediately.
   useEffect(() => {
-    const loadHomeData = async () => {
-      setHomeLoading(true);
-         
-      // Home page should only show the admin-selected featured products for each section.
-      // Best selling and kids are capped to the allowed home limits; pajamas follows the selected featured set.
-      try {
-        const [best, kids, pjs] = await Promise.all([
-          // Best Sellers: featured general products only, max 8
-          fetchFilteredProducts({ limit: GENERAL_FEATURED_LIMIT, featured: 'true', isKidsProduct: 'false' }),
-          // Kids Featured: featured kids products only, max 4
-          fetchFilteredProducts({ limit: KIDS_FEATURED_LIMIT, isKidsProduct: 'true', featured: 'true' }),
-          // Pajamas Featured: only the selected featured pajamas items, no forced extra limit
-          fetchFilteredProducts({ category: 'Pajamas', featured: 'true', isKidsProduct: 'false' })
-        ]);
+    let isActive = true;
 
-        setBestSellers((best || []).slice(0, GENERAL_FEATURED_LIMIT));
-        setKidsProducts((kids || []).slice(0, KIDS_FEATURED_LIMIT));
-        setPajamasProducts(Array.isArray(pjs) ? pjs : []);
+    const loadBestSellers = async () => {
+      try {
+        const products = await fetchFilteredProducts({
+          limit: GENERAL_FEATURED_LIMIT,
+          featured: 'true',
+          isKidsProduct: 'false',
+        });
+        if (isActive) {
+          setBestSellers((products || []).slice(0, GENERAL_FEATURED_LIMIT));
+        }
       } catch (error) {
         console.error('Error loading home products:', error);
-        setBestSellers([]);
-        setKidsProducts([]);
-        setPajamasProducts([]);
+        if (isActive) setBestSellers([]);
       } finally {
-        setHomeLoading(false);
+        if (isActive) setBestSellersLoading(false);
       }
     };
 
-    loadHomeData();
+    loadBestSellers();
+
+    return () => {
+      isActive = false;
+    };
   }, [fetchFilteredProducts]);
+
+  // Defer lower product sections until they are close to the viewport.
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+
+        if (entry.target === kidsSectionRef.current) setShouldLoadKids(true);
+        if (entry.target === pajamasSectionRef.current) setShouldLoadPajamas(true);
+        observer.unobserve(entry.target);
+      });
+    }, { rootMargin: '150px 0px' });
+
+    if (kidsSectionRef.current) observer.observe(kidsSectionRef.current);
+    if (pajamasSectionRef.current) observer.observe(pajamasSectionRef.current);
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!shouldLoadKids) return;
+
+    let isActive = true;
+    const loadKidsProducts = async () => {
+      try {
+        const products = await fetchFilteredProducts({
+          limit: KIDS_FEATURED_LIMIT,
+          isKidsProduct: 'true',
+          featured: 'true',
+        });
+        if (isActive) setKidsProducts((products || []).slice(0, KIDS_FEATURED_LIMIT));
+      } catch (error) {
+        console.error('Error loading home products:', error);
+        if (isActive) setKidsProducts([]);
+      } finally {
+        if (isActive) setKidsLoading(false);
+      }
+    };
+
+    loadKidsProducts();
+    return () => {
+      isActive = false;
+    };
+  }, [fetchFilteredProducts, shouldLoadKids]);
+
+  useEffect(() => {
+    if (!shouldLoadPajamas) return;
+
+    let isActive = true;
+    const loadPajamasProducts = async () => {
+      try {
+        const products = await fetchFilteredProducts({
+          category: 'Pajamas',
+          featured: 'true',
+          isKidsProduct: 'false',
+        });
+        if (isActive) setPajamasProducts(Array.isArray(products) ? products : []);
+      } catch (error) {
+        console.error('Error loading home products:', error);
+        if (isActive) setPajamasProducts([]);
+      } finally {
+        if (isActive) setPajamasLoading(false);
+      }
+    };
+
+    loadPajamasProducts();
+    return () => {
+      isActive = false;
+    };
+  }, [fetchFilteredProducts, shouldLoadPajamas]);
 
   // Fetch FAQs
   useEffect(() => {
@@ -178,17 +250,17 @@ const Home = () => {
       </div>
 
       {/* Loading Indicator */}
-      {homeLoading && (
+      {bestSellersLoading && (
         <SkeletonGrid count={GENERAL_FEATURED_LIMIT} />
       )}
 
       {/* Product Grid */}
-      {!homeLoading && bestSellers.length === 0 && (
+      {!bestSellersLoading && bestSellers.length === 0 && (
         <div className="text-center mb-4">
           <p className="text-muted">No products are currently featured on the home page.</p>
         </div>
       )}
-      {!homeLoading && bestSellers.length > 0 && (
+      {!bestSellersLoading && bestSellers.length > 0 && (
         <div className="row g-4">
           {bestSellers.map(product => (
             <div key={product._id || product.id} className="col-6 col-sm-6 col-md-4 col-lg-3">
@@ -199,7 +271,7 @@ const Home = () => {
       )}
 
       {/* KIDS FEATURED SECTION (similar to Best selling) */}
-      <div className="mt-5">
+      <div className="mt-5" ref={kidsSectionRef}>
         <div className="d-flex justify-content-between align-items-center mb-3">
           <div>
             <span className="text-dark text-decoration-none fs-4 text-sm">Kids</span>
@@ -210,7 +282,7 @@ const Home = () => {
           </Link>
         </div>
 
-        {homeLoading ? (
+        {kidsLoading ? (
         <SkeletonGrid count={4} />
       ) : kidsProducts.length === 0 ? (
           <div className="text-center mb-4">
@@ -266,7 +338,7 @@ const Home = () => {
         )}
       </div>
 
-      <div className="mt-5">
+      <div className="mt-5" ref={pajamasSectionRef}>
         <div className="d-flex justify-content-between align-items-center mb-3">
           <div>
             <span className="text-dark text-decoration-none fs-4 text-sm">Pajamas</span>
@@ -277,7 +349,7 @@ const Home = () => {
           </Link>
         </div>
 
-        {homeLoading ? (
+        {pajamasLoading ? (
           <SkeletonGrid count={4} />
         ) : pajamasProducts.length === 0 ? (
           <div className="text-center mb-4">
