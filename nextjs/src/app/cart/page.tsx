@@ -1,299 +1,206 @@
-// @ts-nocheck
-
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useCartStore } from '../../store/cartStore';
 import { useProductStore } from '../../store/productStore';
 import { useAuthStore } from '../../store/authStore';
+import { useFavoritesStore } from '../../store/favoritesStore';
 import CartSkeleton from '@/components/CartSkeleton';
+import CheckoutProgress from '@/components/CheckoutProgress';
+import CouponForm from '@/components/CouponForm';
+import '../../components/Cart.css';
+
+const productKey = (item) => `${item._id ?? item.id}-${item.selectedColor || 'Default'}-${item.selectedSize || 'One Size'}`;
+const parsePrice = (value) => Number(String(value ?? 0).replace(/[^0-9.]/g, '')) || 0;
+const subscribeHydration = () => () => {};
+const getClientHydration = () => true;
+const getServerHydration = () => false;
 
 export default function Cart() {
-  const { cart, removeFromCart, updateQuantity, clearCart } = useCartStore();
+  const hydrated = useSyncExternalStore(subscribeHydration, getClientHydration, getServerHydration);
+  const { cart, removeFromCart, updateQuantity, updateOptions, clearCart, appliedCoupon } = useCartStore();
   const products = useProductStore((state) => state.products);
   const { user } = useAuthStore();
+  const addToFavorites = useFavoritesStore((state) => state.addToFavorites);
   const router = useRouter();
-  
-  const [loading, setLoading] = useState(cart.length === 0);
-
-  useEffect(() => {
-    if (cart.length > 0) {
-      setLoading(false);
-    } else {
-      const timer = setTimeout(() => setLoading(false), 300);
-      return () => clearTimeout(timer);
-    }
-  }, [cart.length]);
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [detailsOpen, setDetailsOpen] = useState(false);
 
   const currencySettings = useProductStore((state) => state.currencySettings);
   const selectedCurrency = useProductStore((state) => state.selectedCurrency);
-
-  const getItemMaxStock = (item: any, product: any) => {
-    const productStock = product?.stock ?? item.stock;
-    const itemSize = item.selectedSize || 'One Size';
-    const itemColor = item.selectedColor || 'Default';
-
-    if (productStock && typeof productStock === 'object') {
-      const stockValue = productStock[itemSize] ?? productStock[itemColor] ?? item.stock ?? 1;
-      const parsedValue = Number(stockValue);
-      return Number.isFinite(parsedValue) ? parsedValue : 1;
-    }
-
-    const parsedValue = Number(productStock ?? item.stock ?? 1);
-    return Number.isFinite(parsedValue) ? parsedValue : 1;
-  };
-  const parsePrice = (value: any) => Number(String(value || 0).replace(/[^0-9.]/g, '')) || 0;
-  const currencyDecimals = selectedCurrency === 'KWD' ? 3 : 2;
-  const currencySymbol = selectedCurrency === 'INR' ? '₹' : selectedCurrency === 'KWD' ? 'KWD' : currencySettings?.symbol || 'KWD';
+  const decimals = selectedCurrency === 'KWD' ? 3 : 2;
+  const currencySymbol = selectedCurrency === 'INR' ? '₹' : selectedCurrency === 'KWD' ? 'KWD' : currencySettings?.symbol || '₹';
   const shippingPrice = selectedCurrency === 'INR'
     ? (currencySettings?.shippingPriceINR ?? 0)
     : (currencySettings?.shippingPriceKWD ?? currencySettings?.shippingPrice ?? 5);
-
-  const subtotal = cart.reduce((sum: number, item: any) => {
-    const price = parsePrice(item.displayPrice ?? item.price);
-    return sum + price * item.quantity;
-  }, 0);
-
-  const originalSubtotal = cart.reduce((sum: number, item: any) => {
-    const original = parsePrice(item.displayOriginalPrice ?? item.originalPrice);
-    return sum + (original > 0 ? original * item.quantity : 0);
-  }, 0);
-
-  const discount = Math.max(0, originalSubtotal - subtotal);
+  const subtotal = cart.reduce((sum, item) => sum + parsePrice(item.displayPrice ?? item.price) * Number(item.quantity || 1), 0);
+  const mrp = cart.reduce((sum, item) => sum + parsePrice(item.displayOriginalPrice ?? item.originalPrice ?? item.displayPrice ?? item.price) * Number(item.quantity || 1), 0);
+  const discount = Math.max(0, mrp - subtotal);
   const shipping = cart.length ? shippingPrice : 0;
-  const total = subtotal + shipping;
+  const couponDiscount = Math.max(0, Number(appliedCoupon?.discount) || 0);
+  const total = Math.max(0, subtotal - couponDiscount) + shipping;
+  const activeSelectedItems = selectedItems.filter((key) => cart.some((item) => productKey(item) === key));
+  const selectedSubtotal = cart.reduce(
+    (sum, item) => activeSelectedItems.includes(productKey(item)) ? sum + parsePrice(item.displayPrice ?? item.price) * Number(item.quantity || 1) : sum,
+    0
+  );
+  const format = (value) => `${currencySymbol}${Number(value || 0).toFixed(decimals)}`;
 
-  const handleCheckout = () => {
-    if (!user) {
-      router.push('/login');
-      return;
-    }
-    router.push('/checkout');
+  const getItemMaxStock = (item, size = item.selectedSize, color = item.selectedColor) => {
+    const product = products.find((entry) => String(entry._id ?? entry.id) === String(item._id ?? item.id));
+    const stock = product?.stock ?? item.stock;
+    const value = stock && typeof stock === 'object'
+      ? stock[size || 'One Size'] ?? stock[color || 'Default'] ?? 1
+      : stock ?? 1;
+    return Math.max(1, Number(value) || 1);
   };
+
+  const handleCheckout = () => router.push(user ? '/checkout' : '/login?redirect=/checkout');
+  const toggleItem = (key) => setSelectedItems(activeSelectedItems.includes(key)
+    ? activeSelectedItems.filter((item) => item !== key)
+    : [...activeSelectedItems, key]);
+  const toggleAll = () => setSelectedItems(activeSelectedItems.length === cart.length ? [] : cart.map(productKey));
+  const moveToWishlist = (item) => {
+    addToFavorites(item);
+    removeFromCart(item._id ?? item.id, item.selectedSize, item.selectedColor);
+  };
+
+  if (!hydrated) return <CartSkeleton />;
 
   if (cart.length === 0) {
     return (
-    <div className="container mx-auto px-4 py-5 text-center">
-  <h2 className="text-3xl font-semibold mb-4 cart-heading-text">Your cart is empty</h2>
-
-  <p className="cart-muted-text mb-6">
-    Add products to your cart to see them here.
-  </p>
-
-  <Link
-    href="/products"
-    className="inline-flex items-center justify-center rounded-lg px-5 py-3 text-white shadow hover:opacity-90 transition"
-    style={{ backgroundColor: '#6e56cf' }}
-  >
-    Continue shopping
-  </Link>
-</div>
+      <main className="cart-page cart-empty-page">
+        <CheckoutProgress active="bag" />
+        <section className="empty-cart">
+          <h1>MY BAG (0 Items)</h1>
+          <p>Your bag is waiting for something you love.</p>
+          <Link href="/products" className="continue-shopping">CONTINUE SHOPPING</Link>
+        </section>
+      </main>
     );
   }
 
-  if (loading) {
-    return <CartSkeleton />;
-  }
-
   return (
-    <div className="container mx-auto px-4 py-5">
-      <h1 className="text-3xl font-semibold cart-heading-text">Shopping Cart</h1>
-      <p className="mt-2 text-sm cart-muted-text">Home / Cart</p>
+    <main className="cart-page">
+      <CheckoutProgress active="bag" />
+      <div className="cart-container">
+        <h1 className="cart-page-title">My Bag <span>({cart.length} {cart.length === 1 ? 'item' : 'items'})</span></h1>
+        <div className="cart-content">
+          <section className="cart-items-column" aria-label="Items in your bag">
+            <div className="cart-selection-toolbar">
+              <label className="cart-select-all">
+                <input type="checkbox" checked={activeSelectedItems.length === cart.length} onChange={toggleAll} aria-label="Select all items" />
+                <span>Select all ({activeSelectedItems.length}/{cart.length})</span>
+              </label>
+              <span className="cart-selected-subtotal">Selected: <strong>{format(selectedSubtotal)}</strong></span>
+              <Link href="/wishlist" className="cart-toolbar-link">♡ Wishlist</Link>
+              <button type="button" className="cart-toolbar-link cart-clear-link" onClick={clearCart}>Clear bag</button>
+            </div>
 
-      <div className="mt-8 grid gap-6 xl:grid-cols-[2fr_0.95fr]">
-
-        <section className="space-y-3">
-          {cart.map((item: any) => {
-            const itemId = item._id ?? item.id;
-
-            // FIX: size & color handling
-            const itemColor = item.selectedColor || 'Default';
-            const itemSize = item.selectedSize || 'One Size';
-
-            return (
-              <article
-                key={`${itemId}-${itemColor}-${itemSize}`} //   UNIQUE KEY
-                className="overflow-hidden rounded-3xl border shadow-sm transition hover:shadow-md cart-card mb-3"
-              >
-                <div className="flex flex-col gap-2 p-2 sm:flex-row sm:items-center">
-                 <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-32 h-32 sm:w-30 sm:h-30 object-contain rounded-xl shrink-0"
-                />
-
-                  <div className="flex-1 space-y-2">
-                    <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-                      <div className="min-w-0">
-                        <h2 className="text-sm font-semibold cart-heading-text line-clamp-2">
-                          {item.name}
-                        </h2>
-
-                        {/* <p className="mt-1 text-xs cart-muted-text">
-                          {item.description || ''}
-                        </p> */}
-
-                        {/* SHOW COLOR & SIZE */}
-                        <p className="text-xs cart-muted-text">
-                          Color: <strong>{itemColor}</strong>
-                        </p>
-                        <p className="text-xs cart-muted-text">
-                          Size: <strong>{itemSize}</strong>
-                        </p>
+            {cart.map((item) => {
+              const itemId = item._id ?? item.id;
+              const itemKey = productKey(item);
+              const maxStock = getItemMaxStock(item);
+              const variantProduct = products.find((product) => String(product._id ?? product.id) === String(itemId)) || item;
+              const sizes = Array.isArray(variantProduct.sizes) ? variantProduct.sizes : [];
+              const colors = Array.isArray(variantProduct.colors) ? variantProduct.colors : [];
+              const itemPrice = parsePrice(item.displayPrice ?? item.price);
+              const itemMrp = parsePrice(item.displayOriginalPrice ?? item.originalPrice);
+              return (
+                <article className="cart-item" key={itemKey}>
+                  <input
+                    type="checkbox"
+                    className="cart-item-checkbox"
+                    checked={activeSelectedItems.includes(itemKey)}
+                    onChange={() => toggleItem(itemKey)}
+                    aria-label={`Select ${item.name}`}
+                  />
+                  <Image className="cart-item-image" src={item.image || '/placeholder.png'} alt={item.name || 'Product'} width={112} height={128} unoptimized />
+                  <div className="cart-item-details">
+                    <div className="cart-item-heading">
+                      <div>
+                        <h2>{item.name}</h2>
+                        <p>{item.category || item.subtitle || 'Fashion'}</p>
                       </div>
-
-                      <div className="mt-2 flex items-center gap-3 cart-surface-text sm:max-w-[220px]">
-                        <div className="flex-1">
-                          <p className="uppercase tracking-[0.25em] cart-muted-text">
-                            Unit price
-                          </p>
-                          <p className="mt-1 text-sm font-semibold cart-surface-text">
-                            {parsePrice(item.displayPrice ?? item.price).toFixed(currencyDecimals)} {item.currencySymbol || currencySettings?.symbol || 'KWD'}
-                          </p>
-                        </div>
-                        {(() => {
-                          const original = parsePrice(item.displayOriginalPrice ?? item.originalPrice);
-                          const current = parsePrice(item.displayPrice ?? item.price);
-                          if (original > current) {
-                            return (
-                              <div className="text-right">
-                                <p className="uppercase tracking-[0.25em] cart-muted-text">
-                                  Original
-                                </p>
-                                <p className="mt-1 text-sm font-semibold cart-muted-text line-through">
-                                  {original.toFixed(currencyDecimals)} {item.currencySymbol || currencySettings?.symbol || 'KWD'}
-                                </p>
-                              </div>
-                            );
-                          }
-                          return null;
-                        })()}
+                      <div className="cart-item-price">
+                        <strong>{format(itemPrice)}</strong>
+                        {itemMrp > itemPrice && <del>{format(itemMrp)}</del>}
+                        <small>Inclusive of all taxes</small>
                       </div>
                     </div>
-
-                    <div className="flex flex-wrap items-center gap-2">
-
-                      {/* QUANTITY FIX */}
-                      <div className="inline-flex items-center rounded-2xl cart-quantity-panel px-2 py-1 text-sm cart-surface-text">
-                        <button
-                          type="button"
-                          onClick={() =>
-                            updateQuantity(itemId, item.quantity - 1, itemSize, itemColor)
-                          }
-                          className="h-8 w-8 rounded-lg cart-btn cart-btn-square"
-                          disabled={item.quantity <= 1}
+                    <div className="cart-item-options">
+                      <label>Size
+                        {sizes.length > 1 ? (
+                          <select
+                            value={item.selectedSize || 'One Size'}
+                            onChange={(event) => updateOptions(itemId, item.selectedSize || 'One Size', item.selectedColor || 'Default', event.target.value, item.selectedColor || 'Default', getItemMaxStock(item, event.target.value, item.selectedColor))}
+                            aria-label={`Size for ${item.name}`}
+                          >
+                            {sizes.map((size) => <option key={size} value={size}>{size}</option>)}
+                          </select>
+                        ) : <span>{item.selectedSize || sizes[0] || 'One Size'}</span>}
+                      </label>
+                      {colors.length > 1 && (
+                        <label>Color
+                          <select
+                            value={item.selectedColor || 'Default'}
+                            onChange={(event) => updateOptions(itemId, item.selectedSize || 'One Size', item.selectedColor || 'Default', item.selectedSize || 'One Size', event.target.value, getItemMaxStock(item, item.selectedSize, event.target.value))}
+                            aria-label={`Color for ${item.name}`}
+                          >
+                            {colors.map((color) => <option key={color} value={color}>{color}</option>)}
+                          </select>
+                        </label>
+                      )}
+                      <label>Qty
+                        <select
+                          value={item.quantity}
+                          onChange={(event) => updateQuantity(itemId, Number(event.target.value), item.selectedSize, item.selectedColor, maxStock)}
+                          aria-label={`Quantity for ${item.name}`}
                         >
-                          -
-                        </button>
-
-                        <span className="mx-2 min-w-[1.5rem] text-center text-sm font-medium cart-surface-text">
-                          {item.quantity}
-                        </span>
-
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const product = products.find(p => String(p._id || p.id) === String(itemId));
-                            const maxStock = getItemMaxStock(item, product);
-                            updateQuantity(itemId, Math.min(item.quantity + 1, maxStock), itemSize, itemColor, maxStock);
-                          }}
-                          className="h-8 w-8 rounded-lg cart-btn cart-btn-square"
-                          disabled={(() => {
-                            const product = products.find(p => String(p._id || p.id) === String(itemId));
-                            const maxStock = getItemMaxStock(item, product);
-                            return item.quantity >= maxStock;
-                          })()}
-                        >
-                          +
-                        </button>
-                      </div>
-
-                      {/* REMOVE FIX */}
-                      <button
-                        type="button"
-                        onClick={() =>
-                          removeFromCart(itemId, itemSize, itemColor)
-                        }
-                        className="rounded-full border cart-btn cart-remove-btn px-3 py-1 text-xs font-semibold transition"
-                      >
-                        Remove
-                      </button>
-
+                          {Array.from({ length: maxStock }, (_, index) => index + 1).map((qty) => <option key={qty}>{qty}</option>)}
+                        </select>
+                      </label>
+                      <span className="cart-delivery-estimate">Estimated delivery: 3–7 days</span>
+                    </div>
+                    <div className="cart-item-actions">
+                      <button type="button" onClick={() => removeFromCart(itemId, item.selectedSize, item.selectedColor)}>REMOVE</button>
+                      <button type="button" onClick={() => moveToWishlist(item)}>MOVE TO WISHLIST</button>
                     </div>
                   </div>
-                </div>
-              </article>
-            );
-          })}
-        </section>
+                </article>
+              );
+            })}
+          </section>
 
-        {/* RIGHT SIDE SAME */}
-        <aside className="rounded-3xl border p-4 shadow-sm xl:sticky xl:top-24 cart-summary">
-          <div className="mb-4 rounded-2xl cart-panel p-3 cart-surface-text">
-            <p className="text-sm font-medium cart-muted-text">Order summary</p>
-            <p className="mt-2 text-2xl font-semibold cart-surface-text">
-              {total.toFixed(currencyDecimals)} {currencySymbol}
-            </p>
-          </div>
-
-          <div className="space-y-3 cart-summary-section pb-4 px-4">
-            {discount > 0 && (
-              <div className="flex items-center justify-between py-2">
-                <span className="font-medium cart-surface-text">Original price</span>
-                <span className="font-semibold cart-muted-text line-through">
-                  {originalSubtotal.toFixed(currencyDecimals)} {currencySymbol}
-                </span>
-              </div>
-            )}
-            <div className="flex items-center justify-between py-2">
-              <span className="font-medium cart-surface-text">Subtotal</span>
-              <span className="font-semibold cart-surface-text">
-                {subtotal.toFixed(currencyDecimals)} {currencySymbol}
-              </span>
+          <aside className="cart-summary">
+            <CouponForm subtotal={subtotal} title="Available coupons" />
+            <h2>Price Details</h2>
+            <div className="cart-summary-row"><span>Total MRP</span><span>{format(mrp)}</span></div>
+            {discount > 0 && <div className="cart-summary-row cart-saving"><span>Bag discount</span><span>−{format(discount)}</span></div>}
+            {couponDiscount > 0 && <div className="cart-summary-row cart-saving"><span>Coupon discount</span><span>−{format(couponDiscount)}</span></div>}
+            <div className="cart-summary-row"><span>Shipping</span><span>{shipping ? format(shipping) : 'FREE'}</span></div>
+            <button className="cart-details-toggle" type="button" onClick={() => setDetailsOpen((open) => !open)} aria-expanded={detailsOpen}>
+              {detailsOpen ? 'Hide price details' : 'View price details'}
+            </button>
+            {detailsOpen && <div className="cart-summary-row"><span>Subtotal</span><span>{format(subtotal)}</span></div>}
+            <div className="cart-total-row"><strong>Payable total</strong><strong>{format(total)}</strong></div>
+            {discount > 0 && <p className="cart-savings-banner">You save {format(discount)} on this bag</p>}
+            <div className="cart-trust-points">
+              <span>✓ Secure checkout</span><span>↻ Easy returns</span><span>□ Reliable delivery</span>
             </div>
-            {discount > 0 && (
-              <div className="flex items-center justify-between py-2 text-emerald-600">
-                <span className="font-medium cart-surface-text">Discount Price</span>
-                <span className="font-semibold">
-                  -{discount.toFixed(currencyDecimals)} {currencySymbol}
-                </span>
-              </div>
-            )}
-            <div className="flex items-center justify-between py-2">
-              <span className="font-medium cart-surface-text">Shipping</span>
-              <span className="font-semibold cart-surface-text">
-                {shipping.toFixed(currencyDecimals)} {currencySymbol}
-              </span>
-            </div>
-          </div>
-
-          <div className="mt-4 flex items-center justify-between rounded-2xl cart-panel px-3 py-3 text-sm font-semibold cart-surface-text">
-            <span>Total</span>
-            <span>{total.toFixed(currencyDecimals)} {currencySymbol}</span>
-          </div>
-
-          <button
-            onClick={handleCheckout}
-            className="mt-5 w-full rounded-3xl bg-[#16a34a] px-5 py-3 text-sm font-semibold text-white shadow hover:bg-[#0f8a3e] transition"
-          >
-            Proceed to Checkout
-          </button>
-
-          <button
-            onClick={clearCart}
-            className="mt-3 w-full rounded-3xl cart-clear-btn px-5 py-3 text-sm font-semibold shadow-sm transition"
-          >
-            Clear Cart
-          </button>
-        </aside>
-
+            <button className="cart-checkout-button" type="button" onClick={handleCheckout}>CONTINUE TO CHECKOUT</button>
+          </aside>
+        </div>
       </div>
-    </div>
+      <div className="cart-sticky-checkout">
+        <button type="button" onClick={() => setDetailsOpen((open) => !open)} aria-expanded={detailsOpen}>
+          <small>Payable total</small><strong>{format(total)}</strong><span>View details</span>
+        </button>
+        <button type="button" onClick={handleCheckout}>CHECKOUT</button>
+      </div>
+    </main>
   );
 }
-
-
-
-

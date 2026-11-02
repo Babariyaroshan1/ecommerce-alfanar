@@ -1,8 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import { useAuthStore } from '../store/authStore';
+import AccountSidebar, { useAccountHydrated } from './AccountSidebar';
 import './Orders.css';
 import OrderListSkeleton from './OrderListSkeleton';
 
@@ -19,17 +21,13 @@ const formatPrice = (price, currencySymbol = '₹') => {
 };
 
 export default function Orders() {
+  const { user } = useAuthStore();
+  const hydrated = useAccountHydrated();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  useEffect(() => {   
-    fetchOrders();
-    const interval = setInterval(fetchOrders, 30000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -47,7 +45,19 @@ export default function Orders() {
       console.error('Error fetching orders:', error);
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    if (!user) {
+      router.push('/login?redirect=/orders');
+      return;
+    }
+
+    void Promise.resolve().then(fetchOrders);
+    const interval = setInterval(fetchOrders, 30000);
+    return () => clearInterval(interval);
+  }, [fetchOrders, hydrated, user, router]);
 
   const getStatusMessage = (status) => {
     switch (status) {
@@ -63,67 +73,67 @@ export default function Orders() {
     }
   };
 
-  if (loading) {
-    return <OrderListSkeleton />;
-  }
-
+  if (!hydrated || !user) return null;
 
   return (
-    <div className="orders-wrapper">
-      <div className="orders-header">
-        <h1>My Orders</h1>
-        <p className="subtitle">Check the status of your recent purchases</p>
+    <main className="orders-wrapper account-page">
+      <div className="account-page-layout">
+        <AccountSidebar active="orders" />
+        <section className="orders-main">
+          <div className="orders-header">
+            <h1>My Orders</h1>
+            <p className="subtitle">Check the status of your recent purchases</p>
+          </div>
+
+          {loading ? <OrderListSkeleton /> : orders.length === 0 ? (
+            <div className="empty-state">
+              <div className="empty-icon"><i className="fa-solid fa-box"></i></div>
+              <h2>No orders yet</h2>
+              <p>Looks like you haven&apos;t made any purchases yet.</p>
+              <button className="continue-btn" onClick={() => router.push('/')}>
+                Start Shopping
+              </button>
+            </div>
+          ) : (
+            <div className="orders-list">
+              {orders.map((order) => {
+                const totalItems = order.items.reduce((sum, item) => sum + (item.quantity || 0), 0);
+
+                return (
+                  <div key={order._id} className="order-card">
+                    <div className="order-card-header">
+                      <div className="order-info-top">
+                        <span className="order-id">Order #{order.orderId}</span>
+                        <span className="order-date">
+                          {new Date(order.createdAt).toLocaleDateString('en-US', {
+                            day: 'numeric', month: 'short', year: 'numeric'
+                          })}
+                        </span>
+                      </div>
+                      <div className={`status-badge ${order.orderStatus}`}>
+                        {getStatusMessage(order.orderStatus)}
+                      </div>
+                    </div>
+
+                    <div className="order-card-footer">
+                      <div className="order-total-info">
+                        <span className="total-label">Total Amount ({totalItems} Items):</span>
+                        <span className="total-price" style={{whiteSpace: 'nowrap'}}>{order.currencySymbol || '₹'}{formatPrice(order.totalAmount, order.currencySymbol)}</span>
+                      </div>
+                      <button
+                        className="view-details-btn"
+                        onClick={() => router.push(`/order/${order._id}`)}
+                      >
+                        View Details
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </section>
       </div>
-
-      {orders.length === 0 ? (
-        <div className="empty-state">
-          <div className="empty-icon"><i className="fa-solid fa-box"></i></div>
-          <h2>No orders yet</h2>
-          <p>Looks like you haven't made any purchases yet.</p>
-          <button className="continue-btn" onClick={() => router.push('/')}>
-            Start Shopping
-          </button>
-        </div>
-      ) : (
-        <div className="orders-list">
-          {orders.map((order) => {
-            const totalItems = order.items.reduce((sum, item) => sum + (item.quantity || 0), 0);
-
-            return (
-              <div key={order._id} className="order-card">
-                {/* Card Header */}
-                <div className="order-card-header">
-                  <div className="order-info-top">
-                    <span className="order-id">Order #{order.orderId}</span>
-                    <span className="order-date">
-                      {new Date(order.createdAt).toLocaleDateString('en-US', {
-                        day: 'numeric', month: 'short', year: 'numeric'
-                      })}
-                    </span>
-                  </div>
-                  <div className={`status-badge ${order.orderStatus}`}>
-                    {getStatusMessage(order.orderStatus)}
-                  </div>
-                </div>
-
-                {/* Card Footer (Body removed to make cards shorter) */}
-                <div className="order-card-footer">
-                  <div className="order-total-info">
-                    <span className="total-label">Total Amount ({totalItems} Items):</span>
-                    <span className="total-price" style={{whiteSpace: 'nowrap'}}>{order.currencySymbol || '₹'}{formatPrice(order.totalAmount, order.currencySymbol)}</span>
-                  </div>
-                  <button 
-                    className="view-details-btn" 
-                    onClick={() => router.push(`/order/${order._id}`)}
-                  >
-                    View Details
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </div>
+    </main>
   );
 }

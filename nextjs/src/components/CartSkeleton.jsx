@@ -1,8 +1,10 @@
 import './CartSkeleton.css';
+import CheckoutProgress from './CheckoutProgress';
 
 export default function CartSkeleton() {
   return (
     <div className="cart-skeleton">
+      <CheckoutProgress active="bag" />
       <div className="skeleton-header">
         <div className="skeleton-title"></div>
       </div>

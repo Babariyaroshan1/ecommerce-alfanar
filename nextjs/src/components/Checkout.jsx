@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useSyncExternalStore } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import axios from 'axios';
 import { useAuthStore } from '../store/authStore';
@@ -9,13 +9,57 @@ import { useProductStore } from '../store/productStore';
 import '../components/Checkout.css';
 import { useTranslation } from 'react-i18next';
 import CheckoutSkeleton from './CheckoutSkeleton';
+import CheckoutProgress from './CheckoutProgress';
+import CouponForm from './CouponForm';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'; // Set in nextjs/.env.local for development and in Vercel env for production
+const subscribeToStorage = (callback) => {
+  if (typeof window === 'undefined') return () => {};
+  window.addEventListener('storage', callback);
+  return () => window.removeEventListener('storage', callback);
+};
+const getCheckoutFormSnapshot = () => (typeof window === 'undefined' ? '' : localStorage.getItem('checkoutFormData') || '');
+const getRegisterFormSnapshot = () => (typeof window === 'undefined' ? '' : localStorage.getItem('registerFormData') || '');
+const getSelectedAddressSnapshot = () => (typeof window === 'undefined' ? '' : localStorage.getItem('selectedAddressId') || '');
+const getServerSnapshot = () => '';
+const getServerMountedSnapshot = () => false;
+const getClientSnapshot = () => true;
+const createAddressId = () => `addr-${Date.now()}`;
+const parseStoredObject = (value) => {
+  try {
+    return value ? JSON.parse(value) : {};
+  } catch {
+    return {};
+  }
+};
 
 const parsePrice = (price) => {
   const numeric = parseFloat(String(price).replace(/[^0-9.]/g, ''));
   return Number.isNaN(numeric) ? 0 : numeric;
 };
+
+const normalizeAddress = (address) => ({
+  id: address.id || address._id || '',
+  _id: address._id || '',
+  name: address.name || '',
+  phone: address.phone || '',
+  addressTitle: address.addressTitle || '',
+  governorate: address.governorate || '',
+  area: address.area || '',
+  block: address.block || '',
+  apartment: address.apartment || '',
+  floor: address.floor || '',
+  jadda: address.jadda || '',
+  city: address.city || '',
+  state: address.state || '',
+  pincode: address.pincode || '',
+  street: address.street || '',
+  houseNumber: address.houseNumber || '',
+  latitude: address.latitude || null,
+  longitude: address.longitude || null,
+  mapLink: address.mapLink || '',
+  isDefault: Boolean(address.isDefault)
+});
 
 export default function Checkout() {
   const { user, token, logout, updateProfile } = useAuthStore();
@@ -25,6 +69,12 @@ export default function Checkout() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { t } = useTranslation();
+  const mounted = useSyncExternalStore(subscribeToStorage, getClientSnapshot, getServerMountedSnapshot);
+  const checkoutFormSnapshot = useSyncExternalStore(subscribeToStorage, getCheckoutFormSnapshot, getServerSnapshot);
+  const registerFormSnapshot = useSyncExternalStore(subscribeToStorage, getRegisterFormSnapshot, getServerSnapshot);
+  const selectedAddressSnapshot = useSyncExternalStore(subscribeToStorage, getSelectedAddressSnapshot, getServerSnapshot);
+  const queryAddressId = searchParams.get('addressId') || '';
+  const showAddressFormFromQuery = searchParams.get('showAddressForm') === 'true';
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -34,70 +84,75 @@ export default function Checkout() {
     }
   }, [user, token, router]);
 
-  // If not authenticated, show loading or redirect message
-  if (!user || !token) {
-    return (
-      <div className="checkout-wrapper">
-        <div className="checkout-container">
-          <div style={{textAlign: 'center', padding: '2rem'}}>
-            <h2>{t("Please login to continue with checkout")}</h2>
-            <p>{t("Redirecting to login page...")}</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   const [loading, setLoading] = useState(false);
-  const [checkoutLoading, setCheckoutLoading] = useState(true);
-  const [mounted, setMounted] = useState(false);
-  const [unavailableItems, setUnavailableItems] = useState([]);
+  const [checkoutError, setCheckoutError] = useState('');
 
   // Modal State
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
   const [upiId, setUpiId] = useState('');
   const [upiError, setUpiError] = useState('');
-  const [enabledPaymentMethods, setEnabledPaymentMethods] = useState(['upi', 'card', 'netbanking', 'cod', 'wamd']);
+  const [enabledPaymentMethods, setEnabledPaymentMethods] = useState([]);
+  const [paymentMethodsError, setPaymentMethodsError] = useState('');
 
-  const[formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    // Kuwait fields
-    addressTitle: '',
-    governorate: '',
-    area: '',
-    block: '',
-    apartment: '',
-    floor: '',
-    jadda: '',
-    // India fields
-    city: '',
-    state: '',
-    pincode: '',
-    // Common fields
-    street: '',
-    houseNumber: '',
-    latitude: null,
-    longitude: null,
-    mapLink: ''
-  });
-  const [savedAddresses, setSavedAddresses] = useState([]);
-  const [selectedSavedAddressId, setSelectedSavedAddressId] = useState('');
-  const [addressModalOpen, setAddressModalOpen] = useState(false);
+  const cachedForm = useMemo(() => parseStoredObject(checkoutFormSnapshot), [checkoutFormSnapshot]);
+  const savedForm = useMemo(() => parseStoredObject(registerFormSnapshot), [registerFormSnapshot]);
+  const savedAddressesFromUser = Array.isArray(user?.addresses) ? user.addresses : [];
+  const selectedAddressId = queryAddressId || selectedAddressSnapshot || (() => {
+    const defaultAddress = savedAddressesFromUser.find((address) => address.isDefault);
+    return defaultAddress?.id || defaultAddress?._id || '';
+  })();
+  const selectedAddressFromUser = savedAddressesFromUser.find((address) => String(address.id || address._id) === String(selectedAddressId))
+    || savedAddressesFromUser.find((address) => address.isDefault);
+  const initialForm = useMemo(() => {
+    const baseForm = {
+      name: user?.name || cachedForm.name || savedForm.name || '',
+      phone: user?.phone || cachedForm.phone || savedForm.phone || '',
+      addressTitle: user?.address?.addressTitle || cachedForm.addressTitle || savedForm.addressTitle || '',
+      governorate: user?.address?.governorate || cachedForm.governorate || savedForm.governorate || '',
+      area: user?.address?.area || cachedForm.area || savedForm.area || '',
+      block: user?.address?.block || cachedForm.block || savedForm.block || '',
+      apartment: user?.address?.apartment || cachedForm.apartment || savedForm.apartment || '',
+      floor: user?.address?.floor || cachedForm.floor || savedForm.floor || '',
+      jadda: user?.address?.jadda || cachedForm.jadda || savedForm.jadda || '',
+      city: user?.address?.city || cachedForm.city || savedForm.city || '',
+      state: user?.address?.state || cachedForm.state || savedForm.state || '',
+      pincode: user?.address?.pincode || cachedForm.pincode || savedForm.pincode || '',
+      street: user?.address?.street || cachedForm.street || savedForm.street || '',
+      houseNumber: user?.address?.houseNumber || cachedForm.houseNumber || savedForm.houseNumber || '',
+      latitude: user?.address?.latitude || cachedForm.latitude || null,
+      longitude: user?.address?.longitude || cachedForm.longitude || null,
+      mapLink: user?.address?.mapLink || cachedForm.mapLink || ''
+    };
+    return selectedAddressFromUser ? { ...baseForm, ...selectedAddressFromUser } : baseForm;
+  }, [user, cachedForm, savedForm, selectedAddressFromUser]);
+  const [formOverrides, setFormOverrides] = useState(null);
+  const formData = formOverrides || initialForm;
+  const setFormData = (next) => setFormOverrides((current) => typeof next === 'function' ? next(current || initialForm) : next);
+  const [savedAddresses, setSavedAddresses] = useState(savedAddressesFromUser);
+  const [selectedSavedAddressIdOverride, setSelectedSavedAddressIdOverride] = useState(null);
+  const selectedSavedAddressId = selectedSavedAddressIdOverride ?? selectedAddressId;
+  const setSelectedSavedAddressId = setSelectedSavedAddressIdOverride;
+  const [addressModalOpen, setAddressModalOpen] = useState(showAddressFormFromQuery);
   const [addressMessage, setAddressMessage] = useState('');
+  const [editingAddressId, setEditingAddressId] = useState('');
   const [isAddFormVisible, setIsAddFormVisible] = useState(false); // New state to toggle add address form
+
+  const unavailableItems = cart.filter((item) => parsePrice(typeof item.displayPrice === 'number' ? item.displayPrice : item.price) <= 0).map((item) => item._id || item.id);
 
   const persistSelectedAddressId = (id) => {
     if (typeof window === 'undefined') return;
-    localStorage.setItem('selectedAddressId', id);
-    setSelectedSavedAddressId(id);
+    const addressId = String(id || '');
+    if (!addressId) return;
+    localStorage.setItem('selectedAddressId', addressId);
+    setSelectedSavedAddressId(addressId);
   };
 
   const saveAddressToBackend = async (address) => {
     if (!isAddressSaveable(address)) return null;
     const normalized = normalizeAddress(address);
     const existing = savedAddresses.find((item) =>
+      (editingAddressId && String(item.id || item._id) === String(editingAddressId)) ||
       item.name === normalized.name &&
       item.phone === normalized.phone &&
       item.street === normalized.street &&
@@ -106,12 +161,16 @@ export default function Checkout() {
       item.city === normalized.city &&
       item.pincode === normalized.pincode
     );
+    const persistedAddressId = existing?.id || existing?._id || normalized.id || createAddressId();
 
     const nextAddresses = [
-      ...savedAddresses.filter((item) => item.id !== (existing?.id || normalized.id)),
+      ...savedAddresses
+        .filter((item) => String(item.id || item._id) !== String(persistedAddressId))
+        .map((item) => normalized.isDefault ? { ...item, isDefault: false } : item),
       {
         ...normalized,
-        id: existing?.id || normalized.id,
+        id: persistedAddressId,
+        _id: existing?._id || normalized._id,
         label: normalized.addressTitle || normalized.name || 'Address'
       }
     ];
@@ -122,8 +181,9 @@ export default function Checkout() {
         label: address.label || address.addressTitle || address.name || 'Address'
       };
       delete payload.id;
-      if (address.id && /^[0-9a-fA-F]{24}$/.test(address.id)) {
-        payload._id = address.id;
+      const backendId = address._id || address.id;
+      if (backendId && /^[0-9a-fA-F]{24}$/.test(String(backendId))) {
+        payload._id = backendId;
       }
       return payload;
     });
@@ -141,36 +201,17 @@ export default function Checkout() {
         item.city === normalized.city &&
         item.pincode === normalized.pincode
       );
-      const persistedId = savedAddress?.id || existing?.id || normalized.id;
+      const persistedId = savedAddress?.id || savedAddress?._id || existing?.id || existing?._id || persistedAddressId;
       persistSelectedAddressId(persistedId);
-      setAddressMessage('Address saved to My Addresses.');
+      setEditingAddressId('');
+      setAddressMessage(t('Address saved to My Addresses.'));
       return savedAddress || normalized;
     } catch (error) {
       console.error('Failed to save address to backend:', error);
+      setAddressMessage(error?.response?.data?.message || error?.message || t('Unable to save this address. Please try again.'));
       return null;
     }
   };
-
-  const normalizeAddress = (address) => ({
-    id: address.id || `addr-${Date.now()}`,
-    name: address.name || '',
-    phone: address.phone || '',
-    addressTitle: address.addressTitle || '',
-    governorate: address.governorate || '',
-    area: address.area || '',
-    block: address.block || '',
-    apartment: address.apartment || '',
-    floor: address.floor || '',
-    jadda: address.jadda || '',
-    city: address.city || '',
-    state: address.state || '',
-    pincode: address.pincode || '',
-    street: address.street || '',
-    houseNumber: address.houseNumber || '',
-    latitude: address.latitude || null,
-    longitude: address.longitude || null,
-    mapLink: address.mapLink || ''
-  });
 
   const isAddressSaveable = (address) => {
     const normalized = normalizeAddress(address);
@@ -184,21 +225,25 @@ export default function Checkout() {
 
   const handleSelectSavedAddress = (address) => {
     setFormData(normalizeAddress(address));
-    persistSelectedAddressId(address.id);
+    persistSelectedAddressId(address.id || address._id);
     setAddressModalOpen(false);
-    setAddressMessage('Address selected for checkout.');
+    setAddressMessage(t('Address selected for checkout.'));
   };
 
   const handleDeleteSavedAddress = async (id) => {
-    const remaining = savedAddresses.filter((address) => address.id !== id);
+    const removedAddress = savedAddresses.find((address) => String(address.id || address._id) === String(id));
+    const remaining = savedAddresses
+      .filter((address) => String(address.id || address._id) !== String(id))
+      .map((address, index) => removedAddress?.isDefault && index === 0 ? { ...address, isDefault: true } : address);
     const backendAddresses = remaining.map((address) => {
       const payload = {
         ...address,
         label: address.label || address.addressTitle || address.name || 'Address'
       };
       delete payload.id;
-      if (address.id && /^[0-9a-fA-F]{24}$/.test(address.id)) {
-        payload._id = address.id;
+      const backendId = address._id || address.id;
+      if (backendId && /^[0-9a-fA-F]{24}$/.test(String(backendId))) {
+        payload._id = backendId;
       }
       return payload;
     });
@@ -206,82 +251,46 @@ export default function Checkout() {
       const updatedUser = await updateProfile({ addresses: backendAddresses });
       const updatedAddresses = Array.isArray(updatedUser.addresses) ? updatedUser.addresses : remaining;
       setSavedAddresses(updatedAddresses);
-      if (selectedSavedAddressId === id) {
+      if (String(selectedSavedAddressId) === String(id)) {
         localStorage.removeItem('selectedAddressId');
         setSelectedSavedAddressId('');
       }
+      if (String(editingAddressId) === String(id)) {
+        setEditingAddressId('');
+        setIsAddFormVisible(false);
+      }
+      setAddressMessage(t('Address deleted successfully.'));
     } catch (error) {
       console.error('Failed to delete saved address:', error);
+      setAddressMessage(error?.response?.data?.message || error?.message || t('Unable to delete this address. Please try again.'));
     }
+  };
+
+  const handleStartNewAddress = () => {
+    setEditingAddressId('');
+    setFormData(normalizeAddress({
+      name: user?.name || '',
+      phone: user?.phone || '',
+      addressTitle: selectedCurrency === 'KWD' ? '' : 'Home',
+      isDefault: savedAddresses.length === 0
+    }));
+    setAddressMessage('');
+    setIsAddFormVisible(true);
+  };
+
+  const handleEditSavedAddress = (address) => {
+    setEditingAddressId(String(address.id || address._id));
+    setFormData(normalizeAddress(address));
+    setAddressMessage('');
+    setIsAddFormVisible(true);
   };
 
   const handleOpenAddressModal = () => {
     setAddressModalOpen(true);
     setAddressMessage('');
+    setEditingAddressId('');
     setIsAddFormVisible(false); // Default to hiding form when opening modal
   };
-
-  useEffect(() => {
-    setMounted(true);
-
-    // Load from checkout form cache first, then user profile, then registerFormData
-    const checkoutCache = localStorage.getItem('checkoutFormData');
-    const savedRegisterData = localStorage.getItem('registerFormData');
-    let cachedForm = {};
-    let savedForm = {};
-
-    try {
-      cachedForm = checkoutCache ? JSON.parse(checkoutCache) : {};
-      savedForm = savedRegisterData ? JSON.parse(savedRegisterData) : {};
-    } catch {
-      cachedForm = {};
-      savedForm = {};
-    }
-
-    const backendAddresses = Array.isArray(user.addresses) ? user.addresses : [];
-    setSavedAddresses(backendAddresses);
-
-    const addressIdFromQuery = searchParams.get('addressId');
-    const showAddressForm = searchParams.get('showAddressForm') === 'true';
-    const selectedAddressIdFromStorage = localStorage.getItem('selectedAddressId');
-    const activeAddressId = addressIdFromQuery || selectedAddressIdFromStorage;
-    const selectedAddress = backendAddresses.find((address) => address.id === activeAddressId);
-
-    const initialForm = {
-      name: user?.name || cachedForm.name || savedForm.name || '',
-      phone: user?.phone || cachedForm.phone || savedForm.phone || '',
-      // Kuwait fields
-      addressTitle: user?.address?.addressTitle || cachedForm.addressTitle || savedForm.addressTitle || '',
-      governorate: user?.address?.governorate || cachedForm.governorate || savedForm.governorate || '',
-      area: user?.address?.area || cachedForm.area || savedForm.area || '',
-      block: user?.address?.block || cachedForm.block || savedForm.block || '',
-      apartment: user?.address?.apartment || cachedForm.apartment || savedForm.apartment || '',
-      floor: user?.address?.floor || cachedForm.floor || savedForm.floor || '',
-      jadda: user?.address?.jadda || cachedForm.jadda || savedForm.jadda || '',
-      // India fields
-      city: user?.address?.city || cachedForm.city || savedForm.city || '',
-      state: user?.address?.state || cachedForm.state || savedForm.state || '',
-      pincode: user?.address?.pincode || cachedForm.pincode || savedForm.pincode || '',
-      // Common fields
-      street: user?.address?.street || cachedForm.street || savedForm.street || '',
-      houseNumber: user?.address?.houseNumber || cachedForm.houseNumber || savedForm.houseNumber || '',
-      latitude: user?.address?.latitude || cachedForm.latitude || null,
-      longitude: user?.address?.longitude || cachedForm.longitude || null,
-      mapLink: user?.address?.mapLink || cachedForm.mapLink || ''
-    };
-
-    setFormData(selectedAddress ? { ...initialForm, ...selectedAddress } : initialForm);
-
-    if (selectedAddress) {
-      persistSelectedAddressId(selectedAddress.id);
-    }
-
-    setCheckoutLoading(false);
-
-    if (showAddressForm) {
-      setAddressModalOpen(true);
-    }
-  }, [user, token, searchParams]);
 
   // Auto-save form data to localStorage whenever it changes
   useEffect(() => {
@@ -294,46 +303,28 @@ export default function Checkout() {
     }
   }, [formData, mounted]);
 
-  // Validate cart items when currency changes
-  useEffect(() => {
-    validateCartItems();
-  }, [selectedCurrency, cart]);
-
   // Fetch enabled payment methods
   useEffect(() => {
     const fetchPaymentMethods = async () => {
       try {
         const response = await axios.get(`${API_URL}/settings/payment-methods`);
-        setEnabledPaymentMethods(response.data.enabledPaymentMethods || ['upi', 'card', 'netbanking', 'cod']);
+        const methods = response.data.enabledPaymentMethods;
+        if (!Array.isArray(methods)) {
+          setEnabledPaymentMethods([]);
+          setPaymentMethodsError(t('Payment options are temporarily unavailable. Please try again later.'));
+          return;
+        }
+        setEnabledPaymentMethods(methods);
+        setPaymentMethodsError('');
       } catch (error) {
         console.error('Error fetching payment methods:', error);
-        // Default to all methods if fetch fails
-        setEnabledPaymentMethods(['upi', 'card', 'netbanking', 'cod']);
+        setEnabledPaymentMethods([]);
+        setPaymentMethodsError(t('Unable to load payment options. Please try again later.'));
       }
     };
 
     fetchPaymentMethods();
-  }, []);
-
-  const validateCartItems = async () => {
-    try {
-      const unavailable = [];
-      
-      for (const item of cart) {
-        // Check if item has displayPrice in the selected currency
-        const itemPrice = parsePrice(typeof item.displayPrice === 'number' ? item.displayPrice : item.price);
-        
-        // If no price, try to fetch product details to check multi-currency prices
-        if (!itemPrice || itemPrice <= 0) {
-          unavailable.push(item._id || item.id);
-        }
-      }
-      
-      setUnavailableItems(unavailable);
-    } catch (err) {
-      console.error('Error validating cart items:', err);
-    }
-  };
+  }, [t]);
 
   const currencyDecimals = selectedCurrency === 'KWD' ? 3 : 2;
   const currencySymbol = selectedCurrency === 'INR' ? '₹' : selectedCurrency === 'KWD' ? 'KWD' : currencySettings?.symbol || '₹';
@@ -395,10 +386,11 @@ export default function Checkout() {
 
   const handleOpenPaymentModal = async (e) => {
     e.preventDefault();
+    setCheckoutError('');
     
     // Check if any items are unavailable
     if (unavailableItems.length > 0) {
-      alert(`${unavailableItems.length} product(s) not available in selected country. Please remove unavailable items or change country.`);
+      setCheckoutError(`${unavailableItems.length} product(s) are unavailable. Remove them or change country before continuing.`);
       return;
     }
 
@@ -406,33 +398,33 @@ export default function Checkout() {
 
     // Validate common fields
     if (!formData.name || !formData.phone || !formData.street || !formData.houseNumber) {
-      alert('Please fill in all required address fields');
+      setCheckoutError('Please fill in all required address fields.');
       return;
     }
 
     // Validate country-specific fields
     if (isKuwait) {
       if (!formData.addressTitle || !formData.governorate || !formData.area || !formData.block) {
-        alert('Please fill in all required address fields');
+        setCheckoutError('Please fill in all required address fields.');
         return;
       }
     } else {
       // India validation
       if (!formData.city || !formData.state || !formData.pincode) {
-        alert('Please fill in all required address fields');
+        setCheckoutError('Please fill in all required address fields.');
         return;
       }
     }
 
     // Validate cart
     if (!cart || cart.length === 0) {
-      alert('Your cart is empty');
+      setCheckoutError('Your bag is empty.');
       return;
     }
 
     // Validate total
     if (!total || total <= 0) {
-      alert('Invalid cart total');
+      setCheckoutError('Unable to calculate your order total. Please review your bag.');
       return;
     }
 
@@ -482,7 +474,7 @@ export default function Checkout() {
   // Triggered from inside the modal
   const executePayment = async (selectedMethod) => {
     // Validate UPI if selected
-      if (selectedMethod === 'upi' || selectedMethod === 'wamd') {
+      if (selectedMethod === 'upi') {
       if (!upiId.trim()) {
         setUpiError('Please enter your UPI ID');
         return;
@@ -586,15 +578,18 @@ export default function Checkout() {
     }
   };
 
+  if (!user || !token) return null;
+
   return (
     <>
-      {checkoutLoading ? (
+      {!mounted ? (
         <CheckoutSkeleton />
       ) : (
     <div className="checkout-wrapper">
       <div className="checkout-container">
+        <CheckoutProgress active="address" />
         <div className="checkout-header d-flex align-items-center justify-content-between mb-3">
-          <h1 className="checkout-title">{t("Checkout")}</h1>
+          <h1 className="checkout-title">{t("Delivery Address")}</h1>
           <button type="button" className="btn custom-primary-btn btn-sm d-flex align-items-center gap-1" onClick={handleOpenAddressModal}>
             <i className="fa-solid fa-map-marker-alt"></i>
             {t('My Addresses')}
@@ -606,9 +601,42 @@ export default function Checkout() {
           {/* LEFT - ADDRESS */}
           <div className="card">
             <form className="form" onSubmit={handleOpenPaymentModal}>
-              <div className="full-width">
-                <h2>{t("Shipping Address")}</h2>
+              {checkoutError && <p className="payment-config-error full-width" role="alert">{checkoutError}</p>}
+              <div className="full-width checkout-delivery-heading">
+                <div><span>{t('Delivery To')}</span><h2>{t("Shipping Address")}</h2></div>
+                <button type="button" className="checkout-add-address" onClick={handleOpenAddressModal}>＋ {t('Add New Address')}</button>
               </div>
+
+              {savedAddresses.length > 0 && (
+                <div className="checkout-saved-addresses full-width">
+                  <h3>{t('Saved addresses')}</h3>
+                  {savedAddresses.map((address) => {
+                    const addressId = String(address.id || address._id);
+                    const isSelected = String(selectedSavedAddressId) === addressId;
+                    return (
+                      <article key={addressId} className={`checkout-saved-address ${isSelected ? 'selected' : ''}`}>
+                        <label>
+                          <input type="radio" name="savedAddress" checked={isSelected} onChange={() => handleSelectSavedAddress(address)} />
+                          <span>
+                            <strong>{address.name || t('Delivery address')}</strong>
+                            {address.isDefault && <small>{t('Default')}</small>}
+                            <span>{address.addressTitle || address.label || t('Address')}</span>
+                            <span>{[address.houseNumber, address.street, address.area, address.city, address.state, address.governorate, address.pincode].filter(Boolean).join(', ')}</span>
+                            <span>{address.phone}</span>
+                          </span>
+                        </label>
+                        <div>
+                          <button type="button" onClick={() => handleEditSavedAddress(address)}>{t('Edit')}</button>
+                          <button type="button" onClick={() => handleDeleteSavedAddress(addressId)}>{t('Delete')}</button>
+                        </div>
+                      </article>
+                    );
+                  })}
+                </div>
+              )}
+              {!addressModalOpen && addressMessage && (
+                <p className="checkout-address-message full-width" role="status">{addressMessage}</p>
+              )}
 
               <input name="name" value={formData.name} onChange={handleChange} placeholder={t("Full Name")} required />
               <input name="phone" value={formData.phone} onChange={handleChange} placeholder={t("Phone Number")} required />
@@ -708,6 +736,16 @@ export default function Checkout() {
               ) : (
                 // INDIA ADDRESS FORM
                 <>
+                  <select
+                    name="addressTitle"
+                    value={formData.addressTitle || 'Home'}
+                    onChange={handleChange}
+                    className="full-width"
+                    aria-label={t('Address type')}
+                  >
+                    <option value="Home">{t('Home')}</option>
+                    <option value="Work">{t('Work')}</option>
+                  </select>
                   <input 
                     name="street" 
                     className="full-width" 
@@ -798,7 +836,6 @@ export default function Checkout() {
                   const originalPrice = parsePrice(typeof item.displayOriginalPrice === 'number' ? item.displayOriginalPrice : item.originalPrice);
                   const originalTotal = originalPrice > 0 ? originalPrice * item.quantity : 0;
                   const currencyDecimals = selectedCurrency === 'KWD' ? 3 : 2;
-                  const itemCurrencySymbol = item.currencySymbol || currencySymbol;
                   const countryName = selectedCurrency === 'KWD' ? 'Kuwait' : 'India';
                   
                   return (
@@ -841,6 +878,7 @@ export default function Checkout() {
             </div>
 
             <div className="summary">
+              <CouponForm subtotal={subtotal} title={t('Have a coupon?')} />
               {!mounted ? (
                 <>
                   <div><span>{t("Subtotal")}:</span><span>{t("Loading...")}</span></div>
@@ -883,7 +921,7 @@ export default function Checkout() {
           <div
             style={{
               width: '100%',
-              maxWidth: '920px',
+              maxWidth: '550px',
               maxHeight: '90vh',
               overflowY: 'auto',
               borderRadius: '14px',
@@ -902,7 +940,7 @@ export default function Checkout() {
               <button
                 type="button"
                 className="btn custom-primary-btn btn-sm"
-                onClick={() => setIsAddFormVisible(!isAddFormVisible)}
+                onClick={() => isAddFormVisible ? setIsAddFormVisible(false) : handleStartNewAddress()}
                 style={{ padding: '8px 16px', borderRadius: '6px', fontWeight: 'bold' }}
               >
                 {isAddFormVisible ? t('Close Form') : t('Add Address')}
@@ -919,13 +957,13 @@ export default function Checkout() {
               <div style={{display: 'grid', gridTemplateColumns: '1fr', gap: '12px', marginBottom: '24px'}}>
                 {savedAddresses.map((address) => (
                   <div
-                    key={address.id}
+                    key={address.id || address._id}
                     style={{
                       width: '100%',
-                      border: selectedSavedAddressId === address.id ? '1px solid #6c5dd3' : '1px solid #d1d5db',
+                      border: String(selectedSavedAddressId) === String(address.id || address._id) ? '1px solid #168c8c' : '1px solid #d1d5db',
                       borderRadius: '12px',
                       padding: '18px',
-                      background: selectedSavedAddressId === address.id ? 'rgba(108, 93, 211, 0.12)' : 'var(--card-bg)'
+                      background: String(selectedSavedAddressId) === String(address.id || address._id) ? 'rgba(22, 140, 140, 0.08)' : 'var(--card-bg)'
                     }}
                   >
                     <div style={{display: 'flex', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap'}}>
@@ -947,8 +985,15 @@ export default function Checkout() {
                         </button>
                         <button
                           type="button"
+                          className="btn btn-sm custom-primary-btn"
+                          onClick={() => handleEditSavedAddress(address)}
+                        >
+                          {t('Edit')}
+                        </button>
+                        <button
+                          type="button"
                           className="btn btn-sm custom-danger-btn"
-                          onClick={() => handleDeleteSavedAddress(address.id)}
+                          onClick={() => handleDeleteSavedAddress(address.id || address._id)}
                         >
                           {t('Delete')}
                         </button>
@@ -966,7 +1011,7 @@ export default function Checkout() {
             {isAddFormVisible && (
               <div style={{borderTop: '1px solid var(--border-color, #e2e8f0)', paddingTop: '20px'}}>
                 <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px'}}>
-                  <h3 style={{margin: 0, color: 'var(--text-primary)'}}>{t('Add New Address')}</h3>
+                  <h3 style={{margin: 0, color: 'var(--text-primary)'}}>{editingAddressId ? t('Edit Address') : t('Add New Address')}</h3>
                   <span style={{fontSize: '13px', color: 'var(--text-muted, #64748b)'}}>{t('Saved to My Addresses automatically')}</span>
                 </div>
 
@@ -1065,6 +1110,15 @@ export default function Checkout() {
                     </>
                   ) : (
                     <>
+                      <select
+                        name="addressTitle"
+                        value={formData.addressTitle || 'Home'}
+                        onChange={handleChange}
+                        className="form-control"
+                      >
+                        <option value="Home">{t('Home')}</option>
+                        <option value="Work">{t('Work')}</option>
+                      </select>
                       <input
                         name="street"
                         value={formData.street}
@@ -1108,20 +1162,30 @@ export default function Checkout() {
                   )}
                 </div>
 
+                <label className="checkout-default-address">
+                  <input
+                    type="checkbox"
+                    checked={Boolean(formData.isDefault)}
+                    onChange={(event) => setFormData((previous) => ({ ...previous, isDefault: event.target.checked }))}
+                  />
+                  {t('Make this my default address')}
+                </label>
+
                 <div style={{display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '20px'}}>
                   <button type="button" className="btn custom-danger-btn" onClick={() => setAddressModalOpen(false)}>
                     {t('Close')}
                   </button>
                   <button type="button" className="btn custom-primary-btn" onClick={async () => {
+                    setAddressMessage('');
                     const saved = await saveAddressToBackend(formData);
                     if (saved) {
                       setAddressMessage(t('Address saved to My Addresses.'));
                       setIsAddFormVisible(false); // Hide the form after saving
-                    } else {
+                    } else if (!isAddressSaveable(formData)) {
                       setAddressMessage(t('Fill the required address fields before saving.'));
                     }
                   }}>
-                    {t('Save Address')}
+                    {editingAddressId ? t('Update Address') : t('Save Address')}
                   </button>
                 </div>
               </div>
@@ -1163,12 +1227,22 @@ export default function Checkout() {
             </div>
 
             <div className="payment-options-container">
+                {paymentMethodsError && <p className="payment-config-error" role="alert">{paymentMethodsError}</p>}
               
               {/* UPI Option */}
               {enabledPaymentMethods.includes('upi') && (
               <div 
                 className={`pay-method-card ${selectedPaymentMethod === 'upi' ? 'selected' : ''}`}
-                onClick={() => handlePaymentMethodSelect('upi')}
+                role="button"
+                tabIndex={0}
+                aria-pressed={selectedPaymentMethod === 'upi'}
+                onClick={() => { if (selectedPaymentMethod !== 'upi') handlePaymentMethodSelect('upi'); }}
+                onKeyDown={(event) => {
+                  if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) {
+                    event.preventDefault();
+                    handlePaymentMethodSelect('upi');
+                  }
+                }}
               >
                 <div className="pay-method-title">
                   <span><i className="fa-solid fa-bolt"></i></span> {t("UPI Payment")}
@@ -1241,7 +1315,16 @@ export default function Checkout() {
               {enabledPaymentMethods.includes('card') && (
               <div 
                 className={`pay-method-card ${selectedPaymentMethod === 'card' ? 'selected' : ''}`}
-                onClick={() => handlePaymentMethodSelect('card')}
+                role="button"
+                tabIndex={0}
+                aria-pressed={selectedPaymentMethod === 'card'}
+                onClick={() => { if (selectedPaymentMethod !== 'card') handlePaymentMethodSelect('card'); }}
+                onKeyDown={(event) => {
+                  if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) {
+                    event.preventDefault();
+                    handlePaymentMethodSelect('card');
+                  }
+                }}
               >
                 <div className="pay-method-title">
                   <span><i className="fa-solid fa-credit-card"></i></span> {t("Credit / Debit Card")}
@@ -1254,7 +1337,16 @@ export default function Checkout() {
                {enabledPaymentMethods.includes('netbanking') && (
                <div 
                  className={`pay-method-card ${selectedPaymentMethod === 'netbanking' ? 'selected' : ''}`}
-                 onClick={() => handlePaymentMethodSelect('netbanking')}
+                 role="button"
+                 tabIndex={0}
+                 aria-pressed={selectedPaymentMethod === 'netbanking'}
+                 onClick={() => { if (selectedPaymentMethod !== 'netbanking') handlePaymentMethodSelect('netbanking'); }}
+                 onKeyDown={(event) => {
+                   if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) {
+                     event.preventDefault();
+                     handlePaymentMethodSelect('netbanking');
+                   }
+                 }}
                >
                 <div className="pay-method-title">
                   <span><i className="fa-solid fa-building-columns"></i></span> {t("Net Banking")}
@@ -1267,7 +1359,16 @@ export default function Checkout() {
               {enabledPaymentMethods.includes('wamd') && (
               <div 
                 className={`pay-method-card ${selectedPaymentMethod === 'wamd' ? 'selected' : ''}`}
-                onClick={() => handlePaymentMethodSelect('wamd')}
+                role="button"
+                tabIndex={0}
+                aria-pressed={selectedPaymentMethod === 'wamd'}
+                onClick={() => { if (selectedPaymentMethod !== 'wamd') handlePaymentMethodSelect('wamd'); }}
+                onKeyDown={(event) => {
+                  if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) {
+                    event.preventDefault();
+                    handlePaymentMethodSelect('wamd');
+                  }
+                }}
               >
                 <div className="pay-method-title">
                   <span><i className="fa-solid fa-university"></i></span> {t("WAMD - Instant Bank Transfer")}
@@ -1280,15 +1381,36 @@ export default function Checkout() {
               {enabledPaymentMethods.includes('cod') && (
               <div 
                 className={`pay-method-card ${selectedPaymentMethod === 'cod' ? 'selected' : ''}`}
+                role="button"
+                tabIndex={0}
+                aria-pressed={selectedPaymentMethod === 'cod'}
                 onClick={() => {
                   handlePaymentMethodSelect('cod');
                   setTimeout(() => executePayment('cod'), 100);
+                }}
+                onKeyDown={(event) => {
+                  if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) {
+                    event.preventDefault();
+                    handlePaymentMethodSelect('cod');
+                    setTimeout(() => executePayment('cod'), 100);
+                  }
                 }}
               >
                 <div className="pay-method-title" style={{marginBottom: '0'}}>
                   <span><i className="fa-solid fa-money-bill"></i></span> {t("Cash on Delivery (COD)")}
                 </div>
               </div>
+              )}
+
+              {['card', 'netbanking'].includes(selectedPaymentMethod) && (
+                <button
+                  type="button"
+                  className="payment-continue-button"
+                  disabled={loading}
+                  onClick={() => executePayment(selectedPaymentMethod)}
+                >
+                  {loading ? t('Processing...') : t('Continue to Payment')}
+                </button>
               )}
 
             </div>

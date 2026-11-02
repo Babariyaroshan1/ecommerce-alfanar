@@ -1,16 +1,10 @@
 import './CheckoutSkeleton.css';
+import CheckoutProgress from './CheckoutProgress';
 
 export default function CheckoutSkeleton() {
   return (
     <div className="checkout-skeleton">
-      <div className="skeleton-steps">
-        {[1, 2, 3].map(i => (
-          <div key={i} className="skeleton-step">
-            <div className="skeleton-step-number"></div>
-            <div className="skeleton-step-label"></div>
-          </div>
-        ))}
-      </div>
+      <CheckoutProgress active="address" />
 
       <div className="skeleton-content">
         <div className="skeleton-form-section">

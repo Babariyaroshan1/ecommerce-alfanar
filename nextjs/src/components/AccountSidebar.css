@@ -1,0 +1,19 @@
+.account-page-layout { display: grid; grid-template-columns: 327px minmax(0, 1fr); align-items: start; gap: 40px; }
+.account-sidebar { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.account-summary { display: grid; gap: 5px; padding: 22px; background: var(--hover-bg); color: var(--text-primary); }
+.account-summary strong { overflow-wrap: anywhere; font-size: 1rem; }
+.account-summary span { overflow-wrap: anywhere; color: var(--text-secondary); font-size: .84rem; }
+.account-navigation { display: grid; }
+.account-navigation a {
+  display: grid; gap: 3px; padding: 14px 16px; border: 1px solid var(--border-color);
+  border-bottom: 0; background: var(--card-bg); color: var(--text-primary); text-decoration: none;
+}
+.account-navigation a:last-child { border-bottom: 1px solid var(--border-color); }
+.account-navigation a.active { border-left: 3px solid #cc0000; background: rgba(204, 0, 0, .06); color: #b00; font-weight: 700; }
+.account-navigation small { color: var(--text-secondary); font-size: .75rem; font-weight: 400; }
+.account-logout { min-height: 42px; border: 1px solid #c00; background: transparent; color: #c00; font-size: .82rem; font-weight: 700; cursor: pointer; }
+.account-logout:hover, .account-logout:focus-visible { background: #c00; color: white; }
+
+@media (max-width: 850px) {
+  .account-page-layout { grid-template-columns: 1fr; gap: 22px; }
+}

@@ -1,14 +1,16 @@
 /* Container & Layout */
 .orders-wrapper {
-  max-width: 1000px;
+  width: min(1280px, 100%);
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: 36px 20px;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   color: var(--text-primary);
 }
 
+.orders-main { min-width: 0; }
+
 .orders-header {
-  margin-bottom: 2rem;
+  margin-bottom: 28px;
 }
 
 .orders-header h1 {
@@ -73,18 +75,19 @@
 }
 
 .continue-btn {
-  background: var(--primary);
+  background: #cc0000;
   color: white;
   border: none;
   padding: 12px 24px;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background-color 0.2s;
 }
 
-.continue-btn:hover {
-  background: #2563eb;
+.continue-btn:hover,
+.continue-btn:focus-visible {
+  background: #a80000;
 }
 
 /* Orders List & Cards */
@@ -237,6 +240,8 @@
 
 /* Responsive Design for Mobile Devices */
 @media (max-width: 640px) {
+  .orders-wrapper { padding: 22px 14px; }
+
   .order-card-header {
     flex-direction: column;
     align-items: flex-start;

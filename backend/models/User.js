@@ -16,6 +16,15 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    dateOfBirth: {
+        type: Date,
+        default: null
+    },
+    gender: {
+        type: String,
+        enum: ['', 'Male', 'Female', 'Other'],
+        default: ''
+    },
     username: {
         type: String,
         default: null
@@ -41,6 +50,9 @@ const userSchema = new mongoose.Schema({
         block: String,
         street: String,
         houseNumber: String,
+        city: String,
+        state: String,
+        pincode: String,
         apartment: String,
         floor: String,
         jadda: String,
@@ -56,11 +68,15 @@ const userSchema = new mongoose.Schema({
             name: String,
             phone: String,
             addressTitle: String,
+            type: String,
             governorate: String,
             area: String,
             block: String,
             street: String,
             houseNumber: String,
+            city: String,
+            state: String,
+            pincode: String,
             apartment: String,
             floor: String,
             jadda: String,

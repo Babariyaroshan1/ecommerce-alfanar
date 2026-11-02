@@ -135,7 +135,20 @@
   }
 
   .skeleton-steps {
-    flex-direction: column;
-    gap: 20px;
+    gap: 12px;
   }
 }
+
+.checkout-skeleton .skeleton-step-number,
+.checkout-skeleton .skeleton-step-label,
+.checkout-skeleton .skeleton-section-title,
+.checkout-skeleton .skeleton-label,
+.checkout-skeleton .skeleton-input,
+.checkout-skeleton .skeleton-value,
+.checkout-skeleton .skeleton-button {
+  background: linear-gradient(90deg, var(--skeleton-base) 25%, var(--skeleton-highlight) 50%, var(--skeleton-base) 75%);
+  background-size: 200% 100%;
+}
+
+.checkout-skeleton .skeleton-form-section,
+.checkout-skeleton .skeleton-order-summary { border: 1px solid var(--border-color); background: var(--card-bg); }

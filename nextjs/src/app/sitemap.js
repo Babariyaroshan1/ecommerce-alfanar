@@ -1,11 +1,13 @@
 const BASE_URL = 'https://www.alfanar.store';
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+const API_TIMEOUT_MS = 8000;
 
 // Fetch dynamic products
 async function getProducts() {
     try {
         const response = await fetch(`${API_URL}/products`, {
             next: { revalidate: 3600 }, // Cache for 1 hour
+            signal: AbortSignal.timeout(API_TIMEOUT_MS),
         });
 
         if (!response.ok) {
@@ -31,6 +33,7 @@ async function getCategories() {
     try {
         const response = await fetch(`${API_URL}/categories`, {
             next: { revalidate: 3600 },
+            signal: AbortSignal.timeout(API_TIMEOUT_MS),
         });
 
         if (!response.ok) return [];
@@ -42,7 +45,7 @@ async function getCategories() {
             changeFrequency: 'weekly',
             priority: 0.7,
         }));
-    } catch (error) {
+    } catch {
         console.warn('Categories API not available');
         return [];
     }

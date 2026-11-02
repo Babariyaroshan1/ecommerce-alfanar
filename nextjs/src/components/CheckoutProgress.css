@@ -1,0 +1,23 @@
+.checkout-progress {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  max-width: 550px;
+  margin: 28px auto 34px;
+  padding: 0 16px;
+  color: var(--text-secondary);
+  font-size: .76rem;
+  font-weight: 700;
+  letter-spacing: .09em;
+}
+
+.checkout-progress-step { display: flex; align-items: center; gap: 14px; white-space: nowrap; }
+.checkout-progress-step span.is-active { color: #cc0000; }
+.checkout-progress-step i { width: clamp(28px, 7vw, 86px); border-top: 2px dotted var(--border-color); }
+
+@media (max-width: 760px) {
+  .checkout-progress { margin: 20px auto 25px; gap: 8px; font-size: .67rem; }
+  .checkout-progress-step { gap: 8px; }
+  .checkout-progress-step i { width: clamp(18px, 6vw, 42px); }
+}

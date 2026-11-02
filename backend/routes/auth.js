@@ -39,6 +39,8 @@ router.post('/register', async (req, res) => {
                 name: user.name,
                 email: user.email,
                 phone: user.phone,
+                dateOfBirth: user.dateOfBirth,
+                gender: user.gender,
                 address: user.address,
                 addresses: user.addresses,
                 profileImage: user.profileImage,
@@ -91,6 +93,8 @@ router.post('/login', async (req, res) => {
                 name: user.name,
                 email: user.email,
                 phone: user.phone,
+                dateOfBirth: user.dateOfBirth,
+                gender: user.gender,
                 address: user.address,
                 addresses: user.addresses,
                 profileImage: user.profileImage,
@@ -183,7 +187,7 @@ router.get('/profile', auth, async (req, res) => {
 // Update Profile
 router.put('/profile', auth, async (req, res) => {
     try {
-        const { name, phone, address, profileImage, selectedProfile, addresses } = req.body;
+        const { name, phone, address, profileImage, selectedProfile, addresses, dateOfBirth, gender } = req.body;
         const updateFields = {};
         if (name !== undefined) updateFields.name = name;
         if (phone !== undefined) updateFields.phone = phone;
@@ -191,6 +195,8 @@ router.put('/profile', auth, async (req, res) => {
         if (profileImage !== undefined) updateFields.profileImage = profileImage;
         if (selectedProfile !== undefined) updateFields.selectedProfile = selectedProfile;
         if (addresses !== undefined) updateFields.addresses = addresses;
+        if (dateOfBirth !== undefined) updateFields.dateOfBirth = dateOfBirth;
+        if (gender !== undefined) updateFields.gender = gender;
 
         const user = await User.findByIdAndUpdate(
             req.userId,
@@ -200,6 +206,27 @@ router.put('/profile', auth, async (req, res) => {
         res.json(user);
     } catch (error) {
         res.status(500).json({ message: error.message });
+    }
+});
+
+router.put('/change-password', auth, async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+        if (!currentPassword || typeof newPassword !== 'string' || newPassword.length < 8) {
+            return res.status(400).json({ message: 'Current password and a new password of at least 8 characters are required.' });
+        }
+
+        const user = await User.findById(req.userId);
+        if (!user) return res.status(404).json({ message: 'User not found.' });
+        if (!(await user.comparePassword(currentPassword))) {
+            return res.status(400).json({ message: 'Current password is incorrect.' });
+        }
+
+        user.password = newPassword;
+        await user.save();
+        return res.json({ message: 'Password changed successfully.' });
+    } catch (error) {
+        return res.status(500).json({ message: 'Unable to change password.' });
     }
 });
 

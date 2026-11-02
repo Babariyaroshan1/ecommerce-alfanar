@@ -1,80 +1,35 @@
-// @ts-nocheck
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useFavoritesStore } from '../../store/favoritesStore';
 import { useCartStore } from '../../store/cartStore';
 import { useProductStore } from '../../store/productStore';
+import { useAuthStore } from '../../store/authStore';
 import ProductSkeleton from '@/components/ProductSkeleton';
 import './wishlist.css';
 
+const subscribeHydration = () => () => {};
+const getClientHydration = () => true;
+const getServerHydration = () => false;
+
 export default function Wishlist() {
+  const hydrated = useSyncExternalStore(subscribeHydration, getClientHydration, getServerHydration);
   const { favorites, removeFromFavorites } = useFavoritesStore();
-  const { addToCart, setCartItem } = useCartStore();
+  const { addToCart } = useCartStore();
+  const user = useAuthStore((state) => state.user);
   const products = useProductStore((state) => state.products);
   const currencySettings = useProductStore((state) => state.currencySettings);
   const selectedCurrency = useProductStore((state) => state.selectedCurrency);
   const router = useRouter();
-  const [selectedProducts, setSelectedProducts] = useState(new Set());
   const [shareModal, setShareModal] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [moveProduct, setMoveProduct] = useState(null);
+  const [moveSize, setMoveSize] = useState('');
+  const [moveColor, setMoveColor] = useState('');
 
-  useEffect(() => {
-    setLoading(false);
-  }, []);
-
-  const handleSelectProduct = (productId) => {
-    const newSelected = new Set(selectedProducts);
-    if (newSelected.has(productId)) {
-      newSelected.delete(productId);
-    } else {
-      newSelected.add(productId);
-    }
-    setSelectedProducts(newSelected);
-  };
-
-  const handleBuyNow = () => {
-    const selectedFavorites = favorites.length === 1
-      ? favorites
-      : favorites.filter(product => selectedProducts.has(product.id || product._id));
-    const availableProducts = selectedFavorites
-      .map(favorite => products.find(product => String(product.id || product._id) === String(favorite.id || favorite._id)) || favorite)
-      .filter(product => !product.isSoldOut);
-
-    if (!availableProducts.length) return;
-
-    if (availableProducts.length === 1) {
-      const product = availableProducts[0];
-      const stock = product.stock || 1;
-      setCartItem({
-        ...product,
-        price: product.displayPrice ?? product.price,
-        displayPrice: product.displayPrice ?? product.price,
-        currency: product.currency || currencySettings?.currency,
-        currencySymbol: product.currencySymbol || currencySettings?.symbol || '₹',
-        quantity: 1,
-        selectedColor: 'Default',
-        selectedSize: 'One Size'
-      }, stock);
-      router.push('/checkout');
-    } else {
-      availableProducts.forEach(product => {
-        addToCart({
-          ...product,
-          price: product.displayPrice ?? product.price,
-          displayPrice: product.displayPrice ?? product.price,
-          currency: product.currency || currencySettings?.currency,
-          currencySymbol: product.currencySymbol || currencySettings?.symbol || '₹',
-          quantity: 1,
-          selectedColor: 'Default',
-          selectedSize: 'One Size'
-        }, product.stock || 1);
-      });
-      router.push('/checkout');
-    }
-  };
+  if (!hydrated) return <ProductSkeleton />;
 
   const getProductSymbol = (product) => {
     if (product?.currencySymbol) return product.currencySymbol;
@@ -92,72 +47,72 @@ export default function Wishlist() {
 
   const getProductPriceValue = (product) => product?.displayPrice ?? product?.price ?? 0;
 
-  const handleShare = (product) => {
-    setShareModal(product);
+  const handleShare = (product) => setShareModal(product);
+  const closeShareModal = () => setShareModal(null);
+  const shareOnWhatsApp = (product) => {
+    const priceText = formatCurrency(getProductPriceValue(product), getProductSymbol(product));
+    const productUrl = `${window.location.origin}/product/${product.id || product._id}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(`Check out ${product.name} - ${priceText}\n${productUrl}`)}`, '_blank', 'noopener,noreferrer');
   };
-
-  const closeShareModal = () => {
+  const shareOnInstagram = (product) => {
+    const productUrl = `${window.location.origin}/product/${product.id || product._id}`;
+    window.open(`https://www.instagram.com/?url=${encodeURIComponent(productUrl)}`, '_blank', 'noopener,noreferrer');
+  };
+  const copyLink = async (product) => {
+    const productUrl = `${window.location.origin}/product/${product.id || product._id}`;
+    await navigator.clipboard.writeText(productUrl);
     setShareModal(null);
   };
 
-  const shareOnWhatsApp = (product) => {
-    const symbol = getProductSymbol(product);
-    const priceText = formatCurrency(getProductPriceValue(product), symbol);
-    const text = `Check out this product: ${product.name} - ${priceText}\n${window.location.origin}/product/${product.id || product._id}`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+  const openMoveDialog = (product) => {
+    const sizes = Array.isArray(product.sizes) ? product.sizes : [];
+    const colors = Array.isArray(product.colors) ? product.colors : [];
+    setMoveProduct(product);
+    setMoveSize(sizes.length === 1 ? sizes[0] : '');
+    setMoveColor(colors.length === 1 ? colors[0] : '');
   };
 
-  const shareOnInstagram = (product) => {
-    const symbol = getProductSymbol(product);
-    const priceText = formatCurrency(getProductPriceValue(product), symbol);
-    const text = `Check out this product: ${product.name} - ${priceText}`;
-    window.open(`https://www.instagram.com/?url=${encodeURIComponent(window.location.origin + '/product/' + (product.id || product._id))}`, '_blank');
+  const confirmMoveToCart = () => {
+    if (!moveProduct) return;
+    const sizes = Array.isArray(moveProduct.sizes) ? moveProduct.sizes : [];
+    const colors = Array.isArray(moveProduct.colors) ? moveProduct.colors : [];
+    if ((sizes.length > 1 && !moveSize) || (colors.length > 1 && !moveColor)) return;
+    const selectedSize = moveSize || sizes[0] || 'One Size';
+    const selectedColor = moveColor || colors[0] || 'Default';
+    const sizeStock = typeof moveProduct.stock === 'object'
+      ? Number(moveProduct.stock[selectedSize] ?? moveProduct.stock[selectedColor] ?? 1)
+      : Number(moveProduct.stock ?? 1);
+    const id = String(moveProduct.id || moveProduct._id);
+    const previousQuantity = useCartStore.getState().cart
+      .filter((item) => String(item.id || item._id) === id && (item.selectedSize || 'One Size') === selectedSize && (item.selectedColor || 'Default') === selectedColor)
+      .reduce((sum, item) => sum + Number(item.quantity || 0), 0);
+    addToCart({
+      ...moveProduct,
+      price: moveProduct.displayPrice ?? moveProduct.price,
+      displayPrice: moveProduct.displayPrice ?? moveProduct.price,
+      quantity: 1,
+      selectedColor,
+      selectedSize
+    }, Math.max(1, sizeStock));
+    const addedQuantity = useCartStore.getState().cart
+      .filter((item) => String(item.id || item._id) === id && (item.selectedSize || 'One Size') === selectedSize && (item.selectedColor || 'Default') === selectedColor)
+      .reduce((sum, item) => sum + Number(item.quantity || 0), 0);
+    if (addedQuantity <= previousQuantity) return;
+    removeFromFavorites(moveProduct.id || moveProduct._id);
+    setMoveProduct(null);
+    router.push('/cart');
   };
-
-  const copyLink = async (product) => {
-    const url = `${window.location.origin}/product/${product.id || product._id}`;
-    await navigator.clipboard.writeText(url);
-    alert('Link copied to clipboard!');
-  };
-
-  const selectedCount = favorites.length === 1 ? 1 : selectedProducts.size;
-
-  const handleSelectAll = () => {
-    if (selectedProducts.size === favorites.length) {
-      setSelectedProducts(new Set());
-    } else {
-      setSelectedProducts(new Set(favorites.map(p => p.id || p._id)));
-    }
-  };
-
-  if (loading) {
-    return <ProductSkeleton />;
-  }
 
   return (
     <div className="container py-5 wishlist-container">
       {/* Header Section */}
       <div className="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between mb-5 gap-3 wishlist-header">
         <div>
-          <h2 className="fw-bold mb-1">Liked Products <span className="text-muted fs-5 fw-normal">({favorites.length})</span></h2>
+          <h1 className="fw-bold mb-1 wishlist-heading-text">My Wishlist <span className="text-muted fs-5 fw-normal">({favorites.length} items)</span></h1>
           <p className="text-muted mb-0">Your saved products appear here. Tap the heart again to remove them.</p>
         </div>
         <div className="d-flex flex-wrap gap-2">
-          {favorites.length > 1 && (
-            <button className="btn btn-outline-dark" onClick={handleSelectAll}>
-              {selectedProducts.size === favorites.length ? 'Deselect All' : 'Select All'}
-            </button>
-          )}
           <Link href="/products" className="btn btn-light border">Continue shopping</Link>
-          {favorites.length > 0 && (
-            <button
-              className="btn btn-dark px-4"
-              onClick={handleBuyNow}
-              disabled={favorites.length > 1 && selectedCount === 0}
-            >
-              {favorites.length === 1 ? 'Buy Now' : `Buy Selected (${selectedCount})`}
-            </button>
-          )}
         </div>
       </div>
 
@@ -169,40 +124,34 @@ export default function Wishlist() {
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
             </svg>
           </div>
-          <h4 className="fw-bold mb-3">Your Wishlist is Empty</h4>
-          <p className="mb-4 text-muted">Looks like you haven't liked any products yet.</p>
-          <Link href="/products" className="btn btn-dark px-4 py-2">Browse Collections</Link>
+          <h2 className="fw-bold mb-3">Your wishlist is empty</h2>
+          <p className="mb-4 text-muted">Save your favorite pieces here and come back to them anytime.</p>
+          <Link href="/products" className="btn btn-dark px-4 py-2">Continue Shopping</Link>
+          {!user && <Link href="/login?redirect=/wishlist" className="btn btn-link ms-2">Login</Link>}
         </div>
       ) : (
         /* Grid System (Using pure Bootstrap row and cols for stability) */
         <div className="row g-3 g-md-4">
           {favorites.map((product) => {
             const productId = product.id || product._id;
-            const isSelected = selectedProducts.has(productId);
             const currentProduct = products.find(item => String(item.id || item._id) === String(productId)) || product;
-            const isSoldOut = currentProduct.isSoldOut === true || currentProduct.isSoldOut === 'true' || currentProduct.isSoldOut === 1;
+            const stockUnavailable = currentProduct.stock !== undefined && (
+              typeof currentProduct.stock === 'object'
+                ? Object.values(currentProduct.stock).every((stock) => Number(stock) <= 0)
+                : Number(currentProduct.stock) <= 0
+            );
+            const isSoldOut = currentProduct.isSoldOut === true || currentProduct.isSoldOut === 'true' || currentProduct.isSoldOut === 1 || stockUnavailable;
             
             return (
               <div key={productId} className="col-6 col-sm-6 col-md-4 col-lg-3">
                 <div className="card shadow-none h-100 wishlist-card position-relative">
                   
-                  {/* Top Left: Checkbox (Only if multiple items) */}
-                  {favorites.length > 1 && (
-                    <div className="position-absolute top-0 start-0 p-3 z-2">
-                      <input
-                        type="checkbox"
-                        className="custom-checkbox form-check-input mt-0 shadow-sm"
-                        checked={isSelected}
-                        onChange={() => handleSelectProduct(productId)}
-                      />
-                    </div>
-                  )}
-
                   {/* Top Right: Remove Button */}
                   <button 
                     className="position-absolute top-0 end-0 m-2 action-btn-circle remove-btn z-2"
                     onClick={() => removeFromFavorites(productId)}
                     title="Remove from wishlist"
+                    aria-label={`Remove ${product.name} from wishlist`}
                   >
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
@@ -212,10 +161,12 @@ export default function Wishlist() {
                   {/* Product Image with Fixed Aspect Ratio */}
                   <div className="product-image-wrapper">
                     {isSoldOut && <span className="wishlist-sold-out-badge">SOLD OUT</span>}
-                    <img
+                    <Image
                       src={product.image || 'https://via.placeholder.com/400x533?text=Product'}
                       className="product-image"
                       alt={product.name}
+                      fill
+                      unoptimized
                     />
                   </div>
 
@@ -228,17 +179,9 @@ export default function Wishlist() {
                          <span className="badge bg-light  border mb-2">{product.category || 'Popular'}</span>
                          <h6 className="fw-bold mb-0 price-text">{formatCurrency(getProductPriceValue(product), getProductSymbol(product))}</h6>
                       </div>
-                      
-                      {/* Share Button (Small Icon at bottom right) */}
-                      <button
-                        className="btn btn-light btn-sm rounded-circle border"
-                        style={{width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}
-                        onClick={() => handleShare(product)}
-                        title="Share Product"
-                      >
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-                        </svg>
+                      <button className="wishlist-share-icon" type="button" onClick={() => handleShare(currentProduct)} aria-label={`Share ${product.name}`} title="Share product">↗</button>
+                      <button className="wishlist-move-button" type="button" disabled={isSoldOut} onClick={() => openMoveDialog(currentProduct)}>
+                        MOVE TO CART
                       </button>
                     </div>
                   </div>
@@ -246,6 +189,46 @@ export default function Wishlist() {
               </div>
             );
           })}
+        </div>
+      )}
+
+      {moveProduct && (
+        <div className="wishlist-dialog-backdrop" role="presentation" onMouseDown={(event) => {
+          if (event.target === event.currentTarget) setMoveProduct(null);
+        }}>
+          <section className="wishlist-dialog" role="dialog" aria-modal="true" aria-labelledby="move-dialog-title">
+            <button type="button" className="wishlist-dialog-close" onClick={() => setMoveProduct(null)} aria-label="Close dialog">×</button>
+            <Image src={moveProduct.image || '/placeholder.png'} alt={moveProduct.name || 'Product'} width={400} height={533} unoptimized />
+            <div className="wishlist-dialog-content">
+              <h2 id="move-dialog-title">{moveProduct.name}</h2>
+              <strong>{formatCurrency(getProductPriceValue(moveProduct), getProductSymbol(moveProduct))}</strong>
+              {Array.isArray(moveProduct.sizes) && moveProduct.sizes.length > 1 && (
+                <fieldset>
+                  <legend>Choose size</legend>
+                  <div className="wishlist-choice-row">
+                    {moveProduct.sizes.map((size) => {
+                      const stock = typeof moveProduct.stock === 'object' ? Number(moveProduct.stock[size] || 0) : Number(moveProduct.stock || 1);
+                      return <button type="button" key={size} disabled={stock <= 0} className={moveSize === size ? 'selected' : ''} onClick={() => setMoveSize(size)}>{size}</button>;
+                    })}
+                  </div>
+                </fieldset>
+              )}
+              {Array.isArray(moveProduct.colors) && moveProduct.colors.length > 1 && (
+                <fieldset>
+                  <legend>Choose color</legend>
+                  <div className="wishlist-choice-row">
+                    {moveProduct.colors.map((color) => <button type="button" key={color} className={moveColor === color ? 'selected' : ''} onClick={() => setMoveColor(color)}>{color}</button>)}
+                  </div>
+                </fieldset>
+              )}
+              <button
+                type="button"
+                className="wishlist-add-cart-button"
+                disabled={moveProduct.isSoldOut || (moveProduct.sizes?.length > 1 && !moveSize) || (moveProduct.colors?.length > 1 && !moveColor)}
+                onClick={confirmMoveToCart}
+              >ADD TO CART</button>
+            </div>
+          </section>
         </div>
       )}
 

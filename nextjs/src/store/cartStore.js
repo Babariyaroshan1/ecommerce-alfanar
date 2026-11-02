@@ -172,6 +172,42 @@ export const useCartStore = create((set, get) => ({
         return { cart: newCart };
     }),
 
+    updateOptions: (productId, oldSize, oldColor, selectedSize, selectedColor, maxStock) => set((state) => {
+        const source = state.cart.find(item =>
+            String(getProductId(item)) === String(productId) &&
+            (item.selectedSize || 'One Size') === oldSize &&
+            (item.selectedColor || 'Default') === oldColor
+        );
+        if (!source) return state;
+
+        const targetSize = selectedSize || 'One Size';
+        const targetColor = selectedColor || 'Default';
+        if (targetSize === oldSize && targetColor === oldColor) return state;
+
+        const target = state.cart.find(item =>
+            String(getProductId(item)) === String(productId) &&
+            (item.selectedSize || 'One Size') === targetSize &&
+            (item.selectedColor || 'Default') === targetColor
+        );
+        const nextQuantity = Number(source.quantity || 1) + Number(target?.quantity || 0);
+        const stockLimit = Number(maxStock);
+        if (stockLimit > 0 && nextQuantity > stockLimit) {
+            useToastStore.getState().addToast(`Cannot select this option. Only ${stockLimit} available in stock.`, 'error', 4000);
+            return state;
+        }
+
+        const newCart = target
+            ? state.cart
+                .filter(item => item !== source)
+                .map(item => item === target ? { ...item, quantity: nextQuantity } : item)
+            : state.cart.map(item => item === source
+                ? { ...item, selectedSize: targetSize, selectedColor: targetColor }
+                : item);
+
+        localStorage.setItem('cart', JSON.stringify(newCart));
+        return { cart: newCart };
+    }),
+
     clearCart: () => set(() => {
         localStorage.removeItem('cart');
         localStorage.removeItem('appliedCoupon');
